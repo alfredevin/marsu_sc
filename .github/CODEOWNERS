@@ -1,0 +1,49 @@
+# ==============================================================================
+# MarSU Centralized ERP - GitHub Code Ownership Mapping
+# ==============================================================================
+
+# Core System Architecture & Platform Maintenance (Protected from student edits)
+/core/                     @marsu-core-maintainer
+/app/                      @marsu-core-maintainer
+/database/migrations/      @marsu-core-maintainer
+/database/seeders/         @marsu-core-maintainer
+/public/                   @marsu-core-maintainer
+/scripts/                  @marsu-core-maintainer
+/.htaccess                 @marsu-core-maintainer
+/install.php               @marsu-core-maintainer
+
+# ------------------------------------------------------------------------------
+# 11 Student Group Development Module Ownership
+# ------------------------------------------------------------------------------
+# Group 1: 4Ps Beneficiary Student Expenses Monitoring
+/modules/expense4ps/       @marsu-bsis-group1
+
+# Group 2: Institutional Repository & Knowledge Management (IRIMKMS)
+/modules/irimkms/          @marsu-bsis-group2
+
+# Group 3: Faculty Teaching Workload Management
+/modules/workload/         @marsu-bsis-group3
+
+# Group 4: University Health & Medical Consultation Clinic
+/modules/health/           @marsu-bsis-group4
+
+# Group 5: Student Organizations Collection & Financial Management
+/modules/orgfinance/       @marsu-bsis-group5
+
+# Group 6: Student Leadership Accreditation & Officer Evaluation
+/modules/orgleadership/    @marsu-bsis-group6
+
+# Group 7: Accredited Boarding House Management & Directory
+/modules/housing/          @marsu-bsis-group7
+
+# Group 8: Student Retention & Academic Risk Early Warning System
+/modules/retention/        @marsu-bsis-group8
+
+# Group 9: University Equipment & IT Asset Management
+/modules/assets/           @marsu-bsis-group9
+
+# Group 10: Student Welfare Services & Financial Grants Management
+/modules/welfare/          @marsu-bsis-group10
+
+# Group 11: Guidance & Counseling Intake Records System
+/modules/guidance/         @marsu-bsis-group11

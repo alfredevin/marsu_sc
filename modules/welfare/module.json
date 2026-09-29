@@ -1,0 +1,25 @@
+{
+    "name": "Student Welfare Services & Financial Grants Management",
+    "slug": "welfare",
+    "version": "1.0.0",
+    "description": "Manages university scholarship grants, emergency loans, food pantry assistance, and student welfare applications with confidential income data protection.",
+    "author": "MarSU CICS Student Development Group",
+    "default_enabled": true,
+    "section": "Student Affairs (OSAS)",
+    "menu": {
+        "icon": "bi-shield-check",
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "welfare",
+                "permission": "welfare.view"
+            }
+        ]
+    },
+    "permissions": {
+        "welfare.view": "View Welfare Programs & Beneficiary Rosters",
+        "welfare.evaluate": "Screen Aid Applications & Income Documents",
+        "welfare.grant": "Award Scholarship Grants & Emergency Relief",
+        "welfare.confidential": "Access Protected Indigency Records (RA 10173)"
+    }
+}

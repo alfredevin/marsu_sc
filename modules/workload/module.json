@@ -1,0 +1,25 @@
+{
+    "name": "Faculty Teaching Workload Management",
+    "slug": "workload",
+    "version": "1.0.0",
+    "description": "Calculates faculty teaching units, preparation credits, administrative designations, and overload compensations.",
+    "author": "MarSU CICS Student Development Group",
+    "default_enabled": true,
+    "section": "Academic Affairs",
+    "menu": {
+        "icon": "bi-briefcase-fill",
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "workload",
+                "permission": "workload.view"
+            }
+        ]
+    },
+    "permissions": {
+        "workload.view": "View Faculty Workload Distribution",
+        "workload.assign": "Assign Teaching Loads and Subject Units",
+        "workload.approve": "Deans Endorsement & VPAA Approval",
+        "workload.export": "Export CHED Workload Summary Matrix"
+    }
+}

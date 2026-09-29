@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Prevent direct access to sensitive directories and files
+    RewriteRule ^(\.env|\.git|core|app|database|storage|scripts|modules) - [F,L,NC]
+
+    # Allow direct access to public/ and install.php
+    RewriteRule ^(public/|install\.php) - [L]
+
+    # Rewrite all other requests to public/index.php
+    RewriteRule ^(.*)$ public/index.php [L,QSA]
+</IfModule>
+
+# Security: Block sensitive files if mod_rewrite is disabled
+<FilesMatch "^\.(env|git)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

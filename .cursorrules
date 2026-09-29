@@ -1,0 +1,11 @@
+# MarSU Centralized ERP - Cursor Rules for Student Developers
+# Refer to AGENTS.md for full architectural specifications
+
+- STRICT RULE: NEVER edit files in core/, app/, database/migrations/ (core), public/assets/vendor/, root .htaccess, or scripts/.
+- All code must be inside modules/<slug>/.
+- Table prefix is mandatory (exp_, kmp_, wkl_, hth_, orf_, sld_, hsg_, ret_, ast_, wlf_, gdc_).
+- Native PHP 8.2+ only. No Laravel, Symfony, Composer, or npm build steps.
+- MySQL PDO prepared statements only (Database::fetchOne, Database::fetchAll, Database::insert, Database::update). No string concatenation in SQL.
+- Bootstrap 5.3 native attributes (data-bs-*). Zero jQuery.
+- Deny-by-default permissions. CSRF tokens on all POST forms (<?= csrf_field() ?>).
+- Comply with Data Privacy Act (RA 10173) for health, welfare, guidance modules.

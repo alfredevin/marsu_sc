@@ -1,0 +1,25 @@
+{
+    "name": "4Ps Beneficiary Expenses Monitoring",
+    "slug": "expense4ps",
+    "version": "1.0.0",
+    "description": "Tracks higher education allowance disbursements, living expenses, and academic compliance for 4Ps beneficiary students.",
+    "author": "MarSU CICS Student Development Group",
+    "default_enabled": true,
+    "section": "Student Services",
+    "menu": {
+        "icon": "bi-cash-coin",
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "expense4ps",
+                "permission": "expense4ps.view"
+            }
+        ]
+    },
+    "permissions": {
+        "expense4ps.view": "View 4Ps Beneficiary & Expense Records",
+        "expense4ps.create": "Log Expense Claims & Stipend Receipts",
+        "expense4ps.edit": "Modify Expense Entries",
+        "expense4ps.export": "Export Financial Expense Summary (CSV/Excel)"
+    }
+}

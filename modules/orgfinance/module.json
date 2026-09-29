@@ -1,0 +1,25 @@
+{
+    "name": "Student Organizations Collection & Financial Management",
+    "slug": "orgfinance",
+    "version": "1.0.0",
+    "description": "Audits student organization membership dues, event registration collections, official disbursements, and bank liquidation reports.",
+    "author": "MarSU CICS Student Development Group",
+    "default_enabled": true,
+    "section": "Student Affairs (OSAS)",
+    "menu": {
+        "icon": "bi-wallet2",
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "orgfinance",
+                "permission": "orgfinance.view"
+            }
+        ]
+    },
+    "permissions": {
+        "orgfinance.view": "View Org Financial Statements & Cash Flow",
+        "orgfinance.collect": "Issue Collection Receipts for Student Dues",
+        "orgfinance.disburse": "Log Expense Disbursements & Vouchers",
+        "orgfinance.audit": "Audit Org Liquidation Compliance"
+    }
+}

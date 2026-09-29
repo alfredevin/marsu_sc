@@ -1,0 +1,25 @@
+{
+    "name": "University Health & Medical Consultation Clinic",
+    "slug": "health",
+    "version": "1.0.0",
+    "description": "Campus clinic consultations, medical checkups, dental triage, and electronic health records strictly protected under the Data Privacy Act of 2012 (RA 10173).",
+    "author": "MarSU CICS Student Development Group",
+    "default_enabled": true,
+    "section": "Student Welfare & Clinic",
+    "menu": {
+        "icon": "bi-heart-pulse-fill",
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "health",
+                "permission": "health.view"
+            }
+        ]
+    },
+    "permissions": {
+        "health.view": "Access Clinic Patient Consultation Logs",
+        "health.consult": "Record Medical & Dental Examination Notes",
+        "health.confidential": "View Sensitive Health History (Clinic Staff Only)",
+        "health.audit": "Review Medical Privacy Access Trail"
+    }
+}

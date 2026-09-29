@@ -1,0 +1,25 @@
+{
+    "name": "Accredited Boarding House Management & Directory",
+    "slug": "housing",
+    "version": "1.0.0",
+    "description": "University-accredited off-campus boarding house directory, landlord profiles, occupancy rates, and safety inspection ratings.",
+    "author": "MarSU CICS Student Development Group",
+    "default_enabled": true,
+    "section": "Student Services",
+    "menu": {
+        "icon": "bi-house-check-fill",
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "housing",
+                "permission": "housing.view"
+            }
+        ]
+    },
+    "permissions": {
+        "housing.view": "Search Boarding Houses & Bed Space Vacancies",
+        "housing.register": "Register and Update Boarding House Properties",
+        "housing.inspect": "Conduct Safety, Fire & Sanitation Inspections",
+        "housing.export": "Export Accreditation Inspection Reports"
+    }
+}

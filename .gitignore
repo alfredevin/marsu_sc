@@ -1,0 +1,40 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Local storage, session dumps, logs, and locks
+storage/logs/*.log
+storage/sessions/*
+!storage/sessions/.gitkeep
+storage/cache/*
+!storage/cache/.gitkeep
+storage/installed.lock
+storage/backups/*
+
+# Local test scratch cookies
+test_cookie.txt
+cookie.txt
+*.txt
+!PRO_UPGRADE.txt
+scripts/*.txt
+
+# OS Generated Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.swp
+*~
+
+# IDE & Editor Artifacts
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+nbproject/
+
+# Node / Vendor fallbacks (if any group uses utilities locally)
+node_modules/
+vendor/

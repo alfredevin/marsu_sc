@@ -1,0 +1,25 @@
+{
+    "name": "Student Retention & Academic Risk Early Warning System",
+    "slug": "retention",
+    "version": "1.0.0",
+    "description": "Predictive analytics tracking attendance drops, failing prelim grades, prerequisite bottlenecks, and timely guidance interventions.",
+    "author": "MarSU CICS Student Development Group",
+    "default_enabled": true,
+    "section": "Academic Analytics",
+    "menu": {
+        "icon": "bi-graph-up-arrow",
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "retention",
+                "permission": "retention.view"
+            }
+        ]
+    },
+    "permissions": {
+        "retention.view": "View Academic Risk Dashboards & Cohort Trends",
+        "retention.analyze": "Run Risk Identification Models",
+        "retention.intervene": "Log Academic Remediation & Counseling Referrals",
+        "retention.export": "Export CHED Cohort Survival Analytics"
+    }
+}

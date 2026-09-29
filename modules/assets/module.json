@@ -1,0 +1,25 @@
+{
+    "name": "University Equipment & IT Asset Management",
+    "slug": "assets",
+    "version": "1.0.0",
+    "description": "Property plant and equipment registry, computer lab maintenance logs, barcode inventory, and transfer receipts.",
+    "author": "MarSU CICS Student Development Group",
+    "default_enabled": true,
+    "section": "Campus Operations",
+    "menu": {
+        "icon": "bi-pc-display-horizontal",
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "assets",
+                "permission": "assets.view"
+            }
+        ]
+    },
+    "permissions": {
+        "assets.view": "Search Fixed Assets & Hardware Inventory",
+        "assets.create": "Tag New Lab Equipment & Serial Numbers",
+        "assets.transfer": "Process Asset Transfer & Custodianship Receipts",
+        "assets.maintain": "Log Preventive Maintenance & Service Repairs"
+    }
+}

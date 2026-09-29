@@ -1,0 +1,673 @@
+/**
+ * MarSU Brand Theme System
+ * Marinduque State University - College of Information and Computing Sciences
+ * Strict Theme Tokens & Bootstrap 5 Overrides
+ */
+
+:root {
+  /* MarSU Core Brand Colors */
+  --marsu-burgundy:        #800020; /* Primary brand */
+  --marsu-burgundy-dark:   #5C0016; /* Sidebar, hover, headers */
+  --marsu-burgundy-deep:   #3D000F; /* Dark mode surfaces, extreme deep */
+  --marsu-burgundy-soft:   #F8E9EC; /* Tints, table stripes, hover rows */
+  --marsu-gold:            #D4AF37; /* Accent */
+  --marsu-gold-dark:       #B8922A; /* Accent hover, borders */
+  --marsu-gold-soft:       #FBF3D5; /* Highlight backgrounds, badges */
+  --marsu-white:           #FFFFFF;
+  --marsu-bg:              #FAF7F7; /* App background (warm ivory) */
+  --marsu-text:            #2B1A1D; /* Main body text */
+  --marsu-text-muted:      #6E5A5E; /* Muted subtext */
+
+  /* Desaturated Functional / Status Colors */
+  --marsu-success:         #2E7D32;
+  --marsu-warning:         #E65100;
+  --marsu-danger:          #C62828;
+  --marsu-info:            #0277BD;
+
+  /* Bootstrap 5 Native Overrides */
+  --bs-primary:            var(--marsu-burgundy);
+  --bs-primary-rgb:        128, 0, 32;
+  --bs-secondary:          var(--marsu-text-muted);
+  --bs-secondary-rgb:      110, 90, 94;
+  --bs-success:            var(--marsu-success);
+  --bs-warning:            var(--marsu-warning);
+  --bs-danger:             var(--marsu-danger);
+  --bs-info:               var(--marsu-info);
+  --bs-light:              var(--marsu-burgundy-soft);
+  --bs-dark:               var(--marsu-burgundy-deep);
+  --bs-body-bg:            var(--marsu-bg);
+  --bs-body-color:         var(--marsu-text);
+  --bs-link-color:         var(--marsu-burgundy);
+  --bs-link-hover-color:   var(--marsu-burgundy-dark);
+  --bs-border-color:       #E8DADC;
+  --bs-border-radius:      0.5rem;
+  --bs-border-radius-sm:   0.375rem;
+  --bs-border-radius-lg:   0.75rem;
+
+  /* Layout Dimensions */
+  --sidebar-width:         260px;
+  --sidebar-collapsed-w:   76px;
+  --topbar-height:         70px;
+  --footer-height:         60px;
+  --transition-speed:      0.22s;
+}
+
+/* Dark Mode Tokens */
+[data-bs-theme="dark"] {
+  --marsu-bg:              #1E0308;
+  --bs-body-bg:            #1E0308;
+  --bs-body-color:         #F6EFF1;
+  --marsu-text:            #F6EFF1;
+  --marsu-text-muted:      #D4BFC3;
+  --bs-card-bg:            #2E060F;
+  --bs-border-color:       #4E101D;
+  --marsu-burgundy-soft:   #3B0713;
+  --marsu-gold-soft:       #3A2C08;
+  --bs-light:              #2E060F;
+  --bs-dark:               #120104;
+}
+
+/* Global Typography & Resets */
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  min-height: 100vh;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--bs-link-color);
+  text-decoration: none;
+  transition: color var(--transition-speed) ease;
+}
+a:hover {
+  color: var(--bs-link-hover-color);
+  text-decoration: underline;
+}
+
+/* Accessible Focus Rings (Gold) */
+*:focus-visible,
+.form-control:focus,
+.form-select:focus,
+.btn:focus-visible {
+  outline: none !important;
+  border-color: var(--marsu-gold) !important;
+  box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.35) !important;
+}
+
+/* ==========================================================================
+   LAYOUT STRUCTURE
+   ========================================================================== */
+
+#app-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Sidebar */
+#app-sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background-color: var(--marsu-burgundy-dark);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition-speed) ease, min-width var(--transition-speed) ease;
+  z-index: 1040;
+  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.12);
+}
+
+#app-sidebar .sidebar-brand {
+  height: var(--topbar-height);
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+#app-sidebar .sidebar-brand img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--marsu-gold);
+  background: #FFFFFF;
+}
+
+#app-sidebar .sidebar-brand-title {
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+#app-sidebar .sidebar-brand-sub {
+  color: var(--marsu-gold);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+#app-sidebar .sidebar-heading {
+  color: var(--marsu-gold);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 1.25rem 1.25rem 0.4rem;
+}
+
+#app-sidebar .nav-item {
+  position: relative;
+  list-style: none;
+}
+
+#app-sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.88);
+  padding: 0.7rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: all var(--transition-speed) ease;
+}
+
+#app-sidebar .nav-link i {
+  font-size: 1.15rem;
+  width: 24px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+  transition: color var(--transition-speed) ease;
+}
+
+#app-sidebar .nav-link:hover {
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+#app-sidebar .nav-link:hover i {
+  color: var(--marsu-gold);
+}
+
+#app-sidebar .nav-item.active .nav-link,
+#app-sidebar .nav-link.active {
+  color: #FFFFFF;
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.18) 0%, rgba(212, 175, 55, 0.03) 100%);
+  border-left-color: var(--marsu-gold);
+  font-weight: 600;
+}
+#app-sidebar .nav-item.active .nav-link i,
+#app-sidebar .nav-link.active i {
+  color: var(--marsu-gold);
+}
+
+/* Sidebar Dropdowns / Collapsible Menus */
+#app-sidebar .sidebar-submenu {
+  background-color: rgba(0, 0, 0, 0.22);
+  padding: 0.35rem 0;
+  margin: 0;
+  list-style: none;
+}
+#app-sidebar .sidebar-submenu .nav-link {
+  padding: 0.5rem 1.25rem 0.5rem 3.25rem;
+  font-size: 0.85rem;
+  border-left: none;
+}
+#app-sidebar .sidebar-submenu .nav-link.active {
+  color: var(--marsu-gold);
+  font-weight: 600;
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+/* Collapsed Sidebar State */
+body.sidebar-toggled #app-sidebar {
+  width: var(--sidebar-collapsed-w);
+  min-width: var(--sidebar-collapsed-w);
+}
+body.sidebar-toggled #app-sidebar .sidebar-brand-title,
+body.sidebar-toggled #app-sidebar .sidebar-brand-sub,
+body.sidebar-toggled #app-sidebar .sidebar-heading,
+body.sidebar-toggled #app-sidebar .nav-link span,
+body.sidebar-toggled #app-sidebar .nav-link .submenu-arrow {
+  display: none !important;
+}
+body.sidebar-toggled #app-sidebar .nav-link {
+  justify-content: center;
+  padding: 0.85rem 0;
+  border-left-width: 3px;
+}
+body.sidebar-toggled #app-sidebar .nav-link i {
+  margin: 0;
+}
+
+/* Main Content Area */
+#app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+/* Topbar */
+#app-topbar {
+  height: var(--topbar-height);
+  background-color: var(--marsu-white);
+  border-bottom: 2px solid var(--marsu-gold);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  z-index: 1030;
+}
+[data-bs-theme="dark"] #app-topbar {
+  background-color: var(--marsu-burgundy-deep);
+}
+
+#app-topbar .avatar-ring {
+  border: 2px solid var(--marsu-gold);
+  border-radius: 50%;
+  padding: 2px;
+  background-color: var(--marsu-white);
+}
+
+/* Page Container */
+.page-container {
+  padding: 1.5rem 1.75rem;
+  flex: 1;
+}
+
+/* Breadcrumbs */
+.breadcrumb-marsu {
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+.breadcrumb-marsu .breadcrumb-item a {
+  color: var(--marsu-burgundy);
+  font-weight: 500;
+}
+.breadcrumb-marsu .breadcrumb-item.active {
+  color: var(--marsu-text-muted);
+}
+
+/* Footer */
+#app-footer {
+  height: var(--footer-height);
+  background-color: var(--marsu-white);
+  border-top: 1px solid var(--bs-border-color);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.75rem;
+  font-size: 0.85rem;
+  color: var(--marsu-text-muted);
+}
+#app-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--marsu-gold);
+}
+[data-bs-theme="dark"] #app-footer {
+  background-color: var(--marsu-burgundy-deep);
+}
+
+/* ==========================================================================
+   BUTTONS & CONTROLS
+   ========================================================================== */
+
+.btn-primary,
+.btn-marsu {
+  background-color: var(--marsu-burgundy);
+  border-color: var(--marsu-burgundy);
+  color: #FFFFFF !important;
+  font-weight: 500;
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--bs-border-radius);
+  transition: all var(--transition-speed) ease;
+}
+.btn-primary:hover,
+.btn-marsu:hover {
+  background-color: var(--marsu-burgundy-dark);
+  border-color: var(--marsu-burgundy-dark);
+  box-shadow: 0 4px 12px rgba(128, 0, 32, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-accent,
+.btn-gold {
+  background-color: var(--marsu-gold);
+  border-color: var(--marsu-gold);
+  color: var(--marsu-burgundy-dark) !important;
+  font-weight: 600;
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--bs-border-radius);
+  transition: all var(--transition-speed) ease;
+}
+.btn-accent:hover,
+.btn-gold:hover {
+  background-color: var(--marsu-gold-dark);
+  border-color: var(--marsu-gold-dark);
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-outline-marsu,
+.btn-outline-primary {
+  color: var(--marsu-burgundy);
+  border-color: var(--marsu-burgundy);
+  background: transparent;
+}
+.btn-outline-marsu:hover,
+.btn-outline-primary:hover {
+  background-color: var(--marsu-burgundy);
+  color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   CARDS & KPI WIDGETS
+   ========================================================================== */
+
+.card {
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: 0 2px 10px rgba(43, 26, 29, 0.04);
+  background-color: var(--bs-card-bg, #FFFFFF);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 18px rgba(43, 26, 29, 0.08);
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid var(--bs-border-color);
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Short gold accent underline for card headers */
+.card-header-accent::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 1.25rem;
+  width: 48px;
+  height: 3px;
+  background-color: var(--marsu-gold);
+  border-radius: 2px;
+}
+
+/* Hero KPI Row (Burgundy Gradient) */
+.card-hero-kpi {
+  background: linear-gradient(135deg, var(--marsu-burgundy) 0%, var(--marsu-burgundy-dark) 100%);
+  color: #FFFFFF !important;
+  border: none;
+}
+.card-hero-kpi .kpi-value {
+  color: var(--marsu-gold);
+  font-weight: 800;
+  font-size: 2.25rem;
+}
+.card-hero-kpi .kpi-label {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Standard KPI Cards */
+.card-kpi {
+  border-left: 4px solid var(--marsu-burgundy);
+}
+.card-kpi.border-gold {
+  border-left-color: var(--marsu-gold);
+}
+.card-kpi.border-success {
+  border-left-color: var(--marsu-success);
+}
+.card-kpi.border-info {
+  border-left-color: var(--marsu-info);
+}
+
+.kpi-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background-color: var(--marsu-burgundy-soft);
+  color: var(--marsu-burgundy);
+}
+.kpi-icon-badge.badge-gold {
+  background-color: var(--marsu-gold-soft);
+  color: var(--marsu-gold-dark);
+}
+
+/* ==========================================================================
+   TABLES
+   ========================================================================== */
+
+.table-marsu {
+  width: 100%;
+  margin-bottom: 1rem;
+  vertical-align: middle;
+  border-color: var(--bs-border-color);
+}
+
+.table-marsu thead th {
+  background-color: var(--marsu-burgundy);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--marsu-gold);
+  padding: 0.85rem 1rem;
+}
+
+.table-marsu tbody tr:nth-of-type(even) {
+  background-color: var(--marsu-burgundy-soft);
+}
+[data-bs-theme="dark"] .table-marsu tbody tr:nth-of-type(even) {
+  background-color: rgba(92, 0, 22, 0.25);
+}
+
+.table-marsu tbody tr:hover {
+  background-color: var(--marsu-gold-soft) !important;
+  color: var(--marsu-burgundy-dark);
+}
+[data-bs-theme="dark"] .table-marsu tbody tr:hover {
+  background-color: rgba(212, 175, 55, 0.15) !important;
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   BADGES & PILLS
+   ========================================================================== */
+
+.badge-burgundy {
+  background-color: var(--marsu-burgundy);
+  color: #FFFFFF;
+}
+.badge-gold {
+  background-color: var(--marsu-gold-soft);
+  color: var(--marsu-burgundy-dark);
+  font-weight: 600;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+.badge-soft-success {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+.badge-soft-danger {
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+.badge-soft-warning {
+  background-color: #FFF3E0;
+  color: #E65100;
+}
+.badge-soft-info {
+  background-color: #E1F5FE;
+  color: #0277BD;
+}
+
+/* ==========================================================================
+   LOGIN / AUTHENTICATION SPLIT VIEW
+   ========================================================================== */
+
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+}
+
+.auth-brand-side {
+  flex: 1;
+  background: linear-gradient(135deg, var(--marsu-burgundy) 0%, var(--marsu-burgundy-dark) 60%, var(--marsu-burgundy-deep) 100%);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-brand-side::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--marsu-gold);
+}
+
+.auth-brand-logo {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 4px solid var(--marsu-gold);
+  background-color: #FFFFFF;
+  padding: 6px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+.auth-brand-tagline {
+  color: var(--marsu-gold);
+  font-style: italic;
+  font-weight: 500;
+  max-width: 460px;
+  margin: 1.25rem auto 0;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.auth-form-side {
+  width: 520px;
+  max-width: 100%;
+  background-color: var(--bs-card-bg, #FFFFFF);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3.5rem;
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 991.98px) {
+  .auth-wrapper {
+    flex-direction: column;
+  }
+  .auth-brand-side {
+    padding: 2.5rem 1.5rem;
+  }
+  .auth-brand-side::after {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+  }
+  .auth-form-side {
+    width: 100%;
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+  #app-sidebar,
+  #app-topbar,
+  #app-footer,
+  .no-print,
+  .btn,
+  .pagination,
+  .dataTables_filter {
+    display: none !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  .page-container {
+    padding: 0 !important;
+  }
+
+  .print-header {
+    display: block !important;
+    text-align: center;
+    border-bottom: 2px solid var(--marsu-burgundy);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .print-header h2 {
+    color: var(--marsu-burgundy) !important;
+    font-size: 1.3rem;
+    margin: 0;
+  }
+
+  .print-header p {
+    font-size: 0.85rem;
+    color: #444444;
+    margin: 0.2rem 0;
+  }
+
+  .table-marsu thead th {
+    background-color: var(--marsu-burgundy) !important;
+    color: #FFFFFF !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+.print-header {
+  display: none;
+}

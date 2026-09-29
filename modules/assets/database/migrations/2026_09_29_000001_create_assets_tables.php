@@ -1,0 +1,30 @@
+<?php
+/**
+ * Module Migration for University Equipment & IT Asset Management
+ * Table prefix: ast_
+ */
+
+use Core\Database;
+
+return new class {
+    public function up(): void {
+        $db = Database::pdo();
+
+        $db->exec("CREATE TABLE IF NOT EXISTS `ast_records` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `title` VARCHAR(191) NOT NULL,
+            `description` TEXT NULL,
+            `status` ENUM('active', 'pending', 'resolved', 'archived') NOT NULL DEFAULT 'active',
+            `created_by` INT NULL,
+            `created_at` DATETIME NOT NULL,
+            `updated_at` DATETIME NULL,
+            `deleted_at` DATETIME NULL,
+            FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+    }
+
+    public function down(): void {
+        $db = Database::pdo();
+        $db->exec("DROP TABLE IF EXISTS `ast_records`;");
+    }
+};

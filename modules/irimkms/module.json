@@ -1,0 +1,25 @@
+{
+    "name": "Institutional Repository & Knowledge Management (IRIMKMS)",
+    "slug": "irimkms",
+    "version": "1.0.0",
+    "description": "University intellectual capital repository, faculty capstone papers, peer-reviewed journals, and dataset citations.",
+    "author": "MarSU CICS Student Development Group",
+    "default_enabled": true,
+    "section": "Research & Innovation",
+    "menu": {
+        "icon": "bi-journal-bookmark-fill",
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "irimkms",
+                "permission": "irimkms.view"
+            }
+        ]
+    },
+    "permissions": {
+        "irimkms.view": "Browse Published Research Repository",
+        "irimkms.upload": "Submit Research Papers & Datasets",
+        "irimkms.review": "Peer Review and Accredit Manuscripts",
+        "irimkms.export": "Export Bibliographic Metadata"
+    }
+}

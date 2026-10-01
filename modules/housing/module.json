@@ -1,11 +1,11 @@
 {
-    "name": "Accredited Boarding House Management & Directory",
+    "name": "Student Housing & Accommodation (ISHAMIS)",
     "slug": "housing",
     "version": "1.0.0",
-    "description": "University-accredited off-campus boarding house directory, landlord profiles, occupancy rates, and safety inspection ratings.",
+    "description": "Integrated Student Housing & Accommodation Management Information System (ISHAMIS) — off-campus boarding house directory, occupancy rates, and safety inspections.",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Student Services",
+    "section": "Housing (ISHAMIS)",
     "menu": {
         "icon": "bi-house-check-fill",
         "items": [

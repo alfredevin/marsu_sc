@@ -1,32 +1,14 @@
-<!-- Centered Portal Seal Emblem with Interactive Feedback Popover -->
+<!-- Interactive Feedback Popover -->
 <div class="position-relative">
     <div id="authToastFeedback" class="auth-toast-feedback">
         <i class="bi bi-check2-circle me-1"></i> <span id="authToastMsg">Account autofilled!</span>
     </div>
-
-    <div class="auth-card-logo-container">
-        <img src="<?= asset('assets/img/marsu.png') ?>" alt="MarSU Seal" class="auth-card-logo-img">
-    </div>
 </div>
 
 <!-- Portal Titles -->
-<h2 class="auth-portal-title">MARSU ERP PORTAL</h2>
-<p class="auth-portal-subtitle">CENTRALIZED AUTHENTICATION SYSTEM</p>
-
-<!-- Interactive Role Selector Tabs -->
-<div class="auth-role-tabs" role="tablist">
-    <button type="button" class="auth-role-tab active" data-role="student">
-        <i class="bi bi-mortarboard-fill"></i> Student
-    </button>
-    <button type="button" class="auth-role-tab" data-role="faculty">
-        <i class="bi bi-person-workspace"></i> Faculty
-    </button>
-    <button type="button" class="auth-role-tab" data-role="admin">
-        <i class="bi bi-shield-shaded"></i> Executive
-    </button>
-    <button type="button" class="auth-role-tab" data-role="lead">
-        <i class="bi bi-people-fill"></i> Lead
-    </button>
+<div class="text-center mb-4">
+    <h2 class="auth-portal-title mb-1">MARSU ERP PORTAL</h2>
+    <p class="auth-portal-subtitle mb-0">CENTRALIZED AUTHENTICATION SYSTEM</p>
 </div>
 
 <!-- Authentication Form -->
@@ -35,16 +17,13 @@
 
     <!-- Username or Identifier Field -->
     <div class="mb-3">
-        <div class="d-flex justify-content-between align-items-center mb-1">
-            <label for="username" class="auth-field-label mb-0" id="usernameLabel">STUDENT ID OR USERNAME</label>
-            <span class="small text-muted" id="roleBadge" style="font-size: 0.7rem; color: #ffd700 !important;">Student Access</span>
-        </div>
+        <label for="username" class="auth-field-label">STUDENT ID OR USERNAME</label>
         <div class="auth-input-container">
             <i class="bi bi-person-vcard auth-field-icon" id="usernameIcon"></i>
             <input type="text" name="username" id="username" 
                    class="form-control auth-field-input" 
                    value="<?= e(old('username')) ?>" 
-                   placeholder="Enter Student ID or Username" required autofocus autocomplete="username">
+                   placeholder="Enter ID or Username" required autofocus autocomplete="username">
             <button type="button" class="auth-clear-btn" id="clearUsernameBtn" title="Clear field">
                 <i class="bi bi-x"></i>
             </button>
@@ -92,12 +71,12 @@
 </form>
 
 <!-- Interactive Quick-Fill Demo Switcher for Instructors & Evaluators -->
-<div class="mt-4 pt-2 border-top border-secondary border-opacity-25">
+<div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
     <div class="d-flex justify-content-between align-items-center">
         <button class="btn btn-link btn-sm text-decoration-none text-white-50 p-0" type="button" data-bs-toggle="collapse" data-bs-target="#demoAccounts" style="font-size: 0.75rem;">
             <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Demo Accounts Quick-Select &dtrif;
         </button>
-        <span class="text-white-50 small" style="font-size: 0.7rem;">Click to test roles</span>
+        <span class="text-white-50 small" style="font-size: 0.7rem;">Click to autofill</span>
     </div>
 
     <div class="collapse mt-2" id="demoAccounts">
@@ -109,16 +88,16 @@
 
             <!-- Core Role Chips -->
             <div class="d-flex flex-wrap gap-1 mb-3">
-                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('admin', 'Password123!', 'admin', 'Super Admin')">
+                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('admin', 'Password123!', 'Super Admin')">
                     <i class="bi bi-shield-shaded text-warning"></i> Admin
                 </button>
-                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('dean', 'Password123!', 'admin', 'College Dean')">
+                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('dean', 'Password123!', 'College Dean')">
                     <i class="bi bi-award-fill text-info"></i> Dean
                 </button>
-                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('faculty', 'Password123!', 'faculty', 'Faculty Member')">
+                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('faculty', 'Password123!', 'Faculty Member')">
                     <i class="bi bi-person-workspace text-primary"></i> Faculty
                 </button>
-                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('student', 'Password123!', 'student', 'Student Account')">
+                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('student', 'Password123!', 'Student Account')">
                     <i class="bi bi-mortarboard-fill text-success"></i> Student
                 </button>
             </div>
@@ -150,12 +129,8 @@
 <!-- Interactive Client-side Scripting (Pure Modern ES6+, Zero jQuery) -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const roleTabs = document.querySelectorAll('.auth-role-tab');
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
-    const usernameLabel = document.getElementById('usernameLabel');
-    const usernameIcon = document.getElementById('usernameIcon');
-    const roleBadge = document.getElementById('roleBadge');
     const clearUserBtn = document.getElementById('clearUsernameBtn');
     const toggleEyeBtn = document.getElementById('togglePasswordBtn');
     const toggleEyeIcon = document.getElementById('togglePasswordIcon');
@@ -164,56 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
     const btnSpinner = document.getElementById('btnSpinner');
-
-    // Role Metadata Configuration
-    const roleConfigs = {
-        student: {
-            label: 'STUDENT ID OR USERNAME',
-            placeholder: 'Enter Student ID (e.g. 21-00123 or student)',
-            icon: 'bi-mortarboard-fill',
-            badge: 'Student Access',
-            defaultUser: 'student'
-        },
-        faculty: {
-            label: 'FACULTY ID OR INSTITUTIONAL EMAIL',
-            placeholder: 'e.g. faculty or juan.delacruz@marsu.edu.ph',
-            icon: 'bi-person-workspace',
-            badge: 'Faculty Member',
-            defaultUser: 'faculty'
-        },
-        admin: {
-            label: 'EXECUTIVE / ADMIN USERNAME',
-            placeholder: 'e.g. admin or dean',
-            icon: 'bi-shield-shaded',
-            badge: 'Executive / Dean',
-            defaultUser: 'admin'
-        },
-        lead: {
-            label: 'STUDENT MODULE LEAD USERNAME',
-            placeholder: 'e.g. group1_lead ... group11_lead',
-            icon: 'bi-people-fill',
-            badge: 'Module Group Lead',
-            defaultUser: 'group1_lead'
-        }
-    };
-
-    // Role Tab Switching
-    roleTabs.forEach(tab => {
-        tab.addEventListener('click', function () {
-            roleTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-
-            const role = this.getAttribute('data-role');
-            const cfg = roleConfigs[role];
-            if (cfg) {
-                usernameLabel.textContent = cfg.label;
-                usernameInput.setAttribute('placeholder', cfg.placeholder);
-                usernameIcon.className = `bi ${cfg.icon} auth-field-icon`;
-                roleBadge.textContent = cfg.badge;
-                usernameInput.focus();
-            }
-        });
-    });
 
     // Clear username button visibility
     function updateClearBtn() {
@@ -275,18 +200,12 @@ function showAuthToast(msg) {
 }
 
 // 1-Click Demo Account Populator
-function applyDemoAccount(username, password, roleKey, roleTitle) {
+function applyDemoAccount(username, password, roleTitle) {
     const userInput = document.getElementById('username');
     const passInput = document.getElementById('password');
     if (userInput && passInput) {
         userInput.value = username;
         passInput.value = password;
-
-        // Activate corresponding role tab
-        const targetTab = document.querySelector(`.auth-role-tab[data-role="${roleKey}"]`);
-        if (targetTab) {
-            targetTab.click();
-        }
 
         // Trigger input event to update clear button
         userInput.dispatchEvent(new Event('input'));
@@ -298,9 +217,8 @@ function applyDemoAccount(username, password, roleKey, roleTitle) {
 function onSelectModuleLead(selectEl) {
     const val = selectEl.value;
     if (val) {
-        const text = selectEl.options[selectEl.selectedIndex].text;
         const groupNum = val.replace('_lead', '').replace('group', 'Group ');
-        applyDemoAccount(val, 'Password123!', 'lead', `${groupNum} Lead`);
+        applyDemoAccount(val, 'Password123!', `${groupNum} Lead`);
     }
 }
 </script>

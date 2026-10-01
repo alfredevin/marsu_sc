@@ -1,11 +1,8 @@
-<!-- Centered Portal Seal Emblem -->
-<div class="auth-card-logo-container">
-    <img src="<?= asset('assets/img/marsu.png') ?>" alt="MarSU Seal" class="auth-card-logo-img">
-</div>
-
 <!-- Portal Titles -->
-<h2 class="auth-portal-title">PASSWORD RECOVERY</h2>
-<p class="auth-portal-subtitle">STUDENT &amp; STAFF ASSISTANCE</p>
+<div class="text-center mb-4">
+    <h2 class="auth-portal-title mb-1">PASSWORD RECOVERY</h2>
+    <p class="auth-portal-subtitle mb-0">STUDENT &amp; STAFF ASSISTANCE</p>
+</div>
 
 <!-- Forgot Password Form -->
 <form method="POST" action="<?= url('forgot-password') ?>">

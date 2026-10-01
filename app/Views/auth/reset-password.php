@@ -1,11 +1,8 @@
-<!-- Centered Portal Seal Emblem -->
-<div class="auth-card-logo-container">
-    <img src="<?= asset('assets/img/marsu.png') ?>" alt="MarSU Seal" class="auth-card-logo-img">
-</div>
-
 <!-- Portal Titles -->
-<h2 class="auth-portal-title">NEW PASSWORD</h2>
-<p class="auth-portal-subtitle">SECURE CREDENTIAL UPDATE</p>
+<div class="text-center mb-4">
+    <h2 class="auth-portal-title mb-1">NEW PASSWORD</h2>
+    <p class="auth-portal-subtitle mb-0">SECURE CREDENTIAL UPDATE</p>
+</div>
 
 <!-- Reset Password Form -->
 <form method="POST" action="<?= url('reset-password') ?>">

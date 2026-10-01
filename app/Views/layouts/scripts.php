@@ -22,6 +22,6 @@
 <script src="<?= asset('assets/vendor/chart.js/chart.umd.min.js') ?>"></script>
 
 <!-- MarSU Core Vanilla Client Engine -->
-<script src="<?= asset('assets/js/app.js') ?>"></script>
+<script src="<?= asset('assets/js/app.js') ?>?v=<?= file_exists(dirname(dirname(dirname(__DIR__))) . '/public/assets/js/app.js') ? filemtime(dirname(dirname(dirname(__DIR__))) . '/public/assets/js/app.js') : '2.0' ?>"></script>
 </body>
 </html>

@@ -26,6 +26,6 @@
     <link href="<?= asset('assets/vendor/sweetalert2/sweetalert2.min.css') ?>" rel="stylesheet">
 
     <!-- MarSU Official Brand Theme & Component Styles -->
-    <link href="<?= asset('assets/css/theme.css') ?>" rel="stylesheet">
+    <link href="<?= asset('assets/css/theme.css') ?>?v=<?= file_exists(dirname(dirname(dirname(__DIR__))) . '/public/assets/css/theme.css') ? filemtime(dirname(dirname(dirname(__DIR__))) . '/public/assets/css/theme.css') : '2.0' ?>" rel="stylesheet">
 </head>
 <body class="<?= e($bodyClass ?? '') ?>">

@@ -25,8 +25,8 @@ $moduleNavGroups = ModuleLoader::getNavItems();
         </div>
     </a>
 
-    <!-- Navigation Rail -->
-    <div class="flex-grow-1 overflow-y-auto py-2" style="max-height: calc(100vh - 120px);">
+    <!-- Navigation Rail (Flex Scrolling inside 100vh Fixed Sidebar) -->
+    <div class="sidebar-nav-scroll py-2">
         <!-- Dashboard -->
         <ul class="nav flex-column mb-0">
             <li class="nav-item <?= isActive('dashboard') ?>">
@@ -216,7 +216,7 @@ $moduleNavGroups = ModuleLoader::getNavItems();
     </div>
 
     <!-- Sidebar Bottom Collapse Button -->
-    <div class="p-2 border-top border-secondary-subtle text-center">
+    <div class="sidebar-footer p-2 text-center">
         <button id="sidebarToggle" class="btn btn-sm text-white-50 w-100 py-1" title="Toggle Sidebar">
             <i class="bi bi-chevron-compact-left fs-5"></i>
         </button>

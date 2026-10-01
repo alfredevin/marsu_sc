@@ -4,8 +4,8 @@
 </div>
 
 <!-- Portal Titles -->
-<h2 class="auth-portal-title">eCLEARANCE PORTAL</h2>
-<p class="auth-portal-subtitle">STUDENT &amp; STAFF AUTHENTICATION</p>
+<h2 class="auth-portal-title">MARSU ERP PORTAL</h2>
+<p class="auth-portal-subtitle">CENTRALIZED AUTHENTICATION SYSTEM</p>
 
 <!-- Authentication Form -->
 <form method="POST" action="<?= url('login') ?>" id="loginForm">

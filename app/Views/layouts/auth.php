@@ -11,54 +11,54 @@
                 <img src="<?= asset('assets/img/marsu.png') ?>" alt="MarSU Logo" class="auth-hero-logo-img">
             </div>
             <div>
-                <h1 class="auth-hero-brand-title">MarSU eClearance</h1>
-                <div class="auth-hero-brand-sub">UNIVERSITY PORTAL &bull; CICS</div>
+                <h1 class="auth-hero-brand-title">MarSU Centralized ERP</h1>
+                <div class="auth-hero-brand-sub">COLLEGE OF INFORMATION &amp; COMPUTING SCIENCES</div>
             </div>
         </div>
 
         <!-- Center Value Proposition & Workflow Badges -->
         <div class="auth-hero-content">
             <h2 class="auth-hero-headline">
-                Online student clearance,<br>
-                <span class="auth-hero-gold">effortlessly tracked.</span>
+                Centralized university services,<br>
+                <span class="auth-hero-gold">effortlessly managed.</span>
             </h2>
 
             <div class="auth-hero-features">
-                <!-- Feature 1: Secured Approval Workflow -->
+                <!-- Feature 1: Role-Based Unified Access -->
                 <div class="auth-feature-item">
                     <div class="auth-feature-icon-badge">
-                        <i class="bi bi-shield-check"></i>
+                        <i class="bi bi-shield-lock-fill"></i>
                     </div>
                     <div>
-                        <div class="auth-feature-title">Secured Approval Workflow</div>
+                        <div class="auth-feature-title">Role-Based Unified Access</div>
                         <p class="auth-feature-desc">
-                            Digitized multi-stage clearance system with secure validations from registrar, library, cashier, and other university offices.
+                            Centralized, secure multi-role ERP authentication for students, faculty, department chairs, deans, and administrators.
                         </p>
                     </div>
                 </div>
 
-                <!-- Feature 2: Instant Progress Tracking -->
+                <!-- Feature 2: Real-Time Executive Telemetry -->
                 <div class="auth-feature-item">
                     <div class="auth-feature-icon-badge">
-                        <i class="bi bi-clock-history"></i>
+                        <i class="bi bi-graph-up-arrow"></i>
                     </div>
                     <div>
-                        <div class="auth-feature-title">Instant Progress Tracking</div>
+                        <div class="auth-feature-title">Real-Time Executive Telemetry</div>
                         <p class="auth-feature-desc">
-                            Check the active status of your clearance in real-time. View which department sign-offs are completed or pending.
+                            Live university KPIs, student enrollment analytics, and cross-departmental operations tracking in real-time.
                         </p>
                     </div>
                 </div>
 
-                <!-- Feature 3: Zero Physical Queues -->
+                <!-- Feature 3: 11 Integrated Sub-Modules -->
                 <div class="auth-feature-item">
                     <div class="auth-feature-icon-badge">
-                        <i class="bi bi-check2-all"></i>
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
                     </div>
                     <div>
-                        <div class="auth-feature-title">Zero Physical Queues</div>
+                        <div class="auth-feature-title">11 Integrated Sub-Modules</div>
                         <p class="auth-feature-desc">
-                            Avoid long lines and manual paperwork by processing all clearance requirements and module workflows online.
+                            Seamless interoperability across Student Clearance, 4Ps Monitoring, Health Clinic, Guidance, Welfare, Assets, and Faculty Workload.
                         </p>
                     </div>
                 </div>

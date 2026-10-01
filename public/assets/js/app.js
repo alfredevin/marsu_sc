@@ -11,9 +11,14 @@
   
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-bs-theme', theme);
-    const themeIcon = document.getElementById('theme-icon');
+    const themeIcon = document.getElementById('theme-icon') || document.getElementById('themeIcon');
     if (themeIcon) {
       themeIcon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+      themeIcon.style.color = theme === 'dark' ? '#FFD700' : 'var(--marsu-burgundy)';
+    }
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (themeToggleBtn) {
+      themeToggleBtn.setAttribute('title', theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme');
     }
   }
 
@@ -162,7 +167,196 @@
         const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
         if (bsAlert) bsAlert.close();
       }, 5000);
-    });
+    // 8. Global Interactive Omnisearch & Command Palette (Ctrl + K)
+    const searchContainer = document.getElementById('topbarSearchContainer');
+    const searchInput = document.getElementById('globalOmniSearchInput');
+    const searchDropdown = document.getElementById('globalSearchDropdown');
+    const clearBtn = document.getElementById('globalSearchClearBtn');
+    const dynamicActions = document.getElementById('omniDynamicActions');
+    const queryTermElements = document.querySelectorAll('.omni-query-term');
+    const actionStudents = document.getElementById('omniSearchStudentsAction');
+    const actionEmployees = document.getElementById('omniSearchEmployeesAction');
+    const actionSubjects = document.getElementById('omniSearchSubjectsAction');
+    const noResultsEl = document.getElementById('omniNoResults');
+
+    if (searchInput && searchDropdown) {
+      const items = searchDropdown.querySelectorAll('.omni-nav-list .omni-item, .omni-modules-list .omni-item');
+      let selectedIndex = -1;
+
+      function openDropdown() {
+        searchDropdown.style.display = 'block';
+        if (searchContainer) searchContainer.classList.add('is-focused');
+      }
+
+      function closeDropdown() {
+        searchDropdown.style.display = 'none';
+        if (searchContainer) searchContainer.classList.remove('is-focused');
+        selectedIndex = -1;
+        updateSelection();
+      }
+
+      function filterItems() {
+        const query = searchInput.value.toLowerCase().trim();
+        if (clearBtn) {
+          clearBtn.style.display = query.length > 0 ? 'inline-block' : 'none';
+        }
+
+        let visibleCount = 0;
+
+        if (query.length > 0) {
+          if (dynamicActions) {
+            dynamicActions.style.display = 'block';
+            queryTermElements.forEach(el => el.textContent = `"${query}"`);
+            // Update action links
+            if (actionStudents) actionStudents.href = `${actionStudents.getAttribute('href').split('?')[0]}?q=${encodeURIComponent(query)}`;
+            if (actionEmployees) actionEmployees.href = `${actionEmployees.getAttribute('href').split('?')[0]}?q=${encodeURIComponent(query)}`;
+            if (actionSubjects) actionSubjects.href = `${actionSubjects.getAttribute('href').split('?')[0]}?q=${encodeURIComponent(query)}`;
+            visibleCount += 3;
+          }
+
+          items.forEach(item => {
+            const keywords = (item.getAttribute('data-keywords') || '').toLowerCase();
+            const text = item.textContent.toLowerCase();
+            if (keywords.includes(query) || text.includes(query)) {
+              item.style.display = 'flex';
+              visibleCount++;
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        } else {
+          if (dynamicActions) dynamicActions.style.display = 'none';
+          items.forEach(item => {
+            item.style.display = 'flex';
+            visibleCount++;
+          });
+        }
+
+        if (noResultsEl) {
+          noResultsEl.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        selectedIndex = -1;
+        updateSelection();
+      }
+
+      function getVisibleItems() {
+        const list = [];
+        if (dynamicActions && dynamicActions.style.display !== 'none') {
+          dynamicActions.querySelectorAll('.omni-item').forEach(el => list.push(el));
+        }
+        items.forEach(item => {
+          if (item.style.display !== 'none') list.push(item);
+        });
+        return list;
+      }
+
+      function updateSelection() {
+        const visible = getVisibleItems();
+        visible.forEach((item, idx) => {
+          item.classList.toggle('selected', idx === selectedIndex);
+        });
+      }
+
+      searchInput.addEventListener('focus', function () {
+        openDropdown();
+        filterItems();
+      });
+
+      searchInput.addEventListener('input', function () {
+        openDropdown();
+        filterItems();
+      });
+
+      searchInput.addEventListener('keydown', function (e) {
+        const visible = getVisibleItems();
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (visible.length === 0) return;
+          selectedIndex = (selectedIndex + 1) % visible.length;
+          updateSelection();
+          if (visible[selectedIndex]) visible[selectedIndex].scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (visible.length === 0) return;
+          selectedIndex = (selectedIndex - 1 + visible.length) % visible.length;
+          updateSelection();
+          if (visible[selectedIndex]) visible[selectedIndex].scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (selectedIndex >= 0 && visible[selectedIndex]) {
+            visible[selectedIndex].click();
+          } else if (actionStudents && searchInput.value.trim().length > 0) {
+            actionStudents.click();
+          }
+        } else if (e.key === 'Escape') {
+          closeDropdown();
+          searchInput.blur();
+        }
+      });
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          searchInput.value = '';
+          searchInput.focus();
+          filterItems();
+        });
+      }
+
+      document.addEventListener('click', function (e) {
+        if (searchContainer && !searchContainer.contains(e.target)) {
+          closeDropdown();
+        }
+      });
+
+      // Global Shortcut (Ctrl + K or /)
+      document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        } else if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        }
+      });
+    }
+
+    // 9. Notifications Center Mark All As Read
+    const markAllReadBtn = document.getElementById('markAllReadBtn');
+    const notifBadgeDot = document.getElementById('notifBadgeDot');
+    const notifCountBadge = document.getElementById('notifCountBadge');
+    const NOTIF_STORAGE_KEY = 'marsu_notifs_read_v1';
+
+    if (localStorage.getItem(NOTIF_STORAGE_KEY) === 'true') {
+      if (notifBadgeDot) notifBadgeDot.style.display = 'none';
+      if (notifCountBadge) {
+        notifCountBadge.textContent = '0 New';
+        notifCountBadge.className = 'badge bg-secondary-subtle text-muted';
+      }
+    }
+
+    if (markAllReadBtn) {
+      markAllReadBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (notifBadgeDot) {
+          notifBadgeDot.style.transition = 'all 0.3s ease';
+          notifBadgeDot.style.opacity = '0';
+          setTimeout(() => notifBadgeDot.style.display = 'none', 300);
+        }
+        if (notifCountBadge) {
+          notifCountBadge.textContent = '0 New';
+          notifCountBadge.className = 'badge bg-secondary-subtle text-muted';
+        }
+        document.querySelectorAll('.notif-item').forEach(item => {
+          item.style.opacity = '0.65';
+        });
+        localStorage.setItem(NOTIF_STORAGE_KEY, 'true');
+      });
+    }
 
   });
 

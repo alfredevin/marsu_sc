@@ -1,46 +1,25 @@
 {
-    "name": "Integrated Student Housing & Accommodation (ISHAMIS)",
+    "name": "Accredited Boarding House Management & Directory",
     "slug": "housing",
     "version": "1.0.0",
-    "description": "Integrated Student Housing and Accommodation Management Information System (ISHAMIS) - Accredited boarding house directory, landlord profiles, room and bedspace vacancies, student resident occupancy, and safety inspection ratings.",
-    "author": "MarSU CICS Capstone Development Group",
+    "description": "University-accredited off-campus boarding house directory, landlord profiles, occupancy rates, and safety inspection ratings.",
+    "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Housing (ISHAMIS)",
+    "section": "Student Services",
     "menu": {
         "icon": "bi-house-check-fill",
         "items": [
             {
-                "label": "ISHAMIS Dashboard",
+                "label": "Overview & Records",
                 "route": "housing",
-                "permission": "housing.view"
-            },
-            {
-                "label": "Accredited Houses",
-                "route": "housing/boarding-houses",
-                "permission": "housing.view"
-            },
-            {
-                "label": "Room & Bed Vacancies",
-                "route": "housing/rooms",
-                "permission": "housing.view"
-            },
-            {
-                "label": "Student Residents",
-                "route": "housing/accommodations",
-                "permission": "housing.view"
-            },
-            {
-                "label": "Safety Inspections",
-                "route": "housing/inspections",
                 "permission": "housing.view"
             }
         ]
     },
     "permissions": {
-        "housing.view": "View ISHAMIS Directory & Bed Space Vacancies",
+        "housing.view": "Search Boarding Houses & Bed Space Vacancies",
         "housing.register": "Register and Update Boarding House Properties",
-        "housing.book": "Reserve and Manage Student Room Accommodations",
         "housing.inspect": "Conduct Safety, Fire & Sanitation Inspections",
-        "housing.export": "Export Housing and Accreditation Reports"
+        "housing.export": "Export Accreditation Inspection Reports"
     }
 }

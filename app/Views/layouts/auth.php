@@ -157,23 +157,27 @@
             </div>
         </div>
 
-        <!-- Bottom University System & Interactive Carousel Tracker -->
-        <div class="auth-hero-footer">
-            <span>Marinduque State University - CICS</span>
-            <div class="auth-slider-container">
-                <button type="button" class="auth-slider-arrow-btn" id="heroPrevBtn" title="Previous Feature" aria-label="Previous">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-                <div class="auth-slider-dots-group">
-                    <button type="button" class="auth-slider-dot-btn active" data-slide="0" title="Centralized ERP" aria-label="Slide 1"></button>
-                    <button type="button" class="auth-slider-dot-btn" data-slide="1" title="Online Clearance" aria-label="Slide 2"></button>
-                    <button type="button" class="auth-slider-dot-btn" data-slide="2" title="Security &amp; Compliance" aria-label="Slide 3"></button>
+        <!-- Bottom Line Track with Concentric Radar Beacon & University Labels -->
+        <div class="auth-hero-footer-wrapper">
+            <div class="auth-hero-track-container" id="heroTrackContainer" title="Click along the line to explore features">
+                <div class="auth-hero-horizontal-line"></div>
+                <!-- Interactive Stepping Hitboxes -->
+                <div class="auth-track-step" data-slide="0" style="left: 25%;" title="Feature 1: Unified Access"></div>
+                <div class="auth-track-step" data-slide="1" style="left: 55%;" title="Feature 2: Online Clearance"></div>
+                <div class="auth-track-step" data-slide="2" style="left: 82%;" title="Feature 3: Compliance &amp; Security"></div>
+                
+                <!-- Glowing Concentric Radar Beacon (Glides smoothly along the line) -->
+                <div class="auth-hero-radar-beacon" id="heroRadarBeacon" style="left: 25%;">
+                    <div class="radar-outer-ring"></div>
+                    <div class="radar-inner-ring"></div>
+                    <div class="radar-center-dot"></div>
                 </div>
-                <button type="button" class="auth-slider-arrow-btn" id="heroNextBtn" title="Next Feature" aria-label="Next">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
             </div>
-            <span>PANFILO M. MANGUERA SR. RD. &bull; 2026</span>
+
+            <div class="auth-hero-footer-labels">
+                <span class="auth-hero-footer-left">Marinduque State University – CICS System</span>
+                <span class="auth-hero-footer-right">SANTA CRUZ, MQE &bull; Portal 2026</span>
+            </div>
         </div>
     </div>
 
@@ -202,9 +206,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const slides = document.querySelectorAll('.auth-carousel-slide');
-    const dots = document.querySelectorAll('.auth-slider-dot-btn');
-    const prevBtn = document.getElementById('heroPrevBtn');
-    const nextBtn = document.getElementById('heroNextBtn');
+    const beacon = document.getElementById('heroRadarBeacon');
+    const steps = document.querySelectorAll('.auth-track-step');
+    const positions = ['25%', '55%', '82%'];
     let currentSlide = 0;
     let autoSlideTimer = null;
 
@@ -212,27 +216,36 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!slides.length) return;
         currentSlide = (index + slides.length) % slides.length;
         slides.forEach((s, idx) => s.classList.toggle('active', idx === currentSlide));
-        dots.forEach((d, idx) => d.classList.toggle('active', idx === currentSlide));
+        if (beacon && positions[currentSlide]) {
+            beacon.style.left = positions[currentSlide];
+        }
     }
 
-    dots.forEach((dot) => {
-        dot.addEventListener('click', function () {
+    steps.forEach((step) => {
+        step.addEventListener('click', function (e) {
+            e.stopPropagation();
             const idx = parseInt(this.getAttribute('data-slide'), 10);
             showSlide(idx);
             resetTimer();
         });
     });
 
-    if (prevBtn) {
-        prevBtn.addEventListener('click', function () {
-            showSlide(currentSlide - 1);
+    if (beacon) {
+        beacon.addEventListener('click', function (e) {
+            e.stopPropagation();
+            showSlide(currentSlide + 1);
             resetTimer();
         });
     }
 
-    if (nextBtn) {
-        nextBtn.addEventListener('click', function () {
-            showSlide(currentSlide + 1);
+    const track = document.getElementById('heroTrackContainer');
+    if (track) {
+        track.addEventListener('click', function (e) {
+            const rect = track.getBoundingClientRect();
+            const clickRatio = (e.clientX - rect.left) / rect.width;
+            if (clickRatio < 0.35) showSlide(0);
+            else if (clickRatio < 0.65) showSlide(1);
+            else showSlide(2);
             resetTimer();
         });
     }

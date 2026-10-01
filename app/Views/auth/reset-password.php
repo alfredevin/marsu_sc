@@ -1,30 +1,43 @@
-<div class="mb-4">
-    <h2 class="h3 font-weight-bold text-marsu-burgundy mb-1">Set New Password</h2>
-    <p class="text-muted small">Choose a strong password with at least 6 characters.</p>
+<!-- Centered Portal Seal Emblem -->
+<div class="auth-card-logo-container">
+    <img src="<?= asset('assets/img/marsu.png') ?>" alt="MarSU Seal" class="auth-card-logo-img">
 </div>
 
+<!-- Portal Titles -->
+<h2 class="auth-portal-title">NEW PASSWORD</h2>
+<p class="auth-portal-subtitle">SECURE CREDENTIAL UPDATE</p>
+
+<!-- Reset Password Form -->
 <form method="POST" action="<?= url('reset-password') ?>">
     <?= csrf_field() ?>
     <input type="hidden" name="token" value="<?= e($token ?? '') ?>">
 
     <div class="mb-3">
-        <label for="email" class="form-label small font-weight-bold text-muted">Email Address</label>
-        <input type="email" name="email" id="email" class="form-control" value="<?= e($email ?? '') ?>" required readonly>
+        <label for="email" class="auth-field-label">CONFIRMED EMAIL</label>
+        <div class="auth-input-container">
+            <i class="bi bi-envelope-fill auth-field-icon"></i>
+            <input type="email" name="email" id="email" class="form-control auth-field-input" value="<?= e($email ?? '') ?>" required readonly>
+        </div>
     </div>
 
     <div class="mb-3">
-        <label for="password" class="form-label small font-weight-bold text-muted">New Password</label>
-        <input type="password" name="password" id="password" class="form-control" placeholder="Minimum 6 characters" required autofocus>
+        <label for="password" class="auth-field-label">NEW PASSWORD</label>
+        <div class="auth-input-container">
+            <i class="bi bi-lock-fill auth-field-icon"></i>
+            <input type="password" name="password" id="password" class="form-control auth-field-input" placeholder="Minimum 6 characters" required autofocus>
+        </div>
     </div>
 
     <div class="mb-4">
-        <label for="password_confirmation" class="form-label small font-weight-bold text-muted">Confirm New Password</label>
-        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Re-type new password" required>
+        <label for="password_confirmation" class="auth-field-label">CONFIRM NEW PASSWORD</label>
+        <div class="auth-input-container">
+            <i class="bi bi-shield-lock-fill auth-field-icon"></i>
+            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control auth-field-input" placeholder="Re-type new password" required>
+        </div>
     </div>
 
-    <div class="d-grid mb-3">
-        <button type="submit" class="btn btn-marsu btn-lg py-2 fs-6">
-            <i class="bi bi-shield-check me-2"></i>Update Password & Sign In
-        </button>
-    </div>
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-auth-portal">
+        UPDATE PASSWORD &amp; SIGN IN <i class="bi bi-shield-check ms-2"></i>
+    </button>
 </form>

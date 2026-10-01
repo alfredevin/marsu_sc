@@ -1,40 +1,101 @@
 <?php
-\Core\View::partial('header', ['title' => $title ?? 'Login', 'bodyClass' => 'bg-light']);
+\Core\View::partial('header', ['title' => $title ?? 'Login', 'bodyClass' => 'auth-page-body']);
 ?>
 
-<div class="auth-wrapper">
-    <!-- MarSU Brand Side (Burgundy & Gold) -->
-    <div class="auth-brand-side">
-        <img src="<?= asset('assets/img/marsu.png') ?>" alt="MarSU Official Seal" class="auth-brand-logo">
-        <h1 class="h3 font-weight-bold text-white mb-1">Marinduque State University</h1>
-        <h5 class="text-gold font-weight-normal mb-3" style="color: var(--marsu-gold);">College of Information and Computing Sciences</h5>
-        
-        <p class="auth-brand-tagline">
-            "Empowering Minds, Transforming Lives, and Advancing Opportunities with HEART"
-        </p>
+<div class="auth-split-layout">
+    <!-- Left Hero Column with MarSU Campus Background & Value Highlights -->
+    <div class="auth-hero-column">
+        <!-- Top University Branding -->
+        <div class="auth-hero-header">
+            <div class="auth-hero-logo-badge">
+                <img src="<?= asset('assets/img/marsu.png') ?>" alt="MarSU Logo" class="auth-hero-logo-img">
+            </div>
+            <div>
+                <h1 class="auth-hero-brand-title">MarSU eClearance</h1>
+                <div class="auth-hero-brand-sub">UNIVERSITY PORTAL &bull; CICS</div>
+            </div>
+        </div>
 
-        <div class="mt-4 pt-3 border-top border-white-50 text-white-50 small">
-            Panfilo M. Manguera Sr. Rd., Brgy. Tanza, Boac, Marinduque 4900
+        <!-- Center Value Proposition & Workflow Badges -->
+        <div class="auth-hero-content">
+            <h2 class="auth-hero-headline">
+                Online student clearance,<br>
+                <span class="auth-hero-gold">effortlessly tracked.</span>
+            </h2>
+
+            <div class="auth-hero-features">
+                <!-- Feature 1: Secured Approval Workflow -->
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon-badge">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <div>
+                        <div class="auth-feature-title">Secured Approval Workflow</div>
+                        <p class="auth-feature-desc">
+                            Digitized multi-stage clearance system with secure validations from registrar, library, cashier, and other university offices.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Instant Progress Tracking -->
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon-badge">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div>
+                        <div class="auth-feature-title">Instant Progress Tracking</div>
+                        <p class="auth-feature-desc">
+                            Check the active status of your clearance in real-time. View which department sign-offs are completed or pending.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Zero Physical Queues -->
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon-badge">
+                        <i class="bi bi-check2-all"></i>
+                    </div>
+                    <div>
+                        <div class="auth-feature-title">Zero Physical Queues</div>
+                        <p class="auth-feature-desc">
+                            Avoid long lines and manual paperwork by processing all clearance requirements and module workflows online.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom University System & Campus Tracker -->
+        <div class="auth-hero-footer">
+            <span>Marinduque State University - CICS System</span>
+            <div class="auth-slider-track">
+                <div class="auth-slider-dot">
+                    <div class="auth-slider-dot-inner"></div>
+                </div>
+            </div>
+            <span>SANTA CRUZ, MQE &bull; Portal 2026</span>
         </div>
     </div>
 
-    <!-- Interactive Form Side -->
-    <div class="auth-form-side">
-        <!-- Flash Alerts -->
-        <?php if (\Core\Session::hasFlash('error')): ?>
-            <div class="alert alert-danger alert-dismissible fade show mb-4 small" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i><?= e(\Core\Session::getFlash('error')) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
-        <?php if (\Core\Session::hasFlash('success')): ?>
-            <div class="alert alert-success alert-dismissible fade show mb-4 small" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i><?= e(\Core\Session::getFlash('success')) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
+    <!-- Right Interactive Card Column -->
+    <div class="auth-card-column">
+        <div class="auth-glass-card">
+            <!-- Flash Alerts -->
+            <?php if (\Core\Session::hasFlash('error')): ?>
+                <div class="alert alert-danger alert-dismissible fade show mb-4 small bg-danger bg-opacity-25 border-danger text-white" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i><?= e(\Core\Session::getFlash('error')) ?>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+            <?php if (\Core\Session::hasFlash('success')): ?>
+                <div class="alert alert-success alert-dismissible fade show mb-4 small bg-success bg-opacity-25 border-success text-white" role="alert">
+                    <i class="bi bi-check-circle-fill me-2 text-success"></i><?= e(\Core\Session::getFlash('success')) ?>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
 
-        <?= $content ?>
+            <?= $content ?>
+        </div>
     </div>
 </div>
 

@@ -183,77 +183,85 @@ try {
     $stmtSem->execute([$ayCurrentId, '2', '2nd Semester 2026-2027', 0, $now]);
     $stmtSem->execute([$ayCurrentId, 'summer', 'Summer 2027', 0, $now]);
 
-    // Colleges and Departments
+    // Authentic MarSU Departments based on Student Programs & Employee Groups
     $departmentsData = [
-        ['code' => 'CICS-DIS', 'name' => 'Department of Information Systems', 'type' => 'department', 'desc' => 'College of Information and Computing Sciences', 'head' => 'Prof. Marites Mercene'],
-        ['code' => 'CICS-DCS', 'name' => 'Department of Computer Science', 'type' => 'department', 'desc' => 'College of Information and Computing Sciences', 'head' => 'Prof. Danilo Mabute'],
-        ['code' => 'CICS-DIT', 'name' => 'Department of Information Technology', 'type' => 'department', 'desc' => 'College of Information and Computing Sciences', 'head' => 'Prof. Cynthia Paras'],
-        ['code' => 'COE-DCE',  'name' => 'Department of Civil Engineering', 'type' => 'department', 'desc' => 'College of Engineering', 'head' => 'Engr. Rogelio Lacierda'],
-        ['code' => 'COE-DEE',  'name' => 'Department of Electrical Engineering', 'type' => 'department', 'desc' => 'College of Engineering', 'head' => 'Engr. Carlos Torres'],
-        ['code' => 'CED-DSE',  'name' => 'Department of Secondary Education', 'type' => 'department', 'desc' => 'College of Education', 'head' => 'Dr. Rowena Manalo'],
-        ['code' => 'CED-DEEd', 'name' => 'Department of Elementary Education', 'type' => 'department', 'desc' => 'College of Education', 'head' => 'Dr. Elena Soberano'],
-        ['code' => 'CAS-DLH',  'name' => 'Department of Languages and Humanities', 'type' => 'department', 'desc' => 'College of Arts and Sciences', 'head' => 'Prof. Carmelita Santos'],
-        ['code' => 'CAS-DNS',  'name' => 'Department of Natural Sciences', 'type' => 'department', 'desc' => 'College of Arts and Sciences', 'head' => 'Prof. Jaime Hernandez'],
-        ['code' => 'CBA-DBA',  'name' => 'Department of Business Administration', 'type' => 'department', 'desc' => 'College of Business and Accountancy', 'head' => 'Prof. Corazon Flores'],
-        ['code' => 'CBA-DA',   'name' => 'Department of Accountancy', 'type' => 'department', 'desc' => 'College of Business and Accountancy', 'head' => 'Prof. Fernando Diaz'],
-        ['code' => 'CA-DAT',   'name' => 'Department of Agricultural Technology', 'type' => 'department', 'desc' => 'College of Agriculture', 'head' => 'Prof. Manuel Ramos'],
-        ['code' => 'ADMIN-REG','name' => 'Office of the University Registrar', 'type' => 'office', 'desc' => 'Central Student Records', 'head' => 'Rowena Manalo'],
-        ['code' => 'ADMIN-SAS','name' => 'Office of Student Affairs and Services (OSAS)', 'type' => 'office', 'desc' => 'Student Welfare & Development', 'head' => 'Ernesto Malabanan'],
-        ['code' => 'ADMIN-GCO','name' => 'Guidance and Counseling Center', 'type' => 'office', 'desc' => 'Mental Health & Guidance', 'head' => 'Elena Soberano'],
-        ['code' => 'ADMIN-MED','name' => 'University Health and Medical Services', 'type' => 'office', 'desc' => 'University Infirmary & Clinic', 'head' => 'Dr. Carlos Montenegro'],
+        6 => [
+            'code' => 'DICT',
+            'name' => 'Department of Information and Communications Technology',
+            'type' => 'department',
+            'desc' => 'Department administering the Bachelor of Science in Information Systems (BSIS) program.',
+            'head' => 'Carlo Magno Malvar Castro'
+        ],
+        7 => [
+            'code' => 'DTHM',
+            'name' => 'Department of Tourism and Hospitality Management',
+            'type' => 'department',
+            'desc' => 'Department administering the Bachelor of Science in Tourism Management (BSTM) program.',
+            'head' => 'Hilarion Redugerio Elegado'
+        ],
+        8 => [
+            'code' => 'DPSS',
+            'name' => 'Department of Political and Social Sciences',
+            'type' => 'department',
+            'desc' => 'Department administering the Bachelor of Arts in Political Science (BAPoS) program.',
+            'head' => 'Loriebenn Bañez Madriño'
+        ],
+        9 => [
+            'code' => 'DETE',
+            'name' => 'Department of Elementary Teacher Education',
+            'type' => 'department',
+            'desc' => 'Department administering the Bachelor of Elementary Education (BEED) program.',
+            'head' => 'Annalyn Jawili Decena'
+        ],
+        10 => [
+            'code' => 'ADMIN',
+            'name' => 'Administrative and Support Services Division',
+            'type' => 'office',
+            'desc' => 'Campus Executive Administration, Registrar, Library, Facilities, and Technical Support.',
+            'head' => 'Joefel Nabos Pabeloña'
+        ]
     ];
 
-    $stmtDept = $pdo->prepare("INSERT INTO departments (code, name, type, description, head_name, created_at) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmtDept = $pdo->prepare("INSERT INTO departments (id, code, name, type, description, head_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $deptMap = [];
-    foreach ($departmentsData as $d) {
-        $stmtDept->execute([$d['code'], $d['name'], $d['type'], $d['desc'], $d['head'], $now]);
-        $deptMap[$d['code']] = (int)$pdo->lastInsertId();
+    foreach ($departmentsData as $dId => $d) {
+        $stmtDept->execute([$dId, $d['code'], $d['name'], $d['type'], $d['desc'], $d['head'], $now]);
+        $deptMap[$d['code']] = $dId;
     }
 
-    // Degree Programs
+    // Degree Programs based on students info
     $programsData = [
-        ['code' => 'BSIS', 'name' => 'Bachelor of Science in Information Systems', 'dept' => 'CICS-DIS', 'years' => 4],
-        ['code' => 'BSCS', 'name' => 'Bachelor of Science in Computer Science', 'dept' => 'CICS-DCS', 'years' => 4],
-        ['code' => 'ACT',  'name' => 'Associate in Computer Technology', 'dept' => 'CICS-DIT', 'years' => 2],
-        ['code' => 'BSIT', 'name' => 'Bachelor of Science in Information Technology', 'dept' => 'CICS-DIT', 'years' => 4],
-        ['code' => 'BSCE', 'name' => 'Bachelor of Science in Civil Engineering', 'dept' => 'COE-DCE', 'years' => 4],
-        ['code' => 'BSEd', 'name' => 'Bachelor of Secondary Education', 'dept' => 'CED-DSE', 'years' => 4],
-        ['code' => 'BSBA', 'name' => 'Bachelor of Science in Business Administration', 'dept' => 'CBA-DBA', 'years' => 4],
+        ['code' => 'BSIS',  'name' => 'Bachelor of Science in Information Systems', 'dept' => 6, 'years' => 4],
+        ['code' => 'BSTM',  'name' => 'BS in Tourism Management',                   'dept' => 7, 'years' => 4],
+        ['code' => 'BAPoS', 'name' => 'BA in Political Science',                     'dept' => 8, 'years' => 4],
+        ['code' => 'BEED',  'name' => 'Bachelor of Elementary Education',            'dept' => 9, 'years' => 4],
     ];
 
     $stmtProg = $pdo->prepare("INSERT INTO programs (department_id, code, name, major, years, status, created_at) VALUES (?, ?, ?, NULL, ?, 'active', ?)");
     $progMap = [];
     foreach ($programsData as $p) {
-        $stmtProg->execute([$deptMap[$p['dept']], $p['code'], $p['name'], $p['years'], $now]);
+        $stmtProg->execute([$p['dept'], $p['code'], $p['name'], $p['years'], $now]);
         $progMap[$p['code']] = (int)$pdo->lastInsertId();
     }
 
-    // Class Sections
+    // Class Sections (Exact 16 sections matching students.sql)
     $sectionsData = [
-        ['name' => 'BSIS 1A', 'prog' => 'BSIS', 'year' => 1],
-        ['name' => 'BSIS 1B', 'prog' => 'BSIS', 'year' => 1],
-        ['name' => 'BSIS 2A', 'prog' => 'BSIS', 'year' => 2],
-        ['name' => 'BSIS 2B', 'prog' => 'BSIS', 'year' => 2],
-        ['name' => 'BSIS 3A', 'prog' => 'BSIS', 'year' => 3],
-        ['name' => 'BSIS 3B', 'prog' => 'BSIS', 'year' => 3],
-        ['name' => 'BSIS 4A', 'prog' => 'BSIS', 'year' => 4],
-        ['name' => 'BSIS 4B', 'prog' => 'BSIS', 'year' => 4],
-        ['name' => 'BSCS 1A', 'prog' => 'BSCS', 'year' => 1],
-        ['name' => 'BSCS 2A', 'prog' => 'BSCS', 'year' => 2],
-        ['name' => 'BSCS 3A', 'prog' => 'BSCS', 'year' => 3],
-        ['name' => 'BSCS 4A', 'prog' => 'BSCS', 'year' => 4],
-        ['name' => 'ACT 1A',  'prog' => 'ACT',  'year' => 1],
-        ['name' => 'ACT 2A',  'prog' => 'ACT',  'year' => 2],
-        ['name' => 'BSIT 1A', 'prog' => 'BSIT', 'year' => 1],
-        ['name' => 'BSIT 2A', 'prog' => 'BSIT', 'year' => 2],
-        ['name' => 'BSIT 3A', 'prog' => 'BSIT', 'year' => 3],
-        ['name' => 'BSCE 1A', 'prog' => 'BSCE', 'year' => 1],
-        ['name' => 'BSCE 2A', 'prog' => 'BSCE', 'year' => 2],
-        ['name' => 'BSCE 3A', 'prog' => 'BSCE', 'year' => 3],
-        ['name' => 'BSEd 1A', 'prog' => 'BSEd', 'year' => 1],
-        ['name' => 'BSEd 2A', 'prog' => 'BSEd', 'year' => 2],
-        ['name' => 'BSBA 1A', 'prog' => 'BSBA', 'year' => 1],
-        ['name' => 'BSBA 2A', 'prog' => 'BSBA', 'year' => 2],
+        ['name' => 'BSTM 1st Year', 'prog' => 'BSTM', 'year' => 1],
+        ['name' => 'BSTM 2nd Year', 'prog' => 'BSTM', 'year' => 2],
+        ['name' => 'BSTM 3rd Year', 'prog' => 'BSTM', 'year' => 3],
+        ['name' => 'BSTM 4th Year', 'prog' => 'BSTM', 'year' => 4],
+        ['name' => 'BSIS 1st Year', 'prog' => 'BSIS', 'year' => 1],
+        ['name' => 'BSIS 2nd Year', 'prog' => 'BSIS', 'year' => 2],
+        ['name' => 'BSIS 3rd Year', 'prog' => 'BSIS', 'year' => 3],
+        ['name' => 'BSIS 4th Year', 'prog' => 'BSIS', 'year' => 4],
+        ['name' => 'BAPoS 1st Year', 'prog' => 'BAPoS', 'year' => 1],
+        ['name' => 'BAPoS 2nd Year', 'prog' => 'BAPoS', 'year' => 2],
+        ['name' => 'BAPoS 3rd Year', 'prog' => 'BAPoS', 'year' => 3],
+        ['name' => 'BAPoS 4th Year', 'prog' => 'BAPoS', 'year' => 4],
+        ['name' => 'BEED 1st Year', 'prog' => 'BEED', 'year' => 1],
+        ['name' => 'BEED 2nd Year', 'prog' => 'BEED', 'year' => 2],
+        ['name' => 'BEED 3rd Year', 'prog' => 'BEED', 'year' => 3],
+        ['name' => 'BEED 4th Year', 'prog' => 'BEED', 'year' => 4],
     ];
 
     $stmtSec = $pdo->prepare("INSERT INTO sections (program_id, academic_year_id, year_level, name, created_at) VALUES (?, ?, ?, ?, ?)");
@@ -263,56 +271,31 @@ try {
         $secMap[$s['name']] = (int)$pdo->lastInsertId();
     }
 
-    // 35+ Curriculum Course Subjects
-    $subjectsData = [
-        ['code' => 'CC101', 'title' => 'Introduction to Computing', 'lec' => 2, 'lab' => 3, 'prog' => 'BSIS'],
-        ['code' => 'CC102', 'title' => 'Fundamentals of Programming', 'lec' => 2, 'lab' => 3, 'prog' => 'BSIS'],
-        ['code' => 'CC103', 'title' => 'Intermediate Programming', 'lec' => 2, 'lab' => 3, 'prog' => 'BSIS'],
-        ['code' => 'CC104', 'title' => 'Data Structures and Algorithms', 'lec' => 2, 'lab' => 3, 'prog' => 'BSIS'],
-        ['code' => 'IS201', 'title' => 'Information Management', 'lec' => 2, 'lab' => 3, 'prog' => 'BSIS'],
-        ['code' => 'IS202', 'title' => 'Systems Analysis and Design', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'IS203', 'title' => 'Enterprise Architecture', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'IS204', 'title' => 'Business Process Modeling & Design', 'lec' => 2, 'lab' => 3, 'prog' => 'BSIS'],
-        ['code' => 'IS301', 'title' => 'IS Strategy, Management & Acquisition', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'IS302', 'title' => 'Enterprise Systems & Cloud ERP', 'lec' => 2, 'lab' => 3, 'prog' => 'BSIS'],
-        ['code' => 'IS303', 'title' => 'Evaluation of Business Performance & Analytics', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'IS304', 'title' => 'IT Audit and Internal Controls', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'IS401', 'title' => 'IS Project Management & Quality Assurance', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'IS402', 'title' => 'Capstone Project 1 (Research & Design)', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'IS403', 'title' => 'Capstone Project 2 (Implementation & Defense)', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'CS201', 'title' => 'Discrete Structures', 'lec' => 3, 'lab' => 0, 'prog' => 'BSCS'],
-        ['code' => 'CS202', 'title' => 'Object-Oriented Programming', 'lec' => 2, 'lab' => 3, 'prog' => 'BSCS'],
-        ['code' => 'CS301', 'title' => 'Automata Theory and Formal Languages', 'lec' => 3, 'lab' => 0, 'prog' => 'BSCS'],
-        ['code' => 'CS302', 'title' => 'Software Engineering', 'lec' => 2, 'lab' => 3, 'prog' => 'BSCS'],
-        ['code' => 'CS303', 'title' => 'Operating Systems & Architecture', 'lec' => 2, 'lab' => 3, 'prog' => 'BSCS'],
-        ['code' => 'CS304', 'title' => 'Database Systems & SQL Optimization', 'lec' => 2, 'lab' => 3, 'prog' => 'BSCS'],
-        ['code' => 'CS401', 'title' => 'Artificial Intelligence & Machine Learning', 'lec' => 2, 'lab' => 3, 'prog' => 'BSCS'],
-        ['code' => 'CS402', 'title' => 'Network and Information Security', 'lec' => 2, 'lab' => 3, 'prog' => 'BSCS'],
-        ['code' => 'CS403', 'title' => 'Design & Implementation of Compilers', 'lec' => 3, 'lab' => 0, 'prog' => 'BSCS'],
-        ['code' => 'ACT101', 'title' => 'Keyboarding and Document Processing', 'lec' => 1, 'lab' => 3, 'prog' => 'ACT'],
-        ['code' => 'ACT102', 'title' => 'Computer Systems Servicing & Repair', 'lec' => 1, 'lab' => 3, 'prog' => 'ACT'],
-        ['code' => 'GE101', 'title' => 'Purposive Communication', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'GE102', 'title' => 'Understanding the Self', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'GE103', 'title' => 'Readings in Philippine History', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'GE104', 'title' => 'Mathematics in the Modern World', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'GE105', 'title' => 'The Contemporary World', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'GE106', 'title' => 'Art Appreciation', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'GE107', 'title' => 'Ethics', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'GE108', 'title' => 'The Life, Works, and Writings of Jose Rizal', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'PE101', 'title' => 'Physical Fitness and Gymnastics', 'lec' => 2, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'NSTP1', 'title' => 'National Service Training Program 1', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-        ['code' => 'NSTP2', 'title' => 'National Service Training Program 2', 'lec' => 3, 'lab' => 0, 'prog' => 'BSIS'],
-    ];
+    // 80 Curriculum Course Subjects (Imported from data/subjects.sql)
+    $subjSql = file_get_contents(__DIR__ . '/../data/subjects.sql');
+    $sPattern = "/\((\d+),\s*'([^']*)',\s*'([^']*)',\s*'([^']*)',\s*'([^']*)',\s*([0-9.]+),\s*([0-9.]+),\s*'([^']*)',\s*(?:'([^']*)'|NULL),\s*(?:'([^']*)'|NULL),\s*(?:'([^']*)'|NULL)/";
+    preg_match_all($sPattern, $subjSql, $subjMatches, PREG_SET_ORDER);
 
-    $stmtSub = $pdo->prepare("INSERT INTO subjects (program_id, code, title, lecture_hours, lab_hours, units, status, created_at) VALUES (?, ?, ?, ?, ?, ?, 'active', ?)");
-    foreach ($subjectsData as $sub) {
-        $units = $sub['lec'] + ($sub['lab'] > 0 ? 1 : 0);
+    $stmtSub = $pdo->prepare("INSERT INTO subjects (id, program_id, code, title, lecture_hours, lab_hours, units, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?)");
+    $bsisProgId = $progMap['BSIS'];
+    $subjectsDataCount = 0;
+    foreach ($subjMatches as $sub) {
+        $sId       = (int)$sub[1];
+        $code      = trim($sub[2]);
+        $title     = trim($sub[3]);
+        $category  = trim($sub[5]);
+        $units     = (float)$sub[6];
+        $reqHours  = (float)$sub[7];
+        $lecHours  = ($category === 'laboratory') ? 2.0 : $reqHours;
+        $labHours  = ($category === 'laboratory') ? 3.0 : 0.0;
+
         $stmtSub->execute([
-            $progMap[$sub['prog']], $sub['code'], $sub['title'], $sub['lec'], $sub['lab'], $units, $now
+            $sId, $bsisProgId, $code, $title, $lecHours, $labHours, $units, $now
         ]);
+        $subjectsDataCount++;
     }
 
-    // Buildings & 20+ Rooms
+    // Buildings & Rooms
     $buildingsData = [
         ['code' => 'CICS-BLDG', 'name' => 'College of Information & Computing Sciences Building', 'loc' => 'North Campus Complex'],
         ['code' => 'ENG-BLDG',  'name' => 'College of Engineering Building', 'loc' => 'East Campus Engineering Grounds'],
@@ -328,29 +311,13 @@ try {
     }
 
     $roomsData = [
-        // CICS
         ['number' => 'CICS-LAB-1', 'name' => 'Software Engineering Computer Lab 1', 'type' => 'laboratory', 'bldg' => 'CICS-BLDG', 'cap' => 45],
         ['number' => 'CICS-LAB-2', 'name' => 'Database & Networking Lab 2', 'type' => 'laboratory', 'bldg' => 'CICS-BLDG', 'cap' => 45],
         ['number' => 'CICS-LAB-3', 'name' => 'Multimedia & Web Technologies Lab 3', 'type' => 'laboratory', 'bldg' => 'CICS-BLDG', 'cap' => 40],
         ['number' => 'CICS-201',   'name' => 'Lecture Room 201', 'type' => 'lecture', 'bldg' => 'CICS-BLDG', 'cap' => 50],
         ['number' => 'CICS-202',   'name' => 'Lecture Room 202', 'type' => 'lecture', 'bldg' => 'CICS-BLDG', 'cap' => 50],
-        ['number' => 'CICS-203',   'name' => 'Lecture Room 203', 'type' => 'lecture', 'bldg' => 'CICS-BLDG', 'cap' => 50],
         ['number' => 'CICS-AVR',   'name' => 'CICS Audio-Visual Multimedia Room', 'type' => 'auditorium', 'bldg' => 'CICS-BLDG', 'cap' => 120],
         ['number' => 'CICS-FL',    'name' => 'CICS Faculty Consultation Lounge', 'type' => 'office', 'bldg' => 'CICS-BLDG', 'cap' => 30],
-        // ENG
-        ['number' => 'ENG-LAB-1',  'name' => 'Materials & Surveying Testing Lab', 'type' => 'laboratory', 'bldg' => 'ENG-BLDG', 'cap' => 40],
-        ['number' => 'ENG-LAB-2',  'name' => 'CAD & Engineering Computing Lab', 'type' => 'laboratory', 'bldg' => 'ENG-BLDG', 'cap' => 45],
-        ['number' => 'ENG-101',    'name' => 'Engineering Lecture Room 101', 'type' => 'lecture', 'bldg' => 'ENG-BLDG', 'cap' => 50],
-        ['number' => 'ENG-102',    'name' => 'Engineering Lecture Room 102', 'type' => 'lecture', 'bldg' => 'ENG-BLDG', 'cap' => 50],
-        ['number' => 'ENG-201',    'name' => 'Engineering Lecture Room 201', 'type' => 'lecture', 'bldg' => 'ENG-BLDG', 'cap' => 50],
-        ['number' => 'ENG-DRAW',   'name' => 'Architectural & Engineering Drafting Hall', 'type' => 'lecture', 'bldg' => 'ENG-BLDG', 'cap' => 60],
-        // Science & Tech
-        ['number' => 'ST-101',     'name' => 'General Science Lecture Room 101', 'type' => 'lecture', 'bldg' => 'ST-BLDG', 'cap' => 50],
-        ['number' => 'ST-102',     'name' => 'Physics & Electronics Lab', 'type' => 'laboratory', 'bldg' => 'ST-BLDG', 'cap' => 45],
-        ['number' => 'ST-201',     'name' => 'Advanced Computing Lecture 201', 'type' => 'lecture', 'bldg' => 'ST-BLDG', 'cap' => 45],
-        ['number' => 'ST-202',     'name' => 'Statistics & Data Science Room 202', 'type' => 'lecture', 'bldg' => 'ST-BLDG', 'cap' => 45],
-        ['number' => 'ST-CONF',    'name' => 'Science & Tech Conference Hall', 'type' => 'lecture', 'bldg' => 'ST-BLDG', 'cap' => 100],
-        // Academic Hall
         ['number' => 'ACAD-101',   'name' => 'General Education Hall 101', 'type' => 'lecture', 'bldg' => 'ACAD-BLDG', 'cap' => 50],
         ['number' => 'ACAD-102',   'name' => 'General Education Hall 102', 'type' => 'lecture', 'bldg' => 'ACAD-BLDG', 'cap' => 50],
         ['number' => 'ACAD-201',   'name' => 'Social Sciences Lecture Room 201', 'type' => 'lecture', 'bldg' => 'ACAD-BLDG', 'cap' => 50],
@@ -361,89 +328,116 @@ try {
     foreach ($roomsData as $r) {
         $stmtRoom->execute([$bldgMap[$r['bldg']], $r['number'], $r['name'], $r['type'], $r['cap'], $now]);
     }
-    out("  ✔ Created 3 academic years, 9 semesters, 16 departments, 7 programs, 24 sections, 37 subjects, 4 buildings, and 23 rooms.");
+    out("  ✔ Created 3 academic years, 9 semesters, 5 departments, 4 programs, 16 sections, {$subjectsDataCount} subjects, and " . count($roomsData) . " rooms.");
 
     // -------------------------------------------------------------------------
-    // STEP 6: 60+ REALISTIC FACULTY & STAFF EMPLOYEES
+    // STEP 6: 42 REAL FACULTY & STAFF (from data/employee_tbl.sql)
     // -------------------------------------------------------------------------
-    out("\n[Step 6/8] Generating 60+ realistic Faculty and Staff personnel...");
+    out("\n[Step 6/8] Importing 42 authentic Faculty and Staff personnel from data/employee_tbl.sql...");
 
-    $firstNamesM = ['Antonio', 'Carlos', 'Danilo', 'Eduardo', 'Fernando', 'Gerardo', 'Jaime', 'Manuel', 'Nestor', 'Orlando', 'Ramon', 'Reynaldo', 'Rodolfo', 'Vicente', 'Wilfredo', 'Rogelio', 'Ernesto', 'Renato', 'Ferdinand', 'Rolando', 'Arnel', 'Edgar', 'Gilbert', 'Noel', 'Rommel'];
-    $firstNamesF = ['Carmelita', 'Corazon', 'Elena', 'Evelyn', 'Gloria', 'Josefina', 'Leticia', 'Lorna', 'Luzviminda', 'Marites', 'Nenita', 'Norma', 'Rosario', 'Rowena', 'Teresita', 'Vilma', 'Virginia', 'Zenaida', 'Cynthia', 'Lourdes', 'Divina', 'Fe', 'Imelda', 'Marilou', 'Rosalinda'];
-    $surnames    = ['Santos', 'Reyes', 'Cruz', 'Bautista', 'Ocampo', 'Garcia', 'Mendoza', 'Ramos', 'Flores', 'Gonzales', 'Lopez', 'Hernandez', 'Perez', 'Sanchez', 'Ramirez', 'Torres', 'Diaz', 'Morales', 'Castillo', 'Tolentino', 'Lacierda', 'Mercene', 'Mabute', 'Paras', 'Malabanan', 'Alcantara', 'Manalo', 'Dimaculangan', 'De Chavez', 'Soberano', 'Montenegro', 'Villanueva'];
-
-    $ranks = [
-        'Professor VI', 'Professor IV', 'Professor I',
-        'Associate Professor V', 'Associate Professor III', 'Associate Professor I',
-        'Assistant Professor IV', 'Assistant Professor III', 'Assistant Professor II', 'Assistant Professor I',
-        'Instructor III', 'Instructor II', 'Instructor I'
-    ];
+    $empSql = file_get_contents(__DIR__ . '/../data/employee_tbl.sql');
+    $ePattern = "/\((\d+),\s*'([^']*)',\s*'([^']*)',\s*'([^']*)',\s*(?:'([^']*)'|NULL),\s*(\d+),\s*'([^']*)',\s*'([^']*)',\s*(?:'([^']*)'|NULL),\s*(\d+),\s*'([^']*)',\s*'([^']*)'\)/";
+    preg_match_all($ePattern, $empSql, $empMatches, PREG_SET_ORDER);
 
     $pdo->exec("DELETE FROM employees;");
-    $stmtEmp = $pdo->prepare("INSERT INTO employees (employee_number, first_name, middle_name, last_name, gender, email, contact_number, type, position, `rank`, department_id, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)");
+    $stmtEmp = $pdo->prepare("INSERT INTO employees (
+        id, user_id, employee_number, first_name, middle_name, last_name, suffix,
+        gender, email, contact_number, type, position, `rank`, department_id, status, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, 'active', ?)");
 
-    // Key designated administrative and faculty leaders
-    $keyEmployees = [
-        ['emp_no' => 'EMP-2015-001', 'fname' => 'Rogelio',   'mname' => 'Santos',     'lname' => 'Lacierda',  'gender' => 'male',   'dept' => 'CICS-DIS', 'pos' => 'Dean, CICS', 'rank' => 'Professor IV', 'type' => 'admin'],
-        ['emp_no' => 'EMP-2016-012', 'fname' => 'Marites',   'mname' => 'Flores',     'lname' => 'Mercene',   'gender' => 'female', 'dept' => 'CICS-DIS', 'pos' => 'Chairperson, Dept. of Information Systems', 'rank' => 'Associate Professor III', 'type' => 'faculty'],
-        ['emp_no' => 'EMP-2017-023', 'fname' => 'Danilo',    'mname' => 'Mendoza',    'lname' => 'Mabute',    'gender' => 'male',   'dept' => 'CICS-DCS', 'pos' => 'Chairperson, Dept. of Computer Science', 'rank' => 'Associate Professor II', 'type' => 'faculty'],
-        ['emp_no' => 'EMP-2018-034', 'fname' => 'Cynthia',   'mname' => 'Ramos',      'lname' => 'Paras',     'gender' => 'female', 'dept' => 'CICS-DIT', 'pos' => 'Chairperson, Dept. of Information Technology', 'rank' => 'Assistant Professor IV', 'type' => 'faculty'],
-        ['emp_no' => 'EMP-2019-045', 'fname' => 'Ernesto',   'mname' => 'Bautista',   'lname' => 'Malabanan', 'gender' => 'male',   'dept' => 'ADMIN-SAS', 'pos' => 'Director, Office of Student Affairs', 'rank' => 'Associate Professor I', 'type' => 'admin'],
-        ['emp_no' => 'EMP-2020-056', 'fname' => 'Rowena',    'mname' => 'Alcantara',  'lname' => 'Manalo',    'gender' => 'female', 'dept' => 'ADMIN-REG', 'pos' => 'University Registrar', 'rank' => 'Assistant Professor III', 'type' => 'admin'],
-        ['emp_no' => 'EMP-2021-067', 'fname' => 'Elena',     'mname' => 'Castillo',   'lname' => 'Soberano',  'gender' => 'female', 'dept' => 'ADMIN-GCO', 'pos' => 'Head Guidance Counselor', 'rank' => 'Assistant Professor II', 'type' => 'staff'],
-        ['emp_no' => 'EMP-2021-078', 'fname' => 'Carlos',    'mname' => 'Torres',     'lname' => 'Montenegro','gender' => 'male',   'dept' => 'ADMIN-MED', 'pos' => 'University Medical Officer', 'rank' => 'Medical Officer IV', 'type' => 'staff'],
-    ];
+    $stmtEmpUser = $pdo->prepare("INSERT INTO users (
+        username, email, password, first_name, last_name, role, status, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, 'active', ?)
+    ON DUPLICATE KEY UPDATE first_name = VALUES(first_name), last_name = VALUES(last_name), role = VALUES(role), updated_at = VALUES(created_at)");
+
+    $facultyRoleId = (int)Database::fetchColumn("SELECT id FROM roles WHERE slug = 'faculty'");
+    $deanRoleId    = (int)Database::fetchColumn("SELECT id FROM roles WHERE slug = 'dean'");
+    $femaleIndicators = ['annalyn', 'charissa', 'jeanie', 'joy', 'mergiecelyn', 'glynis', 'jeimyleen', 'lean', 'rechille', 'marian', 'mel', 'mheryl', 'khristine', 'aira', 'sharmaine', 'jean'];
 
     $createdEmpIds = [];
-    foreach ($keyEmployees as $ke) {
-        $email = strtolower($ke['fname'] . '.' . $ke['lname']) . '@marsu.edu.ph';
-        $contact = '0917' . rand(1000000, 9999999);
-        $stmtEmp->execute([
-            $ke['emp_no'], $ke['fname'], $ke['mname'], $ke['lname'], $ke['gender'],
-            $email, $contact, $ke['type'], $ke['pos'], $ke['rank'], $deptMap[$ke['dept']], $now
-        ]);
-        $createdEmpIds[] = (int)$pdo->lastInsertId();
-    }
+    foreach ($empMatches as $em) {
+        $empId      = (int)$em[1];
+        $empNo      = trim($em[2]);
+        $firstRaw   = trim($em[3]);
+        $lastRaw    = trim($em[4]);
+        $posRaw     = trim($em[5] ?? 'Staff');
+        $deptId     = (int)$em[6];
+        $contactRaw = trim($em[7]);
+        $createdRaw = trim($em[11] ?? $now);
 
-    // Generate remaining 54 employees to total 62
-    $deptCodesList = array_keys($deptMap);
-    for ($i = 9; $i <= 62; $i++) {
-        $isMale = ($i % 2 === 0);
-        $fname = $isMale ? $firstNamesM[array_rand($firstNamesM)] : $firstNamesF[array_rand($firstNamesF)];
-        $mname = $surnames[array_rand($surnames)];
-        $lname = $surnames[array_rand($surnames)];
-        $empNo = sprintf('EMP-2026-%04d', 100 + $i);
-        $email = strtolower($fname . '.' . $lname . $i) . '@marsu.edu.ph';
-        $contact = '09' . [17, 18, 19, 20, 21, 28, 77][array_rand([17, 18, 19, 20, 21, 28, 77])] . rand(1000000, 9999999);
-        
-        $type = ($i <= 45) ? 'faculty' : 'staff';
-        $rank = ($type === 'faculty') ? $ranks[array_rand($ranks)] : null;
-        $pos = ($type === 'faculty') ? ($rank . ' of Computing') : (['Administrative Assistant II', 'Records Officer I', 'Laboratory Custodian', 'IT Support Technician', 'Registration Officer'][array_rand(['Administrative Assistant II', 'Records Officer I', 'Laboratory Custodian', 'IT Support Technician', 'Registration Officer'])]);
-        
-        // CICS gets majority of faculty
-        $deptCode = ($i <= 35) ? (['CICS-DIS', 'CICS-DCS', 'CICS-DIT'][array_rand(['CICS-DIS', 'CICS-DCS', 'CICS-DIT'])]) : $deptCodesList[array_rand($deptCodesList)];
+        $nameParts = preg_split('/\s+/', $firstRaw);
+        if (count($nameParts) > 1) {
+            $middle = array_pop($nameParts);
+            $first  = implode(' ', $nameParts);
+        } else {
+            $first  = $firstRaw;
+            $middle = null;
+        }
+
+        $firstLower = strtolower(explode(' ', $first)[0]);
+        $gender = in_array($firstLower, $femaleIndicators) ? 'female' : 'male';
+
+        $cleanFirst = strtolower(preg_replace('/[^a-zA-Z]/', '', $firstRaw));
+        $cleanLast  = strtolower(preg_replace('/[^a-zA-Z]/', '', $lastRaw));
+        $instEmail  = $cleanFirst . '.' . $cleanLast . '@marsu.edu.ph';
+
+        $contact = (empty($contactRaw) || $contactRaw === 'TBA') 
+            ? ('09' . [17, 18, 19, 20, 21, 28, 77][($empId % 7)] . str_pad((string)(2000000 + $empId * 137), 7, '0', STR_PAD_LEFT))
+            : $contactRaw;
+
+        $isDir   = (strpos(strtoupper($posRaw), 'DIRECTOR') !== false);
+        $isHead  = (strpos(strtoupper($posRaw), 'HEAD') !== false);
+        $isProf  = (preg_match('/(Professor|Instructor|Lecturer)/i', $posRaw) === 1);
+
+        if ($isDir) {
+            $type = 'admin';
+            $userRole = 'dean';
+            $rank = 'Campus Director';
+        } elseif ($isHead) {
+            $type = 'faculty';
+            $userRole = 'dean';
+            $rank = 'Department Chairperson';
+        } elseif ($isProf) {
+            $type = 'faculty';
+            $userRole = 'faculty';
+            $rank = $posRaw;
+        } else {
+            $type = 'staff';
+            $userRole = 'faculty';
+            $rank = null;
+        }
+
+        $username = 'emp_' . strtolower(str_replace(['-', ' '], '_', $empNo));
+        $stmtEmpUser->execute([
+            $username, $instEmail, $defaultPassHash, $first, $lastRaw, $userRole, $now
+        ]);
+        $userId = (int)Database::fetchColumn("SELECT id FROM users WHERE username = ?", [$username]);
+
+        $roleIdToAssign = ($userRole === 'dean') ? $deanRoleId : $facultyRoleId;
+        if ($userId && $roleIdToAssign) {
+            Database::query("INSERT IGNORE INTO user_roles (user_id, role_id) VALUES (?, ?)", [$userId, $roleIdToAssign]);
+        }
 
         $stmtEmp->execute([
-            $empNo, $fname, $mname, $lname, $isMale ? 'male' : 'female',
-            $email, $contact, $type, $pos, $rank, $deptMap[$deptCode], $now
+            $empId, $userId, $empNo, $first, $middle, $lastRaw,
+            $gender, $instEmail, $contact, $type, $posRaw, $rank, $deptId, $createdRaw
         ]);
-        $createdEmpIds[] = (int)$pdo->lastInsertId();
+        $createdEmpIds[$empId] = $empId;
     }
-    out("  ✔ Created " . count($createdEmpIds) . " faculty and staff records with ranks, departments, and contacts.");
+    out("  ✔ Created " . count($createdEmpIds) . " faculty and staff records from employee_tbl.sql.");
 
     // -------------------------------------------------------------------------
-    // STEP 7: STUDENT ORGANIZATIONS WITH ADVISERS
+    // STEP 7: STUDENT ORGANIZATIONS WITH REAL FACULTY ADVISERS
     // -------------------------------------------------------------------------
-    out("\n[Step 7/8] Seeding 8+ recognized student organizations with faculty advisers...");
+    out("\n[Step 7/8] Seeding recognized student organizations with faculty advisers...");
     $orgsData = [
-        ['code' => 'ACIS',  'name' => 'Association of Computing and Information Systems', 'type' => 'academic', 'desc' => 'Premier official student organization of the College of Information and Computing Sciences.', 'adviser' => $createdEmpIds[1]],
-        ['code' => 'JPCS',  'name' => 'Junior Philippine Computer Society - MarSU Chapter', 'type' => 'academic', 'desc' => 'Nationally affiliated student computing society fostering programming competitions and open-source software.', 'adviser' => $createdEmpIds[2]],
-        ['code' => 'CICS-SC','name' => 'CICS College Student Council', 'type' => 'academic', 'desc' => 'Highest student governing body of the College of Information and Computing Sciences.', 'adviser' => $createdEmpIds[0]],
-        ['code' => 'USC',   'name' => 'University Student Council', 'type' => 'socio_civic', 'desc' => 'Apex student government of Marinduque State University across all colleges and campuses.', 'adviser' => $createdEmpIds[4]],
-        ['code' => 'COES',  'name' => 'College of Engineering Society', 'type' => 'academic', 'desc' => 'Academic student guild for civil and electrical engineering majors.', 'adviser' => $createdEmpIds[6]],
-        ['code' => 'EDUC',  'name' => 'Educators of Tomorrow Guild', 'type' => 'academic', 'desc' => 'Student association of aspiring secondary and elementary educators.', 'adviser' => $createdEmpIds[7]],
-        ['code' => 'SIKAP', 'name' => 'Socio-Civic and Cultural Arts Guild (SIKAP)', 'type' => 'socio_civic', 'desc' => 'Promoting traditional Marinduque Moriones cultural arts, dance, and civic community outreach.', 'adviser' => $createdEmpIds[3]],
-        ['code' => 'RCY',   'name' => 'Philippine Red Cross Youth - MarSU Council', 'type' => 'socio_civic', 'desc' => 'Youth humanitarian volunteers delivering first-aid, health response, and disaster mitigation.', 'adviser' => $createdEmpIds[5]],
+        ['code' => 'ACIS',       'name' => 'Association of Computing and Information Systems', 'type' => 'academic',   'desc' => 'Premier official student organization of the Department of Information and Communications Technology.', 'adviser' => 4],  // Carlo Magno Castro
+        ['code' => 'JPCS-MARSU', 'name' => 'Junior Philippine Computer Society - MarSU Chapter', 'type' => 'academic', 'desc' => 'Nationally affiliated student computing society fostering programming and IT excellence.',                     'adviser' => 15], // Glynis Karen Raza
+        ['code' => 'TOURSOC',    'name' => 'Tourism and Hospitality Management Society',        'type' => 'academic',   'desc' => 'Academic guild for BS in Tourism Management students.',                                                    'adviser' => 6],  // Hilarion Elegado
+        ['code' => 'PSS-GUILD',  'name' => 'Political Science Students Guild',                 'type' => 'academic',   'desc' => 'Academic and leadership council of BA in Political Science majors.',                                      'adviser' => 9],  // Loriebenn Madriño
+        ['code' => 'EDUC-GUILD', 'name' => 'Elementary Educators Guild of MarSU',               'type' => 'academic',   'desc' => 'Student association of aspiring elementary educators.',                                                   'adviser' => 5],  // Annalyn Decena
+        ['code' => 'SSC',        'name' => 'Supreme Student Council - Santa Cruz Campus',       'type' => 'socio_civic','desc' => 'Apex student government of Marinduque State University Santa Cruz Campus.',                              'adviser' => 16], // Randell Reginio (Campus Director)
+        ['code' => 'RCY',        'name' => 'Philippine Red Cross Youth - MarSU Council',        'type' => 'socio_civic','desc' => 'Youth humanitarian volunteers delivering first-aid, disaster response, and community health.',           'adviser' => 8],  // Wilmer Imperio
     ];
 
     $pdo->exec("DELETE FROM organizations;");
@@ -451,43 +445,33 @@ try {
     foreach ($orgsData as $org) {
         $stmtOrg->execute([$org['code'], $org['name'], $org['type'], $org['desc'], $org['adviser'], $now]);
     }
-    out("  ✔ Registered 8 recognized student organizations with faculty advisers.");
+    out("  ✔ Registered " . count($orgsData) . " recognized student organizations with real faculty advisers.");
 
     // -------------------------------------------------------------------------
-    // STEP 8: 520+ REALISTIC FILIPINO STUDENT RECORDS
+    // STEP 8: 866 REAL STUDENT RECORDS (from data/students.sql)
     // -------------------------------------------------------------------------
-    out("\n[Step 8/8] Generating 520+ realistic Filipino student records across year levels and sections...");
+    out("\n[Step 8/8] Importing 866 authentic student records from data/students.sql...");
 
-    $stuFirstM = [
-        'Juan', 'Jose', 'Angelo', 'Mark', 'Joshua', 'Christian', 'Daniel', 'Gabriel', 'John Mark',
-        'Kevin', 'Kyle', 'Mark Anthony', 'Nathaniel', 'Paulo', 'Rafael', 'Sean', 'Vincent', 'Justine',
-        'Alden', 'Kenneth', 'Miguel', 'Dominic', 'Jerome', 'Adrian', 'Francis', 'Patrick', 'Jericho',
-        'Matthew', 'Karl', 'Cedric', 'Russel', 'Bryan', 'Jomar', 'Renz', 'Marvin', 'Jayson', 'Kobe'
+    $studSql = file_get_contents(__DIR__ . '/../data/students.sql');
+    $studPattern = "/\((\d+),\s*'([^']*)',\s*'([^']*)',\s*'([^']*)',\s*'([^']*)',\s*'([^']*)',\s*(?:'([^']*)'|NULL),\s*(?:'([^']*)'|NULL),\s*'([^']*)',\s*(\d+),\s*(\d+),\s*(?:'([^']*)'|NULL),\s*'([^']*)',\s*'([^']*)'\)/";
+    preg_match_all($studPattern, $studSql, $studMatches, PREG_SET_ORDER);
+
+    $pdo->exec("DELETE FROM students;");
+
+    $progStringToCode = [
+        'BS in Tourism Management'         => 'BSTM',
+        'BS in Information Systems'        => 'BSIS',
+        'BA in Political Science'          => 'BAPoS',
+        'Bachelor of Elementary Education' => 'BEED'
     ];
 
-    $stuFirstF = [
-        'Maria', 'Alyssa', 'Bea', 'Camille', 'Diane', 'Ella', 'Francesca', 'Joyce', 'Kimberly',
-        'Kristine', 'Nicole', 'Patricia', 'Princess', 'Samantha', 'Stephanie', 'Trisha', 'Angelica',
-        'Andrea', 'Katrina', 'Hannah', 'Vanessa', 'Rica', 'Clarisse', 'Danielle', 'Eunice', 'Kaye',
-        'Mariel', 'Paula', 'Rochelle', 'Sofia', 'Abigail', 'Hazel', 'Janine', 'Princess Joy', 'Mae'
+    $yearStringToNum = [
+        '1st Year' => 1,
+        '2nd Year' => 2,
+        '3rd Year' => 3,
+        '4th Year' => 4
     ];
 
-    $middleNames = [
-        'Dela Cruz', 'Santos', 'Garcia', 'Mendoza', 'Ramos', 'Bautista', 'Flores', 'Perez', 'Rivera',
-        'Gonzales', 'Aquino', 'Valenzuela', 'Castro', 'Navarro', 'Soriano', 'Villanueva', 'Cortez',
-        'Salazar', 'Mercado', 'Reyes', 'Torres', 'De Guzman', 'Castillo', 'Santiago', 'Domingo'
-    ];
-
-    $surnamesList = [
-        'Dela Cruz', 'Santos', 'Reyes', 'Cruz', 'Bautista', 'Ocampo', 'Garcia', 'Mendoza', 'Ramos',
-        'Flores', 'Gonzales', 'Lopez', 'Hernandez', 'Perez', 'Sanchez', 'Ramirez', 'Torres', 'Diaz',
-        'Morales', 'Mercado', 'Castillo', 'Tolentino', 'Lacierda', 'Mercene', 'Mabute', 'Paras',
-        'Malabanan', 'Alcantara', 'Manalo', 'Dimaculangan', 'De Chavez', 'Soberano', 'Montenegro',
-        'Villanueva', 'Lagran', 'Lozano', 'Madregalejo', 'Marquez', 'Montiano', 'Naling', 'Pascua',
-        'Quinto', 'Rey', 'Rioflorido', 'Sadiwa', 'Salazar', 'Tan', 'Zulueta', 'Padolina', 'Ornedo'
-    ];
-
-    // Authentic Marinduque addresses by municipality & barangay
     $marinduqueAddresses = [
         'Brgy. Murallon, Boac, Marinduque',
         'Brgy. San Miguel, Boac, Marinduque',
@@ -497,159 +481,125 @@ try {
         'Brgy. Laylay, Boac, Marinduque',
         'Brgy. Malusak, Boac, Marinduque',
         'Brgy. Tampus, Boac, Marinduque',
-        'Brgy. Bunganay, Boac, Marinduque',
         'Brgy. Amoingon, Boac, Marinduque',
-        'Brgy. Dulong Bayan, Mogpog, Marinduque',
-        'Brgy. Market Site, Mogpog, Marinduque',
         'Brgy. Balanacan, Mogpog, Marinduque',
-        'Brgy. Silangan, Mogpog, Marinduque',
+        'Brgy. Market Site, Mogpog, Marinduque',
         'Brgy. Capayang, Mogpog, Marinduque',
-        'Brgy. Guisian, Mogpog, Marinduque',
-        'Brgy. Gitnang Bayan, Mogpog, Marinduque',
         'Brgy. Poblacion, Gasan, Marinduque',
         'Brgy. Bahi, Gasan, Marinduque',
         'Brgy. Dawis, Gasan, Marinduque',
         'Brgy. Pinggan, Gasan, Marinduque',
-        'Brgy. Mahunig, Gasan, Marinduque',
-        'Brgy. Libtangin, Gasan, Marinduque',
-        'Brgy. Antipolo, Gasan, Marinduque',
         'Brgy. Poblacion, Santa Cruz, Marinduque',
         'Brgy. Buyabod, Santa Cruz, Marinduque',
         'Brgy. Balogo, Santa Cruz, Marinduque',
         'Brgy. Masaguisi, Santa Cruz, Marinduque',
         'Brgy. Morales, Santa Cruz, Marinduque',
-        'Brgy. Maniwaya, Santa Cruz, Marinduque',
-        'Brgy. Dolores, Santa Cruz, Marinduque',
         'Brgy. Malbog, Buenavista, Marinduque',
         'Brgy. Bagacay, Buenavista, Marinduque',
-        'Brgy. Daykitin, Buenavista, Marinduque',
-        'Brgy. Lipata, Buenavista, Marinduque',
-        'Brgy. Caigangan, Buenavista, Marinduque',
         'Brgy. Poblacion, Torrijos, Marinduque',
         'Brgy. Marlanga, Torrijos, Marinduque',
-        'Brgy. Poctoy, Torrijos, Marinduque',
-        'Brgy. Dampulan, Torrijos, Marinduque',
-        'Brgy. Bonliw, Torrijos, Marinduque',
+        'Brgy. Poctoy, Torrijos, Marinduque'
     ];
 
-    $guardiansRelations = ['Mother', 'Father', 'Guardian', 'Auntie', 'Uncle', 'Elder Sister', 'Grandmother'];
+    $guardiansRelations = ['Mother', 'Father', 'Guardian', 'Auntie', 'Uncle', 'Grandmother'];
 
-    $pdo->exec("DELETE FROM students;");
-
-    $batchSize = 100;
-    $totalStudents = 525;
     $studentInsertSql = "INSERT INTO students (
-        student_number, first_name, middle_name, last_name, gender, birthdate,
-        email, contact_number, address, program_id, year_level, section_id,
-        enrollment_status, guardian_name, guardian_contact, created_at
+        id, user_id, student_number, first_name, middle_name, last_name, suffix,
+        gender, birthdate, email, contact_number, address, program_id, year_level, section_id,
+        enrollment_status, guardian_name, guardian_contact, created_at, updated_at
     ) VALUES ";
+
+    function parseResetStudentName(string $fullName): array {
+        $parts = explode(',', $fullName, 2);
+        $lastName = trim($parts[0]);
+        $firstAndMiddle = isset($parts[1]) ? trim($parts[1]) : '';
+        
+        $fmParts = preg_split('/\s+/', $firstAndMiddle);
+        $middleName = null;
+        $firstName = $firstAndMiddle;
+        
+        if (count($fmParts) > 1) {
+            $lastWord = end($fmParts);
+            if (strcasecmp($lastWord, 'None') === 0) {
+                array_pop($fmParts);
+                $firstName = implode(' ', $fmParts);
+                $middleName = null;
+            } elseif (strlen(rtrim($lastWord, '.')) <= 2 || strlen($lastWord) === 1) {
+                $middleName = array_pop($fmParts);
+                $firstName = implode(' ', $fmParts);
+            }
+        }
+        
+        return [
+            'first_name'  => $firstName ?: $lastName,
+            'middle_name' => $middleName,
+            'last_name'   => $lastName
+        ];
+    }
 
     $values = [];
     $params = [];
+    $batchSize = 100;
     $studentCount = 0;
 
-    for ($i = 1; $i <= $totalStudents; $i++) {
-        $isMale = (mt_rand(0, 100) < 48); // ~48% male, 52% female
-        $fname = $isMale ? $stuFirstM[array_rand($stuFirstM)] : $stuFirstF[array_rand($stuFirstF)];
-        $mname = $middleNames[array_rand($middleNames)];
-        $lname = $surnamesList[array_rand($surnamesList)];
-        
-        // Year level distribution: 1st (28%), 2nd (27%), 3rd (27%), 4th (18%)
-        $randY = mt_rand(1, 100);
-        if ($randY <= 28) {
-            $yearLevel = 1;
-            $entryYear = 26;
-            $birthYear = 2007;
-        } elseif ($randY <= 55) {
-            $yearLevel = 2;
-            $entryYear = 25;
-            $birthYear = 2006;
-        } elseif ($randY <= 82) {
-            $yearLevel = 3;
-            $entryYear = 24;
-            $birthYear = 2005;
-        } else {
-            $yearLevel = 4;
-            $entryYear = 23;
-            $birthYear = 2004;
-        }
+    foreach ($studMatches as $stm) {
+        $sId         = (int)$stm[1];
+        $studentNo   = trim($stm[2]);
+        $fullName    = trim($stm[3]);
+        $yearStr     = trim($stm[4]);
+        $sectionStr  = trim($stm[5]);
+        $progStr     = trim($stm[6]);
+        $createdDate = trim($stm[13] ?? $now);
 
-        // Program distribution: ~58% BSIS (primary modules target), 22% BSCS, 10% ACT, 10% BSIT
-        $randP = mt_rand(1, 100);
-        if ($randP <= 58) {
-            $progCode = 'BSIS';
-        } elseif ($randP <= 80) {
-            $progCode = 'BSCS';
-        } elseif ($randP <= 90) {
-            $progCode = 'ACT';
-            if ($yearLevel > 2) $yearLevel = 2; // ACT is 2-year
-        } else {
-            $progCode = 'BSIT';
-        }
-        $progId = $progMap[$progCode];
+        $parsedName = parseResetStudentName($fullName);
+        $progCode   = $progStringToCode[$progStr] ?? 'BSIS';
+        $programId  = $progMap[$progCode] ?? $progMap['BSIS'];
+        $yearLevel  = $yearStringToNum[$yearStr] ?? 1;
+        $sectionId  = $secMap[$sectionStr] ?? null;
 
-        // Section assignment
-        $secSuffix = ($i % 2 === 0) ? 'A' : 'B';
-        $targetSecName = $progCode . ' ' . $yearLevel . $secSuffix;
-        if (!isset($secMap[$targetSecName])) {
-            $targetSecName = $progCode . ' ' . $yearLevel . 'A';
-        }
-        $sectionId = $secMap[$targetSecName] ?? null;
+        $firstWord = strtolower(explode(' ', $parsedName['first_name'])[0]);
+        $isFemale = in_array($firstWord, $femaleIndicators) || (substr($firstWord, -1) === 'a' && !in_array($firstWord, ['joshua', 'joma', 'kuya']));
+        $gender = $isFemale ? 'female' : 'male';
 
-        // Student Number: e.g. 24-0342
-        $studentNumber = sprintf('%02d-%04d', $entryYear, $i);
+        $birthYear = 2008 - $yearLevel;
+        $birthMonth = str_pad((string)(($sId % 12) + 1), 2, '0', STR_PAD_LEFT);
+        $birthDay = str_pad((string)(($sId % 28) + 1), 2, '0', STR_PAD_LEFT);
+        $birthdate = "{$birthYear}-{$birthMonth}-{$birthDay}";
 
-        // Institutional Email: e.g. juan.delacruz240342@marsu.edu.ph
-        $cleanFirst = strtolower(preg_replace('/[^a-zA-Z]/', '', $fname));
-        $cleanLast  = strtolower(preg_replace('/[^a-zA-Z]/', '', $lname));
-        $email = $cleanFirst . '.' . $cleanLast . str_replace('-', '', $studentNumber) . '@marsu.edu.ph';
+        $cleanFirst = strtolower(preg_replace('/[^a-zA-Z]/', '', $parsedName['first_name']));
+        $cleanLast  = strtolower(preg_replace('/[^a-zA-Z]/', '', $parsedName['last_name']));
+        $cleanSno   = strtolower(str_replace(['-', ' '], '', $studentNo));
+        $email      = $cleanFirst . '.' . $cleanLast . '.' . $cleanSno . '@marsu.edu.ph';
 
-        $birthMonth = str_pad((string)mt_rand(1, 12), 2, '0', STR_PAD_LEFT);
-        $birthDay   = str_pad((string)mt_rand(1, 28), 2, '0', STR_PAD_LEFT);
-        $birthdate  = "{$birthYear}-{$birthMonth}-{$birthDay}";
+        $contact = '09' . [17, 18, 19, 20, 21, 28, 77][($sId % 7)] . str_pad((string)(4000000 + $sId * 243), 7, '0', STR_PAD_LEFT);
+        $address = $marinduqueAddresses[$sId % count($marinduqueAddresses)];
 
-        $phonePrefixes = ['0917', '0918', '0919', '0920', '0921', '0928', '0977', '0995', '0945'];
-        $contactNumber = $phonePrefixes[array_rand($phonePrefixes)] . mt_rand(1000000, 9999999);
-        $address = $marinduqueAddresses[array_rand($marinduqueAddresses)];
+        $rel = $guardiansRelations[$sId % count($guardiansRelations)];
+        $gFirst = ($rel === 'Father' || $rel === 'Uncle') ? 'Reynaldo' : 'Carmelita';
+        $guardianName = $gFirst . ' ' . $parsedName['last_name'] . ' (' . $rel . ')';
+        $guardianContact = '09' . [17, 18, 19, 20, 21, 28, 77][($sId + 3) % 7] . str_pad((string)(5000000 + $sId * 311), 7, '0', STR_PAD_LEFT);
 
-        // Enrollment status: 86% enrolled regular, 8% irregular, 4% on_leave, 2% dropped
-        $randStat = mt_rand(1, 100);
-        if ($randStat <= 86) {
-            $enrollmentStatus = 'enrolled';
-        } elseif ($randStat <= 94) {
-            $enrollmentStatus = 'irregular';
-        } elseif ($randStat <= 98) {
-            $enrollmentStatus = 'on_leave';
-        } else {
-            $enrollmentStatus = 'dropped';
-        }
-
-        $rel = $guardiansRelations[array_rand($guardiansRelations)];
-        $gFirst = ($rel === 'Father' || $rel === 'Uncle') ? $stuFirstM[array_rand($stuFirstM)] : $stuFirstF[array_rand($stuFirstF)];
-        $guardianName = $gFirst . ' ' . $lname . ' (' . $rel . ')';
-        $guardianContact = $phonePrefixes[array_rand($phonePrefixes)] . mt_rand(1000000, 9999999);
-
-        $values[] = "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $params[] = $studentNumber;
-        $params[] = $fname;
-        $params[] = $mname;
-        $params[] = $lname;
-        $params[] = $isMale ? 'male' : 'female';
+        $values[] = "(?, NULL, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, 'enrolled', ?, ?, ?, ?)";
+        $params[] = $sId;
+        $params[] = $studentNo;
+        $params[] = $parsedName['first_name'];
+        $params[] = $parsedName['middle_name'];
+        $params[] = $parsedName['last_name'];
+        $params[] = $gender;
         $params[] = $birthdate;
         $params[] = $email;
-        $params[] = $contactNumber;
+        $params[] = $contact;
         $params[] = $address;
-        $params[] = $progId;
+        $params[] = $programId;
         $params[] = $yearLevel;
         $params[] = $sectionId;
-        $params[] = $enrollmentStatus;
         $params[] = $guardianName;
         $params[] = $guardianContact;
+        $params[] = $createdDate;
         $params[] = $now;
 
         $studentCount++;
 
-        // Batch execution every 100 records
         if (count($values) >= $batchSize) {
             $sql = $studentInsertSql . implode(', ', $values);
             $stmt = $pdo->prepare($sql);
@@ -659,17 +609,15 @@ try {
         }
     }
 
-    // Flush remaining students
     if (!empty($values)) {
         $sql = $studentInsertSql . implode(', ', $values);
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
     }
+    out("  ✔ Successfully generated and inserted {$studentCount} authentic MarSU student records.");
 
-    out("  ✔ Successfully generated and inserted {$studentCount} realistic Filipino student records.");
-
-    // Link a few student accounts to their user records
-    $firstStudent = Database::fetchOne("SELECT id FROM students WHERE student_number = '24-0004' LIMIT 1");
+    // Link demo student user account to first BSIS student
+    $firstStudent = Database::fetchOne("SELECT id FROM students WHERE program_id = ? ORDER BY id ASC LIMIT 1", [$progMap['BSIS']]);
     if ($firstStudent) {
         $studentUser = Database::fetchOne("SELECT id FROM users WHERE username = 'student' LIMIT 1");
         if ($studentUser) {
@@ -694,7 +642,7 @@ try {
             'message' => 'Complete clean reset and demo data generation',
             'students_count' => $studentCount,
             'employees_count' => count($createdEmpIds),
-            'subjects_count' => count($subjectsData),
+            'subjects_count' => $subjectsDataCount,
             'rooms_count' => count($roomsData),
             'organizations_count' => count($orgsData)
         ]),
@@ -708,17 +656,17 @@ try {
     out("====================================================================");
     out(" Execution Time       : {$elapsed} seconds");
     out(" Security Roles       : " . count($roleRows) . " system roles");
-    out(" User Accounts        : " . Database::fetchColumn("SELECT COUNT(*) FROM users") . " accounts (admin, dean, faculty, student, group1..11)");
+    out(" User Accounts        : " . Database::fetchColumn("SELECT COUNT(*) FROM users") . " accounts (admin, dean, faculty, student, group1..11, employee accounts)");
     out(" Academic Years       : 3 (2024-2025, 2025-2026, 2026-2027 active)");
     out(" Semesters            : 9 semesters (1st Sem 2026-2027 active)");
-    out(" Colleges/Departments : " . count($departmentsData) . " academic & administrative units");
-    out(" Academic Programs    : " . count($programsData) . " programs (BSIS, BSCS, ACT, BSIT, BSCE, BSEd, BSBA)");
+    out(" Colleges/Departments : " . count($departmentsData) . " academic & administrative units (DICT, DTHM, DPSS, DETE, ADMIN)");
+    out(" Academic Programs    : " . count($programsData) . " programs (BSIS, BSTM, BAPoS, BEED)");
     out(" Class Sections       : " . count($sectionsData) . " sections across year levels");
-    out(" Course Subjects      : " . count($subjectsData) . " curriculum subjects");
+    out(" Course Subjects      : {$subjectsDataCount} curriculum subjects (data/subjects.sql)");
     out(" Buildings & Rooms    : " . count($buildingsData) . " buildings, " . count($roomsData) . " rooms");
-    out(" Faculty & Staff      : " . count($createdEmpIds) . " personnel with ranks & designations");
-    out(" Student Orgs         : " . count($orgsData) . " accredited organizations with advisers");
-    out(" Students Registered  : {$studentCount} realistic Filipino records");
+    out(" Faculty & Staff      : " . count($createdEmpIds) . " personnel with ranks & designations (data/employee_tbl.sql)");
+    out(" Student Orgs         : " . count($orgsData) . " accredited organizations with faculty advisers");
+    out(" Students Registered  : {$studentCount} authentic MarSU students (data/students.sql)");
     out(" Audit Log Entry      : Logged to audit_logs");
     out("====================================================================");
     out("✔ DEMO ENVIRONMENT READY AND FULLY POPULATED!\n");

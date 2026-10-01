@@ -166,6 +166,17 @@ a:hover {
   padding: 1.25rem 1.25rem 0.4rem;
 }
 
+/* Sidebar Nav Links - Zero Underline & Distinct Hover/Active States */
+#app-sidebar a,
+#app-sidebar a:hover,
+#app-sidebar a:focus,
+#app-sidebar a:active,
+#app-sidebar a:visited,
+#app-sidebar .sidebar-brand,
+#app-sidebar .sidebar-brand:hover {
+  text-decoration: none !important;
+}
+
 #app-sidebar .nav-item {
   position: relative;
   list-style: none;
@@ -173,13 +184,14 @@ a:hover {
 
 #app-sidebar .nav-link {
   color: rgba(255, 255, 255, 0.88);
-  padding: 0.7rem 1.25rem;
+  padding: 0.72rem 1.25rem;
   display: flex;
   align-items: center;
   gap: 0.85rem;
   font-size: 0.9rem;
   font-weight: 500;
   border-left: 4px solid transparent;
+  text-decoration: none !important;
   transition: all var(--transition-speed) ease;
 }
 
@@ -188,27 +200,42 @@ a:hover {
   width: 24px;
   text-align: center;
   color: rgba(255, 255, 255, 0.75);
-  transition: color var(--transition-speed) ease;
+  transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
 }
 
-#app-sidebar .nav-link:hover {
-  color: #FFFFFF;
-  background-color: rgba(255, 255, 255, 0.08);
+/* Hover State */
+#app-sidebar .nav-link:hover,
+#app-sidebar .nav-link:focus {
+  color: #FFFFFF !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  text-decoration: none !important;
 }
-#app-sidebar .nav-link:hover i {
-  color: var(--marsu-gold);
+#app-sidebar .nav-link:hover i,
+#app-sidebar .nav-link:focus i {
+  color: var(--marsu-gold) !important;
+  transform: translateX(2px);
 }
 
-#app-sidebar .nav-item.active .nav-link,
+/* Active State: Automatically applies the hover appearance + solid gold indicator */
+#app-sidebar .nav-item.active > .nav-link,
 #app-sidebar .nav-link.active {
-  color: #FFFFFF;
-  background: linear-gradient(90deg, rgba(212, 175, 55, 0.18) 0%, rgba(212, 175, 55, 0.03) 100%);
-  border-left-color: var(--marsu-gold);
-  font-weight: 600;
+  color: #FFFFFF !important;
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.22) 0%, rgba(255, 255, 255, 0.10) 100%) !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  border-left: 4px solid var(--marsu-gold) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
 }
-#app-sidebar .nav-item.active .nav-link i,
+#app-sidebar .nav-item.active > .nav-link i,
 #app-sidebar .nav-link.active i {
-  color: var(--marsu-gold);
+  color: var(--marsu-gold) !important;
+}
+
+#app-sidebar .nav-item.active > .nav-link:hover,
+#app-sidebar .nav-link.active:hover {
+  background-color: rgba(255, 255, 255, 0.16) !important;
+  color: #FFFFFF !important;
+  text-decoration: none !important;
 }
 
 /* Sidebar Dropdowns / Collapsible Menus */
@@ -222,11 +249,19 @@ a:hover {
   padding: 0.5rem 1.25rem 0.5rem 3.25rem;
   font-size: 0.85rem;
   border-left: none;
+  text-decoration: none !important;
+}
+#app-sidebar .sidebar-submenu .nav-link:hover,
+#app-sidebar .sidebar-submenu .nav-link:focus {
+  color: #FFFFFF !important;
+  background-color: rgba(255, 255, 255, 0.10) !important;
+  text-decoration: none !important;
 }
 #app-sidebar .sidebar-submenu .nav-link.active {
-  color: var(--marsu-gold);
-  font-weight: 600;
-  background-color: rgba(212, 175, 55, 0.1);
+  color: var(--marsu-gold) !important;
+  font-weight: 600 !important;
+  background-color: rgba(212, 175, 55, 0.15) !important;
+  text-decoration: none !important;
 }
 
 /* Sidebar Nav Scroll Container & Slim Scrollbar */

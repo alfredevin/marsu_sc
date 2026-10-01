@@ -5,11 +5,26 @@ use Core\Permission;
 $currentUri = $_SERVER['REQUEST_URI'] ?? '';
 function isActive(string $route): string {
     global $currentUri;
-    $target = ltrim($route, '/');
-    if ($target === '' && ($currentUri === '/' || str_ends_with($currentUri, 'index.php'))) {
-        return 'active';
+    $target = trim($route, '/');
+    $r = $_GET['r'] ?? '';
+    if ($r !== '') {
+        $cleanR = trim($r, '/');
+        if ($target === 'dashboard' && ($cleanR === '' || $cleanR === 'dashboard')) {
+            return 'active';
+        }
+        return ($cleanR === $target || str_starts_with($cleanR, $target . '/') || str_starts_with($cleanR, $target . '?')) ? 'active' : '';
     }
-    return (str_contains($currentUri, $target) || (isset($_GET['r']) && $_GET['r'] === $target)) ? 'active' : '';
+
+    $path = parse_url($currentUri, PHP_URL_PATH) ?? '';
+    $path = trim($path, '/');
+
+    if ($target === 'dashboard') {
+        if ($path === '' || str_ends_with($path, 'dashboard') || str_ends_with($path, 'marsu_sc') || str_ends_with($path, 'marsu-erp') || str_ends_with($path, 'index.php')) {
+            return 'active';
+        }
+    }
+
+    return (str_contains($path, '/' . $target) || str_ends_with($path, $target) || str_contains($path, $target)) ? 'active' : '';
 }
 
 $moduleNavGroups = ModuleLoader::getNavItems();

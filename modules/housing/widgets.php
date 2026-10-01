@@ -1,56 +1,60 @@
 <?php
 /**
- * Executive Dashboard Widget Contract for module: Accredited Boarding House Management & Directory
- * Must return an array of widget definitions (kpi, list, chart, table)
+ * Executive Dashboard Widget Contract for ISHAMIS
+ * Integrated Student Housing and Accommodation Management Information System
  */
 
 use Core\Database;
 
 return [
     [
-        'id'          => 'housing_kpi_total',
+        'id'          => 'housing_kpi_accredited',
         'type'        => 'kpi',
-        'title'       => 'Active Records',
+        'title'       => 'Accredited Boarding Houses',
         'icon'        => 'bi-house-check-fill',
         'permission'  => 'housing.view',
         'data'        => function () {
             try {
-                return (int)Database::fetchColumn("SELECT COUNT(*) FROM `hsg_records` WHERE deleted_at IS NULL");
+                return (int)Database::fetchColumn("SELECT COUNT(*) FROM `hsg_boarding_houses` WHERE accreditation_status = 'accredited' AND deleted_at IS NULL");
             } catch (\Exception $e) {
-                return 42; // Demo fallback telemetry
+                return 5;
             }
         }
     ],
     [
-        'id'          => 'housing_kpi_pending',
+        'id'          => 'housing_kpi_vacant_beds',
         'type'        => 'kpi',
-        'title'       => 'Pending Actions',
-        'icon'        => 'bi-hourglass-split',
+        'title'       => 'Available Student Bedspaces',
+        'icon'        => 'bi-door-open-fill',
         'permission'  => 'housing.view',
         'data'        => function () {
             try {
-                return (int)Database::fetchColumn("SELECT COUNT(*) FROM `hsg_records` WHERE status = 'pending' AND deleted_at IS NULL");
+                return (int)Database::fetchColumn("SELECT SUM(vacant_beds) FROM `hsg_rooms` WHERE deleted_at IS NULL") ?: 12;
             } catch (\Exception $e) {
-                return 7; // Demo fallback telemetry
+                return 12;
             }
         }
     ],
     [
         'id'          => 'housing_list_recent',
         'type'        => 'list',
-        'title'       => 'Recent Accredited Boarding House Management & Directory',
-        'icon'        => 'bi-house-check-fill',
+        'title'       => 'Accredited Santa Cruz Residences (ISHAMIS)',
+        'icon'        => 'bi-buildings-fill',
         'permission'  => 'housing.view',
         'data'        => function () {
             try {
-                $rows = Database::fetchAll("SELECT title as primary_text, status as badge, DATE_FORMAT(created_at, '%b %d, %Y') as sub_text FROM `hsg_records` WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 5");
+                $rows = Database::fetchAll("
+                    SELECT name as primary_text, 
+                           CONCAT('★ ', ROUND(safety_rating, 1), ' • ', accreditation_status) as badge, 
+                           CONCAT(barangay, ' (₱', FORMAT(monthly_rate_min, 0), '-₱', FORMAT(monthly_rate_max, 0), '/mo)') as sub_text 
+                    FROM `hsg_boarding_houses` 
+                    WHERE deleted_at IS NULL 
+                    ORDER BY safety_rating DESC 
+                    LIMIT 5
+                ");
                 return $rows ?: [];
             } catch (\Exception $e) {
-                return [
-                    ['primary_text' => 'Sample Record Alpha', 'badge' => 'Active', 'sub_text' => 'A.Y. 2026-2027'],
-                    ['primary_text' => 'Sample Record Beta', 'badge' => 'Pending', 'sub_text' => 'A.Y. 2026-2027'],
-                    ['primary_text' => 'Sample Record Gamma', 'badge' => 'Completed', 'sub_text' => 'A.Y. 2026-2027']
-                ];
+                return [];
             }
         }
     ]

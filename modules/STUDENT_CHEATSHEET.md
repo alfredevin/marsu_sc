@@ -1,251 +1,177 @@
-# 📘 MarSU ERP — Beginner Developer Guide & Cheatsheet
-### For Students Transitioning from Pure HTML/CSS to Backend Development
+# 📘 MarSU ERP — Student Developer Starter Guide
+### Step-by-Step: From Cloning to Your First Pull Request (Pure HTML/CSS First)
 
 Welcome, MarSU Student Developers! 👋
 
-If your group only has experience in **pure HTML and CSS** and you have never touched backend programming (PHP) or databases (MySQL), **do not worry!** This entire platform is built with pre-made, working templates so you can learn and build step-by-step without getting overwhelmed.
+For this initial milestone, **you do NOT need to touch backend PHP, SQL, or database migrations**. Your goal is simply to set up the project on your laptop, create your group's branch, and customize **one single file (`Views/index.php`)** using pure HTML/CSS so the Lead Admin can review your changes on GitHub!
 
 ---
 
-## 1. 🧠 The Big Picture: How Data Flows (In Plain English)
-
-In pure HTML/CSS, your forms cannot save data permanently—when you refresh the page, everything disappears. In this ERP system, data is saved permanently using **4 simple steps**:
-
-```
-[ Step 1: HTML Form ] 
-   👉 The user types in an <input> and clicks "Save Entry".
-             ⬇️
-[ Step 2: The Controller (Brain) ]
-   👉 Captures what was typed in the form ($_POST).
-             ⬇️
-[ Step 3: The Database (Storage) ]
-   👉 Saves the data permanently into your MySQL table.
-             ⬇️
-[ Step 4: The HTML Table ]
-   👉 Pulls the saved data from the database and displays it in rows!
-```
+## 🛑 The Golden Rule
+> **DO NOT modify files inside `core/`, `app/`, or `scripts/`.**  
+> Your group's work must live **STRICTLY** inside your assigned module directory:  
+> 👉 `modules/<your_module>/` (e.g., `modules/health/` or `modules/housing/`)
 
 ---
 
-## 2. 📂 What is Each Folder and File For?
+## 🏁 Phase 1: Setup from the Very Beginning (From Scratch)
 
-Inside your module folder (`modules/<your_slug>/`), you will see these files. Here is what each one actually does:
-
-| Folder / File | What is it for? | Pure HTML/CSS Analogy |
-|---|---|---|
-| **`Views/index.php`** | Your actual webpage design, cards, tables, and modal popup forms. | Just like your usual `index.html`, with Bootstrap classes! |
-| **`module.json`** | The "Settings / ID Card" of your module. Determines the title, icon, and sidebar sub-menus. | A simple JSON list of links for your sidebar. |
-| **`Controllers/HomeController.php`** | The "Waiter / Brain". Takes data from the HTML form and sends it to MySQL, or fetches data to show in your table. | Handles button clicks and form submissions. |
-| **`routes.php`** | The "URL Directory". Defines web addresses (e.g., `http://localhost/marsu_sc/housing`). | Directs URLs to the right controller function. |
-| **`database/migrations/`** | The database table blueprint. Tells MySQL what columns your table needs. | Like creating an Excel spreadsheet with column headers. |
+### 1. Requirements on Your Laptop:
+- **XAMPP** (with Apache and MySQL started)
+- **Git** (Git Bash installed)
+- **GitHub Account** (Sign up at [github.com](https://github.com) if you haven't yet)
 
 ---
 
-## 3. 🛠️ How to Add a New Input Field (Form ➡️ Database ➡️ Table)
-
-Let's walk through an actual example. Suppose you want to add a **"Contact Number"** field.
-
-### Step 1: Add the Input Field in the HTML Form (`Views/index.php`)
-Scroll down to the modal form in `Views/index.php` (around the modal body) and paste this:
-
-```html
-<div class="mb-3">
-    <label class="form-label small fw-bold">Contact Number <span class="text-danger">*</span></label>
-    <input type="text" name="contact_no" class="form-control form-control-sm" required placeholder="0917-xxx-xxxx">
-</div>
-```
-> 💡 **Notice `name="contact_no"`**: This name is the "key" that the backend uses to identify this input.
-
----
-
-### Step 2: Receive and Save the Field (`Controllers/HomeController.php`)
-Open `modules/<your_slug>/Controllers/HomeController.php` and find the `store()` method:
-
-```php
-public function store(): void {
-    $title = trim($_POST['title'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    
-    // 👉 1. CAPTURE YOUR NEW FIELD HERE:
-    $contactNo = trim($_POST['contact_no'] ?? '');
-
-    try {
-        Database::insert('hsg_records', [
-            'title'       => $title,
-            'description' => $description,
-            'contact_no'  => $contactNo, // 👉 2. SAVE IT TO DATABASE
-            'status'      => 'active',
-            'created_by'  => Auth::id(),
-            'created_at'  => date('Y-m-d H:i:s')
-        ]);
-        Session::flash('success', 'Record saved successfully!');
-    } catch (\Exception $e) {
-        Session::flash('error', 'Error: ' . $e->getMessage());
-    }
-
-    redirect(url('housing'));
-}
-```
-
----
-
-### Step 3: Add the Column to Your Database Table
-
-You can do this easily through **phpMyAdmin** (Visual / No Coding!):
-1. Open your browser and go to `http://localhost/phpmyadmin`.
-2. Click **`marsu_erp`** on the left menu.
-3. Click your module table (e.g., `hsg_records` for Housing, `hth_records` for Health, etc.).
-4. Click the **Structure** tab at the top.
-5. Under the columns list, select **Add 1 column after `description`** and click **Go**.
-6. Name it `contact_no`, Type: `VARCHAR`, Length: `100`, check **Null**, and click **Save**!
-
----
-
-### Step 4: Display the Data in Your Table (`Views/index.php`)
-In `Views/index.php`:
-
-1. Add the Table Header in `<thead>`:
-```html
-<th>Contact Number</th>
-```
-
-2. Add the Table Cell in `<tbody>`:
-```html
-<td><?= e($r['contact_no'] ?? 'N/A') ?></td>
-```
-
-👉 **That's it!** You have successfully connected HTML Form ➡️ Backend ➡️ Database ➡️ HTML Table!
-
----
-
-## 4. 📄 How to Create a Second Page (e.g., "Rooms" or "Reports")
-
-What if your module needs more than one page? (e.g., one page for Boarding Houses and another page for Bed Space Rooms).
-
-### 1. Create the New View File
-Duplicate `Views/index.php` and rename it to `Views/rooms.php`.  
-Customize the HTML text and headings inside `rooms.php` however you like!
-
-### 2. Add the Function in `HomeController.php`
-Open `Controllers/HomeController.php` and add a new method:
-
-```php
-public function rooms(): void {
-    $user = Auth::user();
-    
-    // Fetch records
-    $records = Database::fetchAll("SELECT * FROM hsg_records WHERE status = 'active' ORDER BY id DESC");
-
-    // Render your new view file (Views/rooms.php)
-    View::render('housing/Views/rooms', [
-        'title'      => 'Room Vacancies & Bed Spaces',
-        'moduleName' => 'Housing (ISHAMIS)',
-        'slug'       => 'housing',
-        'records'    => $records,
-        'user'       => $user,
-        'crumbs'     => ['Housing' => url('housing'), 'Rooms' => '']
-    ]);
-}
-```
-
-### 3. Register the Route in `routes.php`
-Open `modules/<your_slug>/routes.php` and add:
-
-```php
-$router->get('/housing/rooms', [HomeController::class, 'rooms'], ['auth', 'permission:housing.view']);
-```
-
-### 4. Add the Link to Your Sidebar in `module.json`
-Open `modules/<your_slug>/module.json` and add the new item under `"menu" -> "items"`:
-
-```json
-"menu": {
-    "icon": "bi-house-check-fill",
-    "items": [
-        {
-            "label": "Overview & Records",
-            "route": "housing",
-            "permission": "housing.view"
-        },
-        {
-            "label": "Room Vacancies",
-            "route": "housing/rooms",
-            "permission": "housing.view"
-        }
-    ]
-}
-```
-👉 Now, visiting `http://localhost/marsu_sc/housing/rooms` opens your new page, and it appears in your sidebar!
-
----
-
-## 5. 🎛️ Copy-Paste Form Field Library
-
-Need more input types for your forms? Copy and paste any of these directly into `<div class="modal-body">`:
-
-### 🔹 Number Input (Prices, Quantities, Capacity):
-```html
-<div class="mb-3">
-    <label class="form-label small fw-bold">Monthly Rate (PHP) <span class="text-danger">*</span></label>
-    <div class="input-group input-group-sm">
-        <span class="input-group-text">₱</span>
-        <input type="number" step="0.01" name="price" class="form-control" required placeholder="1500.00">
-    </div>
-</div>
-```
-
-### 🔹 Dropdown Selection:
-```html
-<div class="mb-3">
-    <label class="form-label small fw-bold">Room Type</label>
-    <select name="room_type" class="form-select form-select-sm">
-        <option value="Single">Single Bedroom</option>
-        <option value="Shared">Shared Bed Space</option>
-        <option value="Studio">Studio Unit</option>
-    </select>
-</div>
-```
-
-### 🔹 Date Picker:
-```html
-<div class="mb-3">
-    <label class="form-label small fw-bold">Inspection Date</label>
-    <input type="date" name="inspection_date" class="form-control form-control-sm">
-</div>
-```
-
-### 🔹 Long Text / Paragraph (Remarks, Symptoms, Notes):
-```html
-<div class="mb-3">
-    <label class="form-label small fw-bold">Notes / Observations</label>
-    <textarea name="description" class="form-control form-control-sm" rows="3" placeholder="Enter detailed remarks here..."></textarea>
-</div>
-```
-
----
-
-## 6. 🚀 How to Save and Submit to GitHub (3 Git Steps)
-
-When your group finishes making changes on your computer:
-
-1. **Create and switch to your group's branch:**
+### 2. How to Clone the Repository
+1. Open **Git Bash**.
+2. Navigate to your XAMPP web root folder:
    ```bash
-   git checkout -b feature/housing-updates
+   cd /c/xampp/htdocs
    ```
-
-2. **Stage and commit your module folder:**
+3. Clone the official MarSU ERP repository:
    ```bash
-   git add modules/<your_module>/
-   git commit -m "feat: added new room forms and updated table columns"
+   git clone https://github.com/alfredevin/marsu_sc.git
    ```
-
-3. **Push to GitHub:**
-   ```bash
-   git push origin feature/housing-updates
-   ```
-
-4. Go to the GitHub repository online (`https://github.com/alfredevin/marsu_sc`) and click **"Compare & pull request"**. The Lead Admin will review and merge your work into the main platform!
+   *(This creates a folder at `C:\xampp\htdocs\marsu_sc` on your laptop).*
 
 ---
 
-💡 **Remember**: As long as your code stays inside `modules/<your_module>/`, you cannot break anyone else's code or the central ERP platform. Happy coding, MarSU developers! 🎓
+### 3. Setup Your Local Database (1-Minute Setup)
+1. Open **XAMPP Control Panel** and make sure both **Apache** and **MySQL** are running (green).
+2. Open your browser and go to: `http://localhost/phpmyadmin`
+3. Click **New** (on the left sidebar), name the database **`marsu_erp`**, and click **Create**.
+4. In Git Bash, enter your project folder and run the migration and seed scripts:
+   ```bash
+   cd /c/xampp/htdocs/marsu_sc
+   php scripts/migrate.php
+   php scripts/seed.php
+   ```
+5. Open your browser and go to: `http://localhost/marsu_sc/`  
+   🎉 **The ERP login page should now appear!**
+
+---
+
+## 🌿 Phase 2: Create Your Group's Branch
+
+**NEVER code directly on the `master` branch.** Always create a separate branch for your group so your work doesn't conflict with other groups.
+
+Inside `/c/xampp/htdocs/marsu_sc`, run:
+```bash
+git checkout -b feature/group-name
+```
+*Example for Health group:*
+```bash
+git checkout -b feature/health-clinic
+```
+*Example for Housing group:*
+```bash
+git checkout -b feature/housing-ishamis
+```
+
+---
+
+## 🎨 Phase 3: The ONLY File You Need to Edit for Now (`Views/index.php`)
+
+Do **not** worry about the database or backend right now. Focus on designing your module's interface!
+
+Open this single file in VS Code or your code editor:
+👉 **`modules/<your_module>/Views/index.php`**
+
+### What to Customize (Pure HTML & Bootstrap):
+
+#### 1. Page Title & Description (Near the top):
+```html
+<h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
+    <i class="bi bi-heart-pulse-fill me-2 text-gold"></i>Clinic Patient Consultations
+</h1>
+<p class="text-muted small mb-0">Record and manage daily clinic patient checkups and medical triage.</p>
+```
+
+#### 2. Table Column Headers (Inside `<thead>`):
+Change the column headers to match your module's records:
+```html
+<thead class="table-marsu">
+    <tr>
+        <th>#</th>
+        <th>Patient Name / Student ID</th>
+        <th>Diagnosis / Chief Complaint</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th class="text-end">Actions</th>
+    </tr>
+</thead>
+```
+
+#### 3. Modal Form Input Labels (Inside `<div class="modal-body">`):
+Change the input labels so users know what to enter:
+```html
+<div class="mb-3">
+    <label class="form-label small fw-bold">Patient Name <span class="text-danger">*</span></label>
+    <input type="text" name="title" class="form-control form-control-sm" required placeholder="e.g. Juan Dela Cruz">
+</div>
+
+<div class="mb-3">
+    <label class="form-label small fw-bold">Chief Complaint / Symptoms</label>
+    <textarea name="description" class="form-control form-control-sm" rows="3" placeholder="Describe symptoms or medical notes..."></textarea>
+</div>
+```
+
+---
+
+## 🚀 Phase 4: Save, Commit, Push, and Pull Request (Submit to Lead)
+
+Once you test your page on `http://localhost/marsu_sc/` and it looks great, it's time to submit your work to the Lead Admin!
+
+### 1. Stage and Check Your Modified File:
+```bash
+git status
+```
+*(You should see `modules/<your_module>/Views/index.php` in red or green).*
+
+### 2. Stage Your File:
+```bash
+git add modules/<your_module>/Views/index.php
+```
+
+### 3. Commit with a Clear Message:
+```bash
+git commit -m "feat(module): customize index view title, table, and form"
+```
+
+### 4. Push Your Branch to GitHub:
+```bash
+git push -u origin feature/your-group-name
+```
+*(Example: `git push -u origin feature/health-clinic`)*
+
+---
+
+## 🤝 Phase 5: Submit the Pull Request (PR)
+
+1. Open the project GitHub repository in your browser:  
+   👉 **`https://github.com/alfredevin/marsu_sc`**
+2. You will see a yellow banner at the top saying:  
+   **`"feature/your-group-name had recent pushes — Compare & pull request"`**
+3. Click the green button: **Compare & pull request**.
+4. Write a short description of what your group customized in `Views/index.php`.
+5. Click **Create pull request**.
+
+🎉 **You're done!**  
+The Lead Admin (Alfred) will be notified, inspect your HTML changes, and merge your branch into the master project!
+
+---
+
+## 📚 Appendix: What About the Database and Backend? (For Phase 2)
+
+Once your group's initial UI design is approved by the Lead, you can start connecting dynamic database columns:
+
+1. **How Data Flows**:
+   - `HTML Form (Views/index.php)` sends input data.
+   - `Controllers/HomeController.php` receives it via `$_POST` and runs `Database::insert()`.
+   - Data is stored in your MySQL table (`prefix_records`).
+   - `Views/index.php` displays rows via `<?php foreach ($records as $r): ?>`.
+
+2. **Testing Your Group Account**:
+   - Each group lead has a dedicated account (e.g., `group4_lead`, `group7_lead`, password: `Password123!`).
+   - When you log in with your group lead account, your sidebar will **only** display your assigned module!

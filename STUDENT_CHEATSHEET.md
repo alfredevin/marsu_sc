@@ -1,6 +1,8 @@
 # 📘 MarSU ERP — Student Developer Starter Guide
 ### Step-by-Step: From Cloning to Your First Pull Request (Pure HTML/CSS First)
 
+![MarSU ERP 5-Step Developer Workflow](docs/images/student_workflow_guide.jpg)
+
 Welcome, MarSU Student Developers! 👋
 
 For this initial milestone, **you do NOT need to touch backend PHP, SQL, or database migrations**. Your goal is simply to set up the project on your laptop, create your group's branch, and customize **one single file (`Views/index.php`)** using pure HTML/CSS so the Lead Admin can review your changes on GitHub!
@@ -113,6 +115,16 @@ Change the input labels so users know what to enter:
     <textarea name="description" class="form-control form-control-sm" rows="3" placeholder="Landlord: Maria Santos (0917-xxx-xxxx) • Rate: ₱1,500/month • Free WiFi & Water"></textarea>
 </div>
 ```
+
+---
+
+### 🎥 Visual Preview & Walkthrough Demonstration
+Here is how your custom module and modal form look in the browser:
+
+![Housing Intake Form Modal Preview](docs/images/housing_modal_demo.png)
+
+> [!TIP]
+> **Video Demonstration**: You can watch the full recorded session walkthrough video located at [`docs/videos/student_walkthrough.webp`](docs/videos/student_walkthrough.webp) showing login, workspace navigation, and modal form opening!
 
 ---
 

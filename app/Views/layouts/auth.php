@@ -175,8 +175,8 @@
             </div>
 
             <div class="auth-hero-footer-labels">
-                <span class="auth-hero-footer-left">Marinduque State University – CICS System</span>
-                <span class="auth-hero-footer-right">SANTA CRUZ, MQE &bull; Portal 2026</span>
+                <span class="auth-hero-footer-left"><i class="bi bi-building me-1 text-gold"></i>Marinduque State University &ndash; CICS System</span>
+                <span class="auth-hero-footer-right"><i class="bi bi-geo-alt-fill me-1 text-gold"></i>SANTA CRUZ, MQE &bull; Portal 2026</span>
             </div>
         </div>
     </div>

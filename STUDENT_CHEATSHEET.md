@@ -1,22 +1,24 @@
-# 📘 MarSU ERP — Student Developer Starter Guide
+# MarSU ERP — Student Developer Starter Guide
 ### Step-by-Step: From Cloning to Your First Pull Request (Pure HTML/CSS First)
 
 ![MarSU ERP 5-Step Developer Workflow](docs/images/student_workflow_guide.jpg)
 
-Welcome, MarSU Student Developers! 👋
+Welcome, MarSU Student Developers!
 
 For this initial milestone, **you do NOT need to touch backend PHP, SQL, or database migrations**. Your goal is simply to set up the project on your laptop, create your group's branch, and customize **one single file (`Views/index.php`)** using pure HTML/CSS so the Lead Admin can review your changes on GitHub!
 
 ---
 
-## 🛑 The Golden Rule
+## The Golden Rule
+
+> [!IMPORTANT]
 > **DO NOT modify files inside `core/`, `app/`, or `scripts/`.**  
 > Your group's work must live **STRICTLY** inside your assigned module directory:  
-> 👉 `modules/<your_module>/` (e.g., `modules/health/` or `modules/housing/`)
+> `modules/<your_module>/` (for example: `modules/health/` or `modules/housing/`)
 
 ---
 
-## 🏁 Phase 1: Setup from the Very Beginning (From Scratch)
+## Phase 1: Setup from the Very Beginning (From Scratch)
 
 ### 1. Requirements on Your Laptop:
 - **XAMPP** (with Apache and MySQL started)
@@ -50,11 +52,11 @@ For this initial milestone, **you do NOT need to touch backend PHP, SQL, or data
    php scripts/seed.php
    ```
 5. Open your browser and go to: `http://localhost/marsu_sc/`  
-   🎉 **The ERP login page should now appear!**
+   The ERP login page should now appear!
 
 ---
 
-## 🌿 Phase 2: Create Your Group's Branch
+## Phase 2: Create Your Group's Branch
 
 **NEVER code directly on the `master` branch.** Always create a separate branch for your group so your work doesn't conflict with other groups.
 
@@ -70,12 +72,12 @@ git checkout -b feature/housing-ishamis
 
 ---
 
-## 🎨 Phase 3: The ONLY File You Need to Edit for Now (`Views/index.php`)
+## Phase 3: The ONLY File You Need to Edit for Now (`Views/index.php`)
 
 Do **not** worry about the database or backend right now. Focus on designing your module's interface!
 
 Open this single file in VS Code or your code editor:
-👉 **`modules/housing/Views/index.php`** *(or your own module's `Views/index.php`)*
+`modules/housing/Views/index.php` *(or your own module's `Views/index.php`)*
 
 ### What to Customize (Pure HTML & Bootstrap):
 
@@ -118,7 +120,7 @@ Change the input labels so users know what to enter:
 
 ---
 
-### 🎥 Visual Preview & Walkthrough Demonstration
+### Visual Preview & Walkthrough Demonstration
 Here is how your custom module and modal form look in the browser:
 
 ![Housing Intake Form Modal Preview](docs/images/housing_modal_demo.png)
@@ -128,7 +130,7 @@ Here is how your custom module and modal form look in the browser:
 
 ---
 
-## 🚀 Phase 4: Save, Commit, Push, and Pull Request (Submit to Lead)
+## Phase 4: Save, Commit, Push, and Pull Request (Submit to Lead)
 
 Once you test your page on `http://localhost/marsu_sc/` and it looks great, it's time to submit your work to the Lead Admin!
 
@@ -155,22 +157,21 @@ git push -u origin feature/housing-ishamis
 
 ---
 
-## 🤝 Phase 5: Submit the Pull Request (PR)
+## Phase 5: Submit the Pull Request (PR)
 
 1. Open the project GitHub repository in your browser:  
-   👉 **`https://github.com/alfredevin/marsu_sc`**
-2. You will see a yellow banner at the top saying:  
-   **`"feature/your-group-name had recent pushes — Compare & pull request"`**
+   `https://github.com/alfredevin/marsu_sc`
+2. You will see a banner at the top saying:  
+   `"feature/your-group-name had recent pushes — Compare & pull request"`
 3. Click the green button: **Compare & pull request**.
 4. Write a short description of what your group customized in `Views/index.php`.
 5. Click **Create pull request**.
 
-🎉 **You're done!**  
 The Lead Admin (Alfred) will be notified, inspect your HTML changes, and merge your branch into the master project!
 
 ---
 
-## 📚 Appendix: What About the Database and Backend? (For Phase 2)
+## Appendix: What About the Database and Backend? (For Phase 2)
 
 Once your group's initial UI design is approved by the Lead, you can start connecting dynamic database columns:
 

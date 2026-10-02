@@ -114,34 +114,164 @@
       }
     });
 
-    // 5. Flash Message Auto-Display (SweetAlert2 Toast)
+    // 5. MarSU Executive HUD Notifications & Session Transitions
     const flashSuccess = document.querySelector('[data-flash-success]');
     const flashError = document.querySelector('[data-flash-error]');
     const flashInfo = document.querySelector('[data-flash-info]');
 
-    if (window.Swal) {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 4000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer);
-          toast.addEventListener('mouseleave', Swal.resumeTimer);
-        }
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function (m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+      });
+    }
+
+    function showMarsuWelcomeHud(msg) {
+      let name = 'Executive';
+      const match = msg.match(/Welcome back,\s*([^!]+)!?/i);
+      if (match && match[1]) {
+        name = match[1].trim();
+      }
+
+      const hud = document.createElement('div');
+      hud.className = 'marsu-hud-banner';
+      hud.innerHTML = `
+        <div class="d-flex align-items-center gap-3">
+          <div class="marsu-hud-icon-wrap">
+            <i class="bi bi-shield-check"></i>
+            <div class="marsu-hud-pulse"></div>
+          </div>
+          <div class="flex-grow-1 min-w-0">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge bg-warning text-dark fw-bold px-2 py-0" style="font-size: 0.65rem; letter-spacing: 0.04em;">
+                <i class="bi bi-cpu-fill me-1"></i> MARSU ERP CORE
+              </span>
+              <span class="badge bg-secondary bg-opacity-50 text-white-50 px-2 py-0" style="font-size: 0.65rem;">
+                AUTHENTICATED
+              </span>
+            </div>
+            <h6 class="text-white fw-bold mb-0" style="letter-spacing: -0.01em;">Welcome back, ${escapeHtml(name)}!</h6>
+            <p class="text-white-50 small mb-0" style="font-size: 0.76rem;">
+              <i class="bi bi-geo-alt-fill text-warning me-1"></i>Santa Cruz Campus &bull; Executive BI Session Active
+            </p>
+          </div>
+          <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Close"></button>
+        </div>
+        <div class="marsu-hud-bar animate"></div>
+      `;
+      document.body.appendChild(hud);
+
+      requestAnimationFrame(() => {
+        setTimeout(() => hud.classList.add('active'), 120);
       });
 
-      if (flashSuccess && flashSuccess.dataset.flashSuccess) {
-        Toast.fire({ icon: 'success', title: flashSuccess.dataset.flashSuccess });
-      }
-      if (flashError && flashError.dataset.flashError) {
-        Toast.fire({ icon: 'error', title: flashError.dataset.flashError });
-      }
-      if (flashInfo && flashInfo.dataset.flashInfo) {
-        Toast.fire({ icon: 'info', title: flashInfo.dataset.flashInfo });
+      const dismiss = () => {
+        hud.classList.remove('active');
+        setTimeout(() => hud.remove(), 600);
+      };
+
+      hud.querySelector('.btn-close').addEventListener('click', dismiss);
+      setTimeout(dismiss, 4500);
+    }
+
+    function showMarsuNotification(type, msg) {
+      const isErr = type === 'error';
+      const icon = isErr ? 'bi-exclamation-triangle-fill text-danger' : 'bi-check-circle-fill text-success';
+      const borderCol = isErr ? 'rgba(239, 68, 68, 0.65)' : 'rgba(212, 175, 55, 0.65)';
+      
+      const toast = document.createElement('div');
+      toast.className = 'marsu-hud-banner';
+      toast.style.borderColor = borderCol;
+      toast.innerHTML = `
+        <div class="d-flex align-items-center gap-3">
+          <div class="marsu-hud-icon-wrap" style="border-color: ${borderCol};">
+            <i class="bi ${icon}"></i>
+          </div>
+          <div class="flex-grow-1 min-w-0">
+            <div class="badge bg-secondary bg-opacity-25 text-warning px-2 py-0 mb-1" style="font-size: 0.65rem;">
+              MARSU SYSTEM NOTICE
+            </div>
+            <div class="text-white small fw-semibold">${escapeHtml(msg)}</div>
+          </div>
+          <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Close"></button>
+        </div>
+        <div class="marsu-hud-bar animate"></div>
+      `;
+      document.body.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        setTimeout(() => toast.classList.add('active'), 120);
+      });
+
+      const dismiss = () => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.remove(), 600);
+      };
+
+      toast.querySelector('.btn-close').addEventListener('click', dismiss);
+      setTimeout(dismiss, 4200);
+    }
+
+    if (flashSuccess && flashSuccess.dataset.flashSuccess) {
+      const sMsg = flashSuccess.dataset.flashSuccess;
+      if (sMsg.toLowerCase().includes('welcome back')) {
+        showMarsuWelcomeHud(sMsg);
+      } else {
+        showMarsuNotification('success', sMsg);
       }
     }
+    if (flashError && flashError.dataset.flashError) {
+      showMarsuNotification('error', flashError.dataset.flashError);
+    }
+    if (flashInfo && flashInfo.dataset.flashInfo) {
+      showMarsuNotification('info', flashInfo.dataset.flashInfo);
+    }
+
+    // 5.1 Interactive MarSU Security Gate Transitions (Logout & Login)
+    window.showMarsuSecurityOverlay = function (title, subtitle) {
+      let overlay = document.getElementById('marsuSecurityOverlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'marsuSecurityOverlay';
+        overlay.className = 'marsu-security-overlay';
+        overlay.innerHTML = `
+          <div class="marsu-orbit-spinner">
+            <div class="marsu-orbit-ring-outer"></div>
+            <div class="marsu-orbit-ring-inner"></div>
+            <div class="marsu-orbit-center-logo">
+              <i class="bi bi-shield-lock-fill text-warning fs-3"></i>
+            </div>
+          </div>
+          <h5 class="fw-bold text-white mb-2" id="marsuOverlayTitle" style="letter-spacing: 0.02em;">Authenticating...</h5>
+          <p class="text-white-50 small mb-0 text-center px-3" id="marsuOverlaySub" style="max-width: 440px;">
+            Please wait while the system secures your session.
+          </p>
+        `;
+        document.body.appendChild(overlay);
+      }
+
+      document.getElementById('marsuOverlayTitle').textContent = title;
+      document.getElementById('marsuOverlaySub').textContent = subtitle;
+
+      requestAnimationFrame(() => {
+        overlay.classList.add('active');
+      });
+    };
+
+    // Logout Transition
+    document.querySelectorAll('form[action*="logout"]').forEach(form => {
+      form.addEventListener('submit', function (e) {
+        if (this.dataset.animating) return;
+        e.preventDefault();
+        this.dataset.animating = 'true';
+
+        window.showMarsuSecurityOverlay('Securing MarSU Session...', 'Encrypting audit trail and safely terminating session...');
+
+        setTimeout(() => {
+          this.submit();
+        }, 750);
+      });
+    });
 
     // 6. Generic AJAX Table Search & Client Filter
     const liveSearchInputs = document.querySelectorAll('[data-table-search]');

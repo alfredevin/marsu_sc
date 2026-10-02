@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
     passwordInput.addEventListener('keydown', checkCapsLock);
     passwordInput.addEventListener('keyup', checkCapsLock);
 
-    // Form Submission Interactive Loading State
+    // Form Submission Interactive Loading State with MarSU Security Overlay
     if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
             if (!usernameInput.value.trim() || !passwordInput.value) {
@@ -183,6 +183,9 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.disabled = true;
             btnText.classList.add('d-none');
             btnSpinner.classList.remove('d-none');
+            if (typeof window.showMarsuSecurityOverlay === 'function') {
+                window.showMarsuSecurityOverlay('Authenticating MarSU Identity...', 'Verifying credentials & RBAC permissions with Central Core...');
+            }
         });
     }
 });

@@ -1522,3 +1522,386 @@ body.sidebar-toggled #app-main {
 .print-header {
   display: none;
 }
+
+/* ==========================================================================
+   MARSU EXECUTIVE HUD BANNER & TRANSITION SYSTEM
+   ========================================================================== */
+
+/* Luxury Floating Welcome HUD Banner (Replaces plain popup) */
+.marsu-hud-banner {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-140%);
+  z-index: 1080;
+  min-width: 440px;
+  max-width: 600px;
+  background: rgba(18, 6, 14, 0.95);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1.5px solid rgba(212, 175, 55, 0.65);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(212, 175, 55, 0.3);
+  padding: 1.15rem 1.4rem;
+  color: #FFFFFF;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.marsu-hud-banner.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.marsu-hud-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(128, 0, 32, 0.4) 0%, rgba(212, 175, 55, 0.25) 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.45rem;
+  color: #FFD700;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.4);
+  position: relative;
+}
+
+.marsu-hud-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255, 215, 0, 0.6);
+  animation: hudPulse 2.5s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes hudPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.22); opacity: 0; }
+}
+
+.marsu-hud-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #800020 0%, #D4AF37 50%, #FFD700 100%);
+  box-shadow: 0 0 8px #FFD700;
+  width: 100%;
+}
+
+.marsu-hud-bar.animate {
+  animation: hudCountdown 4.5s linear forwards;
+}
+
+@keyframes hudCountdown {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* Fullscreen Security / Session Gate Overlay */
+.marsu-security-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(30, 4, 14, 0.96) 0%, rgba(10, 4, 8, 0.98) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.marsu-security-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.marsu-orbit-spinner {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1.75rem;
+}
+
+.marsu-orbit-ring-outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed rgba(212, 175, 55, 0.6);
+  animation: orbitRotate 9s linear infinite;
+}
+
+.marsu-orbit-ring-inner {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: #FFD700;
+  border-right-color: #800020;
+  animation: orbitRotateReverse 2.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+}
+
+.marsu-orbit-center-logo {
+  position: absolute;
+  inset: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.5);
+}
+
+.marsu-orbit-center-logo img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+@keyframes orbitRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orbitRotateReverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+/* ==========================================================================
+   POWER BI STYLE EXECUTIVE BI ANALYTICS DASHBOARD
+   ========================================================================== */
+
+/* Top Power BI Command Bar & Slicers */
+.pbi-command-bar {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #F2C811; /* Power BI Iconic Accent */
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+
+[data-bs-theme="dark"] .pbi-command-bar {
+  background: #18191D;
+  border-color: rgba(255, 255, 255, 0.08);
+  border-left-color: #F2C811;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.pbi-slicer-pill {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #F8FAFC;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+[data-bs-theme="dark"] .pbi-slicer-pill {
+  background: #23252B;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #CBD5E1;
+}
+
+.pbi-slicer-pill:hover {
+  background: rgba(128, 0, 32, 0.08);
+  color: var(--marsu-burgundy);
+  border-color: rgba(128, 0, 32, 0.3);
+}
+
+.pbi-slicer-pill.active {
+  background: var(--marsu-burgundy);
+  color: #FFFFFF;
+  border-color: var(--marsu-burgundy);
+  box-shadow: 0 2px 6px rgba(128, 0, 32, 0.3);
+}
+
+/* Power BI Multi-Row KPI Metric Cards */
+.pbi-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+}
+
+[data-bs-theme="dark"] .pbi-card {
+  background: #18191D;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.pbi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.pbi-card-accent-burgundy { border-top: 3.5px solid var(--marsu-burgundy); }
+.pbi-card-accent-gold { border-top: 3.5px solid var(--marsu-gold); }
+.pbi-card-accent-emerald { border-top: 3.5px solid #10B981; }
+.pbi-card-accent-sapphire { border-top: 3.5px solid #2563EB; }
+.pbi-card-accent-purple { border-top: 3.5px solid #8B5CF6; }
+.pbi-card-accent-amber { border-top: 3.5px solid #F59E0B; }
+
+.pbi-metric-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748B;
+  margin-bottom: 0.35rem;
+}
+
+[data-bs-theme="dark"] .pbi-metric-label {
+  color: #94A3B8;
+}
+
+.pbi-metric-value {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.1;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+[data-bs-theme="dark"] .pbi-metric-value {
+  color: #F8FAFC;
+}
+
+.pbi-delta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.pbi-delta-positive {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.pbi-delta-warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #D97706;
+}
+
+.pbi-delta-info {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563EB;
+}
+
+.pbi-progress-track {
+  height: 5px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+
+[data-bs-theme="dark"] .pbi-progress-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pbi-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.8s ease;
+}
+
+/* Power BI Canvas Navigation Tab Bar */
+.pbi-tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+[data-bs-theme="dark"] .pbi-tab-nav {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.pbi-tab-btn {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -0.25rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+[data-bs-theme="dark"] .pbi-tab-btn {
+  color: #94A3B8;
+}
+
+.pbi-tab-btn:hover {
+  color: var(--marsu-burgundy);
+}
+
+.pbi-tab-btn.active {
+  color: var(--marsu-burgundy);
+  border-bottom-color: var(--marsu-burgundy);
+  font-weight: 700;
+}
+
+[data-bs-theme="dark"] .pbi-tab-btn.active {
+  color: #FFD700;
+  border-bottom-color: #FFD700;
+}
+
+/* Power BI Cross-Module Telemetry Gauge Grid */
+.pbi-telemetry-gauge {
+  padding: 0.85rem;
+  border-radius: 10px;
+  background: #F8FAFC;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 0.75rem;
+}
+
+[data-bs-theme="dark"] .pbi-telemetry-gauge {
+  background: #202228;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.pbi-telemetry-gauge:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+}
+

@@ -48,9 +48,11 @@ For this initial milestone, **you do NOT need to touch backend PHP, SQL, or data
 4. In Git Bash, enter your project folder and run the migration and seed scripts:
    ```bash
    cd /c/xampp/htdocs/marsu_sc
-   php scripts/migrate.php
-   php scripts/seed.php
+   /c/xampp/php/php.exe scripts/migrate.php
+   /c/xampp/php/php.exe scripts/seed.php
    ```
+   *(Note: Kung `php: command not found` kapag nag-type ka ng `php`, gamitin ang buong path `/c/xampp/php/php.exe` tulad ng nasa itaas. O kaya i-run muna ang `export PATH=$PATH:/c/xampp/php` sa Git Bash para gumana ang shortcut na `php`).*
+
 5. Open your browser and go to: `http://localhost/marsu_sc/`  
    The ERP login page should now appear!
 

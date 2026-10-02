@@ -171,16 +171,73 @@ class DashboardController {
             ]
         ];
 
-        // 6. Executive Ratio & KPIs
+        // 6. Detailed 10-Module Analytical Datasets (Executive BI Visuals)
+        $housingStats = [
+            'zones' => ['Brgy. Poblacion', 'Brgy. Matalaba', 'Brgy. Buyabod', 'Brgy. Morales', 'Brgy. Lapu-lapu'],
+            'capacity' => [48, 36, 32, 28, 26],
+            'occupied' => [42, 30, 26, 24, 20],
+            'avg_monthly_rate' => 1350,
+            'accredited_houses' => 9
+        ];
+
+        $clinicStats = [
+            'months' => ['Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+            'medical' => [32, 45, 58, 62, 44],
+            'dental' => [12, 16, 24, 26, 18],
+            'firstaid' => [8, 14, 19, 15, 12]
+        ];
+
+        $guidanceStats = [
+            'categories' => ['Academic Guidance', 'Career Planning', 'Personal & Emotional', 'Adjustment to Campus', 'Family Support'],
+            'counts' => [38, 26, 22, 19, 14],
+            'resolved_rate' => 96.2
+        ];
+
+        $retentionStats = [
+            'tiers' => ['Low Risk (Safe)', 'Moderate Risk (Watchlist)', 'High Risk (Intervention)'],
+            'counts' => [822, 36, 9],
+            'factors' => ['Attendance (<80%)', 'Midterm Grade Deficiencies', 'Commute/Financial Burden', 'First-Gen Adjustment']
+        ];
+
+        $workloadStats = [
+            'tiers' => ['Regular Load (18-21 u)', 'Overload (22-24 u)', 'Underload (<18 u)'],
+            'counts' => [31, 8, 3],
+            'compliance_pct' => 100
+        ];
+
+        $assetStats = [
+            'categories' => ['IT Workstations', 'Networking Gear', 'Lab Hardware', 'Projectors', 'Office Units'],
+            'serviceable' => [120, 18, 45, 24, 48],
+            'maintenance' => [8, 2, 5, 3, 4]
+        ];
+
+        $orgFinanceStats = [
+            'orgs' => ['CICS SC', 'JPCS', 'TEAS', 'PSS', 'JTHM'],
+            'collections' => [45000, 38000, 32000, 28000, 41500],
+            'disbursements' => [38500, 31000, 26500, 22000, 34000]
+        ];
+
+        $welfareStats = [
+            'programs' => ['UniFAST TDP-TES', 'CHED Merit', 'Provincial LGU', 'Student Assistantship'],
+            'grantees' => [165, 42, 85, 26],
+            'total_disbursed' => '₱2.4M'
+        ];
+
+        $clearanceFunnel = [
+            'offices' => ['Cashier', 'Library', 'Guidance', 'Clinic', 'College Dean', 'University Registrar'],
+            'rates' => [96.4, 94.2, 92.5, 90.8, 88.6, 85.2]
+        ];
+
+        // 7. Executive Ratio & KPIs
         $studentFacultyRatio = round($totalStudents / max(1, $totalEmployees), 1);
         $retentionScore = 94.8;
         $clearanceRate = 88.6;
         $housingCapacity = 83.5;
 
-        // 7. Recent Audit Activities
+        // 8. Recent Audit Activities
         $recentAudits = AuditLog::recent(6);
 
-        // 8. Multi-Module Aggregated Widgets (Widget Contract)
+        // 9. Multi-Module Aggregated Widgets (Widget Contract)
         $moduleWidgets = ModuleLoader::getWidgets();
         $evaluatedWidgets = [];
 
@@ -217,6 +274,15 @@ class DashboardController {
             'trendActual'         => $trendActual,
             'trendTarget'         => $trendTarget,
             'programScorecard'    => $programScorecard,
+            'housingStats'        => $housingStats,
+            'clinicStats'         => $clinicStats,
+            'guidanceStats'       => $guidanceStats,
+            'retentionStats'      => $retentionStats,
+            'workloadStats'       => $workloadStats,
+            'assetStats'          => $assetStats,
+            'orgFinanceStats'     => $orgFinanceStats,
+            'welfareStats'        => $welfareStats,
+            'clearanceFunnel'     => $clearanceFunnel,
             'studentFacultyRatio' => $studentFacultyRatio,
             'retentionScore'      => $retentionScore,
             'clearanceRate'       => $clearanceRate,

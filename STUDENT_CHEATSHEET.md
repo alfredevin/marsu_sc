@@ -56,6 +56,19 @@ For this initial milestone, **you do NOT need to touch backend PHP, SQL, or data
 
 ---
 
+### 4. How to Open the Project in VS Code or Code Editor
+In Git Bash, while inside the project directory, run:
+```bash
+code .
+```
+*(Note: May space at tuldok pagkatapos ng `code`. Ang command na `code .` ang awtomatikong magbubukas ng buong folder sa **Visual Studio Code**).*
+
+> [!TIP]
+> - Kung **Antigravity IDE** ang gamit: I-type ang `agy .` o buksan via **File > Open Folder** $\rightarrow$ piliin ang `C:\xampp\htdocs\marsu_sc`.
+> - Kung gusto mong buksan sa **Windows File Explorer** mula terminal: I-type ang `explorer .` o `start .`
+
+---
+
 ## Phase 2: Create Your Group's Branch
 
 **NEVER code directly on the `master` branch.** Always create a separate branch for your group so your work doesn't conflict with other groups.

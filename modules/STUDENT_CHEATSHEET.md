@@ -60,14 +60,11 @@ Inside `/c/xampp/htdocs/marsu_sc`, run:
 ```bash
 git checkout -b feature/group-name
 ```
-*Example for Health group:*
-```bash
-git checkout -b feature/health-clinic
-```
-*Example for Housing group:*
+*Example for Housing group (ISHAMIS):*
 ```bash
 git checkout -b feature/housing-ishamis
 ```
+*(Or for your own assigned module: `feature/health-clinic`, `feature/guidance-records`, etc.)*
 
 ---
 
@@ -76,16 +73,16 @@ git checkout -b feature/housing-ishamis
 Do **not** worry about the database or backend right now. Focus on designing your module's interface!
 
 Open this single file in VS Code or your code editor:
-👉 **`modules/<your_module>/Views/index.php`**
+👉 **`modules/housing/Views/index.php`** *(or your own module's `Views/index.php`)*
 
 ### What to Customize (Pure HTML & Bootstrap):
 
 #### 1. Page Title & Description (Near the top):
 ```html
 <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
-    <i class="bi bi-heart-pulse-fill me-2 text-gold"></i>Clinic Patient Consultations
+    <i class="bi bi-house-check-fill me-2 text-gold"></i>Student Housing & Accommodation (ISHAMIS)
 </h1>
-<p class="text-muted small mb-0">Record and manage daily clinic patient checkups and medical triage.</p>
+<p class="text-muted small mb-0">Directory of university-accredited boarding houses and student bed spaces in Santa Cruz Campus.</p>
 ```
 
 #### 2. Table Column Headers (Inside `<thead>`):
@@ -94,10 +91,10 @@ Change the column headers to match your module's records:
 <thead class="table-marsu">
     <tr>
         <th>#</th>
-        <th>Patient Name / Student ID</th>
-        <th>Diagnosis / Chief Complaint</th>
-        <th>Status</th>
-        <th>Date</th>
+        <th>Boarding House Name / Landlord</th>
+        <th>Monthly Rate / Amenities</th>
+        <th>Accreditation Status</th>
+        <th>Date Listed</th>
         <th class="text-end">Actions</th>
     </tr>
 </thead>
@@ -107,13 +104,13 @@ Change the column headers to match your module's records:
 Change the input labels so users know what to enter:
 ```html
 <div class="mb-3">
-    <label class="form-label small fw-bold">Patient Name <span class="text-danger">*</span></label>
-    <input type="text" name="title" class="form-control form-control-sm" required placeholder="e.g. Juan Dela Cruz">
+    <label class="form-label small fw-bold">Boarding House Name <span class="text-danger">*</span></label>
+    <input type="text" name="title" class="form-control form-control-sm" required placeholder="e.g. Villa Marinduque Student Residence">
 </div>
 
 <div class="mb-3">
-    <label class="form-label small fw-bold">Chief Complaint / Symptoms</label>
-    <textarea name="description" class="form-control form-control-sm" rows="3" placeholder="Describe symptoms or medical notes..."></textarea>
+    <label class="form-label small fw-bold">Landlord Contact & Monthly Rate / Amenities</label>
+    <textarea name="description" class="form-control form-control-sm" rows="3" placeholder="Landlord: Maria Santos (0917-xxx-xxxx) • Rate: ₱1,500/month • Free WiFi & Water"></textarea>
 </div>
 ```
 
@@ -127,23 +124,22 @@ Once you test your page on `http://localhost/marsu_sc/` and it looks great, it's
 ```bash
 git status
 ```
-*(You should see `modules/<your_module>/Views/index.php` in red or green).*
+*(You should see `modules/housing/Views/index.php` in red or green).*
 
 ### 2. Stage Your File:
 ```bash
-git add modules/<your_module>/Views/index.php
+git add modules/housing/Views/index.php
 ```
 
 ### 3. Commit with a Clear Message:
 ```bash
-git commit -m "feat(module): customize index view title, table, and form"
+git commit -m "feat(housing): customize index view title, table, and form"
 ```
 
 ### 4. Push Your Branch to GitHub:
 ```bash
-git push -u origin feature/your-group-name
+git push -u origin feature/housing-ishamis
 ```
-*(Example: `git push -u origin feature/health-clinic`)*
 
 ---
 

@@ -112,28 +112,28 @@
                 </h6>
             </div>
             <div class="card-body">
-                <p class="text-muted small mb-3">Direktang aksyon para sa inyong module development:</p>
+                <p class="text-muted small mb-3">Direct actions for your assigned module development:</p>
                 <div class="d-grid gap-2">
                     <a href="<?= url($moduleSlug) ?>" class="btn btn-marsu text-start d-flex align-items-center justify-content-between p-3">
                         <div>
-                            <div class="fw-bold"><i class="bi bi-table me-2"></i>Tingnan ang Module Records</div>
-                            <div class="small opacity-75">Talaan ng lahat ng in-entry na data</div>
+                            <div class="fw-bold"><i class="bi bi-table me-2"></i>View Module Records</div>
+                            <div class="small opacity-75">Browse and search all logged entries</div>
                         </div>
                         <i class="bi bi-arrow-right"></i>
                     </a>
 
                     <a href="<?= url($moduleSlug) ?>#newRecordModal" class="btn btn-outline-secondary text-start d-flex align-items-center justify-content-between p-3">
                         <div>
-                            <div class="fw-bold text-dark"><i class="bi bi-plus-circle me-2 text-gold"></i>Magdagdag ng Bagong Entry</div>
-                            <div class="small text-muted">Subukan ang inyong input form</div>
+                            <div class="fw-bold text-dark"><i class="bi bi-plus-circle me-2 text-gold"></i>Create New Entry</div>
+                            <div class="small text-muted">Test your module input form</div>
                         </div>
                         <i class="bi bi-plus-lg"></i>
                     </a>
                 </div>
 
                 <div class="alert alert-info border-0 mt-3 p-3 mb-0 small">
-                    <strong class="d-block mb-1"><i class="bi bi-info-circle me-1"></i>Saan mag-e-edit?</strong>
-                    I-edit ang inyong disenyo sa: <br>
+                    <strong class="d-block mb-1"><i class="bi bi-info-circle me-1"></i>Where to customize your UI?</strong>
+                    Edit your page template and forms at: <br>
                     <code>modules/<?= e($moduleSlug) ?>/Views/index.php</code>
                 </div>
             </div>
@@ -166,9 +166,9 @@
                                 <tr>
                                     <td colspan="5" class="text-center py-5 text-muted">
                                         <i class="bi bi-folder-x fs-2 d-block mb-2 text-gold opacity-50"></i>
-                                        Wala pang data sa <code><?= e($tableName) ?></code>.<br>
+                                        No entries found in <code><?= e($tableName) ?></code>.<br>
                                         <a href="<?= url($moduleSlug) ?>" class="btn btn-marsu btn-sm mt-2">
-                                            <i class="bi bi-plus-lg me-1"></i>Gumawa ng unang Entry
+                                            <i class="bi bi-plus-lg me-1"></i>Create First Entry
                                         </a>
                                     </td>
                                 </tr>

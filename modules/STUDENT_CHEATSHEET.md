@@ -1,169 +1,167 @@
-# 📘 MarSU ERP — Gabay para sa mga Estudyante (Beginner Cheatsheet)
+# 📘 MarSU ERP — Student Developer Cheatsheet
 
-Kamusta mga ka-MarSU! Kung bago ka pa lang sa web development at hindi ka pa sanay sa **JavaScript** o **Backend PHP**, huwag kang matakot! 
+Welcome, BSIS Student Developers!
 
-Ang buong system na ito ay **pre-built at gumagana na agad**. Hindi mo kailangang mag-code mula sa scratch. **Copy-paste at palit ng text lang sa HTML ang gagawin mo!**
-
----
-
-## 🛑 Ang Nag-iisang Mahigpit na Patakaran
-> **BAWAL galawin ang folder ng `core/`, `app/`, at `scripts/`.**  
-> Lahat ng code, design, at files ng inyong grupo ay dapat nasa loob **LAMANG** ng inyong sariling folder:  
-> 👉 `modules/<pangalan_ng_module>/` (Halimbawa: `modules/health/` o `modules/housing/`)
+The **MarSU Centralized ERP** architecture is fully pre-built, modular, and ready to use. You do **not** need advanced JavaScript or complex backend PHP to build your assigned capstone module. Follow this quick guide to customize your module's interface, forms, and database records.
 
 ---
 
-## 📂 Aling Files Lang ang Kailangan Mong Buksan?
+## 🛑 Golden Rule (Zero Core Modification)
+> **DO NOT modify, add, or delete files inside `core/`, `app/`, or `scripts/`.**  
+> All of your group's code, designs, and files must reside **STRICTLY** within your assigned module directory:  
+> 👉 `modules/<your_module_slug>/` (e.g., `modules/housing/` or `modules/health/`)
 
-Sa loob ng folder ng inyong module (hal. `modules/health/`), tatlong (3) files lang ang gagalawin ninyo:
+---
 
-| File Name | Para Saan Ito? | Kailangan ba ng Coding? |
+## 📂 Which Files Do You Need to Work On?
+
+Inside your module folder (e.g., `modules/housing/`), you only need to work with these files:
+
+| File Name | Purpose | What to do? |
 |---|---|---|
-| **`Views/index.php`** | Dito nakalagay ang UI, Table, at Form/Modal | **HTML lang! Walang JavaScript!** |
-| **`module.json`** | Dito nakalagay ang pamagat at Sidebar Menu | **Palit ng text sa listahan lang!** |
-| **`Controllers/HomeController.php`** | Dito nagse-save sa database | **May ready-made code na, kokopyahin mo lang!** |
+| **`Views/index.php`** | Main UI, KPI cards, table, and input modal | **Plain HTML & Bootstrap! No complex JS needed!** |
+| **`module.json`** | Module title, description, and Sidebar sub-menus | **Edit text labels & configuration!** |
+| **`Controllers/HomeController.php`** | Request handling & saving to database | **Pre-wired methods ready to use!** |
 
 ---
 
-## 🎨 Cheat 1: Paano Palitan ang Pamagat at Kulay sa Inyong Page
+## 🎨 Cheat 1: Customizing Your Page Title & Description
 
-Buksan ang `modules/<inyong_module>/Views/index.php`:
-Hanapin ang bandang itaas:
+Open `modules/<your_module>/Views/index.php` and update the header section:
 
 ```html
-<!-- PALITAN ANG PAMAGAT DITO -->
+<!-- UPDATE PAGE HEADING HERE -->
 <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
-    <i class="bi bi-heart-pulse-fill me-2 text-gold"></i>Clinic Consultations
+    <i class="bi bi-house-check-fill me-2 text-gold"></i>Student Housing & Accommodation Directory
 </h1>
 
-<!-- PALITAN ANG MAIKLING DESCRIPTION DITO -->
-<p class="text-muted small mb-0">Talaan ng mga pasyente at gamot sa campus clinic.</p>
+<!-- UPDATE DESCRIPTION HERE -->
+<p class="text-muted small mb-0">Official university-accredited boarding houses and bed space vacancies.</p>
 ```
 
 ---
 
-## 📝 Cheat 2: Copy-Paste Templates para sa Input Form
+## 📝 Cheat 2: Copy-Paste Templates for Your Input Form
 
-Kung gusto ninyong magdagdag ng mga tanong o fields sa inyong **"New Entry" Form**, pumunta sa `Views/index.php` (bandang ibaba, sa loob ng `<div class="modal-body">`). 
+To customize or add input fields to your **"New Entry" Form Modal**, open `Views/index.php` (inside `<div class="modal-body">`).
 
-Piliin lang ang kailangan ninyo at i-paste:
+Choose the field templates you need:
 
-### A. Pangalan o Karaniwang Text:
+### A. Standard Text Input (Names, Titles, Code):
 ```html
 <div class="mb-3">
-    <label class="form-label small fw-bold">Pangalan ng Pasyente / Estudyante</label>
-    <input type="text" name="title" class="form-control form-control-sm" required placeholder="Hal. Juan Dela Cruz">
+    <label class="form-label small fw-bold">Boarding House Name <span class="text-danger">*</span></label>
+    <input type="text" name="title" class="form-control form-control-sm" required placeholder="e.g. Villa Marinduque Residence">
 </div>
 ```
 
-### B. Petsa (Date Picker):
+### B. Date Picker:
 ```html
 <div class="mb-3">
-    <label class="form-label small fw-bold">Petsa ng Konsultasyon</label>
-    <input type="date" name="consultation_date" class="form-control form-control-sm">
+    <label class="form-label small fw-bold">Inspection / Booking Date</label>
+    <input type="date" name="record_date" class="form-control form-control-sm">
 </div>
 ```
 
-### C. Dropdown / Pagpipilian (Select Option):
+### C. Dropdown Select Menu:
 ```html
 <div class="mb-3">
-    <label class="form-label small fw-bold">Uri ng Karamdaman / Category</label>
+    <label class="form-label small fw-bold">Room Category / Classification</label>
     <select name="category" class="form-select form-select-sm">
-        <option value="Checkup">General Checkup</option>
-        <option value="Dental">Dental Care</option>
-        <option value="Emergency">First Aid / Emergency</option>
+        <option value="Single">Single Occupancy</option>
+        <option value="Shared">Shared Bed Space (2-4 pax)</option>
+        <option value="Studio">Studio Apartment</option>
     </select>
 </div>
 ```
 
-### D. Mahabang Text / Remarks (Textarea):
+### D. Multi-line Text Area (Notes, Remarks, Diagnosis):
 ```html
 <div class="mb-3">
-    <label class="form-label small fw-bold">Diagnosis / Reseta ng Doktor</label>
-    <textarea name="description" class="form-control form-control-sm" rows="3" placeholder="Isulat dito ang mga detalye o gamot..."></textarea>
+    <label class="form-label small fw-bold">Detailed Observations / Amenities</label>
+    <textarea name="description" class="form-control form-control-sm" rows="3" placeholder="Enter amenities, rules, or inspection findings..."></textarea>
 </div>
 ```
 
 ---
 
-## 📊 Cheat 3: Paano Magdagdag ng Column sa Table
+## 📊 Cheat 3: Adding Columns to Your Records Table
 
-Gusto mo bang magdagdag ng bagong column sa inyong Records Table?
-Sa loob pa rin ng `Views/index.php`:
+Inside `Views/index.php`:
 
-1. Magdagdag ng Header sa `<thead>`:
+1. Add a Column Header in `<thead>`:
 ```html
 <thead class="table-marsu">
     <tr>
         <th>#</th>
-        <th>Pangalan</th>
-        <th>Diagnosis</th>
+        <th>Title / Property</th>
+        <th>Description</th>
         <th>Status</th>
-        <th>Aksyon</th> <!-- Dagdag mo ito kung gusto mo -->
+        <th>Action</th>
     </tr>
 </thead>
 ```
 
-2. Maglagay ng kaukulang Data sa loob ng `<tbody>`:
+2. Output the corresponding data row in `<tbody>`:
 ```html
 <tr>
     <td><?= $i + 1 ?></td>
-    <td class="fw-bold"><?= e($r['title']) ?></td>
-    <td><?= e($r['description']) ?></td>
+    <td class="fw-bold text-marsu-burgundy"><?= e($r['title']) ?></td>
+    <td class="small text-muted"><?= e($r['description'] ?? 'N/A') ?></td>
     <td><span class="badge bg-success">Active</span></td>
+    <td class="text-end">
+        <button class="btn btn-sm btn-outline-secondary" onclick="alert('Viewing entry #<?= $r['id'] ?>')">
+            <i class="bi bi-eye"></i>
+        </button>
+    </td>
 </tr>
 ```
 
 ---
 
-## 📌 Cheat 4: Paano Magdagdag ng Sub-Menu sa Sidebar
+## 📌 Cheat 4: Adding Sub-Menus to the Sidebar
 
-Buksan ang `modules/<inyong_module>/module.json`.  
-Sa ilalim ng `"menu" -> "items"`, magdagdag lang ng panibagong curly braces `{ }`:
+Open `modules/<your_module>/module.json`. Under `"menu" -> "items"`, add sub-pages by adding objects to the array:
 
 ```json
 "menu": {
-    "icon": "bi-heart-pulse-fill",
+    "icon": "bi-house-check-fill",
     "items": [
         {
-            "label": "Talaan ng Pasyente",
-            "route": "health",
-            "permission": "health.view"
+            "label": "Overview & Records",
+            "route": "housing",
+            "permission": "housing.view"
         },
         {
-            "label": "Medical Supplies Inventory",
-            "route": "health",
-            "permission": "health.view"
+            "label": "Accreditation Directory",
+            "route": "housing",
+            "permission": "housing.view"
         }
     ]
 }
 ```
-👉 Pag-save mo nito, **awtomatiko nang lilitaw ang dalawang sub-menu sa sidebar!**
+👉 Once saved, your new sub-menus will **automatically render in the sidebar** when logged in!
 
 ---
 
-## 🚀 Cheat 5: Paano I-save at I-upload sa GitHub (Git Workflow)
+## 🚀 Cheat 5: Git Collaboration Workflow (Saving & Pushing)
 
-Kapag tapos ka nang mag-edit at gumagana na sa `localhost`, 3 simpleng utos lang ang kailangan mong i-type sa **Git Bash**:
+When you are finished editing on `localhost`, run these three (3) standard Git commands in **Git Bash**:
 
-1. **Gumawa ng sariling branch ng inyong grupo:**
+1. **Create and switch to your feature branch:**
    ```bash
-   git checkout -b feature/health-clinic
+   git checkout -b feature/your-module-update
    ```
 
-2. **I-save ang inyong gawa:**
+2. **Stage and commit your changes:**
    ```bash
-   git add modules/health/
-   git commit -m "feat(health): inayos ang form at table ng clinic"
+   git add modules/<your_module>/
+   git commit -m "feat(housing): update directory tables and intake form"
    ```
 
-3. **I-upload sa GitHub:**
+3. **Push to GitHub:**
    ```bash
-   git push origin feature/health-clinic
+   git push origin feature/your-module-update
    ```
 
-Pagkatapos, pumunta sa GitHub repository link ng inyong lead at i-click ang berdeng button na **`Compare & pull request`**. Awtomatiko nang maipapasa ang gawa ninyo para ma-merge ng admin!
-
----
-
-💡 **Tandaan:** Hindi kailangang maging kumplikado! Ang mahalaga ay maipakita ng grupo ninyo ang malinis na form, maayos na table, at tamang records para sa inyong module. Good luck, MarSU BSIS! 🎓
+4. Go to the project's GitHub repository and click **`Compare & pull request`**. The lead administrator will review and merge your contribution into the main system!

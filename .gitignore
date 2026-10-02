@@ -35,6 +35,10 @@ $RECYCLE.BIN/
 *.sublime-workspace
 nbproject/
 
-# Node / Vendor fallbacks (if any group uses utilities locally)
-node_modules/
-vendor/
+# Node / Composer Vendor fallbacks (at root only)
+/node_modules/
+/vendor/
+
+# Ensure public offline vendor assets are always tracked
+!public/assets/vendor/
+!public/assets/vendor/**

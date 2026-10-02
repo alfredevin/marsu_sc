@@ -27,7 +27,11 @@ For this initial milestone, **you do NOT need to touch backend PHP, SQL, or data
 
 ---
 
-### 2. How to Clone the Repository
+### 2. How to Clone the Repository (First Time Only!)
+
+> [!NOTE]
+> **Isang beses lang ito gagawin sa pinakaunang araw!** Kapag na-download na ang folder sa laptop mo, **HUWAG** nang mag-`git clone` ulit kailanman. Kapag may bagong update, `git pull` na ang gagamitin.
+
 1. Open **Git Bash**.
 2. Navigate to your XAMPP web root folder:
    ```bash
@@ -84,6 +88,34 @@ git checkout -b feature/group-name
 git checkout -b feature/housing-ishamis
 ```
 *(Or for your own assigned module: `feature/health-clinic`, `feature/guidance-records`, etc.)*
+
+---
+
+## ⚡ Important: How to Get Latest Admin Updates (While on Your Branch)
+
+Kapag nag-announce si Admin na may binago siyang kulay, bagong design, o system update sa GitHub, **paano mo ito makukuha sa laptop mo kahit nasa sarili kang branch?**
+
+> [!WARNING]
+> **Huwag mag-clone ulit!** Mag-e-error lang ang Git dahil may existing `marsu_sc` folder ka na sa `htdocs`. Ang tamang gagamitin ay **`git pull origin master`**.
+
+Sundin lang ang **2 simpleng hakbang** na ito sa Git Bash:
+
+### Step 1: I-save (Commit) muna ang ginagawa mo sa iyong module:
+*(Napakahalaga nito para hindi magreklamo si Git na may uncommitted files ka).*
+```bash
+git add .
+git commit -m "Save my progress"
+```
+
+### Step 2: I-pull ang pinakabagong update mula sa `master`:
+```bash
+git pull origin master
+```
+
+✨ **Bakit 100% ligtas ito?**
+- Ang gawa ng grupo mo ay nakakulong lang sa loob ng `modules/<your_module>/`.
+- Si Admin lang ang humahawak sa core layouts, kulay, at login page.
+- **Walang magkakabanggaan (zero merge conflict)!** Pagka-enter mo ng command, papasok agad ang bagong itsura nang buo at ligtas ang module mo. Mag-**Refresh (F5)** lang sa browser!
 
 ---
 

@@ -70,11 +70,11 @@
     </button>
 </form>
 
-<!-- Interactive Quick-Fill Demo Switcher for Instructors & Evaluators -->
+<!-- Interactive Quick-Fill Switcher for Student Module Accounts -->
 <div class="mt-4 pt-3 border-top border-secondary border-opacity-25">
     <div class="d-flex justify-content-between align-items-center">
         <button class="btn btn-link btn-sm text-decoration-none text-white-50 p-0 d-inline-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#demoAccounts" style="font-size: 0.75rem;">
-            <i class="bi bi-person-badge-fill text-gold me-1"></i> Quick Demo Logins <i class="bi bi-chevron-down ms-1" style="font-size: 0.7rem;"></i>
+            <i class="bi bi-mortarboard-fill text-gold me-1"></i> Student Module Accounts <i class="bi bi-chevron-down ms-1" style="font-size: 0.7rem;"></i>
         </button>
         <span class="text-white-50 small" style="font-size: 0.7rem;"><i class="bi bi-magic me-1 text-gold"></i>Click to autofill</span>
     </div>
@@ -82,33 +82,14 @@
     <div class="collapse mt-2" id="demoAccounts">
         <div class="auth-demo-box">
             <div class="text-white-50 small mb-2 d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
-                <span><i class="bi bi-lightning-charge me-1 text-gold"></i>Autofill Credentials:</span>
-                <span class="badge bg-secondary bg-opacity-25 text-gold border border-secondary border-opacity-25"><i class="bi bi-key-fill me-1"></i>Pass: Password123!</span>
+                <span><i class="bi bi-key-fill text-gold me-1"></i>Select Your Assigned Module:</span>
+                <span class="badge bg-secondary bg-opacity-25 text-gold border border-secondary border-opacity-25">Pass: Password123!</span>
             </div>
 
-            <!-- Core Role Chips -->
-            <div class="d-flex flex-wrap gap-1 mb-3">
-                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('admin', 'Password123!', 'Super Admin')">
-                    <i class="bi bi-shield-shaded text-warning"></i> Admin
-                </button>
-                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('dean', 'Password123!', 'College Dean')">
-                    <i class="bi bi-award-fill text-info"></i> Dean
-                </button>
-                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('faculty', 'Password123!', 'Faculty Member')">
-                    <i class="bi bi-person-workspace text-primary"></i> Faculty
-                </button>
-                <button type="button" class="auth-demo-chip" onclick="applyDemoAccount('student', 'Password123!', 'Student Account')">
-                    <i class="bi bi-mortarboard-fill text-success"></i> Student
-                </button>
-            </div>
-
-            <!-- Student Module Leads Dropdown (10 Active Modules) -->
-            <div class="mt-2">
-                <label for="moduleLeadSelect" class="text-white-50 small mb-1 d-block" style="font-size: 0.7rem;">
-                    <i class="bi bi-mortarboard-fill text-gold me-1"></i> Select Student Module Lead Account:
-                </label>
+            <!-- Student Module Leads Dropdown (10 Active Modules Only) -->
+            <div>
                 <select id="moduleLeadSelect" class="auth-module-select" onchange="onSelectModuleLead(this)">
-                    <option value="" selected disabled>-- Select a Module Lead to Test --</option>
+                    <option value="" selected disabled>-- Select Your Group's Module Account --</option>
                     <option value="group2_lead">Group 2: Institutional Repository &amp; KMS (kmp_)</option>
                     <option value="group3_lead">Group 3: Faculty Teaching Workload Management (wkl_)</option>
                     <option value="group4_lead">Group 4: Medical &amp; Dental Consultation Clinic (hth_)</option>
@@ -120,6 +101,9 @@
                     <option value="group10_lead">Group 10: Student Welfare Services Management (wlf_)</option>
                     <option value="group11_lead">Group 11: Guidance &amp; Counseling Records System (gdc_)</option>
                 </select>
+            </div>
+            <div class="mt-2 text-white-50 small" style="font-size: 0.68rem;">
+                <i class="bi bi-info-circle me-1 text-gold"></i>Logging in with your group account displays only your module in the sidebar.
             </div>
         </div>
     </div>

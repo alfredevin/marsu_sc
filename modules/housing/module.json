@@ -13,6 +13,16 @@
                 "label": "Overview & Records",
                 "route": "housing",
                 "permission": "housing.view"
+            },
+            {
+                "label": "Residency History",
+                "route": "housing",
+                "permission": "housing.view"
+            },
+            {
+                "label": "Tenant Profile",
+                "route": "housing",
+                "permission": "housing.view"
             }
         ]
     },

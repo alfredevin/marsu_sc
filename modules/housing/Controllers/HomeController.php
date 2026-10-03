@@ -34,6 +34,75 @@ class HomeController {
         ]);
     }
 
+    public function tenants(): void {
+        $user = Auth::user();
+
+        // Sample tenant records for demo
+        $tenants = [
+            [
+                'id'          => 1,
+                'student_id'  => '22-0145',
+                'name'        => 'Maria Santos',
+                'program'     => 'BS Information Technology - 3A',
+                'house'       => 'Villa Marinduque Student Dorm',
+                'room'        => 'Room 102 - Bed A',
+                'monthly_rent'=> '₱1,500.00',
+                'contact'     => '0917-123-4567',
+                'move_in'     => 'Aug 15, 2026',
+                'status'      => 'Active'
+            ],
+            [
+                'id'          => 2,
+                'student_id'  => '23-0891',
+                'name'        => 'John Rey Reyes',
+                'program'     => 'BS Computer Science - 2B',
+                'house'       => 'Greenview Boarding House',
+                'room'        => 'Room 204 - Bed B',
+                'monthly_rent'=> '₱1,800.00',
+                'contact'     => '0918-987-6543',
+                'move_in'     => 'Sep 01, 2026',
+                'status'      => 'Active'
+            ],
+            [
+                'id'          => 3,
+                'student_id'  => '21-0322',
+                'name'        => 'Angelica Ramos',
+                'program'     => 'BS Civil Engineering - 4A',
+                'house'       => 'Sunrise Ladies Dormitory',
+                'room'        => 'Room 105',
+                'monthly_rent'=> '₱2,000.00',
+                'contact'     => '0920-555-8888',
+                'move_in'     => 'Aug 20, 2026',
+                'status'      => 'Pending'
+            ],
+            [
+                'id'          => 4,
+                'student_id'  => '24-1102',
+                'name'        => 'Mark Joseph Alcantara',
+                'program'     => 'BS Hospitality Management - 1C',
+                'house'       => 'Villa Marinduque Student Dorm',
+                'room'        => 'Room 104 - Bed C',
+                'monthly_rent'=> '₱1,500.00',
+                'contact'     => '0919-444-2233',
+                'move_in'     => 'Sep 10, 2026',
+                'status'      => 'Active'
+            ]
+        ];
+
+        View::render('housing/Views/tenants', [
+            'title'       => 'Tenant Profiles & Directory',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'tenants'     => $tenants,
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Tenant Management' => '',
+                'Tenant Profile'    => ''
+            ]
+        ]);
+    }
+
     public function show(): void {
         $id = (int)($_GET['id'] ?? 0);
         $record = Database::fetchOne("SELECT * FROM `hsg_records` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]);

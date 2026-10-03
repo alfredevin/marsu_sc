@@ -15,14 +15,52 @@
                 "permission": "housing.view"
             },
             {
-                "label": "Residency History",
-                "route": "housing",
-                "permission": "housing.view"
+                "label": "House Management",
+                "icon": "bi-building",
+                "children": [
+                    {
+                        "label": "Boarding Houses",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Room Inventory",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    }
+                ]
             },
             {
-                "label": "Tenant Profile",
-                "route": "housing",
-                "permission": "housing.view"
+                "label": "Tenant Management",
+                "icon": "bi-people",
+                "children": [
+                    {
+                        "label": "Tenant Profile",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Residency History",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    }
+                ]
+            },
+            {
+                "label": "Reports Management",
+                "icon": "bi-file-earmark-bar-graph",
+                "children": [
+                    {
+                        "label": "Occupancy Report",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Accreditation Summary",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    }
+                ]
             }
         ]
     },

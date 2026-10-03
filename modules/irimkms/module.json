@@ -42,12 +42,27 @@
                 "permission": "irimkms.view",
                 "children": [
                     {
-                        "label": "Proposals & Approvals",
+                        "label": "Project Milestones",
                         "route": "irimkms/tenants",
                         "permission": "irimkms.view"
                     },
                     {
-                        "label": "Research Profiles",
+                        "label": "Implementation Progress",
+                        "route": "irimkms/residencyhistory",
+                        "permission": "irimkms.view"
+                    },
+                    {
+                        "label": "Evaluation Forms & Assessment Tools",
+                        "route": "irimkms/residencyhistory",
+                        "permission": "irimkms.view"
+                    },
+                    {
+                        "label": "Performance Indicators & Analytics",
+                        "route": "irimkms/residencyhistory",
+                        "permission": "irimkms.view"
+                    },
+                    {
+                        "label": "Completion & Accomplishment Reporting",
                         "route": "irimkms/residencyhistory",
                         "permission": "irimkms.view"
                     }
@@ -59,12 +74,22 @@
                 "permission": "irimkms.view",
                 "children": [
                     {
-                        "label": "Profile",
+                        "label": "Digital Research Storage",
                         "route": "irimkms/tenants",
                         "permission": "irimkms.view"
                     },
                     {
-                        "label": "Residency History",
+                        "label": "Document & File Management",
+                        "route": "irimkms/residencyhistory",
+                        "permission": "irimkms.view"
+                    },
+                    {
+                        "label": "Knowledge Management & Library",
+                        "route": "irimkms/residencyhistory",
+                        "permission": "irimkms.view"
+                    },
+                    {
+                        "label": "Searchable Research",
                         "route": "irimkms/residencyhistory",
                         "permission": "irimkms.view"
                     }

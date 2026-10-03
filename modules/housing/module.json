@@ -20,7 +20,7 @@
                     },
                     {
                         "label": "Residency History",
-                        "route": "housing",
+                        "route": "housing/residencyhistory",
                         "permission": "housing.view"
                     }
                 ]
@@ -31,27 +31,27 @@
                 "children": [
                     {
                         "label": "Room and Inventory",
-                        "route": "housing",
+                        "route": "housing/roomandinventory",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Availability Tracking",
-                        "route": "housing",
+                        "route": "housing/availabilitytracking",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Room Assignment",
-                        "route": "housing",
+                        "route": "housing/roomassignment",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Occupancy Monitoring",
-                        "route": "housing",
+                        "route": "housing/occupancymonitoring",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Bed Allocation",
-                        "route": "housing",
+                        "route": "housing/bedallocation",
                         "permission": "housing.view"
                     }
                 ]
@@ -62,22 +62,22 @@
                 "children": [
                     {
                         "label": "Housing Application",
-                        "route": "housing/tenants",
+                        "route": "housing/housingapplication",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Approval Workflow",
-                        "route": "housing",
+                        "route": "housing/approvalworkflow",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Reservation Management",
-                        "route": "housing",
+                        "route": "housing/reservationmanagement",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Waiting List",
-                        "route": "housing",
+                        "route": "housing/waitinglist",
                         "permission": "housing.view"
                     }
                 ]
@@ -88,22 +88,22 @@
                 "children": [
                     {
                         "label": "Boarding Fees Tracking",
-                        "route": "housing/tenants",
+                        "route": "housing/boardingfees",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Payment Records",
-                        "route": "housing",
+                        "route": "housing/paymentrecords",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Balance Monitoring",
-                        "route": "housing",
+                        "route": "housing/balancemonitoring",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Reciept Generation",
-                        "route": "housing",
+                        "route": "housing/recieptgeneration",
                         "permission": "housing.view"
                     }
                 ]
@@ -114,22 +114,22 @@
                 "children": [
                     {
                         "label": "Maintenance Request",
-                        "route": "housing/tenants",
+                        "route": "housing/maintenancerequest",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Repair Monitoring",
-                        "route": "housing",
+                        "route": "housing/repairmonitoring",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Condition Reports",
-                        "route": "housing",
+                        "route": "housing/conditionreports",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Service History",
-                        "route": "housing",
+                        "route": "housing/servicehistory",
                         "permission": "housing.view"
                     }
                 ]
@@ -140,22 +140,22 @@
                 "children": [
                     {
                         "label": "Announcements",
-                        "route": "housing/tenants",
+                        "route": "housing/announcements",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Residents Notifications",
-                        "route": "housing",
+                        "route": "housing/residentsnotifications",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Rules & Policies",
-                        "route": "housing",
+                        "route": "housing/rulesandpolicies",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Incident Reporting",
-                        "route": "housing",
+                        "route": "housing/incidentreporting",
                         "permission": "housing.view"
                     }
                 ]
@@ -166,22 +166,22 @@
                 "children": [
                     {
                         "label": "Occupancy Reports",
-                        "route": "housing/tenants",
+                        "route": "housing/occupancyreports",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Revenue Reports",
-                        "route": "housing",
+                        "route": "housing/revenuereports",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Resident Statictics",
-                        "route": "housing",
+                        "route": "housing/residentstatistics",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Facility Utilization",
-                        "route": "housing",
+                        "route": "housing/facilityutilization",
                         "permission": "housing.view"
                     }
                 ]

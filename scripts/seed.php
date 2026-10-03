@@ -35,6 +35,17 @@ try {
         }
     }
 
+    // Automatically check and import real MarSU student and employee datasets if students table is empty
+    if ($targetModule === null || $targetModule === 'core') {
+        $studentCount = (int)Database::fetchColumn("SELECT COUNT(*) FROM students");
+        if ($studentCount === 0 && file_exists(__DIR__ . '/import_real_data.php')) {
+            echo "\n---------------------------------------------------------\n";
+            echo " Populating authentic MarSU students & employees...\n";
+            echo "---------------------------------------------------------\n";
+            require_once __DIR__ . '/import_real_data.php';
+        }
+    }
+
     echo "\n✔ Seeding completed successfully.\n";
 } catch (Exception $e) {
     echo "\n❌ Seeding Failed: " . $e->getMessage() . "\n";

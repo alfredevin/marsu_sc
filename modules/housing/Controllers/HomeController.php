@@ -148,7 +148,118 @@ class HomeController {
             ]
         ]);
     }
-
+    public function announcements(): void {
+        $user = Auth::user();
+        View::render('housing/Views/announcements', [
+            'title'       => 'Announcements',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Communication'  => '',
+                'Announcements'  => ''
+            ]
+        ]);
+    }
+    public function approvalworkflow(): void {
+        $user = Auth::user();
+        View::render('housing/Views/approvalworkflow', [
+            'title'       => 'Approval Workflow',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Reservation & App'  => '',
+                'Approval Workflow'  => ''
+            ]
+        ]);
+    }
+     public function availabilitytracking(): void {
+        $user = Auth::user();
+        View::render('housing/Views/availabilitytracking', [
+            'title'       => 'Availability Tracking',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Room & Accomodation'  => '',
+                'Availability Tracking'  => ''
+            ]
+        ]);
+    }
+    public function balancemonitoring(): void {
+        $user = Auth::user();
+        View::render('housing/Views/balancemonitoring', [
+            'title'       => 'Balance Monitoring',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Payment & Billing'  => '',
+                'Balance Monitoring'  => ''
+            ]
+        ]);
+    }
+     public function bedallocation(): void {
+        $user = Auth::user();
+        View::render('housing/Views/bedallocation', [
+            'title'       => 'Bed Allocation',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Room & Accomodation'  => '',
+                'Bed Allocation'  => ''
+            ]
+        ]);
+    }
+    public function boardingfees(): void {
+        $user = Auth::user();
+        View::render('housing/Views/boardingfees', [
+            'title'       => 'Boarding Fees Tracking',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Payment & Billing'  => '',
+                'Boarding Fees Tracking'  => ''
+            ]
+        ]);
+    }
+     public function conditionreports(): void {
+        $user = Auth::user();
+        View::render('housing/Views/conditionreports', [
+            'title'       => 'Condition Reports',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Maintenance & Facility'  => '',
+                'Condition Reports'  => ''
+            ]
+        ]);
+    }   
+    public function residencyhistory(): void {
+        $user = Auth::user();
+        View::render('housing/Views/residencyhistory', [
+            'title'       => 'Residency History',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Tenant Management'  => '',
+                'Residency History'  => ''
+            ]
+        ]);
+    }  
     public function accreditation(): void {
         $user = Auth::user();
         View::render('housing/Views/reports', [

@@ -12,6 +12,7 @@
             {
                 "label": "Tenant Management",
                 "icon": "bi-people",
+                "permission": "housing.view",
                 "children": [
                     {
                         "label": "Tenant Profile",
@@ -28,6 +29,7 @@
             {
                 "label": "Room & Accomodation",
                 "icon": "bi-file-earmark-bar-graph",
+                "permission": "housing.view",
                 "children": [
                     {
                         "label": "Room and Inventory",
@@ -59,6 +61,7 @@
             {
                 "label": "Reservation & App",
                 "icon": "bi-person-video",
+                "permission": "housing.view",
                 "children": [
                     {
                         "label": "Housing Application",
@@ -85,6 +88,7 @@
             {
                 "label": "Payment & Billing",
                 "icon": "bi-cash-coin",
+                "permission": "housing.view",
                 "children": [
                     {
                         "label": "Boarding Fees Tracking",
@@ -111,6 +115,7 @@
             {
                 "label": "Maintenance & Facility",
                 "icon": "bi-tools",
+                "permission": "housing.view",
                 "children": [
                     {
                         "label": "Maintenance Request",
@@ -137,6 +142,7 @@
             {
                 "label": "Communication",
                 "icon": "bi-chat-dots",
+                "permission": "housing.view",
                 "children": [
                     {
                         "label": "Announcements",
@@ -163,6 +169,7 @@
             {
                 "label": "Reports and Analytics",
                 "icon": "bi-file-earmark-bar-graph",
+                "permission": "housing.view",
                 "children": [
                     {
                         "label": "Occupancy Reports",

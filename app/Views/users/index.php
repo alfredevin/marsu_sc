@@ -115,15 +115,9 @@
     
     <!-- Pagination Footer -->
     <?php if ($pagination['last_page'] > 1): ?>
-        <div class="card-footer bg-white d-flex justify-content-between align-items-center py-2">
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center py-2 flex-wrap gap-2">
             <span class="small text-muted">Page <?= $pagination['current_page'] ?> of <?= $pagination['last_page'] ?></span>
-            <ul class="pagination pagination-sm mb-0">
-                <?php for ($i = 1; $i <= $pagination['last_page']; $i++): ?>
-                    <li class="page-item <?= ($i == $pagination['current_page']) ? 'active' : '' ?>">
-                        <a class="page-link" href="<?= url('users', array_merge($_GET, ['page' => $i])) ?>"><?= $i ?></a>
-                    </li>
-                <?php endfor; ?>
-            </ul>
+            <?= render_pagination($pagination, 'users', $_GET) ?>
         </div>
     <?php endif; ?>
 </div>

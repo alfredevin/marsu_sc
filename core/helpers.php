@@ -195,3 +195,73 @@ if (!function_exists('setting')) {
         return \App\Models\Setting::get($key, $default);
     }
 }
+
+/**
+ * Render smart, truncated Bootstrap 5 pagination with sliding window & ellipses
+ */
+if (!function_exists('render_pagination')) {
+    function render_pagination(array $pagination, string $route, array $extraParams = []): string {
+        $currentPage = (int)($pagination['current_page'] ?? 1);
+        $lastPage    = (int)($pagination['last_page'] ?? 1);
+
+        if ($lastPage <= 1) {
+            return '';
+        }
+
+        unset($extraParams['page']);
+
+        $html = '<nav aria-label="Table Pagination"><ul class="pagination pagination-sm mb-0 flex-wrap">';
+
+        // 1. Previous button
+        if ($currentPage > 1) {
+            $prevUrl = url($route, array_merge($extraParams, ['page' => $currentPage - 1]));
+            $html .= '<li class="page-item"><a class="page-link" href="' . e($prevUrl) . '" aria-label="Previous">&laquo;</a></li>';
+        } else {
+            $html .= '<li class="page-item disabled"><span class="page-link">&laquo;</span></li>';
+        }
+
+        // 2. Sliding window calculation
+        $window = 2; // Show 2 pages before and after current
+        $start = max(1, $currentPage - $window);
+        $end   = min($lastPage, $currentPage + $window);
+
+        // First page + ellipsis
+        if ($start > 1) {
+            $firstUrl = url($route, array_merge($extraParams, ['page' => 1]));
+            $html .= '<li class="page-item"><a class="page-link" href="' . e($firstUrl) . '">1</a></li>';
+            if ($start > 2) {
+                $html .= '<li class="page-item disabled"><span class="page-link">&hellip;</span></li>';
+            }
+        }
+
+        // Window page numbers
+        for ($i = $start; $i <= $end; $i++) {
+            if ($i === $currentPage) {
+                $html .= '<li class="page-item active" aria-current="page"><span class="page-link bg-marsu-burgundy border-marsu-burgundy">' . $i . '</span></li>';
+            } else {
+                $pageUrl = url($route, array_merge($extraParams, ['page' => $i]));
+                $html .= '<li class="page-item"><a class="page-link text-dark" href="' . e($pageUrl) . '">' . $i . '</a></li>';
+            }
+        }
+
+        // Ellipsis + Last page
+        if ($end < $lastPage) {
+            if ($end < $lastPage - 1) {
+                $html .= '<li class="page-item disabled"><span class="page-link">&hellip;</span></li>';
+            }
+            $lastUrl = url($route, array_merge($extraParams, ['page' => $lastPage]));
+            $html .= '<li class="page-item"><a class="page-link text-dark" href="' . e($lastUrl) . '">' . $lastPage . '</a></li>';
+        }
+
+        // 3. Next button
+        if ($currentPage < $lastPage) {
+            $nextUrl = url($route, array_merge($extraParams, ['page' => $currentPage + 1]));
+            $html .= '<li class="page-item"><a class="page-link" href="' . e($nextUrl) . '" aria-label="Next">&raquo;</a></li>';
+        } else {
+            $html .= '<li class="page-item disabled"><span class="page-link">&raquo;</span></li>';
+        }
+
+        $html .= '</ul></nav>';
+        return $html;
+    }
+}

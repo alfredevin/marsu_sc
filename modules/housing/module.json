@@ -10,11 +10,6 @@
         "icon": "bi-house-check-fill",
         "items": [
             {
-                "label": "Overview & Records",
-                "route": "housing",
-                "permission": "housing.view"
-            },
-            {
                 "label": "House Management",
                 "icon": "bi-building",
                 "children": [

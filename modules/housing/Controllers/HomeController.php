@@ -103,6 +103,67 @@ class HomeController {
         ]);
     }
 
+    public function rooms(): void {
+        $user = Auth::user();
+        View::render('housing/Views/rooms', [
+            'title'       => 'Room Inventory & Bed Space Capacity',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'House Management'  => '',
+                'Room Inventory'    => ''
+            ]
+        ]);
+    }
+
+    public function history(): void {
+        $user = Auth::user();
+        View::render('housing/Views/tenants', [
+            'title'       => 'Student Residency History & Logs',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'tenants'     => [],
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Tenant Management' => '',
+                'Residency History' => ''
+            ]
+        ]);
+    }
+
+    public function reports(): void {
+        $user = Auth::user();
+        View::render('housing/Views/reports', [
+            'title'       => 'Occupancy & Facility Statistics',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Reports'           => '',
+                'Occupancy Report'  => ''
+            ]
+        ]);
+    }
+
+    public function accreditation(): void {
+        $user = Auth::user();
+        View::render('housing/Views/reports', [
+            'title'       => 'Accreditation & Inspection Summary',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)'     => url('housing'),
+                'Reports'               => '',
+                'Accreditation Summary' => ''
+            ]
+        ]);
+    }
+
     public function show(): void {
         $id = (int)($_GET['id'] ?? 0);
         $record = Database::fetchOne("SELECT * FROM `hsg_records` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]);

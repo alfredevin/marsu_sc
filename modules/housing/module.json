@@ -20,7 +20,7 @@
                     },
                     {
                         "label": "Room Inventory",
-                        "route": "housing",
+                        "route": "housing/rooms",
                         "permission": "housing.view"
                     }
                 ]
@@ -36,7 +36,7 @@
                     },
                     {
                         "label": "Residency History",
-                        "route": "housing",
+                        "route": "housing/history",
                         "permission": "housing.view"
                     }
                 ]
@@ -47,12 +47,12 @@
                 "children": [
                     {
                         "label": "Occupancy Report",
-                        "route": "housing",
+                        "route": "housing/reports",
                         "permission": "housing.view"
                     },
                     {
                         "label": "Accreditation Summary",
-                        "route": "housing",
+                        "route": "housing/accreditation",
                         "permission": "housing.view"
                     }
                 ]

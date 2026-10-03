@@ -264,6 +264,65 @@ a:hover {
   text-decoration: none !important;
 }
 
+/* 2nd-Level Nested Category Headers & Dropdowns */
+#app-sidebar .sidebar-category-toggle {
+  padding: 0.5rem 1.25rem 0.5rem 2.25rem !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  background: transparent !important;
+  border-left: 3px solid transparent !important;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+#app-sidebar .sidebar-category-toggle:hover {
+  color: #FFFFFF !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+#app-sidebar .sidebar-category-toggle.category-active {
+  color: #FFFFFF !important;
+  background-color: rgba(0, 0, 0, 0.18) !important;
+}
+#app-sidebar .sidebar-category-toggle .submenu-arrow {
+  font-size: 0.65rem;
+  transition: transform 0.25s ease;
+}
+#app-sidebar .sidebar-category-toggle[aria-expanded="true"] .submenu-arrow {
+  transform: rotate(180deg);
+}
+
+/* 2nd-Level Nested Submenu List */
+#app-sidebar .sidebar-nested-submenu {
+  background-color: rgba(0, 0, 0, 0.38) !important;
+  padding: 0.25rem 0 !important;
+  margin: 0;
+  list-style: none;
+}
+#app-sidebar .sidebar-nested-submenu .nav-link {
+  padding: 0.42rem 1.25rem 0.42rem 3.4rem !important;
+  font-size: 0.80rem !important;
+  color: rgba(255, 255, 255, 0.68) !important;
+  border-left: 3px solid transparent !important;
+  background: transparent !important;
+  transition: all 0.18s ease;
+}
+#app-sidebar .sidebar-nested-submenu .nav-link:hover {
+  color: #FFFFFF !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  padding-left: 3.65rem !important;
+}
+#app-sidebar .sidebar-nested-submenu .nav-link.active {
+  color: var(--marsu-gold) !important;
+  font-weight: 600 !important;
+  background: rgba(212, 175, 55, 0.16) !important;
+  border-left: 3px solid var(--marsu-gold) !important;
+  padding-left: 3.65rem !important;
+}
+#app-sidebar .sidebar-nested-submenu .nav-link.active i {
+  color: var(--marsu-gold) !important;
+  opacity: 1 !important;
+}
+
 /* Sidebar Nav Scroll Container & Slim Scrollbar */
 #app-sidebar .sidebar-nav-scroll,
 #app-sidebar .sidebar-nav-container,

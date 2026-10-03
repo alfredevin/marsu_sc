@@ -2,29 +2,33 @@
 use Core\ModuleLoader;
 use Core\Permission;
 
-$currentUri = $_SERVER['REQUEST_URI'] ?? '';
-function isActive(string $route): string {
-    global $currentUri;
-    $target = trim($route, '/');
-    $r = $_GET['r'] ?? '';
-    if ($r !== '') {
-        $cleanR = trim($r, '/');
-        if ($target === 'dashboard' && ($cleanR === '' || $cleanR === 'dashboard')) {
-            return 'active';
+if (!function_exists('isActive')) {
+    function isActive(?string $route): string {
+        if ($route === null || trim($route) === '') {
+            return '';
         }
-        return ($cleanR === $target || str_starts_with($cleanR, $target . '/') || str_starts_with($cleanR, $target . '?')) ? 'active' : '';
-    }
-
-    $path = parse_url($currentUri, PHP_URL_PATH) ?? '';
-    $path = trim($path, '/');
-
-    if ($target === 'dashboard') {
-        if ($path === '' || str_ends_with($path, 'dashboard') || str_ends_with($path, 'marsu_sc') || str_ends_with($path, 'marsu-erp') || str_ends_with($path, 'index.php')) {
-            return 'active';
+        $target = trim($route, '/');
+        $r = $_GET['r'] ?? '';
+        if ($r !== '') {
+            $cleanR = trim($r, '/');
+            if ($target === 'dashboard' && ($cleanR === '' || $cleanR === 'dashboard')) {
+                return 'active';
+            }
+            return ($cleanR === $target || str_starts_with($cleanR, $target . '/') || str_starts_with($cleanR, $target . '?')) ? 'active' : '';
         }
-    }
 
-    return (str_contains($path, '/' . $target) || str_ends_with($path, $target) || str_contains($path, $target)) ? 'active' : '';
+        $uri = (string)($_SERVER['REQUEST_URI'] ?? '');
+        $path = (string)(parse_url($uri, PHP_URL_PATH) ?? '');
+        $path = trim($path, '/');
+
+        if ($target === 'dashboard') {
+            if ($path === '' || str_ends_with($path, 'dashboard') || str_ends_with($path, 'marsu_sc') || str_ends_with($path, 'marsu-erp') || str_ends_with($path, 'index.php')) {
+                return 'active';
+            }
+        }
+
+        return (str_contains($path, '/' . $target) || str_ends_with($path, $target) || str_contains($path, $target)) ? 'active' : '';
+    }
 }
 
 $moduleNavGroups = ModuleLoader::getNavItems();
@@ -149,12 +153,58 @@ $moduleNavGroups = ModuleLoader::getNavItems();
                             </a>
                             <div class="collapse <?= isActive($group['slug']) ? 'show' : '' ?>" id="mod_<?= e($group['slug']) ?>">
                                 <ul class="sidebar-submenu">
-                                    <?php foreach ($group['items'] as $subItem): ?>
-                                        <li>
-                                            <a class="nav-link <?= isActive($subItem['route']) ?>" href="<?= url($subItem['route']) ?>">
+                                    <?php foreach ($group['items'] as $subIdx => $subItem): ?>
+                                        <?php if (!empty($subItem['children'])): ?>
+                                            <?php 
+                                                $childActive = false;
+                                                foreach ($subItem['children'] as $c) {
+                                                    if (!empty($c['route']) && isActive($c['route'])) {
+                                                        $childActive = true;
+                                                        break;
+                                                    }
+                                                }
+                                                $subCollapseId = 'sub_' . e($group['slug']) . '_' . $subIdx;
+                                            ?>
+                                            <li class="nav-item">
+                                                <a class="nav-link d-flex align-items-center justify-content-between text-white-50 <?= $childActive ? 'text-white' : '' ?>" 
+                                                   href="#<?= $subCollapseId ?>" 
+                                                   data-bs-toggle="collapse" 
+                                                   aria-expanded="<?= $childActive ? 'true' : 'false' ?>"
+                                                   style="padding-left: 2.2rem; font-size: 0.82rem; font-weight: 600;">
+                                                    <span class="d-flex align-items-center">
+                                                        <?php if (!empty($subItem['icon'])): ?>
+                                                            <i class="bi <?= e($subItem['icon']) ?> me-2" style="font-size: 0.85rem;"></i>
+                                                        <?php endif; ?>
+                                                        <span><?= e($subItem['label']) ?></span>
+                                                    </span>
+                                                    <i class="bi bi-chevron-down submenu-arrow" style="font-size: 0.65rem;"></i>
+                                                </a>
+                                                <div class="collapse <?= $childActive ? 'show' : '' ?>" id="<?= $subCollapseId ?>">
+                                                    <ul class="sidebar-submenu ps-2" style="background-color: rgba(0, 0, 0, 0.35);">
+                                                        <?php foreach ($subItem['children'] as $child): ?>
+                                                            <li>
+                                                                <a class="nav-link <?= !empty($child['route']) ? isActive($child['route']) : '' ?>" 
+                                                                   href="<?= url($child['route'] ?? '') ?>" 
+                                                                   style="padding-left: 3.25rem; font-size: 0.80rem;">
+                                                                    <i class="bi bi-dash me-1 text-marsu-gold opacity-50"></i>
+                                                                    <?= e($child['label']) ?>
+                                                                </a>
+                                                            </li>
+                                                        <?php endforeach; ?>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        <?php elseif (!empty($subItem['type']) && $subItem['type'] === 'header'): ?>
+                                            <li class="sidebar-subheading px-4 pt-2 pb-1 text-uppercase text-white-50" style="font-size: 0.68rem; letter-spacing: 0.05rem; font-weight: 700;">
                                                 <?= e($subItem['label']) ?>
-                                            </a>
-                                        </li>
+                                            </li>
+                                        <?php else: ?>
+                                            <li>
+                                                <a class="nav-link <?= !empty($subItem['route']) ? isActive($subItem['route']) : '' ?>" href="<?= url($subItem['route'] ?? '') ?>">
+                                                    <?= e($subItem['label']) ?>
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
                                 </ul>
                             </div>

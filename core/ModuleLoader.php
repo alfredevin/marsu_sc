@@ -134,6 +134,16 @@ class ModuleLoader {
                 foreach ($menu['items'] as $item) {
                     $requiredPerm = $item['permission'] ?? null;
                     if (!$requiredPerm || Permission::can($requiredPerm)) {
+                        if (!empty($item['children']) && is_array($item['children'])) {
+                            $validChildren = [];
+                            foreach ($item['children'] as $child) {
+                                $childPerm = $child['permission'] ?? null;
+                                if (!$childPerm || Permission::can($childPerm)) {
+                                    $validChildren[] = $child;
+                                }
+                            }
+                            $item['children'] = $validChildren;
+                        }
                         $accessibleItems[] = $item;
                     }
                 }

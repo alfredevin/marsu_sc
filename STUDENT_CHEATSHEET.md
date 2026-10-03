@@ -120,6 +120,25 @@ git commit -m "Save my progress"
 git pull origin master
 ```
 
+> [!CAUTION]
+> **May lumabas bang `|MERGING` sa tabi ng branch name mo sa Git Bash?** *(Halimbawa: `(feature/your-branch|MERGING)`)*  
+> 
+> **Bakit ito lumabas?**  
+> Nasa gitna si Git ng isang hindi pa natatapos na merge (nangyayari ito kapag nag-pull ka habang may binabago ka sa files). Hangga't may `|MERGING`, haharangin ni Git ang anumang bagong `git pull`.  
+> 
+> **Ang Solusyon (1-Second Fix):**  
+> I-type ito sa Git Bash para i-cancel ang bitin na merge at ibalik sa normal ang branch mo:
+> ```bash
+> git merge --abort
+> ```
+> *(Mawawala agad ang salitang `|MERGING` sa tabi ng branch mo!).*  
+> Pagkatapos, i-save muna ang gawa mo bago mag-pull ulit:
+> ```bash
+> git add .
+> git commit -m "save current work"
+> git pull origin master
+> ```
+
 ✨ **Bakit 100% ligtas ito?**
 - Ang gawa ng grupo mo ay nakakulong lang sa loob ng `modules/<your_module>/`.
 - Si Admin lang ang humahawak sa core layouts, kulay, at login page.

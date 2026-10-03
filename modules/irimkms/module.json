@@ -10,7 +10,17 @@
         "icon": "bi-journal-bookmark-fill",
         "items": [
             {
-                "label": "Overview & Records",
+                "label": "Submit Proposal",
+                "route": "irimkms",
+                "permission": "irimkms.view"
+            },
+            {
+                "label": "Approval Status",
+                "route": "irimkms",
+                "permission": "irimkms.view"
+            },
+            {
+                "label": "Research Repository",
                 "route": "irimkms",
                 "permission": "irimkms.view"
             }

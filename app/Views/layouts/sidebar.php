@@ -2,29 +2,33 @@
 use Core\ModuleLoader;
 use Core\Permission;
 
-$currentUri = $_SERVER['REQUEST_URI'] ?? '';
-function isActive(string $route): string {
-    global $currentUri;
-    $target = trim($route, '/');
-    $r = $_GET['r'] ?? '';
-    if ($r !== '') {
-        $cleanR = trim($r, '/');
-        if ($target === 'dashboard' && ($cleanR === '' || $cleanR === 'dashboard')) {
-            return 'active';
+if (!function_exists('isActive')) {
+    function isActive(?string $route): string {
+        if ($route === null || trim($route) === '') {
+            return '';
         }
-        return ($cleanR === $target || str_starts_with($cleanR, $target . '/') || str_starts_with($cleanR, $target . '?')) ? 'active' : '';
-    }
-
-    $path = parse_url($currentUri, PHP_URL_PATH) ?? '';
-    $path = trim($path, '/');
-
-    if ($target === 'dashboard') {
-        if ($path === '' || str_ends_with($path, 'dashboard') || str_ends_with($path, 'marsu_sc') || str_ends_with($path, 'marsu-erp') || str_ends_with($path, 'index.php')) {
-            return 'active';
+        $target = trim($route, '/');
+        $r = $_GET['r'] ?? '';
+        if ($r !== '') {
+            $cleanR = trim($r, '/');
+            if ($target === 'dashboard' && ($cleanR === '' || $cleanR === 'dashboard')) {
+                return 'active';
+            }
+            return ($cleanR === $target || str_starts_with($cleanR, $target . '/') || str_starts_with($cleanR, $target . '?')) ? 'active' : '';
         }
-    }
 
-    return (str_contains($path, '/' . $target) || str_ends_with($path, $target) || str_contains($path, $target)) ? 'active' : '';
+        $uri = (string)($_SERVER['REQUEST_URI'] ?? '');
+        $path = (string)(parse_url($uri, PHP_URL_PATH) ?? '');
+        $path = trim($path, '/');
+
+        if ($target === 'dashboard') {
+            if ($path === '' || str_ends_with($path, 'dashboard') || str_ends_with($path, 'marsu_sc') || str_ends_with($path, 'marsu-erp') || str_ends_with($path, 'index.php')) {
+                return 'active';
+            }
+        }
+
+        return (str_contains($path, '/' . $target) || str_ends_with($path, $target) || str_contains($path, $target)) ? 'active' : '';
+    }
 }
 
 $moduleNavGroups = ModuleLoader::getNavItems();

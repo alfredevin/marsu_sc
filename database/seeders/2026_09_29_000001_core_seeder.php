@@ -12,7 +12,17 @@ return new class {
             ['name' => 'VP Academic Affairs', 'slug' => 'vpaa', 'description' => 'University-wide academic oversight and reporting.'],
             ['name' => 'Faculty Member', 'slug' => 'faculty', 'description' => 'Instructional management, grading, and advising.'],
             ['name' => 'Student', 'slug' => 'student', 'description' => 'Student self-service portal access.'],
-            ['name' => 'Module Lead', 'slug' => 'module_lead', 'description' => 'BSIS student development team lead.']
+            ['name' => 'Module Lead', 'slug' => 'module_lead', 'description' => 'BSIS student development team lead.'],
+            ['name' => 'Module Lead: Research (IRIMKMS)', 'slug' => 'lead_irimkms', 'description' => 'Lead access exclusively for IRIMKMS'],
+            ['name' => 'Module Lead: Faculty Workload', 'slug' => 'lead_workload', 'description' => 'Lead access exclusively for Faculty Workload'],
+            ['name' => 'Module Lead: Health & Clinic', 'slug' => 'lead_health', 'description' => 'Lead access exclusively for Health Services'],
+            ['name' => 'Module Lead: Org Finance', 'slug' => 'lead_orgfinance', 'description' => 'Lead access exclusively for Student Org Finance'],
+            ['name' => 'Module Lead: Org Leadership', 'slug' => 'lead_orgleadership', 'description' => 'Lead access exclusively for Org Leadership'],
+            ['name' => 'Module Lead: Student Housing (ISHAMIS)', 'slug' => 'lead_housing', 'description' => 'Lead access exclusively for Student Housing'],
+            ['name' => 'Module Lead: Retention Analytics', 'slug' => 'lead_retention', 'description' => 'Lead access exclusively for Retention Analytics'],
+            ['name' => 'Module Lead: University Assets', 'slug' => 'lead_assets', 'description' => 'Lead access exclusively for University Assets'],
+            ['name' => 'Module Lead: Student Welfare', 'slug' => 'lead_welfare', 'description' => 'Lead access exclusively for Student Welfare'],
+            ['name' => 'Module Lead: Guidance & Counseling', 'slug' => 'lead_guidance', 'description' => 'Lead access exclusively for Guidance & Counseling']
         ];
 
         $roleIds = [];
@@ -123,6 +133,41 @@ return new class {
             }
         }
 
+        // Assign permissions to Student Module Leads
+        $leadSlugMap = [
+            'lead_irimkms'       => 'irimkms',
+            'lead_workload'      => 'workload',
+            'lead_health'        => 'health',
+            'lead_orgfinance'    => 'orgfinance',
+            'lead_orgleadership' => 'orgleadership',
+            'lead_housing'       => 'housing',
+            'lead_retention'     => 'retention',
+            'lead_assets'        => 'assets',
+            'lead_welfare'       => 'welfare',
+            'lead_guidance'      => 'guidance',
+        ];
+
+        foreach ($leadSlugMap as $leadRoleSlug => $modSlug) {
+            if (isset($roleIds[$leadRoleSlug])) {
+                $rId = $roleIds[$leadRoleSlug];
+                // Dashboard view
+                if (isset($permIds['core.dashboard.view'])) {
+                    Database::query("INSERT IGNORE INTO role_permissions (role_id, permission_id) VALUES (?, ?)", [
+                        $rId, $permIds['core.dashboard.view']
+                    ]);
+                }
+                // All permissions for their module
+                $modPerms = Database::fetchAll("SELECT id FROM permissions WHERE module = ? OR name LIKE ?", [
+                    $modSlug, $modSlug . '.%'
+                ]);
+                foreach ($modPerms as $mp) {
+                    Database::query("INSERT IGNORE INTO role_permissions (role_id, permission_id) VALUES (?, ?)", [
+                        $rId, $mp['id']
+                    ]);
+                }
+            }
+        }
+
         // 3. Default Users
         $defaultPassword = password_hash('Password123!', PASSWORD_BCRYPT, ['cost' => 12]);
 
@@ -162,6 +207,96 @@ return new class {
                 'last_name'  => 'Santos',
                 'role'       => 'student',
                 'role_slug'  => 'student'
+            ],
+            [
+                'username'   => 'group2_lead',
+                'email'      => 'group2.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Mark',
+                'last_name'  => 'Lacierda',
+                'role'       => 'lead_irimkms',
+                'role_slug'  => 'lead_irimkms'
+            ],
+            [
+                'username'   => 'group3_lead',
+                'email'      => 'group3.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Joshua',
+                'last_name'  => 'Mabute',
+                'role'       => 'lead_workload',
+                'role_slug'  => 'lead_workload'
+            ],
+            [
+                'username'   => 'group4_lead',
+                'email'      => 'group4.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Nicole',
+                'last_name'  => 'Mercene',
+                'role'       => 'lead_health',
+                'role_slug'  => 'lead_health'
+            ],
+            [
+                'username'   => 'group5_lead',
+                'email'      => 'group5.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Christian',
+                'last_name'  => 'Paras',
+                'role'       => 'lead_orgfinance',
+                'role_slug'  => 'lead_orgfinance'
+            ],
+            [
+                'username'   => 'group6_lead',
+                'email'      => 'group6.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Kimberly',
+                'last_name'  => 'Malabanan',
+                'role'       => 'lead_orgleadership',
+                'role_slug'  => 'lead_orgleadership'
+            ],
+            [
+                'username'   => 'group7_lead',
+                'email'      => 'group7.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Angelo',
+                'last_name'  => 'Alcantara',
+                'role'       => 'lead_housing',
+                'role_slug'  => 'lead_housing'
+            ],
+            [
+                'username'   => 'group8_lead',
+                'email'      => 'group8.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Bea',
+                'last_name'  => 'Manalo',
+                'role'       => 'lead_retention',
+                'role_slug'  => 'lead_retention'
+            ],
+            [
+                'username'   => 'group9_lead',
+                'email'      => 'group9.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Vincent',
+                'last_name'  => 'Dimaculangan',
+                'role'       => 'lead_assets',
+                'role_slug'  => 'lead_assets'
+            ],
+            [
+                'username'   => 'group10_lead',
+                'email'      => 'group10.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Kristine',
+                'last_name'  => 'Dela Cruz',
+                'role'       => 'lead_welfare',
+                'role_slug'  => 'lead_welfare'
+            ],
+            [
+                'username'   => 'group11_lead',
+                'email'      => 'group11.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Daniel',
+                'last_name'  => 'Bautista',
+                'role'       => 'lead_guidance',
+                'role_slug'  => 'lead_guidance'
             ]
         ];
 

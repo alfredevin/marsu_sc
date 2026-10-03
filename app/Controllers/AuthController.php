@@ -155,15 +155,92 @@ class AuthController {
             redirect(url('profile'));
         }
 
-        Database::update('users', [
+        $updateData = [
             'first_name' => trim($_POST['first_name']),
             'last_name'  => trim($_POST['last_name']),
             'email'      => trim($_POST['email']),
             'updated_at' => date('Y-m-d H:i:s')
-        ], 'id = :id', ['id' => $user['id']]);
+        ];
 
-        Logger::audit('profile.update', 'users', $user['id'], ['email' => trim($_POST['email'])]);
-        Session::flash('success', 'Your profile details have been saved.');
+        // 1. Check if user requested to remove existing avatar
+        if (!empty($_POST['remove_avatar']) && $_POST['remove_avatar'] === '1') {
+            if (!empty($user['avatar']) && str_starts_with($user['avatar'], 'uploads/avatars/')) {
+                $oldFile = dirname(dirname(__DIR__)) . '/public/' . $user['avatar'];
+                if (file_exists($oldFile)) {
+                    @unlink($oldFile);
+                }
+            }
+            $updateData['avatar'] = null;
+        }
+
+        // 2. Check if a preset avatar was picked
+        if (!empty($_POST['preset_avatar'])) {
+            $allowedPresets = [
+                'assets/img/undraw_profile.svg',
+                'assets/img/undraw_profile_1.svg',
+                'assets/img/undraw_profile_2.svg',
+                'assets/img/undraw_profile_3.svg'
+            ];
+            if (in_array($_POST['preset_avatar'], $allowedPresets, true)) {
+                $updateData['avatar'] = $_POST['preset_avatar'];
+            }
+        }
+
+        // 3. Check for uploaded custom avatar file
+        if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+            $file = $_FILES['avatar'];
+            $maxBytes = 5 * 1024 * 1024; // 5MB
+            $allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+            if ($file['size'] > $maxBytes) {
+                Session::flash('error', 'The uploaded image exceeds the 5MB file size limit.');
+                redirect(url('profile'));
+            }
+
+            if (!in_array($ext, $allowedExts, true)) {
+                Session::flash('error', 'Invalid image format. Supported formats: JPG, PNG, WEBP, GIF.');
+                redirect(url('profile'));
+            }
+
+            // Verify actual image validity
+            $imageInfo = @getimagesize($file['tmp_name']);
+            if ($imageInfo === false) {
+                Session::flash('error', 'The uploaded file is not a valid image.');
+                redirect(url('profile'));
+            }
+
+            $uploadDir = dirname(dirname(__DIR__)) . '/public/uploads/avatars/';
+            if (!is_dir($uploadDir)) {
+                @mkdir($uploadDir, 0755, true);
+            }
+
+            $filename = 'avatar_' . $user['id'] . '_' . time() . '.' . $ext;
+            $targetPath = $uploadDir . $filename;
+
+            if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+                // Delete previous custom avatar if exists
+                if (!empty($user['avatar']) && str_starts_with($user['avatar'], 'uploads/avatars/')) {
+                    $oldFile = dirname(dirname(__DIR__)) . '/public/' . $user['avatar'];
+                    if (file_exists($oldFile)) {
+                        @unlink($oldFile);
+                    }
+                }
+                $updateData['avatar'] = 'uploads/avatars/' . $filename;
+            } else {
+                Session::flash('error', 'Failed to save the uploaded image. Please try again.');
+                redirect(url('profile'));
+            }
+        }
+
+        Database::update('users', $updateData, 'id = :id', ['id' => $user['id']]);
+
+        Logger::audit('profile.update', 'users', $user['id'], [
+            'email' => trim($_POST['email']),
+            'avatar_updated' => isset($updateData['avatar'])
+        ]);
+
+        Session::flash('success', 'Your profile details and avatar have been saved successfully.');
         redirect(url('profile'));
     }
 

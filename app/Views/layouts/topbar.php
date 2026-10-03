@@ -127,9 +127,10 @@ if (str_contains($currentUri, 'employee')) {
         <div class="dropdown">
             <a href="#" class="d-flex align-items-center gap-2 text-decoration-none dropdown-toggle py-1 px-2 rounded-pill" data-bs-toggle="dropdown" aria-expanded="false">
                 <div class="position-relative">
-                    <img src="<?= asset('assets/img/undraw_profile.svg') ?>" 
+                    <?php $topbarAvatar = !empty($user['avatar']) ? asset($user['avatar']) : asset('assets/img/undraw_profile.svg'); ?>
+                    <img src="<?= $topbarAvatar ?>" 
                          alt="Avatar" width="38" height="38" 
-                         class="rounded-circle avatar-ring">
+                         class="rounded-circle avatar-ring" style="object-fit: cover;">
                     <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-white rounded-circle user-online-dot" title="Online"></span>
                 </div>
                 <div class="d-none d-lg-block text-start lh-1">

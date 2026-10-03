@@ -1,11 +1,11 @@
 {
-    "name": "Research & Innovation (IRIMKMS)",
+    "name": "Research & Innovation Management Information System (IRIMKS)",
     "slug": "irimkms",
     "version": "1.0.0",
-    "description": "University intellectual capital repository, faculty capstone papers, peer-reviewed journals, and dataset citations.",
+    "description": "Integrated Research & Innovation Management Information System (IRIMKS) — off-campus boarding house directory, occupancy rates, and safety inspections.",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Research & Innovation",
+    "section": "Research Management Information System",
     "menu": {
         "icon": "bi-house-check-fill",
         "items": [
@@ -15,47 +15,57 @@
                 "permission": "irimkms.view",
                 "children": [
                     {
-                        "label": "Research Profile",
-                        "route": "irimkms/research",
+                        "label": "Proposals & Approvals",
+                        "route": "irimkms/tenants",
                         "permission": "irimkms.view"
                     },
                     {
-                        "label": "Residency History",
-                        "route": "irimkms",
+                        "label": "Research Profiles",
+                        "route": "irimkms/residencyhistory",
+                        "permission": "irimkms.view"
+                    },
+                    {
+                        "label": "Research Projects",
+                        "route": "irimkms/residencyhistory",
+                        "permission": "irimkms.view"
+                    },
+                    {
+                        "label": "Funding & Resources",
+                        "route": "irimkms/residencyhistory",
                         "permission": "irimkms.view"
                     }
                 ]
             },
             {
-                "label": "Research Management",
+                "label": "Monitoring & Evaluation",
                 "icon": "bi-people",
                 "permission": "irimkms.view",
                 "children": [
                     {
-                        "label": "Tenant Profile",
-                        "route": "irimkms",
+                        "label": "Proposals & Approvals",
+                        "route": "irimkms/tenants",
                         "permission": "irimkms.view"
                     },
                     {
-                        "label": "Residency History",
-                        "route": "irimkms",
+                        "label": "Research Profiles",
+                        "route": "irimkms/residencyhistory",
                         "permission": "irimkms.view"
                     }
                 ]
             },
             {
-                "label": "Research Management",
+                "label": "Repository & Knowledge Management",
                 "icon": "bi-people",
                 "permission": "irimkms.view",
                 "children": [
                     {
-                        "label": "Tenant Profile",
-                        "route": "irimkms",
+                        "label": "Profile",
+                        "route": "irimkms/tenants",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Residency History",
-                        "route": "irimkms",
+                        "route": "irimkms/residencyhistory",
                         "permission": "irimkms.view"
                     }
                 ]

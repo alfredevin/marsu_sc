@@ -1,11 +1,15 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Prevent direct access to sensitive directories and files
-    RewriteRule ^(\.env|\.git|core|app|database|storage|scripts|modules) - [F,L,NC]
+    # Prevent direct access to sensitive directories and source files
+    RewriteRule ^(\.env|\.git|core|app|database|storage|scripts) - [F,L,NC]
+    RewriteRule ^modules/.*\.(php|json|sql|md)$ - [F,L,NC]
 
     # Allow direct access to public/ and install.php
     RewriteRule ^(public/|install\.php) - [L]
+
+    # Route modules directory alias to front controller
+    RewriteRule ^modules/?$ public/index.php [L,QSA]
 
     # Rewrite all other requests to public/index.php
     RewriteRule ^(.*)$ public/index.php [L,QSA]

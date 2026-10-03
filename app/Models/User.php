@@ -5,7 +5,7 @@ use Core\Database;
 
 class User {
     public static function paginate(int $page = 1, int $perPage = 15, string $search = '', string $roleFilter = ''): array {
-        $offset = ($page - 1) * perPage;
+        $offset = ($page - 1) * $perPage;
         $where = ["u.deleted_at IS NULL"];
         $params = [];
 

@@ -25,6 +25,14 @@ For this initial milestone, **you do NOT need to touch backend PHP, SQL, or data
 - **Git** (Git Bash installed)
 - **GitHub Account** (Sign up at [github.com](https://github.com) if you haven't yet)
 
+#### ⚙️ Step 1.1: Setup Your Git Identity (Isang Beses Lang Gagawin!)
+Bago ka makapag-commit o makapag-push, kailangan malaman ni Git kung sino ka (Pangalan at Email). Buksan ang **Git Bash** at i-type ang dalawang linya na ito (palitan ng sarili mong pangalan at email address):
+```bash
+git config --global user.name "Juan Dela Cruz"
+git config --global user.email "juandelacruz@gmail.com"
+```
+*(Tip: Gamitin ang email na naka-link sa iyong GitHub account para ma-credit sa GitHub profile mo ang commits mo).*
+
 ---
 
 ### 2. How to Clone the Repository (First Time Only!)
@@ -91,7 +99,6 @@ git checkout -b feature/housing-ishamis
 *(Or for your own assigned module: `feature/health-clinic`, `feature/guidance-records`, etc.)*
 
 ---
-
 ## ⚡ Important: How to Get Latest Admin Updates (While on Your Branch)
 
 Kapag nag-announce si Admin na may binago siyang kulay, bagong design, o system update sa GitHub, **paano mo ito makukuha sa laptop mo kahit nasa sarili kang branch?**
@@ -198,10 +205,55 @@ git add modules/housing/Views/index.php
 git commit -m "feat(housing): customize index view title, table, and form"
 ```
 
+> [!WARNING]
+> ### 🛑 Na-stuck ka ba rito sa Error na "Author identity unknown" / "unable to auto-detect email address"?
+>
+> Kung pagkatapos mong i-enter ang `git commit` ay lumabas ang ganitong pulang error sa terminal:
+> ```text
+> Author identity unknown
+> 
+> *** Please tell me who you are.
+> 
+> Run
+> 
+>   git config --global user.email "you@example.com"
+>   git config --global user.name "Your Name"
+> 
+> to set your account's default identity.
+> Omit --global to set the identity only in this repository.
+> 
+> fatal: unable to auto-detect email address (got '...')
+> ```
+>
+> **Bakit lumabas ito?**  
+> Bago o kaka-install lang ang Git sa laptop mo at hindi pa nito alam kung sino ang author ng code. Normal ito sa pinakaunang beses mag-commit!
+>
+> **Ano yung sinasabing *"Omit --global"*?**  
+> Paalala lang iyon ng Git na pwede raw tanggalin ang `--global` kung para sa repository lang na ito ang pangalan mo. **HUWAG tanggalin ang `--global`!** Mas magandang gamitin ang may `--global` para isang beses mo lang ito i-setup at gagana na sa lahat ng folders at projects mo magpakailanman.
+>
+> **Ang Solusyon (2 Commands lang sa Git Bash):**  
+> I-type ang dalawang command na ito sa Git Bash (palitan ng tunay mong pangalan at email):
+> ```bash
+> git config --global user.name "Juan Dela Cruz"
+> git config --global user.email "juandelacruz@gmail.com"
+> ```
+>
+> Pagkatapos ma-enter ang dalawang commands sa itaas, **i-run ulit ang commit command**:
+> ```bash
+> git commit -m "feat(housing): customize index view title, table, and form"
+> ```
+> *(Lalabas na ang `[feature/housing-ishamis ...] 1 file changed` — ibig sabihin successfully saved na ang gawa mo!)*
+
+---
+
 ### 4. Push Your Branch to GitHub:
 ```bash
 git push -u origin feature/housing-ishamis
 ```
+
+> [!TIP]
+> **Kung humingi ng GitHub Login / Authentication Popup si Git:**  
+> May lilitaw na maliit na window sa browser mo na may button na **"Sign in with your browser"** (GitHub Credential Manager). I-click lang iyon at i-click ang **Authorize git-credential-manager**. Kapag authorized na, awtomatiko nang ma-a-upload ang branch mo sa GitHub repository!
 
 ---
 

@@ -10,22 +10,6 @@
         "icon": "bi-house-check-fill",
         "items": [
             {
-                "label": "House Management",
-                "icon": "bi-building",
-                "children": [
-                    {
-                        "label": "Boarding Houses",
-                        "route": "housing",
-                        "permission": "housing.view"
-                    },
-                    {
-                        "label": "Room Inventory",
-                        "route": "housing/rooms",
-                        "permission": "housing.view"
-                    }
-                ]
-            },
-            {
                 "label": "Tenant Management",
                 "icon": "bi-people",
                 "children": [
@@ -36,23 +20,168 @@
                     },
                     {
                         "label": "Residency History",
-                        "route": "housing/history",
+                        "route": "housing",
                         "permission": "housing.view"
                     }
                 ]
             },
             {
-                "label": "Reports Management",
+                "label": "Room & Accomodation",
                 "icon": "bi-file-earmark-bar-graph",
                 "children": [
                     {
-                        "label": "Occupancy Report",
-                        "route": "housing/reports",
+                        "label": "Room and Inventory",
+                        "route": "housing",
                         "permission": "housing.view"
                     },
                     {
-                        "label": "Accreditation Summary",
-                        "route": "housing/accreditation",
+                        "label": "Availability Tracking",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Room Assignment",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Occupancy Monitoring",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Bed Allocation",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    }
+                ]
+            },
+            {
+                "label": "Reservation & App",
+                "icon": "bi-person-video",
+                "children": [
+                    {
+                        "label": "Housing Application",
+                        "route": "housing/tenants",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Approval Workflow",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Reservation Management",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Waiting List",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    }
+                ]
+            },
+            {
+                "label": "Payment & Billing",
+                "icon": "bi-cash-coin",
+                "children": [
+                    {
+                        "label": "Boarding Fees Tracking",
+                        "route": "housing/tenants",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Payment Records",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Balance Monitoring",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Reciept Generation",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    }
+                ]
+            },
+            {
+                "label": "Maintenance & Facility",
+                "icon": "bi-tools",
+                "children": [
+                    {
+                        "label": "Maintenance Request",
+                        "route": "housing/tenants",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Repair Monitoring",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Condition Reports",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Service History",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    }
+                ]
+            },
+            {
+                "label": "Communication",
+                "icon": "bi-chat-dots",
+                "children": [
+                    {
+                        "label": "Announcements",
+                        "route": "housing/tenants",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Residents Notifications",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Rules & Policies",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Incident Reporting",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    }
+                ]
+            },
+            {
+                "label": "Reports and Analytics",
+                "icon": "bi-file-earmark-bar-graph",
+                "children": [
+                    {
+                        "label": "Occupancy Reports",
+                        "route": "housing/tenants",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Revenue Reports",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Resident Statictics",
+                        "route": "housing",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Facility Utilization",
+                        "route": "housing",
                         "permission": "housing.view"
                     }
                 ]

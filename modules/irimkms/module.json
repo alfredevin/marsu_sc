@@ -7,17 +7,44 @@
     "default_enabled": true,
     "section": "Proposals & Approvals",
     "menu": {
-        "icon": "bi-journal-bookmark-fill",
+        "icon": "bi-house-check-fill",
         "items": [
             {
-                "label": "Submit Proposal",
-                "route": "irimkms",
-                "permission": "irimkms.view"
+                "label": "Tenant Management",
+                "icon": "bi-people",
+                "children": [
+                    {
+                        "label": "Tenant Profile",
+                        "route": "housing/tenants",
+                        "permission": "housing.view"
+                    },
+                    {
+                        "label": "Residency History",
+                        "route": "housing/residencyhistory",
+                        "permission": "housing.view"
+                    }
+                ]
             },
             {
-                "label": "Approval Status",
-                "route": "irimkms",
-                "permission": "irimkms.view"
+                "label": "Monitoring & Evaluation",
+                "icon": "bi-people",
+                "children": [
+                    {
+                        "label": "Project Milestone",
+                        "route": "irimkms/projectmilestone",
+                        "permission": "irimkms.view"
+                    },
+                    {
+                        "label": "Implementation Progress",
+                        "route": "irimkms/implementationprogress",
+                        "permission": "irimkms.view"
+                    },
+                    {
+                        "label": "Evaluation Tools and",
+                        "route": "irimkms/researchandinnovation",
+                        "permission": "irimkms.view"
+                    }
+                ]
             }
         ]
     },

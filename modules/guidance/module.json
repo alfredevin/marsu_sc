@@ -10,9 +10,21 @@
         "icon": "bi-person-heart",
         "items": [
             {
-                "label": "Overview & Records",
-                "route": "guidance",
-                "permission": "guidance.view"
+                "label": "Guidance and Counseling",
+                "icon": "bi-people",
+                "permission": "guidance.view",
+                "children": [
+                    {
+                        "label": "Guidance Dashboard",
+                        "route": "guidance/guidance-dashboard",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Guidance Records",
+                        "route": "guidance/guidance-records",
+                        "permission": "guidance.view"
+                    }
+                ]
             }
         ]
     },

@@ -10,9 +10,49 @@
         "icon": "bi-shield-check",
         "items": [
             {
-                "label": "Overview & Records",
-                "route": "welfare",
-                "permission": "welfare.view"
+                "label": "Welfare Management",
+                "icon": "bi-people",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Welfare Dashboard",
+                        "route": "welfare/welfare-dashboard",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Welfare Records",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    }
+                ]
+            }
+            
+             {
+                "label": "Student Concern and Case Management",
+                "icon": "bi-peole",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Student concern",
+                        "route": "welfare/welfare-dashboard",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Case classification",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Case documentation",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Follow-up monitoring",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    }
+                ]
             }
         ]
     },

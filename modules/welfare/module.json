@@ -25,9 +25,8 @@
                         "permission": "welfare.view"
                     }
                 ]
-            }
-            
-             {
+            },
+            {
                 "label": "Student Concern and Case Management",
                 "icon": "bi-peole",
                 "permission": "welfare.view",

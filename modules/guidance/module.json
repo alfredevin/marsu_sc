@@ -5,23 +5,143 @@
     "description": "Intake consultations, routine interviews, psychological counseling, and case notes strictly protected by the Guidance and Counseling Act of 2004 (RA 9258) and Data Privacy Act (RA 10173).",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Guidance Center",
+    "section": "Guidance and Counseling Office (GCO)",
     "menu": {
         "icon": "bi-person-heart",
         "items": [
             {
-                "label": "Guidance and Counseling",
+                "label": "Student Information Management",
+                "icon": "bi-person-vcard",
+                "permission": "guidance.view",
+                "children": [
+                    {
+                        "label": "Student Profile",
+                        "route": "guidance/student-profile",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Student History",
+                        "route": "guidance/student-history",
+                        "permission": "guidance.view"
+                    }
+                ]
+            },
+            {
+                "label": "Guidance Services",
                 "icon": "bi-people",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Guidance Dashboard",
-                        "route": "guidance/guidance-dashboard",
+                        "label": "Appointments",
+                        "route": "guidance/appointments",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Guidance Records",
-                        "route": "guidance/guidance-records",
+                        "label": "Session Calendar",
+                        "route": "guidance/session-calendar",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Case Monitoring",
+                        "route": "guidance/case-monitoring",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Counseling",
+                        "route": "guidance/counseling",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Career Counseling",
+                        "route": "guidance/career-counseling",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Psychological Support",
+                        "route": "guidance/psychological-support",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Exit Interviews",
+                        "route": "guidance/exit-interviews",
+                        "permission": "guidance.view"
+                    }
+                ]
+            },
+            {
+                "label": "Records Management",
+                "icon": "bi-folder",
+                "permission": "guidance.view",
+                "children": [
+                    {
+                        "label": "Counseling Records",
+                        "route": "guidance/counseling-records",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Career Assessments",
+                        "route": "guidance/career-assessments",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Service Records",
+                        "route": "guidance/service-records",
+                        "permission": "guidance.view"
+                    }
+                ]
+            },
+            {
+                "label": "Reports",
+                "icon": "bi-bar-chart-line",
+                "permission": "guidance.view",
+                "children": [
+                    {
+                        "label": "Counseling Utilization",
+                        "route": "guidance/counseling-utilization",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Student Concerns",
+                        "route": "guidance/student-concerns",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Career Readiness",
+                        "route": "guidance/career-readiness",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Exit Interview Summary",
+                        "route": "guidance/exit-interview-summary",
+                        "permission": "guidance.view"
+                    }
+                ]
+            },
+            {
+                "label": "Maintenance",
+                "icon": "bi-tools",
+                "permission": "guidance.view",
+                "children": [
+                    {
+                        "label": "Student Concern Types",
+                        "route": "guidance/student-concern-types",
+                        "permission": "guidance.view"
+                    }
+                ]
+            },
+            {
+                "label": "System Management",
+                "icon": "bi-gear-fill",
+                "permission": "guidance.view",
+                "children": [
+                    {
+                        "label": "User Accounts",
+                        "route": "guidance/user-accounts",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Settings",
+                        "route": "guidance/settings",
                         "permission": "guidance.view"
                     }
                 ]

@@ -123,8 +123,8 @@
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Concern Types",
-                        "route": "guidance/concern-types",
+                        "label": "Student Concern Types",
+                        "route": "guidance/student-concern-types",
                         "permission": "guidance.view"
                     }
                 ]
@@ -135,8 +135,8 @@
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Users",
-                        "route": "guidance/users",
+                        "label": "User Accounts",
+                        "route": "guidance/user-accounts",
                         "permission": "guidance.view"
                     },
                     {

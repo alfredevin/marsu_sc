@@ -5,7 +5,7 @@
     "description": "University intellectual capital repository, faculty capstone papers, peer-reviewed journals, and dataset citations.",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Research & Innovation",
+    "section": "Proposals & Approvals",
     "menu": {
         "icon": "bi-journal-bookmark-fill",
         "items": [
@@ -16,11 +16,6 @@
             },
             {
                 "label": "Approval Status",
-                "route": "irimkms",
-                "permission": "irimkms.view"
-            },
-            {
-                "label": "Research Repository",
                 "route": "irimkms",
                 "permission": "irimkms.view"
             }

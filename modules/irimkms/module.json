@@ -1,57 +1,30 @@
 {
-    "name": "Institutional Repository & Knowledge Management (IRIMKMS)",
+    "name": "Research & Innovation (IRIMKMS)",
     "slug": "irimkms",
     "version": "1.0.0",
     "description": "University intellectual capital repository, faculty capstone papers, peer-reviewed journals, and dataset citations.",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Proposals & Approvals",
+    "section": "Research & Innovation",
     "menu": {
         "icon": "bi-house-check-fill",
         "items": [
             {
-                "label": "Tenant Management",
-                "icon": "bi-people",
-                "children": [
-                    {
-                        "label": "Tenant Profile",
-                        "route": "housing/tenants",
-                        "permission": "housing.view"
-                    },
-                    {
-                        "label": "Residency History",
-                        "route": "housing/residencyhistory",
-                        "permission": "housing.view"
-                    }
-                ]
+                "label": "Submit Proposal",
+                "route": "irimkms",
+                "permission": "irimkms.view"
             },
             {
-                "label": "Monitoring & Evaluation",
-                "icon": "bi-people",
-                "children": [
-                    {
-                        "label": "Project Milestone",
-                        "route": "irimkms/projectmilestone",
-                        "permission": "irimkms.view"
-                    },
-                    {
-                        "label": "Implementation Progress",
-                        "route": "irimkms/implementationprogress",
-                        "permission": "irimkms.view"
-                    },
-                    {
-                        "label": "Evaluation Tools and",
-                        "route": "irimkms/researchandinnovation",
-                        "permission": "irimkms.view"
-                    }
-                ]
+                "label": "Approval Status",
+                "route": "irimkms",
+                "permission": "irimkms.view"
             }
         ]
     },
     "permissions": {
-        "irimkms.view": "Browse Published Research Repository",
-        "irimkms.upload": "Submit Research Papers & Datasets",
-        "irimkms.review": "Peer Review and Accredit Manuscripts",
-        "irimkms.export": "Export Bibliographic Metadata"
+        "irimkms.view": "Search Boarding Houses & Bed Space Vacancies",
+        "irimkms.register": "Register and Update Boarding House Properties",
+        "irimkms.inspect": "Conduct Safety, Fire & Sanitation Inspections",
+        "irimkms.export": "Export Accreditation Inspection Reports"
     }
 }

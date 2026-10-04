@@ -10,24 +10,33 @@
         "icon": "bi-shield-check",
         "items": [
             {
-                "label": "Welfare Management",
+                "label": "Student Welfare Profile Management",
                 "icon": "bi-people",
                 "permission": "welfare.view",
                 "children": [
                     {
-                        "label": "Welfare Dashboard",
+                        "label": "Student profile information",
                         "route": "welfare/welfare-dashboard",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Welfare Records",
+                        "label": "Socio-economic/background information",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Support needs assessment",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Welfare history records",
                         "route": "welfare/welfare-records",
                         "permission": "welfare.view"
                     }
                 ]
-            }
-            
-             {
+            },
+            {
                 "label": "Student Concern and Case Management",
                 "icon": "bi-peole",
                 "permission": "welfare.view",
@@ -49,6 +58,11 @@
                     },
                     {
                         "label": "Follow-up monitoring",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Case resolution tracking",
                         "route": "welfare/welfare-records",
                         "permission": "welfare.view"
                     }

@@ -10,7 +10,7 @@
         "icon": "bi-graph-up-arrow",
         "items": [
             {
-                "label": "Student Information Management",
+                "label": "Student Information Managements",
                 "icon": "bi-people",
                 "permission": "retention.view",
                 "children": [

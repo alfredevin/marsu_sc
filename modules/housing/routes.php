@@ -15,7 +15,7 @@ $router->get('/housing/bedallocation', [HomeController::class, 'bedallocation'],
 $router->get('/housing/boardingfees', [HomeController::class, 'boardingfees'], ['auth', 'permission:housing.view']);
 $router->get('/housing/conditionreports', [HomeController::class, 'conditionreports'], ['auth', 'permission:housing.view']);
 $router->get('/housing/facilityutilizations', [HomeController::class, 'facilityutilizations'], ['auth', 'permission:housing.view']);
-$router->get('/housing/housingapplications', [HomeController::class, 'housingapplications'], ['auth', 'permission:housing.view']);
+$router->get('/housing/housingapplication', [HomeController::class, 'housingapplication'], ['auth', 'permission:housing.view']);
 $router->get('/housing/incidentreporting', [HomeController::class, 'incidentreporting'], ['auth', 'permission:housing.view']);
 $router->get('/housing/index', [HomeController::class, 'index'], ['auth', 'permission:housing.view']);
 $router->get('/housing/maintenancerequests', [HomeController::class, 'maintenancerequests'], ['auth', 'permission:housing.view']);

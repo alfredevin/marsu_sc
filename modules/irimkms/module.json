@@ -16,22 +16,22 @@
                 "children": [
                     {
                         "label": "Proposals & Approvals",
-                        "route": "irimkms/tenants",
+                        "route": "irimkms/proposalsandapprovals",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Research Profiles",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/researchprofiles",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Research Projects",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/researchprojects",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Funding & Resources",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/fundingandresources",
                         "permission": "irimkms.view"
                     }
                 ]
@@ -43,27 +43,27 @@
                 "children": [
                     {
                         "label": "Project Milestones",
-                        "route": "irimkms/tenants",
+                        "route": "irimkms/projectmilestone",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Implementation Progress",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/implementationprogress",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Evaluation Forms & Assessment Tools",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/evaluationforms",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Performance Indicators & Analytics",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/performanceindicators",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Completion & Accomplishment Reporting",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/completionreporting",
                         "permission": "irimkms.view"
                     }
                 ]
@@ -75,22 +75,22 @@
                 "children": [
                     {
                         "label": "Digital Research Storage",
-                        "route": "irimkms/tenants",
+                        "route": "irimkms/researchstorage",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Document & File Management",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/filemanagement",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Knowledge Management & Library",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/knowledgemanagement",
                         "permission": "irimkms.view"
                     },
                     {
                         "label": "Searchable Research",
-                        "route": "irimkms/residencyhistory",
+                        "route": "irimkms/searchableresearch",
                         "permission": "irimkms.view"
                     }
                 ]

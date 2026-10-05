@@ -77,4 +77,18 @@ class HomeController {
 
         redirect(url('retention'));
     }
+     public function profile(): void {
+        $user = Auth::user();
+        View::render('retention/Views/profile', [
+            'title'       => 'Student Profile',
+            'moduleName'  => 'Retention (ISREMS)',
+            'slug'        => 'retention',
+            'user'        => $user,
+            'crumbs'      => [
+                'Retention (ISREMS)' => url('retention'),
+                'Student Information Management'           => '',
+                'Occupancy Report'  => ''
+            ]
+        ]);
+    }
 }

@@ -15,7 +15,7 @@
                 "permission": "retention.view",
                 "children": [
                     {
-                        "label": "Student Profile",
+                        "label": "Student Profiles",
                         "icon": "bi-person-circle",
                         "route": "retention/profile",
                         "permission": "retention.view"

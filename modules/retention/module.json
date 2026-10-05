@@ -10,9 +10,31 @@
         "icon": "bi-graph-up-arrow",
         "items": [
             {
-                "label": "Overview & Records",
-                "route": "retention",
-                "permission": "retention.view"
+                "label": "Student Information Management",
+                "icon": "bi-people",
+                "permission": "retention.view",
+                "children": [
+                    {
+                        "label": "Student Profile",
+                        "route": "retention/profile",
+                        "permission": "retention.view"
+                    },
+                    {
+                        "label": "Academic History",
+                        "route": "retention/academichistory",
+                        "permission": "retention.view"
+                    },
+                    {
+                        "label": "Program and Enrollment Records",
+                        "route": "retention/enrollmentrecords",
+                        "permission": "retention.view"
+                    },
+                    {
+                        "label": "Demographic Information",
+                        "route": "retention/demographicinfo",
+                        "permission": "retention.view"
+                    }
+                ]
             }
         ]
     },

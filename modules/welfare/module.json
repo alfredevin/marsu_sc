@@ -10,9 +10,176 @@
         "icon": "bi-shield-check",
         "items": [
             {
-                "label": "Overview & Records",
-                "route": "welfare",
-                "permission": "welfare.view"
+                "label": "Student Welfare Profile Management",
+                "icon": "bi-person-vcard",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Student profile information",
+                        "route": "welfare/welfare-dashboard",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Socio-economic/background information",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Support needs assessment",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Welfare history records",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Student Concern and Case Management",
+                "icon": "bi-folder-check",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Student concern",
+                        "route": "welfare/welfare-dashboard",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Case classification",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Case documentation",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Follow-up monitoring",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Case resolution tracking",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Support Services Management",
+                "icon": "bi-life-preserver",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Counseling referrals",
+                        "route": "welfare/welfare-dashboard",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Financial assistance records",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Scholarship/grant monitoring",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Student aid programs",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Community support services",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Intervention Monitoring",
+                "icon": "bi-activity",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Intervention plans",
+                        "route": "welfare/welfare-dashboard",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Assigned support personnel",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Progress tracking",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Outcome evaluation",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Appointment and Communication",
+                "icon": "bi-calendar-check",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Service appointment scheduling",
+                        "route": "welfare/welfare-dashboard",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Notifications",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Student advisories",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Office communication",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Reports and Analytics",
+                "icon": "bi-file-earmark-bar-graph",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Student welfare statistics",
+                        "route": "welfare/welfare-dashboard",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Common student concerns",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Service utilization reports",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Intervention effectiveness reports",
+                        "route": "welfare/welfare-records",
+                        "permission": "welfare.view"
+                    }
+                ]
             }
         ]
     },

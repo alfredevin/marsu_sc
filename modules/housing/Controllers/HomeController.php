@@ -286,7 +286,7 @@ class HomeController {
                 'Occupancy Monitoring'  => ''
             ]
         ]);
-    }     
+    }
 
     public function receiptgeneration(): void {
         $user = Auth::user();

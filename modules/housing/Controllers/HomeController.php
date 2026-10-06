@@ -318,7 +318,7 @@ class HomeController {
       public function repairmonitoring(): void {
         $user = Auth::user();
         View::render('housing/Views/repairmonitoring', [
-            'title'       => 'Receipt Generation',  
+            'title'       => 'Repair Monitoring',
             'moduleName'  => 'Housing (ISHAMIS)',
             'slug'        => 'housing',
             'user'        => $user,

@@ -205,7 +205,7 @@ class HomeController {
       public function facilityutilizations(): void {
         $user = Auth::user();
         View::render('housing/Views/facilityutilizations', [
-            'title'       => 'Condition Reports',
+            'title'       => 'Facility Utilization',
             'moduleName'  => 'Housing (ISHAMIS)',
             'slug'        => 'housing',
             'user'        => $user,

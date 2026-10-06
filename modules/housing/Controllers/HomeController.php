@@ -103,51 +103,7 @@ class HomeController {
         ]);
     }
 
-    public function rooms(): void {
-        $user = Auth::user();
-        View::render('housing/Views/rooms', [
-            'title'       => 'Room Inventory & Bed Space Capacity',
-            'moduleName'  => 'Housing (ISHAMIS)',
-            'slug'        => 'housing',
-            'user'        => $user,
-            'crumbs'      => [
-                'Housing (ISHAMIS)' => url('housing'),
-                'House Management'  => '',
-                'Room Inventory'    => ''
-            ]
-        ]);
-    }
-
-    public function history(): void {
-        $user = Auth::user();
-        View::render('housing/Views/tenants', [
-            'title'       => 'Student Residency History & Logs',
-            'moduleName'  => 'Housing (ISHAMIS)',
-            'slug'        => 'housing',
-            'tenants'     => [],
-            'user'        => $user,
-            'crumbs'      => [
-                'Housing (ISHAMIS)' => url('housing'),
-                'Tenant Management' => '',
-                'Residency History' => ''
-            ]
-        ]);
-    }
-
-    public function reports(): void {
-        $user = Auth::user();
-        View::render('housing/Views/reports', [
-            'title'       => 'Occupancy & Facility Statistics',
-            'moduleName'  => 'Housing (ISHAMIS)',
-            'slug'        => 'housing',
-            'user'        => $user,
-            'crumbs'      => [
-                'Housing (ISHAMIS)' => url('housing'),
-                'Reports'           => '',
-                'Occupancy Report'  => ''
-            ]
-        ]);
-    }
+   
     public function announcements(): void {
         $user = Auth::user();
         View::render('housing/Views/announcements', [
@@ -246,7 +202,123 @@ class HomeController {
             ]
         ]);
     }   
-    public function residencyhistory(): void {
+    
+     public function incidentreporting(): void {
+        $user = Auth::user();
+        View::render('housing/Views/incidentreporting', [
+            'title'       => 'Incident Reporting',  
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Maintenance & Facility'  => '',
+                'Facility Utilizations'  => ''
+            ]
+        ]);
+    } 
+    public function occupancyreports(): void {
+        $user = Auth::user();
+        View::render('housing/Views/occupancyreports', [
+            'title'       => 'Maintenance Requests',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Maintenance & Facility'  => '',
+                'Facility Utilizations'  => ''
+            ]
+        ]);
+    }     
+    public function occupancymonitoring(): void {
+        $user = Auth::user();
+        View::render('housing/Views/occupancymonitoring', [
+            'title'       => 'Occupancy Monitoring',  
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Room & Accomodation'  => '',
+                'Occupancy Monitoring'  => ''
+            ]
+        ]);
+    }     
+    public function paymentrecords(): void {
+        $user = Auth::user();
+        View::render('housing/Views/paymentrecords', [
+            'title'       => 'Payment Records',  
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Payment & Billing'  => '',
+                'Payment Records'  => ''
+            ]
+        ]);
+    }     
+      public function repairmonitoring(): void {
+        $user = Auth::user();
+        View::render('housing/Views/repairmonitoring', [
+            'title'       => 'Repair Monitoring',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Occupancy & Rooming'  => '',
+                'Occupancy Monitoring'  => ''
+            ]
+        ]);
+    }
+      public function reports(): void {
+        $user = Auth::user();
+        View::render('housing/Views/reports', [
+            'title'       => 'Reports',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Occupancy & Rooming'  => '',
+                'Occupancy Monitoring'  => ''
+            ]
+        ]);
+    }
+
+    public function receiptgeneration(): void {
+        $user = Auth::user();
+        View::render('housing/Views/receiptgeneration', [
+            'title'       => 'Receipt Generation',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)'  => url('housing'),
+                'Payment & Billing' => '',
+                'Receipt Generation' => ''
+            ]
+        ]);
+    }
+
+       public function reservationmanagement(): void {
+        $user = Auth::user();
+        View::render('housing/Views/reservationmanagement', [
+            'title'       => 'Reservation Management',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Reservation & App'  => '',
+                'Reservation Management'  => ''
+            ]
+        ]);
+    }     
+    
+       public function residencyhistory(): void {
         $user = Auth::user();
         View::render('housing/Views/residencyhistory', [
             'title'       => 'Residency History',
@@ -255,8 +327,80 @@ class HomeController {
             'user'        => $user,
             'crumbs'      => [
                 'Housing (ISHAMIS)' => url('housing'),
-                'Tenant Management'  => '',
-                'Residency History'  => ''
+                'Occupancy & Rooming'  => '',
+                'Occupancy Monitoring'  => ''
+            ]
+        ]);
+    }     
+       public function residentstatistics(): void {
+        $user = Auth::user();
+        View::render('housing/Views/residentstatistics', [
+            'title'       => 'Resident Statistics',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Occupancy & Rooming'  => '',
+                'Occupancy Monitoring'  => ''
+            ]
+        ]);
+    }     
+    
+      public function revenuereports(): void {
+        $user = Auth::user();
+        View::render('housing/Views/revenuereports', [
+            'title'       => 'Revenue Reports',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Occupancy & Rooming'  => '',
+                'Occupancy Monitoring'  => ''
+            ]
+        ]);
+    }     
+    
+      public function roomandinventory(): void {
+        $user = Auth::user();
+        View::render('housing/Views/roomandinventory', [
+            'title'       => 'Room and Inventory',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Room & Accomodation'  => '',
+                'Room & Inventory'  => ''
+            ]
+        ]);
+    }     
+    public function rooms(): void {
+        $user = Auth::user();
+        View::render('housing/Views/rooms', [
+            'title'       => 'Rooms',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Occupancy & Rooming'  => '',
+                'Occupancy Monitoring'  => ''
+            ]
+        ]);
+    }     
+    public function rulesandpolicies(): void {
+        $user = Auth::user();
+        View::render('housing/Views/rulesandpolicies', [
+            'title'       => 'Rules and Policies',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Occupancy & Rooming'  => '',
+                'Occupancy Monitoring'  => ''
             ]
         ]);
     }
@@ -372,25 +516,6 @@ class HomeController {
                 'Payment Records'   => ''
             ]
         ]);
-    }
-
-    public function recieptgeneration(): void {
-        $user = Auth::user();
-        View::render('housing/Views/receiptgeneration', [
-            'title'       => 'Receipt Generation',
-            'moduleName'  => 'Housing (ISHAMIS)',
-            'slug'        => 'housing',
-            'user'        => $user,
-            'crumbs'      => [
-                'Housing (ISHAMIS)'  => url('housing'),
-                'Payment & Billing'  => '',
-                'Receipt Generation' => ''
-            ]
-        ]);
-    }
-
-    public function receiptgeneration(): void {
-        $this->recieptgeneration();
     }
 
     public function maintenancerequest(): void {
@@ -550,21 +675,38 @@ class HomeController {
     public function facilityutilizations(): void {
         $this->facilityutilization();
     }  
-    public function accreditation(): void {
+    
+    
+     public function servicehistory(): void {
         $user = Auth::user();
-        View::render('housing/Views/reports', [
-            'title'       => 'Accreditation & Inspection Summary',
+        View::render('housing/Views/servicehistory', [
+            'title'       => 'Service History',
             'moduleName'  => 'Housing (ISHAMIS)',
             'slug'        => 'housing',
             'user'        => $user,
             'crumbs'      => [
-                'Housing (ISHAMIS)'     => url('housing'),
-                'Reports'               => '',
-                'Accreditation Summary' => ''
+                'Housing (ISHAMIS)' => url('housing'),
+                'Occupancy & Rooming'  => '',
+                'Occupancy Monitoring'  => ''
             ]
         ]);
-    }
+    }  
+     public function waitinglist(): void {
+        $user = Auth::user();
+        View::render('housing/Views/waitinglist', [
+            'title'       => 'Waiting List',  
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Reservation & App'  => '',
+                'Waiting List'  => ''
+            ]
+        ]);
+    }  
 
+    
     public function show(): void {
         $id = (int)($_GET['id'] ?? 0);
         $record = Database::fetchOne("SELECT * FROM `hsg_records` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]);

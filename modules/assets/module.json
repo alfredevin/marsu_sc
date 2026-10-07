@@ -42,7 +42,7 @@
                 ]
             },
             {
-                "label": "Inventory Management",
+                "label": "Inventory Managements",
                 "icon": "bi-box-seam",
                 "route": "assets",
                 "permission": "assets.view",

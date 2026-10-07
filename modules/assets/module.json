@@ -43,6 +43,39 @@
             },
             {
                 "label": "Inventory Management",
+                "icon": "bi-box-seam",
+                "route": "assets",
+                "permission": "assets.view",
+                "children": [
+                    {
+                        "label": "Supply and equipment inventory ",
+                        "route": "assets/assets-inventory",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Property Identification Numbers",
+                        "route": "assets/assests-id",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Asset Classification",
+                        "route": "assets/assests-classification",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Acquisition Details",
+                        "route": "assets/assets-acquisition",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Ownership/Accountability Records",
+                        "route": "assets/assets-ownership",
+                        "permission": "assets.view"
+                    }
+                ]
+            },
+            {
+                "label": "Inventory Management",
                 "route": "assets",
                 "permission": "assets.view"
             }

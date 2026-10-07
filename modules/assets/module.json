@@ -10,7 +10,39 @@
         "icon": "bi-pc-display-horizontal",
         "items": [
             {
-                "label": "Overview & Records",
+                "label": "Property and Asset Management",
+                "icon": "bi-boxes",
+                "permission": "assets.view",
+                "children": [
+                    {
+                        "label": "Asset Profile Creation",
+                        "route": "assets/assests-profile",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Property Identification Numbers",
+                        "route": "assets/assests-id",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Asset Classification",
+                        "route": "assets/assests-classification",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Acquisition Details",
+                        "route": "assets/assets-acquisition",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Ownership/Accountability Records",
+                        "route": "assets/assets-ownership",
+                        "permission": "assets.view"
+                    }
+                ]
+            },
+            {
+                "label": "Inventory Management",
                 "route": "assets",
                 "permission": "assets.view"
             }

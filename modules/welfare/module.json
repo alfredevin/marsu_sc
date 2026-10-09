@@ -10,9 +10,156 @@
         "icon": "bi-shield-check",
         "items": [
             {
-                "label": "Overview & Records",
-                "route": "welfare",
-                "permission": "welfare.view"
+                "label": "Student Profile Management",
+                "icon": "bi-person-vcard",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Student profile information",
+                        "route": "welfare/student-profile-information",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Socio-economic background",
+                        "route": "welfare/socio-economic-background",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Support assessment",
+                        "route": "welfare/support-assessment",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Welfare history records",
+                        "route": "welfare/welfare-history-records",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Student Concern and Case Management",
+                "icon": "bi-folder-check",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Student concern",
+                        "route": "welfare/student-concern",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Case management",
+                        "route": "welfare/case-management",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Follow-up monitoring",
+                        "route": "welfare/follow-up-monitoring",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Case resolution tracking",
+                        "route": "welfare/case-resolution-tracking",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Support Services Management",
+                "icon": "bi-life-preserver",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Counseling referrals",
+                        "route": "welfare/counseling-referrals",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Financial assistance records",
+                        "route": "welfare/financial-assistance-records",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Scholarship/grant monitoring",
+                        "route": "welfare/scholarship-grant-monitoring",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Student support programs",
+                        "route": "welfare/student-support-programs",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Intervention Monitoring",
+                "icon": "bi-activity",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Intervention plans",
+                        "route": "welfare/intervention-plans",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Assigned personnel",
+                        "route": "welfare/assigned-personnel",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Progress tracking",
+                        "route": "welfare/progress-tracking",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Outcome evaluation",
+                        "route": "welfare/outcome-evaluation",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Welfare services",
+                "icon": "bi-calendar-check",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Appointments",
+                        "route": "welfare/appointments",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Advisories",
+                        "route": "welfare/advisories",
+                        "permission": "welfare.view"
+                    }
+                ]
+            },
+            {
+                "label": "Reports",
+                "icon": "bi-file-earmark-bar-graph",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Student welfare reports",
+                        "route": "welfare/student-welfare-reports",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Student concerns",
+                        "route": "welfare/student-concerns",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Service reports",
+                        "route": "welfare/service-reports",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Intervention reports",
+                        "route": "welfare/intervention-reports",
+                        "permission": "welfare.view"
+                    }
+                ]
             }
         ]
     },

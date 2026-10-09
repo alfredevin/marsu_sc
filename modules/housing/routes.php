@@ -42,7 +42,6 @@ $router->get('/housing/roomandinventory', [HomeController::class, 'roomandinvent
 $router->get('/housing/roomassignment', [HomeController::class, 'roomassignment'], ['auth', 'permission:housing.view']);
 $router->get('/housing/roomassignments', [HomeController::class, 'roomassignments'], ['auth', 'permission:housing.view']);
 $router->get('/housing/rooms', [HomeController::class, 'rooms'], ['auth', 'permission:housing.view']);
-$router->get('/housing/roomassignment', [HomeController::class, 'roomassignment'], ['auth', 'permission:housing.view']);
 $router->get('/housing/rulesandpolicies', [HomeController::class, 'rulesandpolicies'], ['auth', 'permission:housing.view']);
 $router->get('/housing/servicehistory', [HomeController::class, 'servicehistory'], ['auth', 'permission:housing.view']);
 $router->get('/housing/tenants', [HomeController::class, 'tenants'], ['auth', 'permission:housing.view']);

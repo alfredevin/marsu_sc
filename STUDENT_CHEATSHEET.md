@@ -303,3 +303,8 @@ Once your group's initial UI design is approved by the Lead, you can start conne
 2. **Testing Your Group Account**:
    - Each group lead has a dedicated account (e.g., `group4_lead`, `group7_lead`, password: `Password123!`).
    - When you log in with your group lead account, your sidebar will **only** display your assigned module!
+
+3. **Step-by-Step Backend Guide**:
+   - Para sa detalyadong code at copy-paste examples sa pag-save at pag-fetch ng data, basahin ang:  
+     👉 **[`STUDENT_CRUD_CHEATSHEET.md`](STUDENT_CRUD_CHEATSHEET.md)**
+

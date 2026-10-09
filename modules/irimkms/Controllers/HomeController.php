@@ -69,7 +69,7 @@ class HomeController {
         ]);
     }
 
-
+   
     public function researchprofiles(): void {
         $user = Auth::user();
         View::render('irimkms/Views/researchprofiles', [

@@ -20,3 +20,4 @@ $router->get('/irimkms/researchstorage', [HomeController::class, 'researchstorag
 $router->get('/irimkms/searchableresearch', [HomeController::class, 'searchableresearch'], ['auth', 'permission:irimkms.view']);
 $router->get('/irimkms/knowledgemanagement', [HomeController::class, 'knowledgemanagement'], ['auth', 'permission:irimkms.view']);
 $router->get('/irimkms/implementationprogress', [HomeController::class, 'implementationprogress'], ['auth', 'permission:irimkms.view']);
+

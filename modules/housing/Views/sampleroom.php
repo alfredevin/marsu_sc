@@ -43,13 +43,11 @@
         </h6>
     </div>
     <div class="card-body p-4">
-        <!-- Ang form na ito ay magsu-submit ng POST request sa sarili nitong page -->
         <form method="POST">
             <!-- MAHALAGA: CSRF Token para tanggapin ng MarSU security middleware -->
             <?= csrf_field() ?>
 
             <div class="row g-3">
-                <!-- Field 1: Room Name -->
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">
                         Pangalan ng Room <span class="text-danger">*</span>
@@ -62,7 +60,6 @@
                     <div class="form-text">Ilagay ang numero o pangalan ng kuwarto.</div>
                 </div>
 
-                <!-- Field 2: Monthly Price -->
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">
                         Buwanang Bayad (₱) <span class="text-danger">*</span>
@@ -76,7 +73,6 @@
                     <div class="form-text">Presyo bawat buwan sa piso.</div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="col-md-2 d-flex align-items-center">
                     <button type="submit" class="btn btn-marsu w-100 py-2 shadow-sm">
                         <i class="bi bi-save me-1"></i>Save Room
@@ -110,7 +106,6 @@
                 </thead>
                 <tbody>
                     <?php if (!empty($rooms)): ?>
-                        <!-- Mag-loop sa bawat row ng na-fetch na data -->
                         <?php foreach ($rooms as $room): ?>
                             <tr>
                                 <td class="ps-3 text-muted fw-bold">#<?= e($room['id']) ?></td>
@@ -127,7 +122,6 @@
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <!-- Kapag wala pang laman ang table sa database -->
                         <tr>
                             <td colspan="4" class="text-center text-muted py-5">
                                 <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>

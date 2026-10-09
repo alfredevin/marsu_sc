@@ -16,7 +16,7 @@
                 "children": [
                     {
                         "label": "Proposals & Approvals",
-                        "route": "irimkms/proposalsandapprovals",
+                        "route": "irimkms/proposalsandapprovalsss",
                         "permission": "irimkms.view"
                     },
                     {

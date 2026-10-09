@@ -10,7 +10,7 @@
         "icon": "bi-house-check-fill",
         "items": [
             {
-                "label": "Research Management",
+                "label": "Research Managements",
                 "icon": "bi-people",
                 "permission": "irimkms.view",
                 "children": [

@@ -202,7 +202,35 @@ class HomeController {
             ]
         ]);
     }   
+      public function facilityutilizations(): void {
+        $user = Auth::user();
+        View::render('housing/Views/facilityutilizations', [
+            'title'       => 'Condition Reports',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Maintenance & Facility'  => '',
+                'Facility Utilizations'  => ''
+            ]
+        ]);
+    }   
     
+       public function housingapplication(): void {
+        $user = Auth::user();
+        View::render('housing/Views/housingapplication', [
+            'title'       => 'Housing Application',
+            'moduleName'  => 'Housing (ISHAMIS)',
+            'slug'        => 'housing',
+            'user'        => $user,
+            'crumbs'      => [
+                'Housing (ISHAMIS)' => url('housing'),
+                'Reservation & App'  => '',
+                'Housing Application'  => ''
+            ]
+        ]);
+    }   
      public function incidentreporting(): void {
         $user = Auth::user();
         View::render('housing/Views/incidentreporting', [
@@ -341,8 +369,8 @@ class HomeController {
             'user'        => $user,
             'crumbs'      => [
                 'Housing (ISHAMIS)' => url('housing'),
-                'Occupancy & Rooming'  => '',
-                'Occupancy Monitoring'  => ''
+                'Reports and Analytics'  => '',
+                'Resident Statistics'  => ''
             ]
         ]);
     }     
@@ -356,8 +384,8 @@ class HomeController {
             'user'        => $user,
             'crumbs'      => [
                 'Housing (ISHAMIS)' => url('housing'),
-                'Occupancy & Rooming'  => '',
-                'Occupancy Monitoring'  => ''
+                'Reports and Analytics'  => '',
+                'Revenue Reports'  => ''
             ]
         ]);
     }     

@@ -5,6 +5,11 @@
  */
 
 use Modules\Housing\Controllers\HomeController;
+use Modules\Housing\Controllers\SampleRoomController;
+
+// Student Demo & Sample CRUD Route
+$router->get('/housing/sample-room', [SampleRoomController::class, 'index'], ['auth', 'permission:housing.view']);
+$router->post('/housing/sample-room', [SampleRoomController::class, 'index'], ['auth', 'permission:housing.view', 'csrf']);
 
 // Module Dashboard & Records
 $router->get('/housing', [HomeController::class, 'index'], ['auth', 'permission:housing.view']);

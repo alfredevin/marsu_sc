@@ -10,9 +10,191 @@
         "icon": "bi-pc-display-horizontal",
         "items": [
             {
-                "label": "Overview & Records",
+                "label": "Property and Asset Management",
+                "icon": "bi-boxes",
+                "permission": "assets.view",
+                "children": [
+                    {
+                        "label": "Asset Profile Creation",
+                        "route": "assets/assetprofilecreation",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Property Identification Numbers",
+                        "route": "assets/propertyidentificationnumbers",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Asset Classification",
+                        "route": "assets/assests-classification",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Acquisition Details",
+                        "route": "assets/assets-acquisition",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Ownership/Accountability Records",
+                        "route": "assets/assets-ownership",
+                        "permission": "assets.view"
+                    }
+                ]
+            },
+            {
+                "label": "Inventory Managements",
+                "icon": "bi-box-seam",
                 "route": "assets",
-                "permission": "assets.view"
+                "permission": "assets.view",
+                "children": [
+                    {
+                        "label": "Supply and equipment inventory",
+                        "route": "assets/assets-inventory",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Stock Monitoring",
+                        "route": "assets/assets-stock-monitoring",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Issuance and return tracking",
+                        "route": "assets/assets-issuance",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Reorder level alerts",
+                        "route": "assets/assets-reorder-level",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Inventory history",
+                        "route": "assets/assets-history",
+                        "permission": "assets.view"
+                    }
+                ]
+            },
+            {
+                "label": "Asset Tracking Management",
+                "icon": "bi-radar",
+                "route": "assets",
+                "permission": "assets.view",
+                "children": [
+                    {
+                        "label": "Location monitoring",
+                        "route": "assets/assets-monitoring",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Assigned personnel/unit tracking",
+                        "route": "assets/assets-tracking",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Transfer records",
+                        "route": "assets/assets-transfer",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Disposal and retirement management",
+                        "route": "assets/assets-disposal",
+                        "permission": "assets.view"
+                    }
+                ]
+            },
+            {
+                "label": "Facilities Management",
+                "icon": "bi-building-gear",
+                "route": "assets",
+                "permission": "assets.view",
+                "children": [
+                    {
+                        "label": "Building and room records",
+                        "route": "assets/assets-building",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Facility condition monitoring",
+                        "route": "assets/assets-condition",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Maintenance scheduling",
+                        "route": "assets/assets-maintenance",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Repair requests",
+                        "route": "assets/assets-repair",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Service history",
+                        "route": "assets/assets-warranty",
+                        "permission": "assets.view"
+                    }
+                ]
+            },
+            {
+                "label": "General Services Management",
+                "icon": "bi-gear-wide-connected",
+                "route": "assets",
+                "permission": "assets.view",
+                "children": [
+                    {
+                        "label": "Work/service requests",
+                        "route": "assets/assets-request",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Job order tracking",
+                        "route": "assets/assets-order",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Maintenance personnel assignment",
+                        "route": "assets/assets-personnel",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Completion monitoring",
+                        "route": "assets/assets-monitoring",
+                        "permission": "assets.view"
+                    }
+                ]
+            },
+            {
+                "label": "Reports and Analytics Dashboard",
+                "icon": "bi-graph-up-arrow",
+                "route": "assets",
+                "permission": "assets.view",
+                "children": [
+                    {
+                        "label": "Inventory reports",
+                        "route": "assets/assets-reports",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Property accountability reports",
+                        "route": "assets/assets-accountability",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Asset utilization reports",
+                        "route": "assets/assets-utilization",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Maintenance performance reports",
+                        "route": "assets/assets-performance",
+                        "permission": "assets.view"
+                    },
+                    {
+                        "label": "Audit-ready documentation",
+                        "route": "assets/assets-audit",
+                        "permission": "assets.view"
+                    }
+                ]
             }
         ]
     },

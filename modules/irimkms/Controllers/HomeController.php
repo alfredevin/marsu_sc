@@ -53,6 +53,214 @@ class HomeController {
         ]);
     }
 
+
+    public function proposalsandapprovals(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/proposalsandapprovals', [
+            'title'       => 'Proposals & Approvals',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Research Management' => '',
+                'Proposals & Approvals' => ''
+            ]
+        ]);
+    }
+
+
+    public function researchprofiles(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/researchprofiles', [
+            'title'       => 'Research Profiles',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Research Management' => '',
+                'Research Profiles' => ''
+            ]
+        ]);
+    }
+
+
+    public function researchprojects(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/researchprojects', [
+            'title'       => 'Research Projects',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Research Management' => '',
+                'Research Projects' => ''
+            ]
+        ]);
+    }
+
+
+    public function fundingandresources(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/fundingandresources', [
+            'title'       => 'Funding & Resources',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Research Management' => '',
+                'Funding & Resources' => ''
+            ]
+        ]);
+    }
+
+
+    public function projectmilestone(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/projectmilestone', [
+            'title'       => 'Project Milestone',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Monitoring & Evaluation' => '',
+                'Project Milestone' => ''
+            ]
+        ]);
+    }
+
+
+    public function implementationprogress(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/implementationprogress', [
+            'title'       => 'Implementation Progress',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Monitoring & Evaluation' => '',
+                'Implementation Progress' => ''
+            ]
+        ]);
+    }
+
+
+    public function evaluationforms(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/evaluationforms', [
+            'title'       => 'Evaluation Forms & Assessment Tools',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Monitoring & Evaluation' => '',
+                'Evaluation Forms & Assessment Tools' => ''
+            ]
+        ]);
+    }
+
+
+    public function performanceindicators(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/performanceindicators', [
+            'title'       => 'Performance Indicators & Analytics',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Monitoring & Evaluation' => '',
+                'Performance Indicators & Analytics' => ''
+            ]
+        ]);
+    }
+
+
+    public function completionreporting(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/completionreporting', [
+            'title'       => 'Completion & Accomplishment Reporting',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Monitoring & Evaluation' => '',
+                'Completion & Accomplishment Reporting' => ''
+            ]
+        ]);
+    }
+
+
+    public function researchstorage(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/researchstorage', [
+            'title'       => 'Digital Research Storage',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Repository & Knowledge Management (IRIMKMS)' => '',
+                'Digital Research Storage' => ''
+            ]
+        ]);
+    }
+
+
+    public function filemanagement(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/filemanagement', [
+            'title'       => 'File Management',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Repository & Knowledge Management (IRIMKMS)' => '',
+                'File Management' => ''
+            ]
+        ]);
+    }
+
+
+    public function knowledgemanagement(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/knowledgemanagement', [
+            'title'       => 'Knowledge Management & Library',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Repository & Knowledge Management (IRIMKMS)' => '',
+                'Knowledge Management & Library' => ''
+            ]
+        ]);
+    }
+
+
+    public function searchableresearch(): void {
+        $user = Auth::user();
+        View::render('irimkms/Views/searchableresearch', [
+            'title'       => 'Searchable Research',
+            'moduleName'  => 'Research Management (IRIMKMS)',
+            'slug'        => 'irimkms',
+            'user'        => $user,
+            'crumbs'      => [
+                'Research Management (IRIMKMS)' => url('irimkms'),
+                'Repository & Knowledge Management (IRIMKMS)' => '',
+                'Searchable Research' => ''
+            ]
+        ]);
+    }
+    
     public function store(): void {
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
@@ -78,3 +286,4 @@ class HomeController {
         redirect(url('irimkms'));
     }
 }
+    

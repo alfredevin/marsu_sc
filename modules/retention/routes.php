@@ -46,3 +46,4 @@ $router->get('/retention/retentionratereports', [HomeController::class, 'retenti
 $router->get('/retention/atriskstudentreports', [HomeController::class, 'atriskstudentreports'], ['auth', 'permission:retention.view']);
 $router->get('/retention/studentsuccessreports', [HomeController::class, 'studentsuccessreports'], ['auth', 'permission:retention.view']);
 $router->get('/retention/trendsovertime', [HomeController::class, 'trendsovertime'], ['auth', 'permission:retention.view']);
+

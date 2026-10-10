@@ -5,11 +5,16 @@
     "description": "Procurement Management Information System (PMIS) — Student Module 1 connected with Campus Operations.",
     "author": "MarSU CICS Student Development Group 1",
     "default_enabled": true,
-    "section": "Campus Operations",
+    "section": "Procurement Management Information System",
     "menu": {
         "icon": "bi-cart-check-fill",
-        "route": "procurement",
-        "permission": "procurement.view"
+        "items": [
+            {
+                "label": "Overview & Records",
+                "route": "procurement",
+                "permission": "procurement.view"
+            }
+        ]
     },
     "permissions": {
         "procurement.view": "View Procurement Management Information System",

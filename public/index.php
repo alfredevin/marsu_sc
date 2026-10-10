@@ -62,6 +62,9 @@ $router->post('/profile/password', [\App\Controllers\AuthController::class, 'cha
 // Executive Dashboard
 $router->get('/dashboard', [\App\Controllers\DashboardController::class, 'index'], ['auth', 'permission:core.dashboard.view']);
 
+// Student Portal & Mobile App Interface
+$router->get('/student-portal', [\App\Controllers\DashboardController::class, 'studentPortal'], ['auth']);
+
 // Roles & RBAC Matrix
 $router->get('/roles', [\App\Controllers\RoleController::class, 'index'], ['auth', 'permission:core.roles.view']);
 $router->get('/roles/matrix', [\App\Controllers\RoleController::class, 'matrix'], ['auth', 'permission:core.roles.view']);

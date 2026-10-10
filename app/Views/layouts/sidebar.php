@@ -56,12 +56,19 @@ $moduleNavGroups = ModuleLoader::getNavItems();
 
     <!-- Navigation Rail (Flex Scrolling inside 100vh Fixed Sidebar) -->
     <div class="sidebar-nav-scroll py-2">
-        <!-- Dashboard -->
+        <!-- Dashboard & Student Portal -->
         <ul class="nav flex-column mb-0">
             <li class="nav-item <?= isActive('dashboard') ?>">
                 <a class="nav-link <?= isActive('dashboard') ?>" href="<?= url('dashboard') ?>">
                     <i class="bi bi-speedometer2"></i>
                     <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item <?= isActive('student-portal') ?>">
+                <a class="nav-link <?= isActive('student-portal') ?>" href="<?= url('student-portal') ?>">
+                    <i class="bi bi-phone"></i>
+                    <span>Student Mobile App</span>
+                    <span class="badge badge-gold ms-auto" style="font-size: 0.62rem;">PORTAL</span>
                 </a>
             </li>
         </ul>

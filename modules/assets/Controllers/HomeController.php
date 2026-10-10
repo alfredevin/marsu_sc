@@ -104,9 +104,9 @@ class HomeController {
             ]
         ]);
     }
-    public function AssetClassification (): void {
+    public function assetclassification (): void {
         $user = Auth::user();
-        View::render('assets/Views/AssetClassification', [
+        View::render('assets/Views/assetclassification', [
             'title'       => 'Asset Classification',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
@@ -117,9 +117,9 @@ class HomeController {
             ]
         ]);
     }
-    public function AcquisitionDetails (): void {
+    public function acquisitiondetails (): void {
         $user = Auth::user();
-        View::render('assets/Views/AcquisitionDetails', [
+        View::render('assets/Views/acquisitiondetails', [
             'title'       => 'Acquisition Details',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
@@ -130,9 +130,9 @@ class HomeController {
             ]
         ]);
     }
-    public function OwnershipAccountabilityRecords (): void {
+    public function ownershipaccountabilityrecords (): void {
         $user = Auth::user();
-        View::render('assets/Views/OwnershipAccountabilityRecords', [
+        View::render('assets/Views/ownershipaccountabilityrecords', [
             'title'       => 'Ownership Accountability Records',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
@@ -143,33 +143,33 @@ class HomeController {
             ]
         ]);
     }
-    public function SupplyAndEquipmentInventory (): void {
+    public function supplyandequipmentinventory (): void {
         $user = Auth::user();
-        View::render('assets/Views/SupplyAndEquipmentInventory', [
+        View::render('assets/Views/supplyandequipmentinventory', [
             'title'       => 'SupplyAndEquipmentInventory',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
             'user'        => $user,
             'crumbs'      => [
                 'University Equipment & IT Asset Management' => url('assets'),
-                'SupplyAndEquipmentInventory'           => ''
+                'Supply And Equipment Inventory'           => ''
             ]
         ]);
     }
-    public function StockMonitoring (): void {
+    public function stockmonitoring (): void {
         $user = Auth::user();
-        View::render('assets/Views/StockMonitoring', [
+        View::render('assets/Views/stockmonitoring', [
             'title'       => 'StockMonitoring',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
             'user'        => $user,
             'crumbs'      => [
                 'University Equipment & IT Asset Management' => url('assets'),
-                'StockMonitoring'           => ''
+                'Stock Monitoring'           => ''
             ]
         ]);
     }
-    public function InsuanceAndReturnTracking(): void {
+    public function insuanceandreturntracking(): void {
         $user = Auth::user();
         View::render('assets/Views/InsuanceAndReturnTracking', [
             'title'       => 'InsuanceAndReturnTracking',
@@ -178,59 +178,269 @@ class HomeController {
             'user'        => $user,
             'crumbs'      => [
                 'University Equipment & IT Asset Management' => url('assets'),
-                'InsuanceAndReturnTracking'           => ''
+                'Insuance And Return Tracking'           => ''
             ]
         ]);
     }
-    public function ReorderLevelAlerts(): void {
+    public function reorderlevelalerts(): void {
         $user = Auth::user();
-        View::render('assets/Views/ReorderLevelAlerts', [
-            'title'       => 'ReorderLevelAlerts',
+        View::render('assets/Views/reorderlevelalerts', [
+            'title'       => 'Reorder Level Alerts',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
             'user'        => $user,
             'crumbs'      => [
                 'University Equipment & IT Asset Management' => url('assets'),
-                'ReorderLevelAlerts'           => ''
+                'Reorder Level Alerts'           => ''
             ]
         ]);
     }
-    public function InventoryHistory(): void {
+    public function inventoryhistory(): void {
         $user = Auth::user();
-        View::render('assets/Views/InventoryHistory', [
-            'title'       => 'InventoryHistory',
+        View::render('assets/Views/inventoryhistory', [
+            'title'       => 'Inventory History',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
             'user'        => $user,
             'crumbs'      => [
                 'University Equipment & IT Asset Management' => url('assets'),
-                'InventoryHistory'           => ''
+                'Inventory History'           => ''
             ]
         ]);
     }
-    public function LocationMonitoring(): void {
+    public function locationmonitoring(): void {
         $user = Auth::user();
-        View::render('assets/Views/LocationMonitoring', [
-            'title'       => 'LocationMonitoring',
+        View::render('assets/Views/locationmonitoring', [
+            'title'       => 'Location Monitoring',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
             'user'        => $user,
             'crumbs'      => [
                 'University Equipment & IT Asset Management' => url('assets'),
-                'LocationMonitoring'           => ''
+                'Location Monitoring'           => ''
             ]
         ]);
     }
-    public function AssignedPersonnelUnitTracking(): void {
+    public function assignedpersonnelunitTracking(): void {
         $user = Auth::user();
-        View::render('assets/Views/AssignedPersonnel', [
-            'title'       => 'AssignedPersonnel',
+        View::render('assets/Views/assignedpersonnelunittracking', [
+            'title'       => 'Assigned Personnel Unit Tracking',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
             'user'        => $user,
             'crumbs'      => [
                 'University Equipment & IT Asset Management' => url('assets'),
-                'AssetDisposalAndReplacement'           => ''
+                'Assigned Personnel Unit Tracking'           => ''
+            ]
+        ]);
+        
+    }
+    public function transferrecords(): void {
+        $user = Auth::user();
+        View::render('assets/Views/transferrecords', [
+            'title'       => 'Transfer Records',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Transfer Records'           => ''
+            ]
+        ]);
+        
+    }
+    public function disposalandretirementmanagement(): void {
+        $user = Auth::user();
+        View::render('assets/Views/disposalandretirementmanagement', [
+            'title'       => 'Disposal And Retirement Management',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Disposal And Retirement Management'           => ''
+            ]
+        ]);  
+    }
+    public function buildingandroomrecords(): void {
+        $user = Auth::user();
+        View::render('assets/Views/buildingandroomrecords', [
+            'title'       => 'Building And RoomRecords',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Building And Room Records'           => ''
+            ]
+        ]);  
+    }
+    public function facilityconditionmonitoring(): void {
+        $user = Auth::user();
+        View::render('assets/Views/facilityconditionmonitoring', [
+            'title'       => 'FacilityConditionMonitoring',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Asset Disposal And Replacement'           => ''
+            ]
+        ]);  
+    }
+    public function maintenancescheduling(): void {
+        $user = Auth::user();
+        View::render('assets/Views/maintenancescheduling', [
+            'title'       => 'Maintenance Scheduling',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Maintenance Scheduling'           => ''
+            ]
+        ]);  
+    }
+    public function repairrequest(): void {
+        $user = Auth::user();
+        View::render('assets/Views/repairrequest', [
+            'title'       => 'Repair Request',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Repair Request'           => ''
+            ]
+        ]);  
+    }
+    public function servicehistory(): void {
+        $user = Auth::user();
+        View::render('assets/Views/repairrequest', [
+            'title'       => 'Service History',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Service History'           => ''
+            ]
+        ]);  
+    }
+    public function workservicerequests(): void {
+        $user = Auth::user();
+        View::render('assets/Views/workservicerequests', [
+            'title'       => 'Work Service Request',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Work Service Requests'           => ''
+            ]
+        ]);  
+    }
+    public function jobordertracking(): void {
+        $user = Auth::user();
+        View::render('assets/Views/jobordertracking', [
+            'title'       => 'Job Order Tracking',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Job Order Tracking'           => ''
+            ]
+        ]);  
+    }
+    public function maintenancepersonnelassignment(): void {
+        $user = Auth::user();
+        View::render('assets/Views/maintenancepersonnelassignment', [
+            'title'       => 'Maintenance Personnel Assignment',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Maintenance Personnel Assignment'           => ''
+            ]
+        ]);  
+    }
+    public function completionmonitoring(): void {
+        $user = Auth::user();
+        View::render('assets/Views/completionmonitoring', [
+            'title'       => 'Completion Monitoring',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Completion Monitoring'           => ''
+            ]
+        ]);  
+    }
+    public function inventoryreports(): void {
+        $user = Auth::user();
+        View::render('assets/Views/inventoryreports', [
+            'title'       => 'Inventory Reports',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Inventory Reports'           => ''
+            ]
+        ]);  
+    }
+    public function propertyaccountabilityreports(): void {
+        $user = Auth::user();
+        View::render('assets/Views/propertyaccountabilityreports', [
+            'title'       => 'Property Accountability Reports',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Property Accountability Reports'           => ''
+            ]
+        ]);  
+    }
+    public function assetutilizationreports(): void {
+        $user = Auth::user();
+        View::render('assets/Views/assetutilizationreports', [
+            'title'       => 'Asset Utilization Reports',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Asset Utilization Reports'           => ''
+            ]
+        ]);  
+    }
+    public function maintenanceperformancereports(): void {
+        $user = Auth::user();
+        View::render('assets/Views/maintenanceperformancereports', [
+            'title'       => 'Maintenance Performance Reports',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Maintenance Performance Reports'           => ''
+            ]
+        ]);  
+    }
+    public function auditreadydocumentation(): void {
+        $user = Auth::user();
+        View::render('assets/Views/maintenanceperformancereports', [
+            'title'       => 'Audit Ready Documentation',
+            'moduleName'  => 'University Equipment & IT Asset Management',
+            'slug'        => 'assets',
+            'user'        => $user,
+            'crumbs'      => [
+                'University Equipment & IT Asset Management' => url('assets'),
+                'Audit Ready Documentation'           => ''
             ]
         ]);
     }

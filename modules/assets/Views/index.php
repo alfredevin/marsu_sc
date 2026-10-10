@@ -1,5 +1,3 @@
-
-
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">

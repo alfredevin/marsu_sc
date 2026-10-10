@@ -36,11 +36,12 @@
                 vulnerability, and guardian outreach.</small>
         </div>
 
-        <form method="GET" action="" class="d-flex gap-2 align-items-center flex-wrap ms-auto">
-            <!-- Search Input -->
-            <div class="input-group input-group-sm" style="width: 200px;">
-                <input type="search" name="q" class="form-control" placeholder="Search ID / Barangay..."
-                    value="<?= htmlspecialchars($search ?? '') ?>" autocomplete="off">
+        <form method="GET" action="" id="demoSearchForm" class="d-flex gap-2 align-items-center flex-wrap ms-auto">
+            <!-- Search Input na may Auto-Clear -->
+            <div class="input-group input-group-sm" style="width: 220px;">
+                <input type="search" id="demoSearchInput" name="q" class="form-control"
+                    placeholder="Search ID / Name / Brgy..." value="<?= htmlspecialchars($search ?? '') ?>"
+                    oninput="handleDemoLiveSearch(this)" autocomplete="off">
                 <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
             </div>
 
@@ -49,11 +50,14 @@
             <select name="department" class="form-select form-select-sm" style="width: auto;"
                 onchange="this.form.submit()">
                 <option value="">All Programs</option>
-                <?php foreach ($departments as $dept): ?>
-                    <option value="<?= htmlspecialchars($dept) ?>" <?= (isset($department) && $department === $dept) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($dept) ?>
-                    </option>
-                <?php endforeach; ?>
+                <?php if (!empty($departments)): ?>
+                    <?php foreach ($departments as $dItem): ?>
+                        <?php $dCode = is_array($dItem) ? ($dItem['code'] ?? '') : $dItem; ?>
+                        <option value="<?= htmlspecialchars($dCode) ?>" <?= ($department === $dCode) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($dCode) ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </select>
 
             <!-- Year Level Filter -->
@@ -61,10 +65,25 @@
             <select name="year_level" class="form-select form-select-sm" style="width: auto;"
                 onchange="this.form.submit()">
                 <option value="">All Years</option>
-                <option value="1" <?= (isset($yearLevel) && $yearLevel === '1') ? 'selected' : '' ?>>1st Year</option>
-                <option value="2" <?= (isset($yearLevel) && $yearLevel === '2') ? 'selected' : '' ?>>2nd Year</option>
-                <option value="3" <?= (isset($yearLevel) && $yearLevel === '3') ? 'selected' : '' ?>>3rd Year</option>
-                <option value="4" <?= (isset($yearLevel) && $yearLevel === '4') ? 'selected' : '' ?>>4th Year</option>
+                <option value="1" <?= ($yearLevel === '1') ? 'selected' : '' ?>>1st Year</option>
+                <option value="2" <?= ($yearLevel === '2') ? 'selected' : '' ?>>2nd Year</option>
+                <option value="3" <?= ($yearLevel === '3') ? 'selected' : '' ?>>3rd Year</option>
+                <option value="4" <?= ($yearLevel === '4') ? 'selected' : '' ?>>4th Year</option>
+            </select>
+
+            <!-- Section Filter mula sa Database -->
+            <label class="small fw-semibold text-muted mb-0 text-nowrap ms-1">SECTION:</label>
+            <select name="section" class="form-select form-select-sm" style="width: auto;"
+                onchange="this.form.submit()">
+                <option value="">All Sections</option>
+                <?php if (!empty($sections)): ?>
+                    <?php foreach ($sections as $sItem): ?>
+                        <?php $sName = is_array($sItem) ? ($sItem['name'] ?? '') : $sItem; ?>
+                        <option value="<?= htmlspecialchars($sName) ?>" <?= ($section === $sName) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($sName) ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </select>
 
             <!-- Municipality Filter -->
@@ -72,14 +91,16 @@
             <select name="municipality" class="form-select form-select-sm" style="width: auto;"
                 onchange="this.form.submit()">
                 <option value="">All Municipalities</option>
-                <?php foreach ($municipalities as $mun): ?>
-                    <option value="<?= htmlspecialchars($mun) ?>" <?= (isset($municipality) && $municipality === $mun) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($mun) ?>
-                    </option>
-                <?php endforeach; ?>
+                <?php if (!empty($municipalities)): ?>
+                    <?php foreach ($municipalities as $mun): ?>
+                        <option value="<?= htmlspecialchars($mun) ?>" <?= ($municipality === $mun) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($mun) ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </select>
 
-            <?php if (!empty($department) || !empty($yearLevel) || !empty($municipality) || !empty($search)): ?>
+            <?php if (!empty($department) || !empty($yearLevel) || !empty($section) || !empty($municipality) || !empty($search)): ?>
                 <a href="demographicinfo" class="btn btn-sm btn-outline-danger" title="Clear Filters">
                     <i class="bi bi-x-circle"></i>
                 </a>
@@ -136,7 +157,7 @@
 
     <!-- DEMOGRAPHIC VULNERABILITY & GUARDIAN REACHABILITY LEDGER -->
     <div class="table-responsive bg-white rounded border shadow-sm">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle mb-0" id="demoTable">
             <thead class="table-light text-uppercase small text-muted">
                 <tr>
                     <th class="ps-3 py-3">Student ID</th>
@@ -160,7 +181,7 @@
                             $riskBadge = 'bg-warning-subtle text-dark border border-warning-subtle';
                         }
                         ?>
-                        <tr>
+                        <tr class="demo-student-row">
                             <td class="ps-3 fw-semibold text-secondary">
                                 <?= htmlspecialchars($row['student_number']) ?>
                             </td>
@@ -194,7 +215,7 @@
                                         class="bi bi-telephone me-1"></i><?= htmlspecialchars($row['guardian_contact'] ?? 'No Contact') ?></span>
                             </td>
                             <td class="text-end pe-3">
-                                <!-- Tumalon papunta sa 360 profile dossier -->
+                                <!-- Tumalon papunta sa Student Profile Dossier -->
                                 <a href="profile?student_id=<?= urlencode($row['student_number']) ?>"
                                     class="btn btn-sm btn-outline-primary" title="View Full 360 Profile">
                                     View Dossier
@@ -214,5 +235,38 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Script para sa Live Filter at Auto-Restore kapag binura ang search -->
+    <script>
+        const hadDemoSearch = <?= !empty($search) ? 'true' : 'false' ?>;
+
+        function handleDemoLiveSearch(input) {
+            const query = input.value.trim().toLowerCase();
+            const rows = document.querySelectorAll('.demo-student-row');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
+            });
+
+            // Kusa mag-reload kapag naging blangko gamit ang backspace
+            if (query === '' && hadDemoSearch) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('q');
+                window.location.href = url.toString();
+            }
+        }
+
+        const demoInput = document.getElementById('demoSearchInput');
+        if (demoInput) {
+            demoInput.addEventListener('search', function () {
+                if (this.value === '' && hadDemoSearch) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('q');
+                    window.location.href = url.toString();
+                }
+            });
+        }
+    </script>
 
 </div>

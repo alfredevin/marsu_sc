@@ -106,8 +106,8 @@
                         "permission": "housing.view"
                     },
                     {
-                        "label": "Reciept Generation",
-                        "route": "housing/recieptgeneration",
+                        "label": "Receipt Generation",
+                        "route": "housing/receiptgeneration",
                         "permission": "housing.view"
                     }
                 ]

@@ -10,28 +10,28 @@
         "icon": "bi-shield-check",
         "items": [
             {
-                "label": "Student Welfare Profile Management",
+                "label": "Student Profile Management",
                 "icon": "bi-person-vcard",
                 "permission": "welfare.view",
                 "children": [
                     {
                         "label": "Student profile information",
-                        "route": "welfare/welfare-dashboard",
+                        "route": "welfare/student-profile-information",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Socio-economic/background information",
-                        "route": "welfare/welfare-records",
+                        "label": "Socio-economic background",
+                        "route": "welfare/socio-economic-background",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Support needs assessment",
-                        "route": "welfare/welfare-records",
+                        "label": "Support assessment",
+                        "route": "welfare/support-assessment",
                         "permission": "welfare.view"
                     },
                     {
                         "label": "Welfare history records",
-                        "route": "welfare/welfare-records",
+                        "route": "welfare/welfare-history-records",
                         "permission": "welfare.view"
                     }
                 ]
@@ -43,27 +43,22 @@
                 "children": [
                     {
                         "label": "Student concern",
-                        "route": "welfare/welfare-dashboard",
+                        "route": "welfare/student-concern",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Case classification",
-                        "route": "welfare/welfare-records",
-                        "permission": "welfare.view"
-                    },
-                    {
-                        "label": "Case documentation",
-                        "route": "welfare/welfare-records",
+                        "label": "Case management",
+                        "route": "welfare/case-management",
                         "permission": "welfare.view"
                     },
                     {
                         "label": "Follow-up monitoring",
-                        "route": "welfare/welfare-records",
+                        "route": "welfare/follow-up-monitoring",
                         "permission": "welfare.view"
                     },
                     {
                         "label": "Case resolution tracking",
-                        "route": "welfare/welfare-records",
+                        "route": "welfare/case-resolution-tracking",
                         "permission": "welfare.view"
                     }
                 ]
@@ -75,27 +70,22 @@
                 "children": [
                     {
                         "label": "Counseling referrals",
-                        "route": "welfare/welfare-dashboard",
+                        "route": "welfare/counseling-referrals",
                         "permission": "welfare.view"
                     },
                     {
                         "label": "Financial assistance records",
-                        "route": "welfare/welfare-records",
+                        "route": "welfare/financial-assistance-records",
                         "permission": "welfare.view"
                     },
                     {
                         "label": "Scholarship/grant monitoring",
-                        "route": "welfare/welfare-records",
+                        "route": "welfare/scholarship-grant-monitoring",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Student aid programs",
-                        "route": "welfare/welfare-records",
-                        "permission": "welfare.view"
-                    },
-                    {
-                        "label": "Community support services",
-                        "route": "welfare/welfare-records",
+                        "label": "Student support programs",
+                        "route": "welfare/student-support-programs",
                         "permission": "welfare.view"
                     }
                 ]
@@ -107,76 +97,66 @@
                 "children": [
                     {
                         "label": "Intervention plans",
-                        "route": "welfare/welfare-dashboard",
+                        "route": "welfare/intervention-plans",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Assigned support personnel",
-                        "route": "welfare/welfare-records",
+                        "label": "Assigned personnel",
+                        "route": "welfare/assigned-personnel",
                         "permission": "welfare.view"
                     },
                     {
                         "label": "Progress tracking",
-                        "route": "welfare/welfare-records",
+                        "route": "welfare/progress-tracking",
                         "permission": "welfare.view"
                     },
                     {
                         "label": "Outcome evaluation",
-                        "route": "welfare/welfare-records",
+                        "route": "welfare/outcome-evaluation",
                         "permission": "welfare.view"
                     }
                 ]
             },
             {
-                "label": "Appointment and Communication",
+                "label": "Welfare services",
                 "icon": "bi-calendar-check",
                 "permission": "welfare.view",
                 "children": [
                     {
-                        "label": "Service appointment scheduling",
-                        "route": "welfare/welfare-dashboard",
+                        "label": "Appointments",
+                        "route": "welfare/appointments",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Notifications",
-                        "route": "welfare/welfare-records",
-                        "permission": "welfare.view"
-                    },
-                    {
-                        "label": "Student advisories",
-                        "route": "welfare/welfare-records",
-                        "permission": "welfare.view"
-                    },
-                    {
-                        "label": "Office communication",
-                        "route": "welfare/welfare-records",
+                        "label": "Advisories",
+                        "route": "welfare/advisories",
                         "permission": "welfare.view"
                     }
                 ]
             },
             {
-                "label": "Reports and Analytics",
+                "label": "Reports",
                 "icon": "bi-file-earmark-bar-graph",
                 "permission": "welfare.view",
                 "children": [
                     {
-                        "label": "Student welfare statistics",
-                        "route": "welfare/welfare-dashboard",
+                        "label": "Student welfare reports",
+                        "route": "welfare/student-welfare-reports",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Common student concerns",
-                        "route": "welfare/welfare-records",
+                        "label": "Student concerns",
+                        "route": "welfare/student-concerns",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Service utilization reports",
-                        "route": "welfare/welfare-records",
+                        "label": "Service reports",
+                        "route": "welfare/service-reports",
                         "permission": "welfare.view"
                     },
                     {
-                        "label": "Intervention effectiveness reports",
-                        "route": "welfare/welfare-records",
+                        "label": "Intervention reports",
+                        "route": "welfare/intervention-reports",
                         "permission": "welfare.view"
                     }
                 ]

@@ -30,7 +30,6 @@ $router->get('/housing/maintenancerequests', [HomeController::class, 'maintenanc
 $router->get('/housing/occupancymonitoring', [HomeController::class, 'occupancymonitoring'], ['auth', 'permission:housing.view']);
 $router->get('/housing/occupancyreports', [HomeController::class, 'occupancyreports'], ['auth', 'permission:housing.view']);
 $router->get('/housing/paymentrecords', [HomeController::class, 'paymentrecords'], ['auth', 'permission:housing.view']);
-$router->get('/housing/recieptgeneration', [HomeController::class, 'recieptgeneration'], ['auth', 'permission:housing.view']);
 $router->get('/housing/receiptgeneration', [HomeController::class, 'receiptgeneration'], ['auth', 'permission:housing.view']);
 $router->get('/housing/repairmonitoring', [HomeController::class, 'repairmonitoring'], ['auth', 'permission:housing.view']);
 $router->get('/housing/reports', [HomeController::class, 'reports'], ['auth', 'permission:housing.view']);

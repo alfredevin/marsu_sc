@@ -61,11 +61,6 @@ if (str_contains($currentUri, 'employee')) {
 
     <!-- Topbar Right Actions -->
     <div class="d-flex align-items-center gap-2">
-        <!-- Student Mobile App Portal Launch Button -->
-        <a href="<?= url('student-portal') ?>" class="btn btn-sm btn-outline-marsu rounded-pill px-3 py-1 d-none d-sm-inline-flex align-items-center gap-1 shadow-sm" title="Launch Mobile Student App Portal">
-            <i class="bi bi-phone"></i> <span>Student App</span>
-        </a>
-
         <!-- Dark Mode Toggle Button -->
         <button id="themeToggleBtn" class="btn btn-sm btn-light border rounded-circle p-2 topbar-icon-btn" title="Toggle Light/Dark Theme">
             <i id="theme-icon" class="bi bi-moon-fill" style="color: var(--marsu-burgundy);"></i>

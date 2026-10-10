@@ -62,8 +62,10 @@ $router->post('/profile/password', [\App\Controllers\AuthController::class, 'cha
 // Executive Dashboard
 $router->get('/dashboard', [\App\Controllers\DashboardController::class, 'index'], ['auth', 'permission:core.dashboard.view']);
 
-// Student Portal & Mobile App Interface
-$router->get('/student-portal', [\App\Controllers\DashboardController::class, 'studentPortal'], ['auth']);
+// Standalone Public Student Portal & Services Website (Accessible Outside Admin ERP)
+$router->get('/portal', [\App\Controllers\PortalController::class, 'index']);
+$router->get('/student', [\App\Controllers\PortalController::class, 'index']);
+$router->get('/student-portal', [\App\Controllers\PortalController::class, 'index']);
 
 // Roles & RBAC Matrix
 $router->get('/roles', [\App\Controllers\RoleController::class, 'index'], ['auth', 'permission:core.roles.view']);

@@ -16,11 +16,10 @@ class DashboardController {
     public function index(): void {
         $user = Auth::user();
 
-        // If logged-in user is a Student, render the Student Mobile App & Portal
+        // If logged-in user is a Student, redirect out to the Standalone Student Portal
         $roleSlug = $user['role_slug'] ?? $user['role'] ?? '';
         if ($roleSlug === 'student' || ($user['role'] ?? '') === 'student') {
-            $this->studentPortal();
-            return;
+            redirect(url('portal'));
         }
 
         // If logged-in user is a Module Lead, render their isolated Module Workspace Dashboard
@@ -299,45 +298,5 @@ class DashboardController {
             'departments'         => $departments,
             'crumbs'              => ['Executive Overview' => '']
         ]);
-    }
-
-    public function studentPortal(): void {
-        $user = Auth::user();
-        
-        // Fetch student record if linked to user account
-        $student = null;
-        if (!empty($user['id'])) {
-            try {
-                $student = Database::fetchOne(
-                    "SELECT s.*, p.name as program_name, p.code as program_code 
-                     FROM students s 
-                     LEFT JOIN programs p ON s.program_id = p.id 
-                     WHERE s.user_id = :uid AND s.deleted_at IS NULL", 
-                    ['uid' => $user['id']]
-                );
-            } catch (\Exception $e) {
-                // Ignore DB error and use fallback
-            }
-        }
-        
-        if (!$student) {
-            $student = [
-                'student_number'    => '26S0227',
-                'first_name'        => $user['first_name'] ?? 'Maria',
-                'last_name'         => $user['last_name'] ?? 'Santos',
-                'email'             => $user['email'] ?? 'student@marsu.edu.ph',
-                'program_code'      => 'BSIS',
-                'program_name'      => 'Bachelor of Science in Information Systems',
-                'year_level'        => 3,
-                'section_name'      => 'BSIS 3-A',
-                'enrollment_status' => 'enrolled'
-            ];
-        }
-
-        View::render('dashboard/student_portal', [
-            'title'   => 'Student Portal & Mobile App',
-            'user'    => $user,
-            'student' => $student
-        ], null);
     }
 }

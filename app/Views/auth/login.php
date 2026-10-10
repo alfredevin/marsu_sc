@@ -116,6 +116,19 @@
     </div>
 </div>
 
+<!-- Standalone University Student Portal Gateway (Separated Outside Administrative ERP) -->
+<div class="mt-3 p-3 rounded-3 text-center" style="background: rgba(128, 0, 32, 0.28); border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);">
+    <div class="d-flex align-items-center justify-content-center gap-2 mb-1 text-warning fw-bold" style="font-size: 0.78rem; letter-spacing: 0.5px;">
+        <i class="bi bi-mortarboard-fill"></i> ARE YOU A MARSU STUDENT?
+    </div>
+    <p class="text-white-50 mb-2" style="font-size: 0.74rem; line-height: 1.35;">
+        Access 11 campus services, clinic booking, boarding houses, and clearance online without logging into the administrative ERP.
+    </p>
+    <a href="<?= url('portal') ?>" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1 fw-bold text-decoration-none d-inline-flex align-items-center gap-2" style="font-size: 0.75rem; border-color: #d4af37; color: #ffd700;">
+        <span>Open Student Portal Website</span> <i class="bi bi-box-arrow-up-right"></i>
+    </a>
+</div>
+
 <!-- Interactive Client-side Scripting (ES6+, Zero jQuery, Zero Emojis) -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {

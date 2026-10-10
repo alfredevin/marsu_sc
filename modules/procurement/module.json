@@ -1,0 +1,177 @@
+{
+    "name": "Procurement Management Information System",
+    "slug": "procurement",
+    "version": "1.0.0",
+    "description": "Procurement Management Information System (PMIS) — Purchase Requests (PR), Canvass & Quotations, Purchase Orders (PO), Supplier Directory, and Inspection & Asset Handover to University Equipment & IT Asset Management.",
+    "author": "MarSU CICS Student Development Group 1",
+    "default_enabled": true,
+    "section": "Campus Operations",
+    "menu": {
+        "icon": "bi-cart-check-fill",
+        "items": [
+            {
+                "label": "Purchase Request Management",
+                "icon": "bi-file-earmark-text",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "Purchase Request Initiation",
+                        "route": "procurement/purchase-request-initiation",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Department PR Verification",
+                        "route": "procurement/department-pr-verification",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Fund Allocation & Certification",
+                        "route": "procurement/fund-allocation",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "PR Status Tracking",
+                        "route": "procurement/pr-tracking",
+                        "permission": "procurement.view"
+                    }
+                ]
+            },
+            {
+                "label": "Canvass & Quotation Management",
+                "icon": "bi-calculator",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "Request for Quotations (RFQ)",
+                        "route": "procurement/request-for-quotations",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Price Canvass Quotations",
+                        "route": "procurement/price-canvass",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Abstract of Bids & Quotations",
+                        "route": "procurement/abstract-of-bids",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "BAC Award Resolution",
+                        "route": "procurement/bac-resolution",
+                        "permission": "procurement.view"
+                    }
+                ]
+            },
+            {
+                "label": "Purchase Order Management",
+                "icon": "bi-receipt-cutoff",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "Purchase Order Generation",
+                        "route": "procurement/purchase-order-generation",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Notice to Proceed (NTP)",
+                        "route": "procurement/notice-to-proceed",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Delivery Schedule Tracking",
+                        "route": "procurement/delivery-tracking",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Contract Monitoring",
+                        "route": "procurement/contract-monitoring",
+                        "permission": "procurement.view"
+                    }
+                ]
+            },
+            {
+                "label": "Inspection & Asset Handover",
+                "icon": "bi-box-seam",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "Delivery Inspection Logging",
+                        "route": "procurement/delivery-inspection",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Quality & Specification Check",
+                        "route": "procurement/specification-check",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Inspection & Acceptance Report (IAR)",
+                        "route": "procurement/inspection-acceptance-report",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Property Tagging & Asset Transfer",
+                        "route": "procurement/asset-transfer",
+                        "permission": "procurement.view"
+                    }
+                ]
+            },
+            {
+                "label": "Suppliers & Vendor Management",
+                "icon": "bi-building-check",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "Accredited Suppliers Registry",
+                        "route": "procurement/suppliers-registry",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "PhilGEPS Compliance Tracking",
+                        "route": "procurement/philgeps-tracking",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Supplier Performance Evaluation",
+                        "route": "procurement/supplier-evaluation",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Vendor Blacklist & Sanctions",
+                        "route": "procurement/vendor-blacklist",
+                        "permission": "procurement.view"
+                    }
+                ]
+            },
+            {
+                "label": "Procurement Audit & Reports",
+                "icon": "bi-bar-chart-line",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "Annual Procurement Plan (APP)",
+                        "route": "procurement/annual-procurement-plan",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "BAC Monitoring Reports",
+                        "route": "procurement/bac-reports",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Procurement Audit Trail",
+                        "route": "procurement/audit-trail",
+                        "permission": "procurement.view"
+                    }
+                ]
+            }
+        ]
+    },
+    "permissions": {
+        "procurement.view": "View Procurement Dashboard, PRs, POs, and Supplier Directories",
+        "procurement.create": "Create Purchase Requests and Add Accredited Suppliers",
+        "procurement.approve": "Approve Purchase Requests and Issue Purchase Orders",
+        "procurement.inspect": "Process Inspection and Acceptance Reports (IAR) and Asset Handover"
+    }
+}

@@ -86,10 +86,11 @@
                 <span class="badge bg-secondary bg-opacity-25 text-gold border border-secondary border-opacity-25">Pass: Password123!</span>
             </div>
 
-            <!-- Student Module Leads Dropdown (10 Active Modules Only) -->
+            <!-- Student Module Leads Dropdown (Active Student Modules) -->
             <div>
                 <select id="moduleLeadSelect" class="auth-module-select" onchange="onSelectModuleLead(this)">
                     <option value="" selected disabled>-- Select Your Group's Module Account --</option>
+                    <option value="group1_lead">Group 1: Procurement Management Information System (prc_)</option>
                     <option value="group2_lead">Group 2: Institutional Repository &amp; KMS (kmp_)</option>
                     <option value="group3_lead">Group 3: Faculty Teaching Workload Management (wkl_)</option>
                     <option value="group4_lead">Group 4: Medical &amp; Dental Consultation Clinic (hth_)</option>

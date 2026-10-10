@@ -28,10 +28,10 @@ body.auth-page-body, .auth-split-layout {
     overflow: visible;
 }
 
-/* Hero University Circular Logo (Clean, Perfectly Circular Emblem, No Outer Border/Box) */
+/* Hero University Circular Logo (Enlarged, Clear & Institutional) */
 .auth-hero-logo-badge {
-    width: 60px !important;
-    height: 60px !important;
+    width: 88px !important;
+    height: 88px !important;
     border-radius: 50% !important;
     background: transparent !important;
     background-color: transparent !important;
@@ -42,25 +42,25 @@ body.auth-page-body, .auth-split-layout {
     justify-content: center !important;
     padding: 0 !important;
     flex-shrink: 0 !important;
-    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
     cursor: pointer;
 }
 
 .auth-hero-logo-badge:hover {
-    transform: scale(1.1) rotate(4deg) !important;
+    transform: scale(1.08) rotate(3deg) !important;
 }
 
 .auth-hero-logo-img {
-    width: 60px !important;
-    height: 60px !important;
+    width: 88px !important;
+    height: 88px !important;
     border-radius: 50% !important;
     object-fit: contain !important;
-    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.75)) !important;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.75)) !important;
     transition: filter 0.3s ease, transform 0.3s ease !important;
 }
 
 .auth-hero-logo-badge:hover .auth-hero-logo-img {
-    filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.6)) drop-shadow(0 6px 18px rgba(0, 0, 0, 0.85)) !important;
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.65)) drop-shadow(0 8px 22px rgba(0, 0, 0, 0.9)) !important;
 }
 
 /* Form Input Elevated Focus Styling */

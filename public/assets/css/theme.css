@@ -865,8 +865,8 @@ body.sidebar-toggled #app-main {
 }
 
 .auth-hero-logo-badge {
-  width: 58px;
-  height: 58px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   background-color: transparent;
   display: flex;
@@ -878,8 +878,8 @@ body.sidebar-toggled #app-main {
 }
 
 .auth-hero-logo-img {
-  width: 58px;
-  height: 58px;
+  width: 88px;
+  height: 88px;
   object-fit: contain;
 }
 

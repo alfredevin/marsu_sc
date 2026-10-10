@@ -868,7 +868,7 @@ body.sidebar-toggled #app-main {
   width: 58px;
   height: 58px;
   border-radius: 50%;
-  background-color: #ffffff;
+  background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -880,6 +880,7 @@ body.sidebar-toggled #app-main {
 .auth-hero-logo-img {
   width: 44px;
   height: 44px;
+  border-radius: 50%;
   object-fit: contain;
 }
 

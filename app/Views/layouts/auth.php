@@ -28,82 +28,86 @@ body.auth-page-body, .auth-split-layout {
     overflow: visible;
 }
 
-/* Persona Segmented Role Switcher */
-.auth-role-tabs {
-    display: flex;
-    background: rgba(23, 28, 38, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 4px;
-    margin-bottom: 1.5rem;
-    gap: 4px;
-}
-
-.auth-role-tab {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: #94a3b8;
-    font-size: 0.74rem;
-    font-weight: 600;
-    padding: 8px 6px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+/* Hero University Circular Logo Badge (Zero Solid White Disc, Pure Gold Crest Ring) */
+.auth-hero-logo-badge {
+    width: 62px !important;
+    height: 62px !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 2px solid rgba(212, 175, 55, 0.75) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 0 22px rgba(212, 175, 55, 0.32), 0 8px 20px rgba(0, 0, 0, 0.5) !important;
+    padding: 3px !important;
+    flex-shrink: 0 !important;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    text-decoration: none;
 }
 
-.auth-role-tab:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.06);
+.auth-hero-logo-badge:hover {
+    transform: scale(1.08) rotate(4deg) !important;
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 32px rgba(255, 215, 0, 0.6), 0 12px 28px rgba(0, 0, 0, 0.75) !important;
 }
 
-.auth-role-tab.active {
-    background: linear-gradient(135deg, rgba(128, 0, 32, 0.6) 0%, rgba(212, 175, 55, 0.28) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.5);
-    color: #ffd700;
-    font-weight: 700;
-    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.18);
+.auth-hero-logo-img {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    object-fit: contain !important;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)) !important;
+    transition: transform 0.35s ease !important;
 }
 
-/* Quick Fill Pills */
+.auth-hero-logo-badge:hover .auth-hero-logo-img {
+    transform: scale(1.05) !important;
+}
+
+/* Quick Fill Pills - Dynamic Interactive UX */
 .auth-quick-pills {
     display: flex;
-    gap: 6px;
-    margin-bottom: 1.25rem;
+    gap: 8px;
+    margin-bottom: 1.35rem;
     flex-wrap: wrap;
     align-items: center;
 }
 
 .btn-quick-pill {
-    background: rgba(25, 29, 38, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(25, 29, 38, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: #cbd5e1;
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     font-weight: 600;
-    padding: 6px 11px;
-    border-radius: 10px;
+    padding: 7px 12px;
+    border-radius: 12px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    user-select: none;
 }
 
 .btn-quick-pill:hover {
-    background: rgba(43, 50, 63, 0.95);
-    border-color: rgba(212, 175, 55, 0.6);
+    background: rgba(43, 50, 63, 0.98);
+    border-color: rgba(212, 175, 55, 0.7);
     color: #ffffff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45), 0 0 12px rgba(212, 175, 55, 0.2);
 }
 
 .btn-quick-pill:active {
     transform: translateY(0);
+}
+
+.btn-quick-pill.active-pill {
+    background: linear-gradient(135deg, rgba(128, 0, 32, 0.65) 0%, rgba(212, 175, 55, 0.28) 100%) !important;
+    border-color: #ffd700 !important;
+    color: #ffd700 !important;
+    font-weight: 700;
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.28) !important;
 }
 
 /* Form Input Elevated Focus Styling */

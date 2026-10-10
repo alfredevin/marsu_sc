@@ -7,36 +7,22 @@
 
 <!-- Portal Header & University Brand -->
 <div class="text-center mb-3">
-    <div class="d-inline-flex align-items-center justify-content-center p-2 rounded-circle bg-white shadow-sm mb-2" style="width: 52px; height: 52px;">
-        <img src="<?= asset('assets/img/marsu.png') ?>" alt="MarSU Seal" style="width: 36px; height: 36px; object-fit: contain;">
-    </div>
     <h2 class="auth-portal-title mb-1">MARSU ERP PORTAL</h2>
     <p class="auth-portal-subtitle mb-0">CENTRALIZED AUTHENTICATION SYSTEM</p>
 </div>
 
-<!-- User-Interactive Persona Tabs (Student / Faculty / Lead & Admin) -->
-<div class="auth-role-tabs mb-3" id="personaTabs">
-    <button type="button" class="auth-role-tab active" data-persona="student" id="personaStudent">
-        <i class="bi bi-mortarboard-fill"></i> Student
-    </button>
-    <button type="button" class="auth-role-tab" data-persona="faculty" id="personaFaculty">
-        <i class="bi bi-person-badge-fill"></i> Faculty
-    </button>
-    <button type="button" class="auth-role-tab" data-persona="lead" id="personaLead">
-        <i class="bi bi-shield-lock-fill"></i> Lead &amp; Admin
-    </button>
-</div>
-
-<!-- Interactive 1-Click Fast Fill Pills for Testing & Demonstrations -->
+<!-- Interactive 1-Click Fast Fill Strip (Pure Vector Icons, Zero Emojis) -->
 <div class="auth-quick-pills mb-3">
-    <span class="text-white-50 small me-1" style="font-size: 0.7rem;"><i class="bi bi-lightning-charge-fill text-gold me-1"></i>Quick fill:</span>
-    <button type="button" class="btn-quick-pill" onclick="applyDemoAccount('admin', 'Admin123!', 'Super Administrator')">
+    <span class="text-white-50 small me-1 d-inline-flex align-items-center" style="font-size: 0.74rem;">
+        <i class="bi bi-lightning-charge-fill text-gold me-1"></i>Quick fill:
+    </span>
+    <button type="button" class="btn-quick-pill" onclick="applyDemoAccount('admin', 'Admin123!', 'Super Admin', this)">
         <i class="bi bi-shield-check text-gold"></i> Super Admin
     </button>
-    <button type="button" class="btn-quick-pill" onclick="applyDemoAccount('23-10492', 'Password123!', 'Student')">
+    <button type="button" class="btn-quick-pill" onclick="applyDemoAccount('23-10492', 'Password123!', 'Student', this)">
         <i class="bi bi-mortarboard text-info"></i> Student
     </button>
-    <button type="button" class="btn-quick-pill" onclick="applyDemoAccount('angelo.morales@marsu.edu.ph', 'Password123!', 'Faculty')">
+    <button type="button" class="btn-quick-pill" onclick="applyDemoAccount('angelo.morales@marsu.edu.ph', 'Password123!', 'Faculty', this)">
         <i class="bi bi-person-workspace text-success"></i> Faculty
     </button>
 </div>
@@ -161,55 +147,31 @@ document.addEventListener('DOMContentLoaded', function () {
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
     const btnSpinner = document.getElementById('btnSpinner');
-    const personaTabs = document.querySelectorAll('.auth-role-tab');
-    const demoCollapseEl = document.getElementById('demoAccounts');
-
-    // 1. Persona Tab Switching Interactions
-    personaTabs.forEach(tab => {
-        tab.addEventListener('click', function () {
-            personaTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-
-            const persona = this.getAttribute('data-persona');
-            if (persona === 'student') {
-                usernameLabel.textContent = 'STUDENT ID NUMBER';
-                usernameInput.setAttribute('placeholder', 'e.g. 23-10492');
-                usernameIcon.className = 'bi bi-mortarboard-fill auth-field-icon';
-            } else if (persona === 'faculty') {
-                usernameLabel.textContent = 'FACULTY EMAIL OR EMPLOYEE ID';
-                usernameInput.setAttribute('placeholder', 'e.g. angelo.morales@marsu.edu.ph');
-                usernameIcon.className = 'bi bi-person-badge-fill auth-field-icon';
-            } else if (persona === 'lead') {
-                usernameLabel.textContent = 'ADMIN / MODULE LEAD USERNAME';
-                usernameInput.setAttribute('placeholder', 'e.g. admin or group1_lead');
-                usernameIcon.className = 'bi bi-shield-lock-fill auth-field-icon';
-                
-                // Open demo dropdown automatically when Lead tab is clicked
-                if (demoCollapseEl && typeof bootstrap !== 'undefined') {
-                    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(demoCollapseEl, { toggle: false });
-                    bsCollapse.show();
-                }
-            }
-        });
-    });
-
-    // 2. Clear Username Button Visibility
+    // 1. Clear Username Button Visibility & Dynamic State
     function updateClearBtn() {
         if (clearUserBtn) {
             clearUserBtn.style.display = usernameInput.value.length > 0 ? 'flex' : 'none';
         }
     }
-    usernameInput.addEventListener('input', updateClearBtn);
+    usernameInput.addEventListener('input', function() {
+        updateClearBtn();
+        // If user manually types, remove active highlight from quick pills
+        document.querySelectorAll('.btn-quick-pill').forEach(btn => btn.classList.remove('active-pill'));
+    });
+
     if (clearUserBtn) {
         clearUserBtn.addEventListener('click', function () {
             usernameInput.value = '';
             updateClearBtn();
+            document.querySelectorAll('.btn-quick-pill').forEach(btn => btn.classList.remove('active-pill'));
+            if (usernameLabel) usernameLabel.textContent = 'STUDENT ID OR USERNAME';
+            if (usernameIcon) usernameIcon.className = 'bi bi-person-vcard auth-field-icon';
             usernameInput.focus();
         });
     }
     updateClearBtn();
 
-    // 3. Password Eye Toggle
+    // 2. Password Eye Toggle
     if (toggleEyeBtn && passwordInput && toggleEyeIcon) {
         toggleEyeBtn.addEventListener('click', function () {
             const isPass = passwordInput.getAttribute('type') === 'password';
@@ -218,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 4. Real-time Caps Lock Detection
+    // 3. Real-time Caps Lock Detection
     function checkCapsLock(e) {
         if (e.getModifierState && capsAlert) {
             const isCaps = e.getModifierState('CapsLock');
@@ -228,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
     passwordInput.addEventListener('keydown', checkCapsLock);
     passwordInput.addEventListener('keyup', checkCapsLock);
 
-    // 5. Form Submission Interactive Busy State
+    // 4. Form Submission Interactive Busy State
     if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
             if (!usernameInput.value.trim() || !passwordInput.value) {
@@ -255,13 +217,44 @@ function showAuthToast(msg) {
     }
 }
 
-// 1-Click Fast Fill Helper
-function applyDemoAccount(username, password, roleTitle) {
+// 1-Click Fast Fill Helper with Dynamic Interactive Identity Feedback
+function applyDemoAccount(username, password, roleTitle, pillBtn = null) {
     const userInput = document.getElementById('username');
     const passInput = document.getElementById('password');
+    const userLabel = document.getElementById('usernameFieldLabel');
+    const userIcon = document.getElementById('usernameIcon');
+    const clearBtn = document.getElementById('clearUsernameBtn');
+
     if (userInput && passInput) {
         userInput.value = username;
         passInput.value = password;
+
+        // Interactive visual pill active state
+        document.querySelectorAll('.btn-quick-pill').forEach(btn => btn.classList.remove('active-pill'));
+        if (pillBtn && pillBtn.classList) {
+            pillBtn.classList.add('active-pill');
+        }
+
+        // Dynamically update field label & icon based on role for rich interactive feel
+        if (userLabel && userIcon) {
+            if (username === 'admin') {
+                userLabel.textContent = 'ADMINISTRATOR USERNAME';
+                userIcon.className = 'bi bi-shield-lock-fill auth-field-icon text-gold';
+            } else if (username.includes('@marsu.edu.ph')) {
+                userLabel.textContent = 'FACULTY EMAIL / EMPLOYEE ID';
+                userIcon.className = 'bi bi-person-badge-fill auth-field-icon text-success';
+            } else if (username.includes('_lead')) {
+                userLabel.textContent = 'MODULE LEAD USERNAME';
+                userIcon.className = 'bi bi-shield-check auth-field-icon text-gold';
+            } else {
+                userLabel.textContent = 'STUDENT ID NUMBER';
+                userIcon.className = 'bi bi-mortarboard-fill auth-field-icon text-info';
+            }
+        }
+
+        if (clearBtn) {
+            clearBtn.style.display = 'flex';
+        }
 
         userInput.dispatchEvent(new Event('input'));
         showAuthToast(`Autofilled ${roleTitle} (${username})`);
@@ -273,7 +266,7 @@ function onSelectModuleLead(selectEl) {
     const val = selectEl.value;
     if (val) {
         const groupNum = val.replace('_lead', '').replace('group', 'Group ');
-        applyDemoAccount(val, 'Password123!', `${groupNum} Lead`);
+        applyDemoAccount(val, 'Password123!', `${groupNum} Lead`, null);
     }
 }
 </script>

@@ -1,8 +1,15 @@
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
-        .marsu-maroon-bg { background-color: #58111a !important; color: #fff !important; }
-        .marsu-maroon-text { color: #58111a !important; }
+        .marsu-maroon-bg {
+            background-color: #58111a !important;
+            color: #fff !important;
+        }
+
+        .marsu-maroon-text {
+            color: #58111a !important;
+        }
+
         .avatar-circle {
             width: 72px;
             height: 72px;
@@ -19,9 +26,9 @@
 
     <?php if (!empty($selectedStudent)): ?>
         <!-- ===================================================================== -->
-        <!-- STATE 2: STUDENT 360° PROFILE DOSSIER (PANGALAWANG PICTURE)           -->
+        <!-- STATE 2: STUDENT 360° PROFILE DOSSIER                                 -->
         <!-- ===================================================================== -->
-        
+
         <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
                 <a href="profile" class="btn btn-sm btn-outline-secondary">
@@ -49,25 +56,30 @@
                             <h4 class="fw-bold mb-1 text-dark"><?= htmlspecialchars($selectedStudent['full_name']) ?></h4>
                             <div class="d-flex flex-wrap align-items-center gap-2 small text-muted">
                                 <span class="badge bg-light text-secondary border px-2 py-1">
-                                    <i class="bi bi-person-badge me-1"></i> <?= htmlspecialchars($selectedStudent['student_number']) ?>
+                                    <i class="bi bi-person-badge me-1"></i>
+                                    <?= htmlspecialchars($selectedStudent['student_number']) ?>
                                 </span>
                                 <span>•</span>
-                                <span class="fw-semibold text-dark"><?= htmlspecialchars($selectedStudent['program_name']) ?> (<?= htmlspecialchars($selectedStudent['program_code']) ?>)</span>
+                                <span
+                                    class="fw-semibold text-dark"><?= htmlspecialchars($selectedStudent['program_name']) ?>
+                                    (<?= htmlspecialchars($selectedStudent['program_code']) ?>)</span>
                                 <span>•</span>
-                                <span>Year <?= htmlspecialchars((string)($selectedStudent['year_level'] ?? 1)) ?> - <?= htmlspecialchars($selectedStudent['section_name'] ?? '-') ?></span>
+                                <span>Section: <strong
+                                        class="text-dark"><?= htmlspecialchars($selectedStudent['section_name'] ?? '-') ?></strong></span>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-7 text-uppercase">
-                            <i class="bi bi-check-circle-fill me-1"></i> <?= htmlspecialchars($selectedStudent['enrollment_status'] ?? 'Enrolled') ?>
+                        <span
+                            class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-7 text-uppercase">
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            <?= htmlspecialchars($selectedStudent['enrollment_status'] ?? 'Enrolled') ?>
                         </span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Details Grid -->
         <div class="row g-3">
             <div class="col-lg-6">
                 <div class="card border rounded-3 shadow-sm bg-white h-100">
@@ -80,27 +92,33 @@
                         <ul class="list-group list-group-flush small">
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                 <span class="text-muted">Student Number:</span>
-                                <strong class="text-dark"><?= htmlspecialchars($selectedStudent['student_number']) ?></strong>
+                                <strong
+                                    class="text-dark"><?= htmlspecialchars($selectedStudent['student_number']) ?></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                 <span class="text-muted">Gender:</span>
-                                <strong class="text-dark text-capitalize"><?= htmlspecialchars($selectedStudent['gender'] ?? 'Not Specified') ?></strong>
+                                <strong
+                                    class="text-dark text-capitalize"><?= htmlspecialchars($selectedStudent['gender'] ?? 'Not Specified') ?></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                 <span class="text-muted">Date of Birth:</span>
-                                <strong class="text-dark"><?= htmlspecialchars($selectedStudent['birthdate'] ?? 'N/A') ?></strong>
+                                <strong
+                                    class="text-dark"><?= htmlspecialchars($selectedStudent['birthdate'] ?? 'N/A') ?></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                 <span class="text-muted">Institutional Email:</span>
-                                <strong class="text-primary"><?= htmlspecialchars($selectedStudent['email'] ?? 'N/A') ?></strong>
+                                <strong
+                                    class="text-primary"><?= htmlspecialchars($selectedStudent['email'] ?? 'N/A') ?></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                 <span class="text-muted">Mobile / Contact:</span>
-                                <strong class="text-dark"><?= htmlspecialchars($selectedStudent['contact_number'] ?? 'N/A') ?></strong>
+                                <strong
+                                    class="text-dark"><?= htmlspecialchars($selectedStudent['contact_number'] ?? 'N/A') ?></strong>
                             </li>
                             <li class="list-group-item px-0 py-2">
                                 <span class="text-muted d-block mb-1">Permanent Residence:</span>
-                                <strong class="text-dark"><i class="bi bi-geo-alt text-danger me-1"></i><?= htmlspecialchars($selectedStudent['address'] ?? 'Marinduque') ?></strong>
+                                <strong class="text-dark"><i
+                                        class="bi bi-geo-alt text-danger me-1"></i><?= htmlspecialchars($selectedStudent['address'] ?? 'Marinduque') ?></strong>
                             </li>
                         </ul>
                     </div>
@@ -118,11 +136,13 @@
                         <ul class="list-group list-group-flush small">
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                 <span class="text-muted">Parent / Guardian:</span>
-                                <strong class="text-dark"><?= htmlspecialchars($selectedStudent['guardian_name'] ?? 'Not Recorded') ?></strong>
+                                <strong
+                                    class="text-dark"><?= htmlspecialchars($selectedStudent['guardian_name'] ?? 'Not Recorded') ?></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                 <span class="text-muted">Guardian Contact:</span>
-                                <strong class="text-dark"><?= htmlspecialchars($selectedStudent['guardian_contact'] ?? 'Not Recorded') ?></strong>
+                                <strong
+                                    class="text-dark"><?= htmlspecialchars($selectedStudent['guardian_contact'] ?? 'Not Recorded') ?></strong>
                             </li>
                         </ul>
                     </div>
@@ -135,18 +155,23 @@
                         </h6>
                     </div>
                     <div class="card-body p-3">
-                        <small class="text-muted d-block mb-2">Immediate academic & advisory actions available for this student:</small>
+                        <small class="text-muted d-block mb-2">Immediate academic & advisory actions available for this
+                            student:</small>
                         <div class="d-flex flex-wrap gap-2">
-                            <a href="academichistory?student_id=<?= urlencode($selectedStudent['student_number']) ?>" class="btn btn-sm btn-outline-primary">
+                            <a href="academichistory?student_id=<?= urlencode($selectedStudent['student_number']) ?>"
+                                class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-clock-history me-1"></i> Academic History
                             </a>
-                            <a href="guidancereferrals?student_id=<?= urlencode($selectedStudent['student_number']) ?>" class="btn btn-sm btn-outline-warning text-dark">
+                            <a href="guidancereferrals?student_id=<?= urlencode($selectedStudent['student_number']) ?>"
+                                class="btn btn-sm btn-outline-warning text-dark">
                                 <i class="bi bi-person-heart me-1"></i> Refer to Guidance
                             </a>
-                            <a href="atriskstudents?flag_student=<?= urlencode($selectedStudent['student_number']) ?>" class="btn btn-sm btn-outline-danger">
+                            <a href="atriskstudents?flag_student=<?= urlencode($selectedStudent['student_number']) ?>"
+                                class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-shield-exclamation me-1"></i> Flag as At-Risk
                             </a>
-                            <a href="advisingrecords?student_id=<?= urlencode($selectedStudent['student_number']) ?>" class="btn btn-sm btn-outline-secondary">
+                            <a href="advisingrecords?student_id=<?= urlencode($selectedStudent['student_number']) ?>"
+                                class="btn btn-sm btn-outline-secondary">
                                 <i class="bi bi-journal-check me-1"></i> Log Advising
                             </a>
                         </div>
@@ -157,7 +182,7 @@
 
     <?php else: ?>
         <!-- ===================================================================== -->
-        <!-- STATE 1: STUDENT MASTER IDENTITY ROSTER (UNANG PICTURE)              -->
+        <!-- STATE 1: STUDENT MASTER IDENTITY ROSTER (UNANG SCREEN)               -->
         <!-- ===================================================================== -->
 
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
@@ -167,47 +192,48 @@
             </div>
 
             <form method="GET" action="" id="searchForm" class="d-flex gap-2 align-items-center flex-wrap ms-auto">
-                <!-- Search Input na may Instant Filter at Auto-Reload sa Clear -->
+                <!-- Search Input na may Instant Filter & Clear Support -->
                 <div class="input-group input-group-sm" style="width: 220px;">
-                    <input type="search" 
-                           id="searchInput" 
-                           name="q" 
-                           class="form-control" 
-                           placeholder="Search ID / Name..." 
-                           value="<?= htmlspecialchars($search ?? '') ?>"
-                           oninput="handleSearchInput(this)"
-                           autocomplete="off">
+                    <input type="search" id="searchInput" name="q" class="form-control" placeholder="Search ID / Name..."
+                        value="<?= htmlspecialchars($search ?? '') ?>" oninput="handleSearchInput(this)" autocomplete="off">
                     <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                 </div>
 
                 <!-- Program Filter -->
                 <label class="small fw-semibold text-muted mb-0 text-nowrap ms-1">PROGRAM:</label>
-                <select name="department" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                <select name="department" class="form-select form-select-sm" style="width: auto;"
+                    onchange="this.form.submit()">
                     <option value="">All Programs</option>
-                    <?php foreach ($departments as $dept): ?>
-                        <option value="<?= htmlspecialchars($dept) ?>" <?= (isset($department) && $department === $dept) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($dept) ?>
+                    <?php foreach ($departments as $d): ?>
+                        <?php $dCode = is_array($d) ? ($d['code'] ?? '') : $d; ?>
+                        <option value="<?= htmlspecialchars($dCode) ?>" <?= ($department === $dCode) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($dCode) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
 
                 <!-- Year Level Filter -->
                 <label class="small fw-semibold text-muted mb-0 text-nowrap ms-1">YEAR LEVEL:</label>
-                <select name="year_level" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                <select name="year_level" class="form-select form-select-sm" style="width: auto;"
+                    onchange="this.form.submit()">
                     <option value="">All Year Levels</option>
-                    <option value="1" <?= (isset($yearLevel) && $yearLevel === '1') ? 'selected' : '' ?>>1st Year</option>
-                    <option value="2" <?= (isset($yearLevel) && $yearLevel === '2') ? 'selected' : '' ?>>2nd Year</option>
-                    <option value="3" <?= (isset($yearLevel) && $yearLevel === '3') ? 'selected' : '' ?>>3rd Year</option>
-                    <option value="4" <?= (isset($yearLevel) && $yearLevel === '4') ? 'selected' : '' ?>>4th Year</option>
+                    <option value="1" <?= ($yearLevel === '1') ? 'selected' : '' ?>>1st Year</option>
+                    <option value="2" <?= ($yearLevel === '2') ? 'selected' : '' ?>>2nd Year</option>
+                    <option value="3" <?= ($yearLevel === '3') ? 'selected' : '' ?>>3rd Year</option>
+                    <option value="4" <?= ($yearLevel === '4') ? 'selected' : '' ?>>4th Year</option>
                 </select>
 
-                <!-- Section Filter -->
+                <!-- Dynamic Section Filter mula sa Database -->
                 <label class="small fw-semibold text-muted mb-0 text-nowrap ms-1">SECTION:</label>
-                <select name="section" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                <select name="section" class="form-select form-select-sm" style="width: auto;"
+                    onchange="this.form.submit()">
                     <option value="">All Sections</option>
-                    <?php foreach ($sections as $sec): ?>
-                        <option value="<?= htmlspecialchars($sec) ?>" <?= (isset($section) && $section === $sec) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($sec) ?>
+                    <?php foreach ($sections as $sItem): ?>
+                        <?php
+                        $secName = is_array($sItem) ? ($sItem['name'] ?? '') : $sItem;
+                        ?>
+                        <option value="<?= htmlspecialchars($secName) ?>" <?= ($section === $secName) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($secName) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -227,9 +253,9 @@
                         <th class="ps-3 py-3">Student ID</th>
                         <th class="py-3">Student Name & Identity</th>
                         <th class="py-3">Degree Program</th>
-                        <th class="py-3">Year & Section</th>
+                        <th class="py-3 text-center">Section</th>
                         <th class="py-3">Institutional Email</th>
-                        <th class="py-3">Enrollment Status</th>
+                        <th class="py-3 text-center">Enrollment Status</th>
                         <th class="py-3 text-end pe-3">Actions</th>
                     </tr>
                 </thead>
@@ -242,26 +268,30 @@
                                 </td>
                                 <td class="col-name">
                                     <div class="fw-semibold text-dark"><?= htmlspecialchars($row['full_name'] ?? 'N/A') ?></div>
-                                    <small class="text-muted"><i class="bi bi-geo-alt me-1 text-danger"></i><?= htmlspecialchars($row['address'] ?? 'Marinduque') ?></small>
+                                    <small class="text-muted"><i
+                                            class="bi bi-geo-alt me-1 text-danger"></i><?= htmlspecialchars($row['address'] ?? 'Marinduque') ?></small>
                                 </td>
                                 <td>
                                     <span class="badge bg-light text-dark border">
                                         <?= htmlspecialchars($row['program_code'] ?? 'N/A') ?>
                                     </span>
                                 </td>
-                                <td>
-                                    Year <?= htmlspecialchars((string)($row['year_level'] ?? 1)) ?> - <span class="fw-semibold text-dark"><?= htmlspecialchars($row['section_name'] ?? '-') ?></span>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark border px-2 py-1 fw-bold fs-7">
+                                        <?= htmlspecialchars($row['section_name'] ?? '-') ?>
+                                    </span>
                                 </td>
                                 <td class="small text-muted col-email">
                                     <?= htmlspecialchars($row['email'] ?? 'N/A') ?>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <span class="badge bg-success-subtle text-success border border-success-subtle text-capitalize">
                                         <?= htmlspecialchars($row['enrollment_status'] ?? 'Enrolled') ?>
                                     </span>
                                 </td>
                                 <td class="text-end pe-3">
-                                    <a href="profile?student_id=<?= urlencode($row['student_number'] ?? $row['id']) ?>" class="btn btn-sm btn-outline-primary fw-semibold">
+                                    <a href="profile?student_id=<?= urlencode($row['student_number'] ?? $row['id']) ?>"
+                                        class="btn btn-sm btn-outline-primary fw-semibold">
                                         View Profile
                                     </a>
                                 </td>
@@ -281,37 +311,34 @@
         </div>
 
         <script>
-        const hadServerQuery = <?= !empty($search) ? 'true' : 'false' ?>;
+            const hadServerQuery = <?= !empty($search) ? 'true' : 'false' ?>;
 
-        function handleSearchInput(input) {
-            const query = input.value.trim().toLowerCase();
-            const rows = document.querySelectorAll('.student-row');
+            function handleSearchInput(input) {
+                const query = input.value.trim().toLowerCase();
+                const rows = document.querySelectorAll('.student-row');
 
-            // 1. Live Client-Side Instant Filtering habang nagta-type/paste
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
-            });
+                rows.forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
+                });
 
-            // 2. Kapag binura nang buo ang text gamit ang backspace
-            if (query === '' && hadServerQuery) {
-                const url = new URL(window.location.href);
-                url.searchParams.delete('q');
-                window.location.href = url.toString();
-            }
-        }
-
-        // Kapag pinindot ang (x) clear icon sa loob ng search box
-        const searchBox = document.getElementById('searchInput');
-        if (searchBox) {
-            searchBox.addEventListener('search', function() {
-                if (this.value === '' && hadServerQuery) {
+                if (query === '' && hadServerQuery) {
                     const url = new URL(window.location.href);
                     url.searchParams.delete('q');
                     window.location.href = url.toString();
                 }
-            });
-        }
+            }
+
+            const searchBox = document.getElementById('searchInput');
+            if (searchBox) {
+                searchBox.addEventListener('search', function () {
+                    if (this.value === '' && hadServerQuery) {
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete('q');
+                        window.location.href = url.toString();
+                    }
+                });
+            }
         </script>
 
     <?php endif; ?>

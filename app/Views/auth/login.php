@@ -6,25 +6,9 @@
 </div>
 
 <!-- Portal Header & University Brand -->
-<div class="text-center mb-3">
+<div class="text-center mb-4">
     <h2 class="auth-portal-title mb-1">MARSU ERP PORTAL</h2>
     <p class="auth-portal-subtitle mb-0">CENTRALIZED AUTHENTICATION SYSTEM</p>
-</div>
-
-<!-- Interactive 1-Click Fast Fill Strip (Pure Vector Icons, Zero Emojis) -->
-<div class="auth-quick-pills mb-3">
-    <span class="text-white-50 small me-1 d-inline-flex align-items-center" style="font-size: 0.74rem;">
-        <i class="bi bi-lightning-charge-fill text-gold me-1"></i>Quick fill:
-    </span>
-    <button type="button" class="btn-quick-pill" onclick="applyDemoAccount('admin', 'Admin123!', 'Super Admin', this)">
-        <i class="bi bi-shield-check text-gold"></i> Super Admin
-    </button>
-    <button type="button" class="btn-quick-pill" onclick="applyDemoAccount('23-10492', 'Password123!', 'Student', this)">
-        <i class="bi bi-mortarboard text-info"></i> Student
-    </button>
-    <button type="button" class="btn-quick-pill" onclick="applyDemoAccount('angelo.morales@marsu.edu.ph', 'Password123!', 'Faculty', this)">
-        <i class="bi bi-person-workspace text-success"></i> Faculty
-    </button>
 </div>
 
 <!-- Authentication Form -->
@@ -155,15 +139,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     usernameInput.addEventListener('input', function() {
         updateClearBtn();
-        // If user manually types, remove active highlight from quick pills
-        document.querySelectorAll('.btn-quick-pill').forEach(btn => btn.classList.remove('active-pill'));
     });
 
     if (clearUserBtn) {
         clearUserBtn.addEventListener('click', function () {
             usernameInput.value = '';
             updateClearBtn();
-            document.querySelectorAll('.btn-quick-pill').forEach(btn => btn.classList.remove('active-pill'));
             if (usernameLabel) usernameLabel.textContent = 'STUDENT ID OR USERNAME';
             if (usernameIcon) usernameIcon.className = 'bi bi-person-vcard auth-field-icon';
             usernameInput.focus();
@@ -217,8 +198,8 @@ function showAuthToast(msg) {
     }
 }
 
-// 1-Click Fast Fill Helper with Dynamic Interactive Identity Feedback
-function applyDemoAccount(username, password, roleTitle, pillBtn = null) {
+// 1-Click Fast Fill Helper for Student Module Dropdown
+function applyDemoAccount(username, password, roleTitle) {
     const userInput = document.getElementById('username');
     const passInput = document.getElementById('password');
     const userLabel = document.getElementById('usernameFieldLabel');
@@ -229,21 +210,8 @@ function applyDemoAccount(username, password, roleTitle, pillBtn = null) {
         userInput.value = username;
         passInput.value = password;
 
-        // Interactive visual pill active state
-        document.querySelectorAll('.btn-quick-pill').forEach(btn => btn.classList.remove('active-pill'));
-        if (pillBtn && pillBtn.classList) {
-            pillBtn.classList.add('active-pill');
-        }
-
-        // Dynamically update field label & icon based on role for rich interactive feel
         if (userLabel && userIcon) {
-            if (username === 'admin') {
-                userLabel.textContent = 'ADMINISTRATOR USERNAME';
-                userIcon.className = 'bi bi-shield-lock-fill auth-field-icon text-gold';
-            } else if (username.includes('@marsu.edu.ph')) {
-                userLabel.textContent = 'FACULTY EMAIL / EMPLOYEE ID';
-                userIcon.className = 'bi bi-person-badge-fill auth-field-icon text-success';
-            } else if (username.includes('_lead')) {
+            if (username.includes('_lead')) {
                 userLabel.textContent = 'MODULE LEAD USERNAME';
                 userIcon.className = 'bi bi-shield-check auth-field-icon text-gold';
             } else {
@@ -266,7 +234,7 @@ function onSelectModuleLead(selectEl) {
     const val = selectEl.value;
     if (val) {
         const groupNum = val.replace('_lead', '').replace('group', 'Group ');
-        applyDemoAccount(val, 'Password123!', `${groupNum} Lead`, null);
+        applyDemoAccount(val, 'Password123!', `${groupNum} Lead`);
     }
 }
 </script>

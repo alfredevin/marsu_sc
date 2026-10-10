@@ -28,86 +28,39 @@ body.auth-page-body, .auth-split-layout {
     overflow: visible;
 }
 
-/* Hero University Circular Logo Badge (Zero Solid White Disc, Pure Gold Crest Ring) */
+/* Hero University Circular Logo (Clean, Perfectly Circular Emblem, No Outer Border/Box) */
 .auth-hero-logo-badge {
-    width: 62px !important;
-    height: 62px !important;
+    width: 60px !important;
+    height: 60px !important;
     border-radius: 50% !important;
     background: transparent !important;
     background-color: transparent !important;
-    border: 2px solid rgba(212, 175, 55, 0.75) !important;
+    border: none !important;
+    box-shadow: none !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    box-shadow: 0 0 22px rgba(212, 175, 55, 0.32), 0 8px 20px rgba(0, 0, 0, 0.5) !important;
-    padding: 3px !important;
+    padding: 0 !important;
     flex-shrink: 0 !important;
-    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
     cursor: pointer;
 }
 
 .auth-hero-logo-badge:hover {
-    transform: scale(1.08) rotate(4deg) !important;
-    border-color: #ffd700 !important;
-    box-shadow: 0 0 32px rgba(255, 215, 0, 0.6), 0 12px 28px rgba(0, 0, 0, 0.75) !important;
+    transform: scale(1.1) rotate(4deg) !important;
 }
 
 .auth-hero-logo-img {
-    width: 100% !important;
-    height: 100% !important;
+    width: 60px !important;
+    height: 60px !important;
     border-radius: 50% !important;
     object-fit: contain !important;
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)) !important;
-    transition: transform 0.35s ease !important;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.75)) !important;
+    transition: filter 0.3s ease, transform 0.3s ease !important;
 }
 
 .auth-hero-logo-badge:hover .auth-hero-logo-img {
-    transform: scale(1.05) !important;
-}
-
-/* Quick Fill Pills - Dynamic Interactive UX */
-.auth-quick-pills {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 1.35rem;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-.btn-quick-pill {
-    background: rgba(25, 29, 38, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #cbd5e1;
-    font-size: 0.74rem;
-    font-weight: 600;
-    padding: 7px 12px;
-    border-radius: 12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    user-select: none;
-}
-
-.btn-quick-pill:hover {
-    background: rgba(43, 50, 63, 0.98);
-    border-color: rgba(212, 175, 55, 0.7);
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45), 0 0 12px rgba(212, 175, 55, 0.2);
-}
-
-.btn-quick-pill:active {
-    transform: translateY(0);
-}
-
-.btn-quick-pill.active-pill {
-    background: linear-gradient(135deg, rgba(128, 0, 32, 0.65) 0%, rgba(212, 175, 55, 0.28) 100%) !important;
-    border-color: #ffd700 !important;
-    color: #ffd700 !important;
-    font-weight: 700;
-    box-shadow: 0 0 16px rgba(212, 175, 55, 0.28) !important;
+    filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.6)) drop-shadow(0 6px 18px rgba(0, 0, 0, 0.85)) !important;
 }
 
 /* Form Input Elevated Focus Styling */

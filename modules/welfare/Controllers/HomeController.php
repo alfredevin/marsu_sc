@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Welfare\Controllers;
 
 use Core\View;
@@ -9,10 +10,12 @@ use Core\Session;
 /**
  * Controller for Student Welfare Services & Financial Grants Management
  */
-class HomeController {
-    public function index(): void {
+class HomeController
+{
+    public function index(): void
+    {
         $user = Auth::user();
-        
+
         // Fetch demo / module records
         $records = [];
         try {
@@ -34,10 +37,11 @@ class HomeController {
         ]);
     }
 
-    public function show(): void {
+    public function show(): void
+    {
         $id = (int)($_GET['id'] ?? 0);
         $record = Database::fetchOne("SELECT * FROM `wlf_records` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]);
-        
+
         if (!$record) {
             Session::flash('error', 'Record not found.');
             redirect(url('welfare'));
@@ -53,7 +57,8 @@ class HomeController {
         ]);
     }
 
-    public function store(): void {
+    public function store(): void
+    {
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
 
@@ -76,5 +81,31 @@ class HomeController {
         }
 
         redirect(url('welfare'));
+    }
+
+    public function studentprofileinformation(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/student-profile-information', [
+            'title' => 'Student Profile Information',
+            'slug'  => 'welfare'
+        ]);
+    }
+
+    public function advisories(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/advisories', [
+            'title' => 'Advisories',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function socioeconomicbackground(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/socio-economic-background', [
+            'title' => 'Socio Economic Background',
+            'slug'  => 'welfare'
+        ]);
     }
 }

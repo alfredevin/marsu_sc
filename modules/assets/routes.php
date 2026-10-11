@@ -11,13 +11,15 @@ $router->get('/assets/assetprofilecreation', [HomeController::class, 'assetprofi
 $router->get('/assets/propertyidentificationnumbers', [HomeController::class, 'propertyidentificationnumbers'], ['auth', 'permission:assets.view']);
 $router->get('/assets/assetclassification', [HomeController::class, 'assetclassification'], ['auth', 'permission:assets.view']);
 $router->get('/assets/acquisitiondetails', [HomeController::class, 'acquisitiondetails'], ['auth', 'permission:assets.view']);
+
+$router->get('/assets/ownershipaccountabilityrecords', [HomeController::class, 'ownershipaccountabilityrecords'], ['auth', 'permission:assets.view']);
 $router->get('/assets/supplyandequipmentinventory', [HomeController::class, 'supplyandequipmentinventory'], ['auth', 'permission:assets.view']);
 $router->get('/assets/stockmonitoring', [HomeController::class, 'stockmonitoring'], ['auth', 'permission:assets.view']);
 $router->get('/assets/insuanceandreturntracking', [HomeController::class, 'insuanceandreturntracking'], ['auth', 'permission:assets.view']);
 $router->get('/assets/reorderlevelalerts', [HomeController::class, 'reorderlevelalerts'], ['auth', 'permission:assets.view']);
 $router->get('/assets/inventoryhistory', [HomeController::class, 'inventoryhistory'], ['auth', 'permission:assets.view']);
 $router->get('/assets/locationmonitoring', [HomeController::class, 'locationmonitoring'], ['auth', 'permission:assets.view']);
-$router->get('/assets/assignedpersonnelunitTracking', [HomeController::class, 'assignedpersonnelunitTracking'], ['auth', 'permission:assets.view']);
+$router->get('/assets/assignedpersonnelunittracking', [HomeController::class, 'assignedpersonnelunittracking'], ['auth', 'permission:assets.view']);
 $router->get('/assets/transferrecords', [HomeController::class, 'transferrecords'], ['auth', 'permission:assets.view']);
 $router->get('/assets/disposalandretirementmanagement', [HomeController::class, 'disposalandretirementmanagement'], ['auth', 'permission:assets.view']);
 $router->get('/assets/buildingandroomrecords', [HomeController::class, 'buildingandroomrecords'], ['auth', 'permission:assets.view']);

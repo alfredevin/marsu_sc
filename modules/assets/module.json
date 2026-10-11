@@ -26,17 +26,17 @@
                     },
                     {
                         "label": "Asset Classification",
-                        "route": "assets/assests-classification",
+                        "route": "assets/assetclassification",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Acquisition Details",
-                        "route": "assets/assets-acquisition",
+                        "route": "assets/acquisitiondetails",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Ownership/Accountability Records",
-                        "route": "assets/assets-ownership",
+                        "route": "assets/ownershipaccountabilityrecords",
                         "permission": "assets.view"
                     }
                 ]
@@ -49,27 +49,27 @@
                 "children": [
                     {
                         "label": "Supply and equipment inventory",
-                        "route": "assets/assets-inventory",
+                        "route": "assets/supplyandequipmentinventory",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Stock Monitoring",
-                        "route": "assets/assets-stock-monitoring",
+                        "route": "assets/stockmonitoring",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Issuance and return tracking",
-                        "route": "assets/assets-issuance",
+                        "route": "assets/insuanceandreturntracking",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Reorder level alerts",
-                        "route": "assets/assets-reorder-level",
+                        "route": "assets/reorderlevelalerts",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Inventory history",
-                        "route": "assets/assets-history",
+                        "route": "assets/inventoryhistory",
                         "permission": "assets.view"
                     }
                 ]
@@ -82,22 +82,22 @@
                 "children": [
                     {
                         "label": "Location monitoring",
-                        "route": "assets/assets-monitoring",
+                        "route": "assets/locationmonitoring",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Assigned personnel/unit tracking",
-                        "route": "assets/assets-tracking",
+                        "route": "assets/assignedpersonnelunittracking",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Transfer records",
-                        "route": "assets/assets-transfer",
+                        "route": "assets/transferrecords",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Disposal and retirement management",
-                        "route": "assets/assets-disposal",
+                        "route": "assets/disposalandretirementmanagement",
                         "permission": "assets.view"
                     }
                 ]
@@ -110,27 +110,27 @@
                 "children": [
                     {
                         "label": "Building and room records",
-                        "route": "assets/assets-building",
+                        "route": "assets/buildingandroomrecords",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Facility condition monitoring",
-                        "route": "assets/assets-condition",
+                        "route": "assets/facilityconditionmonitoring",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Maintenance scheduling",
-                        "route": "assets/assets-maintenance",
+                        "route": "assets/maintenancescheduling",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Repair requests",
-                        "route": "assets/assets-repair",
+                        "route": "assets/repairrequest",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Service history",
-                        "route": "assets/assets-warranty",
+                        "route": "assets/servicehistory",
                         "permission": "assets.view"
                     }
                 ]
@@ -143,22 +143,22 @@
                 "children": [
                     {
                         "label": "Work/service requests",
-                        "route": "assets/assets-request",
+                        "route": "assets/workservicerequests",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Job order tracking",
-                        "route": "assets/assets-order",
+                        "route": "assets/jobordertracking",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Maintenance personnel assignment",
-                        "route": "assets/assets-personnel",
+                        "route": "assets/maintenancepersonnelassignment",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Completion monitoring",
-                        "route": "assets/assets-monitoring",
+                        "route": "assets/completionmonitoring",
                         "permission": "assets.view"
                     }
                 ]
@@ -171,27 +171,27 @@
                 "children": [
                     {
                         "label": "Inventory reports",
-                        "route": "assets/assets-reports",
+                        "route": "assets/inventoryreports",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Property accountability reports",
-                        "route": "assets/assets-accountability",
+                        "route": "assets/propertyaccountabilityreports",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Asset utilization reports",
-                        "route": "assets/assets-utilization",
+                        "route": "assets/assetutilizationreports",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Maintenance performance reports",
-                        "route": "assets/assets-performance",
+                        "route": "assets/maintenanceperformancereports",
                         "permission": "assets.view"
                     },
                     {
                         "label": "Audit-ready documentation",
-                        "route": "assets/assets-audit",
+                        "route": "assets/auditreadydocumentation",
                         "permission": "assets.view"
                     }
                 ]

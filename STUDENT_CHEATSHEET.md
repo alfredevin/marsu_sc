@@ -31,7 +31,7 @@ Bago ka makapag-commit o makapag-push, kailangan malaman ni Git kung sino ka (Pa
 git config --global user.name "Juan Dela Cruz"
 git config --global user.email "juandelacruz@gmail.com"
 ```
-*(Tip: Gamitin ang email na naka-link sa iyong GitHub account para ma-credit sa GitHub profile mo ang commits mo).*
+*(Tip: Gamitin ang email na naka-link sa iyong GitHub account para ma-credit sa sGitHub profile mo ang commits mo).*
 
 ---
 

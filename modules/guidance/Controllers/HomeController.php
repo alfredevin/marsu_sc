@@ -77,13 +77,117 @@ class HomeController {
 
         redirect(url('guidance'));
     }
-
     public function studentprofile(): void
     {
         $user = Auth::user();
+
+        $studentIdParam = trim($_GET['student_id'] ?? '');
+        $program        = trim($_GET['program'] ?? '');
+        $yearLevel      = trim($_GET['year_level'] ?? '');
+        $status         = trim($_GET['status'] ?? '');
+        $search         = trim($_GET['q'] ?? '');
+
+        // Dynamic Programs Dropdown
+        $programsList = [];
+        try {
+            $programsList = Database::fetchAll("SELECT DISTINCT `code`, `name` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
+        } catch (\Throwable $e) {$programsList = [];
+        }
+
+        $selectedStudent = null;
+        $studentList     = [];
+
+        // 1. DETAIL PROFILE VIEW 
+        if (!empty($studentIdParam)) {
+            try {
+                $sql = "SELECT 
+                            s.*,
+                            CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) AS full_name,
+                            COALESCE(p.code, 'N/A') AS program,
+                            COALESCE(p.name, 'N/A') AS program_full,
+                            s.student_number AS student_id,
+                            COALESCE(sec.name, '-') AS section_name,
+                            COALESCE(s.enrollment_status, 'N/A') AS status
+                        FROM `students` s
+                        LEFT JOIN `programs` p ON s.program_id = p.id
+                        LEFT JOIN `sections` sec ON s.section_id = sec.id
+                        WHERE (s.student_number = ? OR s.id = ?)
+                        LIMIT 1";
+
+                $selectedStudent = Database::fetchOne($sql, [$studentIdParam,
+                    is_numeric($studentIdParam) ? (int)$studentIdParam : 0
+                ]);
+            } catch (\Throwable $e) {$selectedStudent = null;
+            }
+        }
+
+        // 2. MASTER DIRECTORY ROSTER 
+        if (!$selectedStudent) {
+            try {
+                $sql = "SELECT 
+                            s.id,
+                            s.student_number AS student_id,
+                            CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) AS full_name,
+                            s.email,
+                            COALESCE(p.code, 'N/A') AS program,
+                            s.year_level,
+                            COALESCE(sec.name, '-') AS section_name,
+                            COALESCE(s.enrollment_status, 'N/A') AS status
+                        FROM `students` s
+                        LEFT JOIN `programs` p ON s.program_id = p.id
+                        LEFT JOIN `sections` sec ON s.section_id = sec.id
+                        WHERE s.deleted_at IS NULL";
+
+                $params = [];
+
+                if (!empty($search)) {$sql .= " AND (s.student_number LIKE ? 
+                               OR s.first_name LIKE ? 
+                               OR s.last_name LIKE ? 
+                               OR CONCAT(s.first_name, ' ', s.last_name) LIKE ? 
+                               OR CONCAT(s.last_name, ', ', s.first_name) LIKE ? 
+                               OR s.email LIKE ?)";
+                    $qTerm = '\%' .$search . '%';
+                    $params = array_merge($params, [$qTerm,$qTerm, $qTerm,$qTerm, $qTerm,$qTerm]);
+                }
+
+                if (!empty($program)) {$sql .= " AND p.code = ?";
+                    $params[] =$program;
+                }
+
+                if (!empty($yearLevel)) {$sql .= " AND (s.year_level = ? OR s.year_level LIKE ?)";
+                    $cleanYr = (int) preg_replace('/[^0-9]/', '',$yearLevel);
+                    $params[] =$cleanYr > 0 ? $cleanYr :$yearLevel;
+                    $params[] = '\%' .$yearLevel . '%';
+                }
+
+                if (!empty($status)) {$sql .= " AND s.enrollment_status = ?";
+                    $params[] =$status;
+                }
+
+                $sql .= " ORDER BY s.id ASC LIMIT 100";
+
+                $studentList = Database::fetchAll($sql,$params);
+            } catch (\Throwable $e) {$studentList = [];
+            }
+        }
+
         View::render('guidance/Views/student-profile', [
-            'title' => 'Student Profile',
-            'slug'  => 'guidance'
+            'title'           => !empty($selectedStudent) ? 'Student Profile: ' . htmlspecialchars($selectedStudent['full_name']) : 'Student Profiles',
+            'moduleName'      => 'Guidance & Counseling Intake Records System',
+            'slug'            => 'guidance',
+            'user'            => $user,
+            'selectedStudent' => $selectedStudent,
+            'studentList'     => $studentList,
+            'programsList'    => $programsList,
+            'program'         => $program,
+            'yearLevel'       => $yearLevel,
+            'status'          => $status,
+            'search'          => $search,
+            'crumbs'          => [
+                'Guidance Center' => url('guidance'),
+                'Student Information Management' => '',
+                'Student Profile' => ''
+            ]
         ]);
     }
 

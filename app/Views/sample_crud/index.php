@@ -140,10 +140,10 @@
                                     </td>
                                     <td class="text-end pe-3">
                                         <!-- UPDATE BUTTON (Opens Modal) -->
-                                        <button type="button" 
-                                                class="btn btn-sm btn-outline-marsu me-1" 
-                                                onclick='openEditModal(<?= json_encode($item) ?>)' 
-                                                title="Edit / Update Item">
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-marsu me-1"
+                                            onclick='openEditModal(<?= json_encode($item) ?>)'
+                                            title="Edit / Update Item">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
 
@@ -293,13 +293,13 @@
 
 <!-- JAVASCRIPT: Maglagay ng values sa Edit Modal (Vanilla JS, Zero jQuery) -->
 <script>
-function openEditModal(item) {
-    document.getElementById('edit_id').value = item.id;
-    document.getElementById('edit_id_display').innerText = item.id;
-    document.getElementById('edit_title').value = item.title;
-    document.getElementById('edit_category').value = item.category;
+    function openEditModal(item) {
+        document.getElementById('edit_id').value = item.id;
+        document.getElementById('edit_id_display').innerText = item.id;
+        document.getElementById('edit_title').value = item.title;
+        document.getElementById('edit_category').value = item.category;
 
-    const modal = new bootstrap.Modal(document.getElementById('editItemModal'));
-    modal.show();
-}
+        const modal = new bootstrap.Modal(document.getElementById('editItemModal'));
+        modal.show();
+    }
 </script>

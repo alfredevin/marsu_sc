@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use Core\View;
@@ -17,16 +18,18 @@ use Core\Session;
  *   2. category - Kategorya / Uri ng Item
  * ==============================================================================
  */
-class SampleCrudController {
+class SampleCrudController
+{
 
     /**
      * 1. VIEW / DISPLAY (Fetch All Records)
      * Kunin lahat ng records mula sa database at i-display sa HTML view.
      */
-    public function index(): void {
+    public function index(): void
+    {
         // Kunin ang lahat ng active records (hindi deleted)
         $items = Database::fetchAll(
-            "SELECT * FROM sample_items WHERE deleted_at IS NULL ORDER BY id DESC"
+            "SELECT * FROM sample_items "
         );
 
         // I-render ang view at ipasa ang $items
@@ -41,7 +44,8 @@ class SampleCrudController {
      * 2. INSERT / CREATE (Save New Record)
      * Kapag nag-submit ang form ng "Add Item", dito papasok ang POST request.
      */
-    public function store(): void {
+    public function store(): void
+    {
         $title    = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
 
@@ -67,7 +71,8 @@ class SampleCrudController {
      * 3. UPDATE / EDIT (Modify Existing Record)
      * Kapag nag-submit ang edit modal, i-update ang record gamit ang ID nito.
      */
-    public function update(): void {
+    public function update(): void
+    {
         $id       = (int)($_POST['id'] ?? 0);
         $title    = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
@@ -94,7 +99,8 @@ class SampleCrudController {
      * 4. DELETE / ARCHIVE (Soft Delete)
      * Sa halip na burahin nang tuluyan, i-set lang ang deleted_at timestamp.
      */
-    public function delete(): void {
+    public function delete(): void
+    {
         $id = (int)($_POST['id'] ?? 0);
 
         if ($id > 0) {

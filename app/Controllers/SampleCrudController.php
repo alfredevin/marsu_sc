@@ -49,12 +49,7 @@ class SampleCrudController
         $title    = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
 
-        // Basic validation: Siguraduhing may laman ang 2 fields
-        if (empty($title) || empty($category)) {
-            Session::flash('error', 'Pakiusap, punan ang parehong Title at Category fields.');
-            redirect(url('sample-crud'));
-            return;
-        }
+
 
         // Database::insert() helper
         Database::insert('sample_items', [

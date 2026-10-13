@@ -3,8 +3,8 @@ namespace Modules\Housing\Database\Seeders;
 
 use Core\Database;
 
-class HousingSeeder {
-    public static function run(): void {
+return new class {
+    public function run(): void {
         $db = Database::pdo();
 
         // 1. Boarding Houses
@@ -404,4 +404,4 @@ class HousingSeeder {
             }
         }
     }
-}
+};

@@ -71,7 +71,7 @@
                 <option value="4" <?= ($yearLevel === '4') ? 'selected' : '' ?>>4th Year</option>
             </select>
 
-            <!-- Section Filter mula sa Database -->
+            <!-- Section Filter from Database -->
             <label class="small fw-semibold text-muted mb-0 text-nowrap ms-1">SECTION:</label>
             <select name="section" class="form-select form-select-sm" style="width: auto;"
                 onchange="this.form.submit()">
@@ -236,7 +236,7 @@
         </table>
     </div>
 
-    <!-- Script para sa Live Filter at Auto-Restore kapag binura ang search -->
+    <!-- Live filter and auto-restore script when search is cleared -->
     <script>
         const hadDemoSearch = <?= !empty($search) ? 'true' : 'false' ?>;
 
@@ -249,7 +249,7 @@
                 row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
             });
 
-            // Kusa mag-reload kapag naging blangko gamit ang backspace
+            // Automatically reload when search is cleared with backspace
             if (query === '' && hadDemoSearch) {
                 const url = new URL(window.location.href);
                 url.searchParams.delete('q');

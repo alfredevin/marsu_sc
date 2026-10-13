@@ -10,7 +10,7 @@
         "icon": "bi-cart-check-fill",
         "items": [
             {
-                "label": "Overview & Records",
+                "label": "Overview & Recordsss",
                 "route": "procurement",
                 "permission": "procurement.view"
             }

@@ -211,8 +211,7 @@ class HomeController
             'title' => 'Socio-economic background',
             'slug'  => 'welfare'
         ]);
-    }
-    }
+    }  
     public function welfarehistoryrecords(): void
     {
         $user = Auth::user();

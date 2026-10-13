@@ -284,6 +284,13 @@ $moduleNavGroups = ModuleLoader::getNavItems();
                         <span>UI Kit Styleguide</span>
                     </a>
                 </li>
+
+                <li class="nav-item <?= isActive('sample-crud') ?>">
+                    <a class="nav-link <?= isActive('sample-crud') ?>" href="<?= url('sample-crud') ?>">
+                        <i class="bi bi-code-square text-gold"></i>
+                        <span>CRUD Demo (2 Fields)</span>
+                    </a>
+                </li>
             </ul>
         <?php endif; ?>
     </div>

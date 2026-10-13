@@ -13,6 +13,7 @@ return new class {
             ['name' => 'Faculty Member', 'slug' => 'faculty', 'description' => 'Instructional management, grading, and advising.'],
             ['name' => 'Student', 'slug' => 'student', 'description' => 'Student self-service portal access.'],
             ['name' => 'Module Lead', 'slug' => 'module_lead', 'description' => 'BSIS student development team lead.'],
+            ['name' => 'Module Lead: Procurement', 'slug' => 'lead_procurement', 'description' => 'Lead access exclusively for Procurement Management Information System'],
             ['name' => 'Module Lead: Research (IRIMKMS)', 'slug' => 'lead_irimkms', 'description' => 'Lead access exclusively for IRIMKMS'],
             ['name' => 'Module Lead: Faculty Workload', 'slug' => 'lead_workload', 'description' => 'Lead access exclusively for Faculty Workload'],
             ['name' => 'Module Lead: Health & Clinic', 'slug' => 'lead_health', 'description' => 'Lead access exclusively for Health Services'],
@@ -133,8 +134,14 @@ return new class {
             }
         }
 
+        // Synchronize module permissions before assigning to leads
+        if (class_exists('\Core\ModuleLoader')) {
+            \Core\ModuleLoader::syncPermissions();
+        }
+
         // Assign permissions to Student Module Leads
         $leadSlugMap = [
+            'lead_procurement'   => 'procurement',
             'lead_irimkms'       => 'irimkms',
             'lead_workload'      => 'workload',
             'lead_health'        => 'health',
@@ -207,6 +214,15 @@ return new class {
                 'last_name'  => 'Santos',
                 'role'       => 'student',
                 'role_slug'  => 'student'
+            ],
+            [
+                'username'   => 'group1_lead',
+                'email'      => 'group1.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Althea',
+                'last_name'  => 'Ramos',
+                'role'       => 'lead_procurement',
+                'role_slug'  => 'lead_procurement'
             ],
             [
                 'username'   => 'group2_lead',
@@ -305,6 +321,7 @@ return new class {
             $uId = null;
             if ($existing) {
                 $uId = (int)$existing['id'];
+                Database::update('users', ['role' => $u['role']], 'id = :id', ['id' => $uId]);
             } else {
                 $uId = Database::insert('users', [
                     'username'   => $u['username'],

@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Welfare\Controllers;
 
 use Core\View;
@@ -9,10 +10,12 @@ use Core\Session;
 /**
  * Controller for Student Welfare Services & Financial Grants Management
  */
-class HomeController {
-    public function index(): void {
+class HomeController
+{
+    public function index(): void
+    {
         $user = Auth::user();
-        
+
         // Fetch demo / module records
         $records = [];
         try {
@@ -34,10 +37,11 @@ class HomeController {
         ]);
     }
 
-    public function show(): void {
+    public function show(): void
+    {
         $id = (int)($_GET['id'] ?? 0);
         $record = Database::fetchOne("SELECT * FROM `wlf_records` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]);
-        
+
         if (!$record) {
             Session::flash('error', 'Record not found.');
             redirect(url('welfare'));
@@ -53,7 +57,8 @@ class HomeController {
         ]);
     }
 
-    public function store(): void {
+    public function store(): void
+    {
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
 
@@ -76,5 +81,182 @@ class HomeController {
         }
 
         redirect(url('welfare'));
+    }
+
+    public function studentprofileinformation(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/student-profile-information', [
+            'title' => 'Student Profile Information',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function supportassessment(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/support-assessment', [
+            'title' => 'Support Assessment',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function socioeconomicbackground(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/socio-economic-background', [
+            'title' => 'Socio Economic Background',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function welfarehistoryrecords(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/welfare-history-records', [
+            'title' => 'Welfare history records',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function studentconcern(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/student-concern', [
+            'title' => 'Student concern',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function casemanagement(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/case-management', [
+            'title' => 'Case management',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function followupmonitoring(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/follow-up-monitoring', [
+            'title' => 'Follow-up monitoring',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function caseresolutiontracking(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/case-resolution-tracking', [
+            'title' => 'Case resolution tracking',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function counselingreferrals(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/counseling-referrals', [
+            'title' => 'Counseling referrals',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function financialassistancerecords(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/financial-assistance-records', [
+            'title' => 'Financial assistance records',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function scholarshipgrantmonitoring(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/scholrship-grant-monitoring', [
+            'title' => 'Scholarship grant monitoring',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function studentsupportprograms(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/student-support-programs', [
+            'title' => 'Student support programs',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function interventionplans(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/intervention-plans', [
+            'title' => 'Intervention plans',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function assignedpersonnel(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/assigned-personnel', [
+            'title' => 'Asigned personnel',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function progresstracking(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/progress-tracking', [
+            'title' => 'Progress tracking',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function outcomeevaluation(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/outcome-evaluation', [
+            'title' => 'Outcome evaluation',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function appointments(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/appointments', [
+            'title' => 'Appointments',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function advisories(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/advisories', [
+            'title' => 'Advisories',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function studentwelfarereports(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/student-welfare-reports', [
+            'title' => 'Student welfare reports',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function studentconcerns(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/student-concerns', [
+            'title' => 'Student concerns',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function servicereports(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/service-reports', [
+            'title' => 'Service reports',
+            'slug'  => 'welfare'
+        ]);
+    }
+    public function interventionreports(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/intervention-reports', [
+            'title' => 'Intervention reports',
+            'slug'  => 'welfare'
+        ]);
     }
 }

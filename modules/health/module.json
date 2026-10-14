@@ -10,6 +10,68 @@
         "icon": "bi-heart-pulse-fill",
         "items": [
             {
+                "label": "Student Health Profiles",
+                "icon": "bi-journal-bookmark",
+                "permission": "health.view",
+                "children": [
+                    {
+                        "label": "Grades Tracking (Class Record)",
+                        "icon": "bi-pencil-square",
+                        "route": "health/gradestracking",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Subject Performance",
+                        "icon": "bi-bar-chart-line",
+                        "route": "health/subjectperformance",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Academic Progress Reports",
+                        "icon": "bi-card-checklist",
+                        "route": "health/progressreports",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Failed / Incomplete Monitoring",
+                        "icon": "bi-exclamation-triangle",
+                        "route": "health/failedincompletemonitoring",
+                        "permission": "health.view"
+                    }
+                ]
+            },
+            {
+                "label": "Student Health Profile",
+                "icon": "bi-journal-bookmark",
+                "permission": "health.view",
+                "children": [
+                    {
+                        "label": "Grades Tracking (Class Record)",
+                        "icon": "bi-pencil-square",
+                        "route": "health/gradestracking",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Subject Performance",
+                        "icon": "bi-bar-chart-line",
+                        "route": "health/subjectperformance",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Academic Progress Reports",
+                        "icon": "bi-card-checklist",
+                        "route": "health/progressreports",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Failed / Incomplete Monitoring",
+                        "icon": "bi-exclamation-triangle",
+                        "route": "health/failedincompletemonitoring",
+                        "permission": "health.view"
+                    }
+                ]
+            },
+            {
                 "label": "Student Health Profile",
                 "icon": "bi-journal-bookmark",
                 "permission": "health.view",

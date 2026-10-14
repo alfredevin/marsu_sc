@@ -46,13 +46,9 @@
                 <p class="text-muted small mb-3">
                     Punan ang 2 fields sa ibaba at i-click ang <strong>Save Item</strong> para ma-insert sa MySQL table (<code>sample_items</code>).
                 </p>
-
-                <!-- FORM PARA SA INSERT -->
                 <form method="POST" action="<?= url('sample-crud/create') ?>">
-                    <!-- MANDATORY: CSRF Token protection -->
                     <?= csrf_field() ?>
-
-                    <!-- Field 1: Title -->
+                    <!-- Field 1 -->
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-dark">
                             Field 1: Item Title <span class="text-danger">*</span>
@@ -63,11 +59,22 @@
                         </div>
                         <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 2: location <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="location" class="form-control" placeholder="Halimbawa: Library" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
+                    </div>
+
 
                     <!-- Field 2: Category -->
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-dark">
-                            Field 2: Category <span class="text-danger">*</span>
+                            Field 3: Category <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
                             <span class="input-group-text bg-light text-muted"><i class="bi bi-tag-fill"></i></span>
@@ -112,6 +119,7 @@
                         <tr>
                             <th class="ps-3" style="width: 50px;">ID</th>
                             <th>Title (Field 1)</th>
+                            <th>Location</th>
                             <th>Category (Field 2)</th>
                             <th>Date Added</th>
                             <th class="text-end pe-3" style="width: 130px;">Action</th>
@@ -126,12 +134,19 @@
                                 </td>
                             </tr>
                         <?php else: ?>
+
                             <?php foreach ($items as $item): ?>
                                 <tr>
                                     <td class="ps-3 text-muted fw-bold">#<?= e($item['id']) ?></td>
+
                                     <td>
-                                        <strong class="text-marsu-burgundy fs-6"><?= e($item['title']) ?></strong>
+                                        <?= e($item['title']) ?>
                                     </td>
+
+                                    <td>
+                                        <?= e($item['location']) ?>
+                                    </td>
+
                                     <td>
                                         <span class="badge badge-gold font-monospace"><?= e($item['category']) ?></span>
                                     </td>

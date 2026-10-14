@@ -1,25 +1,64 @@
 {
-    "name": "Student Leadership Accreditation & Officer Evaluation",
-    "slug": "orgleadership",
-    "version": "1.0.0",
-    "description": "Coordinates student council elections, officer term accreditation, leadership performance scorecards, and institutional awards.",
-    "author": "MarSU CICS Student Development Group",
-    "default_enabled": true,
-    "section": "Student Affairs (OSAS)",
-    "menu": {
-        "icon": "bi-award-fill",
-        "items": [
-            {
-                "label": "Overview & Records",
-                "route": "orgleadership",
-                "permission": "orgleadership.view"
-            }
+  "name": "Student Leadership Accreditation & Officer Evaluation",
+  "slug": "orgleadership",
+  "version": "1.0.0",
+  "description": "Coordinates student council elections, officer term accreditation, leadership performance scorecards, and institutional awards.",
+  "author": "MarSU CICS Student Development Group",
+  "default_enabled": true,
+  "section": "Student Affairs (OSAS)",
+  "menu": {
+    "icon": "bi-award-fill",
+    "items": [
+      {
+        "label": "Organization",
+        "icon": "bi-people",
+        "permission": "orgleadership.view",
+        "children": [
+          {
+            "label": "Directory & Profile",
+            "icon": "bi-person-circle",
+            "route": "retention/profile",
+            "permission": "orgleadership.view"
+          },
+          {
+            "label": "Accreditation & Status",
+            "icon": "bi-person-circle",
+            "route": "retention/profile",
+            "permission": "orgleadership.view"
+          },
+          {
+            "label": "Membership Records",
+            "icon": "bi-person-circle",
+            "route": "retention/profile",
+            "permission": "orgleadership.view"
+          }
         ]
-    },
-    "permissions": {
-        "orgleadership.view": "View Student Leaders Directory & Officers",
-        "orgleadership.accredit": "Accredit Organization Executive Officers",
-        "orgleadership.evaluate": "Submit Leadership Performance Evaluations",
-        "orgleadership.export": "Export Leadership Merit Certifications"
-    }
+      },
+      {
+        "label": "Academic Monitoring",
+        "icon": "bi-journal-bookmark",
+        "permission": "orgleadership.view",
+        "children": [
+          {
+            "label": "Grades Tracking (Class Record)",
+            "icon": "bi-pencil-square",
+            "route": "retention/gradestracking",
+            "permission": "orgleadership.view"
+          },
+          {
+            "label": "Subject Performance",
+            "icon": "bi-bar-chart-line",
+            "route": "retention/subjectperformance",
+            "permission": "orgleadership.view"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "orgleadership.view": "View Student Leaders Directory & Officers",
+    "orgleadership.accredit": "Accredit Organization Executive Officers",
+    "orgleadership.evaluate": "Submit Leadership Performance Evaluations",
+    "orgleadership.export": "Export Leadership Merit Certifications"
+  }
 }

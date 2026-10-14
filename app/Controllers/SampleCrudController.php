@@ -34,8 +34,8 @@ class SampleCrudController
 
         // I-render ang view at ipasa ang $items
         View::render('sample_crud/index', [
-            'title'  => 'CRUD Demo & Reference Guide',
-            'items'  => $items,
+            'title' => 'CRUD Demo & Reference Guide',
+            'items' => $items,
             'crumbs' => ['Administration' => '', 'CRUD Demo (2 Fields)' => '']
         ]);
     }
@@ -46,15 +46,24 @@ class SampleCrudController
      */
     public function store(): void
     {
-        $title    = trim($_POST['title'] ?? '');
+        $title = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
         $location = trim($_POST['location'] ?? '');
+<<<<<<< HEAD
 
         // Database::insert() helper
         Database::insert('sample_items', [
             'title'      => $title,
             'category'   => $category,
             'location'   => $location,
+=======
+
+        // Database::insert() helper
+        Database::insert('sample_items', [
+            'title' => $title,
+            'category' => $category,
+            'location' => $location,
+>>>>>>> c6be4d8f84518f27e4e1d671071258b68bc6eb0c
             'created_at' => date('Y-m-d H:i:s')
         ]);
 
@@ -68,8 +77,8 @@ class SampleCrudController
      */
     public function update(): void
     {
-        $id       = (int)($_POST['id'] ?? 0);
-        $title    = trim($_POST['title'] ?? '');
+        $id = (int) ($_POST['id'] ?? 0);
+        $title = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
 
         // Validation
@@ -81,8 +90,8 @@ class SampleCrudController
 
         // Database::update() helper na may prepared statement
         Database::update('sample_items', [
-            'title'      => $title,
-            'category'   => $category,
+            'title' => $title,
+            'category' => $category,
             'updated_at' => date('Y-m-d H:i:s')
         ], 'id = :id', ['id' => $id]);
 
@@ -96,7 +105,7 @@ class SampleCrudController
      */
     public function delete(): void
     {
-        $id = (int)($_POST['id'] ?? 0);
+        $id = (int) ($_POST['id'] ?? 0);
 
         if ($id > 0) {
             Database::update('sample_items', [

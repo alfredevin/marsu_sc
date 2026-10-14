@@ -48,13 +48,14 @@ class SampleCrudController
     {
         $title    = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
-
+        $location = trim($_POST['location'] ?? '');
 
 
         // Database::insert() helper
         Database::insert('sample_items', [
             'title'      => $title,
             'category'   => $category,
+            'location'  => $location,
             'created_at' => date('Y-m-d H:i:s')
         ]);
 
@@ -71,6 +72,7 @@ class SampleCrudController
         $id       = (int)($_POST['id'] ?? 0);
         $title    = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
+
 
         // Validation
         if ($id <= 0 || empty($title) || empty($category)) {

@@ -63,6 +63,7 @@
                         </div>
                         <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
                     </div>
+            
 
                     <!-- Field 2: Category -->
                     <div class="mb-4">
@@ -81,6 +82,17 @@
                             </select>
                         </div>
                         <div class="form-text small text-muted">Kategorya o uri ng record.</div>
+                    </div>
+                      <!-- Field 3: Location -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 3: Item Location <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="location" class="form-control" placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Location ng item.</div>
                     </div>
 
                     <!-- Submit Button -->
@@ -112,6 +124,7 @@
                         <tr>
                             <th class="ps-3" style="width: 50px;">ID</th>
                             <th>Title (Field 1)</th>
+                            <th>Location</th>
                             <th>Category (Field 2)</th>
                             <th>Date Added</th>
                             <th class="text-end pe-3" style="width: 130px;">Action</th>
@@ -131,6 +144,9 @@
                                     <td class="ps-3 text-muted fw-bold">#<?= e($item['id']) ?></td>
                                     <td>
                                         <strong class="text-marsu-burgundy fs-6"><?= e($item['title']) ?></strong>
+                                    </td>
+                                    <td>
+                                       <?= e($item['location']) ?>
                                     </td>
                                     <td>
                                         <span class="badge badge-gold font-monospace"><?= e($item['category']) ?></span>

@@ -5,14 +5,41 @@
     "description": "Calculates faculty teaching units, preparation credits, administrative designations, and overload compensations.",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Academic Affairs",
+    "section": "Faculty Workload and Instructional Management System",
     "menu": {
         "icon": "bi-briefcase-fill",
         "items": [
             {
-                "label": "Overview & Records",
-                "route": "workload",
-                "permission": "workload.view"
+                "label": "Faculty Management System",
+                "icon": "bi-journal-text",
+                "permission": "workload.view",
+                "children": [
+                    {
+                        "label": "Faculty Directory",
+                        "icon": "bi-file-earmark-check",
+                        "route": "workload/proposalsandapprovals",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Faculty Profiles",
+                        "icon": "bi-file-earmark-check",
+                        "route": "workload/proposalsandapprovals",
+                        "permission": "workload.view"
+                    }
+                ]
+            },
+            {
+                "label": "Workload Management",
+                "icon": "bi-journal-text",
+                "permission": "workload.view",
+                "children": [
+                    {
+                        "label": "Faculty Directory",
+                        "icon": "bi-file-earmark-check",
+                        "route": "workload/proposalsandapprovals",
+                        "permission": "workload.view"
+                    }
+                ]
             }
         ]
     },

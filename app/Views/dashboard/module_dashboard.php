@@ -18,7 +18,7 @@
                 </div>
                 <h2 class="h4 mb-1 fw-bold text-white"><?= e($moduleName) ?></h2>
                 <p class="small text-white-50 mb-0">
-                    Logged in as: <strong class="text-white"><?= e($user['first_name'] . ' ' . $user['last_name']) ?></strong> 
+                    Logged in as: <strong class="text-white"><?= e($user['first_name'] . ' ' . $user['last_name']) ?></strong>
                     (<code><?= e($user['username']) ?></code>) • Role: <span class="badge bg-secondary"><?= e($user['role_name'] ?? 'Module Developer') ?></span>
                 </p>
             </div>

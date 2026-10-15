@@ -1,902 +1,794 @@
-<?php
-/**
- * IRIMKMS Module Dashboard View
- * Institutional Repository & Knowledge Management System
- */
-?>
-<div class="container-fluid px-4 py-3" id="moduleDashboardRoot">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"
+        type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
-    <!-- ============================================================ -->
-    <!-- CUSTOM CSS: MarSU Theme Tokens & Component Styles            -->
-    <!-- ============================================================ -->
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- Design System & Dashboard Custom Styles -->
     <style>
-        #moduleDashboardRoot, #moduleDashboardRoot * {
-            box-sizing: border-box;
-        }
-
-        /* ── Theme Tokens ── */
         :root {
-            --maroon-main:  #800020;
-            --maroon-dark:  #5c0017;
-            --maroon-light: #fff0f3;
-            --gold-accent:  #d4af37;
-            --gold-light:   #fffdf0;
+            --rmis-maroon: #800020;
+            --rmis-maroon-dark: #5c0018;
+            --rmis-gold: #FFD700;
+            --rmis-gold-dark: #d4af37;
+            --rmis-bg-light: #f8f9fc;
         }
 
-        /* ── Utility helpers ── */
-        .text-maroon  { color: var(--maroon-main) !important; }
-        .bg-maroon    { background-color: var(--maroon-main) !important; color: #fff !important; }
-        .border-left-maroon { border-left: 4px solid var(--maroon-main) !important; }
-
-        /* ── Buttons ── */
-        .btn-maroon {
-            background-color: var(--maroon-main);
-            border-color: var(--maroon-main);
-            color: #fff;
-            font-weight: 600;
-            transition: all 0.2s ease-in-out;
-        }
-        .btn-maroon:hover,
-        .btn-maroon:focus {
-            background-color: var(--maroon-dark);
-            border-color: var(--maroon-dark);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(128,0,32,0.25);
-        }
-        .btn-gold {
-            background-color: var(--gold-accent);
-            border-color: var(--gold-accent);
-            color: #212529;
-            font-weight: 700;
-            transition: all 0.2s ease;
-        }
-        .btn-gold:hover,
-        .btn-gold:focus {
-            background-color: #c09e2e;
-            border-color: #c09e2e;
-            color: #111;
+        /* Remove SB Admin 2 default CSS arrow */
+        .nav-link[data-toggle="collapse"]::after {
+            display: none !important;
         }
 
-        /* ── Hero Banner ── */
+        /* Sidebar styling overrides */
+        .sidebar-brand {
+            text-align: left !important;
+            justify-content: flex-start !important;
+            cursor: default !important;
+            pointer-events: none !important;
+        }
+
+        #collapseTwo .collapse-item:hover,
+        #collapseTwo .collapse-item:focus,
+        #collapseTwo .collapse-item.active {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            color: #ffffff !important;
+        }
+
+        #collapseTwo .collapse-item {
+            border-radius: 6px;
+        }
+
+        /* Hero Welcome Banner */
         .hero-banner {
-            background: linear-gradient(135deg, #800020 0%, #4a0013 50%, #29000a 100%);
-            color: #fff;
+            background: linear-gradient(135deg, var(--rmis-maroon) 0%, var(--rmis-maroon-dark) 100%);
             border-radius: 16px;
-            padding: 28px 32px;
-            margin-bottom: 28px;
-            box-shadow: 0 8px 24px rgba(128,0,32,0.22);
+            color: #ffffff;
+            padding: 2rem 2.2rem;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(128, 0, 32, 0.25);
+            margin-bottom: 1.8rem;
         }
+
         .hero-banner::after {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -8%;
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle, rgba(212,175,55,0.22) 0%, rgba(255,255,255,0) 70%);
+            top: -40px;
+            right: -40px;
+            width: 220px;
+            height: 220px;
+            background: rgba(255, 215, 0, 0.08);
             border-radius: 50%;
             pointer-events: none;
         }
+
         .hero-badge {
-            background: rgba(212,175,55,0.25);
-            color: #d4af37;
-            border: 1px solid rgba(212,175,55,0.45);
-            font-size: 0.78rem;
-            font-weight: 700;
-            padding: 4px 14px;
-            border-radius: 20px;
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--rmis-gold);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 0.3rem 0.85rem;
+            border-radius: 50px;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.05em;
         }
 
-        /* ── KPI Cards ── */
+        /* Metric KPI Cards */
         .kpi-card {
+            background: #ffffff;
             border-radius: 14px;
-            padding: 20px 22px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            border: 1px solid #e3e6f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            padding: 1.4rem 1.5rem;
             transition: all 0.25s ease;
-            height: 100%;
             position: relative;
             overflow: hidden;
+            height: 100%;
         }
+
         .kpi-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 28px rgba(0,0,0,0.10);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(128, 0, 32, 0.12);
+            border-color: rgba(128, 0, 32, 0.2);
         }
+
         .kpi-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0;
-            width: 4px; height: 100%;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
         }
 
-        .kpi-maroon  { background: #fff; border: 1px solid #e3e6f0; }
-        .kpi-maroon::before  { background: var(--maroon-main); }
-        .kpi-gold    { background: #fff; border: 1px solid #e3e6f0; }
-        .kpi-gold::before    { background: var(--gold-accent); }
-        .kpi-warning { background: #fff; border: 1px solid #e3e6f0; }
-        .kpi-warning::before { background: #f39c12; }
-        .kpi-success { background: #fff; border: 1px solid #e3e6f0; }
-        .kpi-success::before { background: #1abc9c; }
+        .kpi-maroon::before {
+            background: var(--rmis-maroon);
+        }
 
-        .kpi-title {
-            font-size: 0.78rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: #6c757d;
-            margin-bottom: 4px;
+        .kpi-gold::before {
+            background: var(--rmis-gold-dark);
         }
-        .kpi-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #1a1a2e;
-            line-height: 1.1;
+
+        .kpi-warning::before {
+            background: #f6c23e;
         }
-        .kpi-trend {
-            font-size: 0.79rem;
-            margin-top: 6px;
+
+        .kpi-success::before {
+            background: #1cc88a;
         }
 
         .kpi-icon {
-            width: 52px; height: 52px;
+            width: 52px;
+            height: 52px;
             border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
             flex-shrink: 0;
         }
-        .icon-maroon  { background: var(--maroon-light); color: var(--maroon-main); }
-        .icon-gold    { background: var(--gold-light);   color: #b89315; }
-        .icon-warning { background: #fff8ec;             color: #d68910; }
-        .icon-success { background: #e8faf3;             color: #17a589; }
 
-        /* ── Dashboard Cards ── */
+        .icon-maroon {
+            background: rgba(128, 0, 32, 0.08);
+            color: var(--rmis-maroon);
+        }
+
+        .icon-gold {
+            background: rgba(255, 215, 0, 0.18);
+            color: #b8860b;
+        }
+
+        .icon-warning {
+            background: rgba(246, 194, 62, 0.12);
+            color: #d69e2e;
+        }
+
+        .icon-success {
+            background: rgba(28, 200, 138, 0.1);
+            color: #1cc88a;
+        }
+
+        .kpi-value {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #2e384d;
+            line-height: 1.1;
+        }
+
+        .kpi-title {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #858796;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .kpi-trend {
+            font-size: 0.76rem;
+            font-weight: 700;
+            margin-top: 0.35rem;
+        }
+
+        /* Section Cards */
         .dashboard-card {
-            background: #fff;
+            background: #ffffff;
             border-radius: 14px;
             border: 1px solid #e3e6f0;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 1.8rem;
             overflow: hidden;
         }
+
         .dashboard-card-header {
-            padding: 16px 22px;
-            background: #f8f9fc;
-            border-bottom: 1px solid #e3e6f0;
+            background: #ffffff;
+            border-bottom: 1px solid #eaecf4;
+            padding: 1.1rem 1.4rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
         }
+
         .dashboard-card-header h6 {
             margin: 0;
-            font-weight: 700;
-            color: var(--maroon-main);
-            font-size: 0.92rem;
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: var(--rmis-maroon);
         }
 
-        /* ── Activity Timeline ── */
-        .activity-item {
+        /* Quick Module Access Buttons */
+        .module-shortcut {
+            background: #f8f9fc;
+            border: 1.5px solid #e3e6f0;
+            border-radius: 12px;
+            padding: 1.1rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            text-decoration: none !important;
+            display: block;
+            color: #4a5568;
+            height: 100%;
+        }
+
+        .module-shortcut:hover {
+            background: #ffffff;
+            border-color: var(--rmis-maroon);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(128, 0, 32, 0.1);
+            color: var(--rmis-maroon);
+        }
+
+        .module-shortcut-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(128, 0, 32, 0.08);
+            color: var(--rmis-maroon);
             display: flex;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid #f1f3f7;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin: 0 auto 0.65rem auto;
+            transition: all 0.2s ease;
+        }
+
+        .module-shortcut:hover .module-shortcut-icon {
+            background: var(--rmis-maroon);
+            color: #ffffff;
+        }
+
+        .module-shortcut-title {
+            font-weight: 800;
+            font-size: 0.85rem;
+            line-height: 1.25;
+        }
+
+        /* Activity Timeline */
+        .activity-item {
             position: relative;
+            padding-left: 1.8rem;
+            padding-bottom: 1.1rem;
+            border-left: 2px solid #e3e6f0;
         }
-        .activity-item:last-child { border-bottom: none; }
+
+        .activity-item:last-child {
+            border-left-color: transparent;
+            padding-bottom: 0;
+        }
+
         .activity-dot {
-            width: 10px; height: 10px;
+            position: absolute;
+            left: -7px;
+            top: 2px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            background: var(--maroon-main);
-            flex-shrink: 0;
-            margin-top: 5px;
+            background: var(--rmis-maroon);
+            border: 2px solid #ffffff;
         }
-        .dot-gold    { background: var(--gold-accent) !important; }
-        .dot-success { background: #1abc9c !important; }
+
+        .activity-dot.dot-gold {
+            background: var(--rmis-gold-dark);
+        }
+
+        .activity-dot.dot-success {
+            background: #1cc88a;
+        }
+
         .activity-time {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            white-space: nowrap;
-            min-width: 90px;
+            font-size: 0.73rem;
+            color: #858796;
+            font-weight: 600;
         }
+
         .activity-desc {
-            font-size: 0.83rem;
-            color: #374151;
-            line-height: 1.45;
+            font-size: 0.84rem;
+            color: #2e384d;
+            font-weight: 700;
+            margin-bottom: 0.1rem;
         }
 
-        /* ── Toast ── */
-        .toast-notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1080;
-            min-width: 320px;
+        /* Table Filter Pills */
+        .filter-pill {
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            border: 1px solid #d1d3e2;
+            background: #ffffff;
+            color: #6e707e;
+            cursor: pointer;
+            transition: all 0.18s ease;
         }
 
-        /* ── Modal backdrop fix ── */
-        .modal-backdrop:not(.show) { display: none !important; }
+        .filter-pill:hover,
+        .filter-pill.active {
+            background: var(--rmis-maroon);
+            color: #ffffff;
+            border-color: var(--rmis-maroon);
+        }
 
-        /* ── Suppress old BS4 badge colours that Bootstrap 5 renamed ── */
-        .badge-maroon {
-            background-color: var(--maroon-main) !important;
-            color: #fff !important;
+        /* Buttons */
+        .btn-maroon {
+            background-color: var(--rmis-maroon);
+            border-color: var(--rmis-maroon);
+            color: #ffffff;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-maroon:hover {
+            background-color: var(--rmis-maroon-dark);
+            border-color: var(--rmis-maroon-dark);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.25);
+        }
+
+        .btn-gold {
+            background-color: var(--rmis-gold);
+            border-color: var(--rmis-gold);
+            color: var(--rmis-maroon);
+            font-weight: 800;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-gold:hover {
+            background-color: #e6c200;
+            border-color: #e6c200;
+            color: var(--rmis-maroon-dark);
         }
     </style>
 
-    <!-- ============================================================ -->
-    <!-- FLASH NOTIFICATIONS                                          -->
-    <!-- ============================================================ -->
-    <?php if (!empty($_SESSION['flash_success'])): ?>
-        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i><?= e($_SESSION['flash_success']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php unset($_SESSION['flash_success']); ?>
-    <?php endif; ?>
+<div class="container-fluid px-4">
 
-    <?php if (!empty($_SESSION['flash_error'])): ?>
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i><?= e($_SESSION['flash_error']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php unset($_SESSION['flash_error']); ?>
-    <?php endif; ?>
-
-    <!-- ============================================================ -->
-    <!-- HERO WELCOME BANNER                                          -->
-    <!-- ============================================================ -->
-    <div class="hero-banner d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div style="z-index:1;">
-            <span class="hero-badge">
-                <i class="bi bi-building me-1"></i> Marinduque State University — RMIS
-            </span>
-            <h2 style="font-weight:900; font-size:1.75rem; margin-bottom:0.35rem; color:#fff;">
-                Welcome Back, <?= e($user['name'] ?? 'Researcher') ?>
-            </h2>
-            <p style="font-size:0.92rem; color:rgba(255,255,255,0.88); margin-bottom:0; max-width:650px;">
-                Oversee ongoing university research projects, approve pending proposals,
-                and access institutional repository documents in real-time.
-            </p>
-        </div>
-        <div class="d-flex gap-2" style="z-index:1; flex-wrap:wrap;">
-            <button class="btn btn-gold btn-sm px-3 py-2 shadow-sm"
-                    data-bs-toggle="modal" data-bs-target="#quickSubmitProposalModal">
-                <i class="bi bi-plus-circle me-1"></i> Submit Proposal
-            </button>
-            <button class="btn btn-light text-dark fw-bold btn-sm px-3 py-2 shadow-sm"
-                    onclick="exportDashboardSummaryCSV()">
-                <i class="bi bi-download me-1"></i> Export Report
-            </button>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- EXECUTIVE KPI STATS ROW                                      -->
-    <!-- ============================================================ -->
-    <div class="row g-4 mb-4">
-
-        <!-- Active Projects -->
-        <div class="col-xl-3 col-md-6">
-            <div class="kpi-card kpi-maroon d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="kpi-title">Active Projects</div>
-                    <div class="kpi-value mt-1"><?= e($stats['active_projects'] ?? 0) ?></div>
-                    <div class="kpi-trend text-success">
-                        <i class="bi bi-arrow-up me-1"></i>+12% vs last quarter
-                    </div>
-                </div>
-                <div class="kpi-icon icon-maroon">
-                    <i class="bi bi-flask"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Total Research Funding -->
-        <div class="col-xl-3 col-md-6">
-            <div class="kpi-card kpi-gold d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="kpi-title">Total Research Funding</div>
-                    <div class="kpi-value mt-1">₱<?= number_format(($stats['total_funding'] ?? 0) / 1000000, 1) ?>M</div>
-                    <div class="kpi-trend text-muted">
-                        <i class="bi bi-graph-up me-1"></i>84% Funding Allocated
-                    </div>
-                </div>
-                <div class="kpi-icon icon-gold">
-                    <i class="bi bi-coin"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pending Approvals -->
-        <div class="col-xl-3 col-md-6">
-            <div class="kpi-card kpi-warning d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="kpi-title">Pending Approvals</div>
-                    <div class="kpi-value mt-1"><?= e($stats['pending_proposals'] ?? 0) ?></div>
-                    <div class="kpi-trend text-warning fw-bold">
-                        <i class="bi bi-exclamation-circle me-1"></i>Action Required
-                    </div>
-                </div>
-                <div class="kpi-icon icon-warning">
-                    <i class="bi bi-clock-history"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Publications & IP Assets -->
-        <div class="col-xl-3 col-md-6">
-            <div class="kpi-card kpi-success d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="kpi-title">Registered Researchers</div>
-                    <div class="kpi-value mt-1"><?= e($stats['total_faculty'] ?? 0) ?></div>
-                    <div class="kpi-trend text-success">
-                        <i class="bi bi-check2-all me-1"></i>Scopus &amp; CHED Registered
-                    </div>
-                </div>
-                <div class="kpi-icon icon-success">
-                    <i class="bi bi-award"></i>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- /KPI row -->
-
-    <!-- ============================================================ -->
-    <!-- CHARTS & VISUAL ANALYTICS                                    -->
-    <!-- ============================================================ -->
-    <div class="row g-4 mb-4">
-
-        <!-- Area Chart: Funding Trend -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="dashboard-card h-100">
-                <div class="dashboard-card-header">
-                    <h6><i class="bi bi-bar-chart-line me-2"></i>University Funding Allocation Trend (2026)</h6>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-three-dots-vertical"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                            <li><h6 class="dropdown-header">Export Options</h6></li>
-                            <li><a class="dropdown-item" href="#" onclick="exportDashboardSummaryCSV();return false;">
-                                <i class="bi bi-file-earmark-spreadsheet text-success me-2"></i>Export CSV</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="card-body p-3">
-                    <div style="height:310px; position:relative;">
-                        <canvas id="myAreaChartCustom"></canvas>
-                    </div>
-                    <hr class="my-3">
-                    <div class="row text-center small">
-                        <div class="col-4">
-                            <span class="fw-bold text-dark">Agriculture &amp; Fisheries</span>
-                            <div class="text-maroon fw-bold">₱18.4M</div>
+                    <!-- HERO WELCOME BANNER -->
+                    <div class="hero-banner d-flex align-items-center justify-content-between flex-wrap">
+                        <div style="z-index: 1;">
+                            <span class="hero-badge">
+                                <i class="fas fa-university mr-1"></i> Marinduque State University RMIS
+                            </span>
+                            <h2 style="font-weight: 900; font-size: 1.75rem; margin-bottom: 0.35rem; color: #ffffff;">
+                                Welcome Back, <?= e($user['full_name'] ?? 'Researcher') ?>
+                            </h2>
+                            <p
+                                style="font-size: 0.92rem; color: rgba(255, 255, 255, 0.88); margin-bottom: 0; max-width: 650px;">
+                                Oversee ongoing university research projects, approve pending proposals,
+                                and access institutional repository documents in real-time.
+                            </p>
                         </div>
-                        <div class="col-4">
-                            <span class="fw-bold text-dark">Engineering &amp; ICT</span>
-                            <div class="text-info fw-bold">₱14.8M</div>
-                        </div>
-                        <div class="col-4">
-                            <span class="fw-bold text-dark">Health &amp; Social Sciences</span>
-                            <div class="text-success fw-bold">₱15.3M</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Doughnut Chart: Proposal Status -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="dashboard-card h-100">
-                <div class="dashboard-card-header">
-                    <h6><i class="bi bi-pie-chart me-2"></i>Proposals Breakdown</h6>
-                    <span class="badge bg-light text-dark fw-bold border">Q3 Status</span>
-                </div>
-                <div class="card-body p-3">
-                    <div style="height:250px; position:relative;">
-                        <canvas id="myPieChartCustom"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <?php
-                            $approved  = 0; $underReview = 0; $revision = 0;
-                            foreach ($proposals as $pr) {
-                                if ($pr['status'] === 'Approved')       $approved++;
-                                elseif ($pr['status'] === 'Under Review') $underReview++;
-                                else $revision++;
-                            }
-                        ?>
-                        <span class="me-2">
-                            <i class="bi bi-circle-fill" style="color:#800020;"></i> Approved (<?= $approved ?>)
-                        </span>
-                        <span class="me-2">
-                            <i class="bi bi-circle-fill" style="color:#f6c23e;"></i> Under Review (<?= $underReview ?>)
-                        </span>
-                        <span>
-                            <i class="bi bi-circle-fill" style="color:#e74a3b;"></i> Revision (<?= $revision ?>)
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- /Charts row -->
-
-    <!-- ============================================================ -->
-    <!-- LOWER GRID: RECENT PROPOSALS TABLE + ACTIVITY/MILESTONES     -->
-    <!-- ============================================================ -->
-    <div class="row g-4">
-
-        <!-- Recent Research Proposals Table -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="dashboard-card h-100">
-                <div class="dashboard-card-header">
-                    <h6><i class="bi bi-clipboard-data me-2"></i>Recent Research Submissions &amp; Status</h6>
-                    <a href="<?= url('irimkms/proposalsandapprovals') ?>" class="btn btn-sm btn-maroon">
-                        View All
-                    </a>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0" style="font-size:0.86rem;">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="border-0">Code</th>
-                                <th class="border-0">Research Title</th>
-                                <th class="border-0">Lead PI</th>
-                                <th class="border-0">Status</th>
-                                <th class="border-0 text-end">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($proposals)): ?>
-                                <?php foreach (array_slice($proposals, 0, 5) as $pr): ?>
-                                    <tr>
-                                        <td class="fw-bold text-dark"><?= e($pr['code'] ?? '—') ?></td>
-                                        <td>
-                                            <div class="fw-semibold text-dark"><?= e($pr['title'] ?? '') ?></div>
-                                            <span class="text-muted small"><?= e($pr['college'] ?? '') ?></span>
-                                        </td>
-                                        <td><?= e($pr['pi_name'] ?? '—') ?></td>
-                                        <td>
-                                            <?php
-                                                $s = $pr['status'] ?? '';
-                                                $bc = match($s) {
-                                                    'Approved'       => 'success',
-                                                    'Under Review'   => 'warning',
-                                                    'Revision Needed'=> 'danger',
-                                                    default          => 'secondary'
-                                                };
-                                                $tc = ($s === 'Under Review') ? 'text-dark' : '';
-                                            ?>
-                                            <span class="badge bg-<?= $bc ?> <?= $tc ?> px-2 py-1"><?= e($s) ?></span>
-                                        </td>
-                                        <td class="text-end">
-                                            <button class="btn btn-sm btn-outline-secondary"
-                                                    onclick="quickViewProposal(
-                                                        '<?= e($pr['code'] ?? '') ?>',
-                                                        '<?= e(addslashes($pr['title'] ?? '')) ?>',
-                                                        '<?= e(addslashes($pr['pi_name'] ?? '')) ?>',
-                                                        '<?= e($pr['college'] ?? '') ?>',
-                                                        '₱<?= number_format((float)($pr['budget_total'] ?? 0), 2) ?>',
-                                                        '<?= e($pr['status'] ?? '') ?>'
-                                                    )" title="Quick View">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">
-                                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                                        No proposals submitted yet.
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="p-3 bg-light border-top text-center">
-                    <a href="<?= url('irimkms/proposalsandapprovals') ?>"
-                       class="text-decoration-none fw-bold small text-maroon">
-                        View Full Research Database <i class="bi bi-arrow-right ms-1"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column: Milestones + Activity -->
-        <div class="col-xl-4 col-lg-5">
-
-            <!-- Upcoming Milestones -->
-            <div class="dashboard-card mb-4">
-                <div class="dashboard-card-header">
-                    <h6><i class="bi bi-calendar-event me-2"></i>Upcoming Milestones Due</h6>
-                    <span class="badge bg-warning text-dark px-2 py-1">3 This Week</span>
-                </div>
-                <div class="card-body p-3">
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="fw-bold small text-dark">Q3 Financial Audit Reports</span>
-                            <span class="badge bg-danger">Oct 5</span>
-                        </div>
-                        <div class="progress" style="height:6px; border-radius:10px;">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width:85%;"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="fw-bold small text-dark">CHED Institutional Grant Evaluation</span>
-                            <span class="badge bg-warning text-dark">Oct 12</span>
-                        </div>
-                        <div class="progress" style="height:6px; border-radius:10px;">
-                            <div class="progress-bar bg-warning" role="progressbar" style="width:60%;"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="fw-bold small text-dark">Annual Research Presentation Forum</span>
-                            <span class="badge bg-info">Oct 28</span>
-                        </div>
-                        <div class="progress" style="height:6px; border-radius:10px;">
-                            <div class="progress-bar bg-info" role="progressbar" style="width:35%;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /Milestones -->
-
-            <!-- Live Activity Log -->
-            <div class="dashboard-card">
-                <div class="dashboard-card-header">
-                    <h6><i class="bi bi-activity me-2"></i>Recent System Activity</h6>
-                    <span class="text-muted small">Real-time</span>
-                </div>
-                <div class="card-body p-3">
-                    <div class="activity-item">
-                        <div class="activity-dot"></div>
-                        <div>
-                            <div class="activity-time">10 min ago</div>
-                            <div class="activity-desc">Dr. Juan dela Cruz submitted Quarter 3 Progress Report for RES-2026-089.</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-dot dot-gold"></div>
-                        <div>
-                            <div class="activity-time">1 hour ago</div>
-                            <div class="activity-desc">Evaluation Committee assigned 3 peer reviewers to RES-2026-092.</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-dot dot-success"></div>
-                        <div>
-                            <div class="activity-time">3 hours ago</div>
-                            <div class="activity-desc">₱1.45M Research Grant disbursed for Smart Agriculture Project.</div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /Activity -->
-
-        </div><!-- /Right col -->
-
-    </div><!-- /Lower grid -->
-
-</div><!-- /#moduleDashboardRoot -->
-
-
-<!-- ================================================================ -->
-<!-- MODAL: QUICK PROPOSAL SUBMISSION                                  -->
-<!-- ================================================================ -->
-<div class="modal fade" id="quickSubmitProposalModal" tabindex="-1"
-     aria-labelledby="quickSubmitProposalModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-maroon text-white">
-                <h5 class="modal-title fw-bold" id="quickSubmitProposalModalLabel">
-                    <i class="bi bi-file-earmark-plus me-2"></i>Submit Research Proposal
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="<?= url('irimkms/proposals/store') ?>" method="POST">
-                <?= csrf_field() ?>
-                <div class="modal-body p-4">
-                    <div class="alert alert-light border-start border-maroon-main border-3 small mb-3">
-                        <i class="bi bi-info-circle me-1 text-maroon"></i>
-                        Submit a research proposal for peer evaluation and institutional grant allocation.
-                    </div>
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-12">
-                            <label class="form-label fw-bold text-dark">
-                                Research Title <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="title" class="form-control"
-                                   placeholder="e.g. AI-Driven Water Quality Monitoring System" required>
+                        <div class="mt-3 mt-lg-0 d-flex gap-2" style="z-index: 1;">
+                            <a href="proposalsandapprovals.html#submit" class="btn btn-gold btn-sm px-3 py-2 shadow-sm mr-2">
+                                <i class="fas fa-plus-circle mr-1"></i> Submit Proposal
+                            </a>
+                            <button class="btn btn-light text-dark font-weight-bold btn-sm px-3 py-2 shadow-sm"
+                                data-toggle="modal" data-target="#exportModal">
+                                <i class="fas fa-download mr-1"></i> Export Report
+                            </button>
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">
-                                Principal Investigator (PI) <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="pi_name" class="form-control"
-                                   value="<?= e($user['name'] ?? '') ?>" required>
+                    <!-- EXECUTIVE KPI STATS ROW -->
+                    <div class="row mb-4">
+
+                        <!-- Active Projects Card -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="kpi-card kpi-maroon d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="kpi-title">Active Projects</div>
+                                    <div class="kpi-value mt-1"><?= (int)($stats['active_projects'] ?? 0) ?></div>
+                                    <div class="kpi-trend text-success">
+                                        <i class="fas fa-arrow-up mr-1"></i>+12% vs last quarter
+                                    </div>
+                                </div>
+                                <div class="kpi-icon icon-maroon">
+                                    <i class="fas fa-flask"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">
-                                College / Unit <span class="text-danger">*</span>
-                            </label>
-                            <select name="college" class="form-select" required>
-                                <option value="CIT">College of Information Technology (CIT)</option>
-                                <option value="COA">College of Agriculture (COA)</option>
-                                <option value="CSM">College of Sciences &amp; Mathematics (CSM)</option>
-                                <option value="COE">College of Engineering (COE)</option>
-                                <option value="CHS">College of Health Sciences (CHS)</option>
-                            </select>
+
+                        <!-- Total Research Grants Card -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="kpi-card kpi-gold d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="kpi-title">Total Research Funding</div>
+                                    <div class="kpi-value mt-1">₱<?= number_format(($stats['total_funding'] ?? 0) / 1000000, 1) ?>M</div>
+                                    <div class="kpi-trend text-muted">
+                                        <i class="fas fa-chart-line mr-1"></i>84% Funding Allocated
+                                    </div>
+                                </div>
+                                <div class="kpi-icon icon-gold">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Pending Approvals Card -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="kpi-card kpi-warning d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="kpi-title">Pending Approvals</div>
+                                    <div class="kpi-value mt-1"><?= (int)($stats['pending_proposals'] ?? 0) ?></div>
+                                    <div class="kpi-trend text-warning font-weight-bold">
+                                        <i class="fas fa-exclamation-circle mr-1"></i>Action Required
+                                    </div>
+                                </div>
+                                <div class="kpi-icon icon-warning">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Published Papers Card -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="kpi-card kpi-success d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="kpi-title">Publications & IP Assets</div>
+                                    <div class="kpi-value mt-1"><?= (int)($stats['total_faculty'] ?? 0) ?></div>
+                                    <div class="kpi-trend text-success">
+                                        <i class="fas fa-check-double mr-1"></i>Scopus & CHED Accredited
+                                    </div>
+                                </div>
+                                <div class="kpi-icon icon-success">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">Agenda Thrust</label>
-                            <select name="agenda_thrust" class="form-select">
-                                <option value="IT &amp; AI">IT &amp; AI Innovation</option>
-                                <option value="Agriculture">Agriculture &amp; Food Safety</option>
-                                <option value="Environment">Environment &amp; Climate Change</option>
-                                <option value="Renewable Energy">Renewable Energy</option>
-                                <option value="Health">Public Health &amp; Medical</option>
-                            </select>
+
+
+                    <!-- CHARTS & VISUAL ANALYTICS SECTION -->
+                    <div class="row">
+
+                        <!-- Main Area Chart: Funding & Proposals Trend -->
+                        <div class="col-xl-8 col-lg-7">
+                            <div class="dashboard-card mb-4">
+                                <div
+                                    class="dashboard-card-header d-flex flex-row align-items-center justify-content-between">
+                                    <h6><i class="fas fa-chart-area mr-2"></i>University Funding Allocation Trend (2026)
+                                    </h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Export Options:</div>
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-file-pdf text-danger mr-2"></i>Download PDF</a>
+                                            <a class="dropdown-item" href="#"><i
+                                                    class="fas fa-file-excel text-success mr-2"></i>Export CSV</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area" style="height: 310px;">
+                                        <canvas id="myAreaChartCustom"></canvas>
+                                    </div>
+                                    <hr>
+                                    <div class="row text-center small mt-2">
+                                        <div class="col-4">
+                                            <span class="font-weight-bold text-dark">Agriculture & Fisheries</span>
+                                            <div class="text-maroon font-weight-bold">₱18.4M</div>
+                                        </div>
+                                        <div class="col-4">
+                                            <span class="font-weight-bold text-dark">Engineering & ICT</span>
+                                            <div class="text-info font-weight-bold">₱14.8M</div>
+                                        </div>
+                                        <div class="col-4">
+                                            <span class="font-weight-bold text-dark">Health & Social Sciences</span>
+                                            <div class="text-success font-weight-bold">₱15.3M</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">Funding Source</label>
-                            <input type="text" name="funding_source" class="form-control"
-                                   value="University Institutional Research Fund (IRF)">
+
+                        <!-- Donut Chart: Proposal Status Distribution -->
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="dashboard-card mb-4">
+                                <div
+                                    class="dashboard-card-header d-flex flex-row align-items-center justify-content-between">
+                                    <h6><i class="fas fa-chart-pie mr-2"></i>Proposals Breakdown</h6>
+                                    <span class="badge badge-light text-dark font-weight-bold">Q3 Status</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-pie pt-2 pb-2" style="height: 250px;">
+                                        <canvas id="myPieChartCustom"></canvas>
+                                    </div>
+                                    <div class="mt-4 text-center small">
+                                        <?php
+                                            $approvedCount = 0; $underReviewCount = 0; $revisionCount = 0;
+                                            foreach ($proposals as $_p) {
+                                                if ($_p['status'] === 'Approved') $approvedCount++;
+                                                elseif ($_p['status'] === 'Under Review') $underReviewCount++;
+                                                elseif ($_p['status'] === 'Revision Needed') $revisionCount++;
+                                            }
+                                        ?>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle" style="color: #800020;"></i> Approved (<?= $approvedCount ?>)
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle" style="color: #f6c23e;"></i> Under Review (<?= $underReviewCount ?>)
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle" style="color: #e74a3b;"></i> Revision (<?= $revisionCount ?>)
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">Requested Budget (₱)</label>
-                            <input type="number" step="0.01" name="budget_total" class="form-control"
-                                   placeholder="350000.00" value="350000.00">
-                        </div>
+
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">Executive Abstract</label>
-                        <textarea name="abstract" class="form-control" rows="3"
-                                  placeholder="Brief summary of research methodology, deliverables, and societal impact..."></textarea>
+                    <!-- LOWER DATA GRID: RECENT PROPOSALS & LIVE ACTIVITY STREAM -->
+                    <div class="row">
+
+                        <!-- Recent Research Proposals Table -->
+                        <div class="col-xl-8 col-lg-7 mb-4">
+                            <div class="dashboard-card h-100">
+                                <div
+                                    class="dashboard-card-header d-flex align-items-center justify-content-between flex-wrap">
+                                    <h6><i class="fas fa-clipboard-list mr-2"></i>Recent Research Submissions & Status
+                                    </h6>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-items-center mb-0"
+                                            style="font-size: 0.86rem;">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th style="border-top:none;">Project ID</th>
+                                                    <th style="border-top:none;">Research Title</th>
+                                                    <th style="border-top:none;">Lead Researcher</th>
+                                                    <th style="border-top:none;">Status</th>
+                                                    <th style="border-top:none; text-align:right;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $statusBadge = [
+                                                    'Approved'       => 'badge-success',
+                                                    'Under Review'   => 'badge-warning text-dark',
+                                                    'Revision Needed'=> 'badge-danger',
+                                                    'Rejected'       => 'badge-secondary',
+                                                ];
+                                                $recentProposals = array_slice($proposals, 0, 5);
+                                                if (empty($recentProposals)): ?>
+                                                <tr>
+                                                    <td colspan="5" class="text-center text-muted py-4">
+                                                        <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                                        No research submissions found.
+                                                    </td>
+                                                </tr>
+                                                <?php else: foreach ($recentProposals as $_prop): ?>
+                                                <tr>
+                                                    <td class="font-weight-bold text-dark"><?= e($_prop['code']) ?></td>
+                                                    <td>
+                                                        <div class="font-weight-bold text-dark"><?= e($_prop['title']) ?></div>
+                                                        <span class="text-muted small"><?= e($_prop['college'] ?? '') ?></span>
+                                                    </td>
+                                                    <td><?= e($_prop['pi_name']) ?></td>
+                                                    <td>
+                                                        <span class="badge <?= $statusBadge[$_prop['status']] ?? 'badge-secondary' ?> px-2 py-1">
+                                                            <?= e($_prop['status']) ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <a href="<?= url('irimkms/proposalsandapprovals') ?>" class="btn btn-sm btn-outline-primary" title="View Details">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach; endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white border-top text-center py-3">
+                                    <a href="ResearchDatabase.html"
+                                        class="text-maroon font-weight-bold small text-decoration-none">
+                                        View Full Research Database <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Activity Stream & Upcoming Deadlines -->
+                        <div class="col-xl-4 col-lg-5 mb-4">
+
+                            <!-- Upcoming Milestones Widget -->
+                            <div class="dashboard-card mb-4">
+                                <div class="dashboard-card-header">
+                                    <h6><i class="fas fa-calendar-alt mr-2"></i>Upcoming Milestones Due</h6>
+                                    <span class="badge badge-warning px-2 py-1">3 This Week</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="font-weight-bold small text-dark">Q3 Financial Audit
+                                                Reports</span>
+                                            <span class="badge badge-danger">Oct 5</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 85%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="font-weight-bold small text-dark">CHED Institutional Grant
+                                                Evaluation</span>
+                                            <span class="badge badge-warning text-dark">Oct 12</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 60%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="font-weight-bold small text-dark">Annual Research Presentation
+                                                Forum</span>
+                                            <span class="badge badge-info">Oct 28</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: 35%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Live Activity Log -->
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-header">
+                                    <h6><i class="fas fa-history mr-2"></i>Recent System Activity</h6>
+                                    <span class="text-muted small">Real-time</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="activity-item">
+                                        <div class="activity-dot"></div>
+                                        <div class="activity-time">10 minutes ago</div>
+                                        <div class="activity-desc">Dr. Juan dela Cruz submitted Quarter 3 Progress
+                                            Report for RES-2026-089.</div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-dot dot-gold"></div>
+                                        <div class="activity-time">1 hour ago</div>
+                                        <div class="activity-desc">Evaluation Committee assigned 3 peer reviewers to
+                                            RES-2026-092.</div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-dot dot-success"></div>
+                                        <div class="activity-time">3 hours ago</div>
+                                        <div class="activity-desc">₱1.45M Research Grant disbursed for Smart
+                                            Agriculture Project.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-maroon btn-sm px-4 fw-bold">
-                        <i class="bi bi-send-fill me-1"></i> Submit Proposal
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 
-<!-- ================================================================ -->
-<!-- MODAL: QUICK PROPOSAL VIEW DETAIL                                 -->
-<!-- ================================================================ -->
-<div class="modal fade" id="quickViewProposalModal" tabindex="-1"
-     aria-labelledby="quickViewProposalModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-maroon text-white">
-                <h5 class="modal-title fw-bold" id="quickViewProposalModalLabel">
-                    <i class="bi bi-file-earmark-text me-2"></i>Proposal Quick Details
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="badge bg-maroon fs-6" id="qvModalCode">PROP-2026-001</span>
-                    <span class="badge bg-warning text-dark px-3 py-1" id="qvModalStatus">Under Review</span>
-                </div>
-                <h6 class="fw-bold text-dark mb-2" id="qvModalTitle">Research Proposal Title</h6>
-                <div class="p-3 bg-light rounded border mb-3">
-                    <div class="row g-2 small">
-                        <div class="col-6">
-                            <span class="text-muted d-block">Lead PI:</span>
-                            <strong id="qvModalPI">Dr. Faculty</strong>
-                        </div>
-                        <div class="col-6">
-                            <span class="text-muted d-block">College:</span>
-                            <strong id="qvModalCollege">CIT</strong>
-                        </div>
-                        <div class="col-12 mt-2">
-                            <span class="text-muted d-block">Budget Allocation:</span>
-                            <strong class="text-maroon fs-6" id="qvModalBudget">₱ 350,000.00</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Close</button>
-                <a href="<?= url('irimkms/proposalsandapprovals') ?>" class="btn btn-maroon btn-sm px-3 fw-bold">
-                    Open Proposals Portal <i class="bi bi-arrow-right ms-1"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+                <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-<!-- ================================================================ -->
-<!-- TOAST NOTIFICATION                                                -->
-<!-- ================================================================ -->
-<div class="toast-notification d-none" id="actionToast">
-    <div class="card shadow-lg border-start border-maroon-main bg-white" style="border-left:4px solid var(--maroon-main)!important;">
-        <div class="card-body p-3 d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-check-circle-fill fs-3 text-success me-3"></i>
-                <div>
-                    <strong class="text-dark d-block" id="toastTitle">Success</strong>
-                    <small class="text-muted" id="toastMessage">Action performed successfully.</small>
-                </div>
-            </div>
-            <button type="button" class="btn-close ms-3" onclick="hideToast()"></button>
-        </div>
-    </div>
-</div>
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
 
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
 
-<!-- ================================================================ -->
-<!-- SCRIPTS                                                           -->
-<!-- ================================================================ -->
-<script>
-    /* ── Quick View Proposal Modal ── */
-    function quickViewProposal(code, title, pi, college, budget, status) {
-        document.getElementById('qvModalCode').textContent    = code;
-        document.getElementById('qvModalTitle').textContent   = title;
-        document.getElementById('qvModalPI').textContent      = pi;
-        document.getElementById('qvModalCollege').textContent = college;
-        document.getElementById('qvModalBudget').textContent  = budget;
-        document.getElementById('qvModalStatus').textContent  = status;
-
-        const modalEl = document.getElementById('quickViewProposalModal');
-        if (modalEl && typeof bootstrap !== 'undefined') {
-            bootstrap.Modal.getOrCreateInstance(modalEl).show();
-        }
-    }
-
-    /* ── Export CSV ── */
-    function exportDashboardSummaryCSV() {
-        const rows = [
-            ["Executive Metric", "Value"],
-            ["Active Research Projects",     "<?= $stats['active_projects']   ?? 0 ?>"],
-            ["Total Research Funding (₱)",   "<?= number_format($stats['total_funding'] ?? 0, 2) ?>"],
-            ["Pending Proposal Approvals",    "<?= $stats['pending_proposals'] ?? 0 ?>"],
-            ["Registered Faculty Researchers","<?= $stats['total_faculty']     ?? 0 ?>"]
-        ];
-        const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-        const link = document.createElement("a");
-        link.setAttribute("href", encodeURI(csvContent));
-        link.setAttribute("download", `Executive_Research_Summary_${new Date().toISOString().slice(0,10)}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        showToast('Report Exported', 'Executive research summary downloaded to CSV.');
-    }
-
-    /* ── Toast ── */
-    function showToast(title, message) {
-        document.getElementById('toastTitle').textContent   = title;
-        document.getElementById('toastMessage').textContent = message;
-        const toast = document.getElementById('actionToast');
-        toast.classList.remove('d-none');
-        setTimeout(() => toast.classList.add('d-none'), 4000);
-    }
-    function hideToast() {
-        document.getElementById('actionToast').classList.add('d-none');
-    }
-
-    /* ── Chart.js: Area Chart (Funding Trend) ── */
-    document.addEventListener('DOMContentLoaded', function () {
-        const areaCtx = document.getElementById('myAreaChartCustom');
-        if (areaCtx && typeof Chart !== 'undefined') {
-            new Chart(areaCtx, {
+    <!-- Custom Dashboard Charts Initialization Script -->
+    <script>
+        // Custom Area Chart for Dashboard
+        var ctxArea = document.getElementById("myAreaChartCustom");
+        if (ctxArea) {
+            var myAreaChart = new Chart(ctxArea, {
                 type: 'line',
                 data: {
-                    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-                    datasets: [
-                        {
-                            label: 'Agriculture & Fisheries',
-                            data: [1.2,1.4,1.8,2.1,2.0,1.9,2.3,2.5,2.4,2.8,3.0,3.2],
-                            borderColor: '#800020',
-                            backgroundColor: 'rgba(128,0,32,0.10)',
-                            borderWidth: 2.5,
-                            tension: 0.4,
-                            fill: true,
-                            pointRadius: 3,
-                            pointHoverRadius: 6
-                        },
-                        {
-                            label: 'Engineering & ICT',
-                            data: [0.8,1.0,1.1,1.3,1.5,1.6,1.4,1.7,1.9,2.0,2.2,2.3],
-                            borderColor: '#0ea5e9',
-                            backgroundColor: 'rgba(14,165,233,0.08)',
-                            borderWidth: 2.5,
-                            tension: 0.4,
-                            fill: true,
-                            pointRadius: 3,
-                            pointHoverRadius: 6
-                        },
-                        {
-                            label: 'Health & Social Sciences',
-                            data: [1.0,1.1,1.3,1.5,1.6,1.7,1.9,2.0,2.1,2.3,2.4,2.6],
-                            borderColor: '#1abc9c',
-                            backgroundColor: 'rgba(26,188,156,0.08)',
-                            borderWidth: 2.5,
-                            tension: 0.4,
-                            fill: true,
-                            pointRadius: 3,
-                            pointHoverRadius: 6
-                        }
-                    ]
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+                    datasets: [{
+                        label: "Funding Allocated (₱ Millions)",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(128, 0, 32, 0.05)",
+                        borderColor: "#800020",
+                        pointRadius: 3,
+                        pointBackgroundColor: "#800020",
+                        pointBorderColor: "#800020",
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "#FFD700",
+                        pointHoverBorderColor: "#800020",
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2,
+                        data: [12.5, 15.0, 18.2, 22.0, 28.5, 34.0, 39.8, 44.2, 48.5],
+                    }],
                 },
                 options: {
-                    responsive: true,
                     maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { size: 12 }, usePointStyle: true } },
-                        tooltip: {
-                            callbacks: {
-                                label: ctx => ` ₱${ctx.parsed.y.toFixed(1)}M`
-                            }
-                        }
-                    },
+                    layout: { padding: { left: 10, right: 25, top: 25, bottom: 0 } },
                     scales: {
-                        x: { grid: { display: false } },
-                        y: {
-                            beginAtZero: true,
-                            ticks: { callback: v => '₱' + v + 'M' },
-                            grid: { color: 'rgba(0,0,0,0.04)' }
+                        xAxes: [{ gridLines: { display: false, drawBorder: false } }],
+                        yAxes: [{
+                            ticks: {
+                                maxTicksLimit: 5,
+                                padding: 10,
+                                callback: function (value) { return '₱' + value + 'M'; }
+                            },
+                            gridLines: { color: "rgb(234, 236, 244)", zeroLineColor: "rgb(234, 236, 244)", drawBorder: false }
+                        }],
+                    },
+                    legend: { display: false },
+                    tooltips: {
+                        backgroundColor: "#ffffff",
+                        bodyFontColor: "#858796",
+                        titleFontColor: '#800020',
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function (tooltipItem, chart) {
+                                return 'Total Funding: ₱' + tooltipItem.yLabel + ' Million';
+                            }
                         }
                     }
                 }
             });
         }
 
-        /* ── Chart.js: Doughnut Chart (Proposals Status) ── */
-        const pieCtx = document.getElementById('myPieChartCustom');
-        if (pieCtx && typeof Chart !== 'undefined') {
-            new Chart(pieCtx, {
+        // Custom Donut Chart for Proposals Breakdown
+        var ctxPie = document.getElementById("myPieChartCustom");
+        if (ctxPie) {
+            var myPieChart = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Approved', 'Under Review', 'Revision Needed'],
+                    labels: ["Approved", "Under Review", "Revision Requested"],
                     datasets: [{
-                        data: [<?= $approved ?>, <?= $underReview ?>, <?= $revision ?>],
-                        backgroundColor: ['#800020','#f6c23e','#e74a3b'],
-                        hoverBackgroundColor: ['#5c0017','#e0a800','#c0392b'],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
+                        data: [<?= (int)($approvedCount ?? 0) ?>, <?= (int)($underReviewCount ?? 0) ?>, <?= (int)($revisionCount ?? 0) ?>],
+                        backgroundColor: ['#800020', '#f6c23e', '#e74a3b'],
+                        hoverBackgroundColor: ['#5c0018', '#dfa824', '#be2617'],
+                        hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    }],
                 },
                 options: {
-                    responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: ctx => ` ${ctx.label}: ${ctx.parsed}`
-                            }
-                        }
-                    }
-                }
+                    tooltips: {
+                        backgroundColor: "#ffffff",
+                        bodyFontColor: "#858796",
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                    },
+                    legend: { display: false },
+                    cutoutPercentage: 75,
+                },
             });
         }
-    });
-</script>
 
-<?php include __DIR__ . '/sidebar_icons.php'; ?>
+        // Chevron rotation for collapse menu
+        $('#collapseTwo').on('show.bs.collapse', function () {
+            $(this).prev('a').find('.fa-chevron-down').css('transform', 'rotate(180deg)');
+        }).on('hide.bs.collapse', function () {
+            $(this).prev('a').find('.fa-chevron-down').css('transform', 'rotate(0deg)');
+        });
+    </script>

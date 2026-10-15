@@ -10,7 +10,13 @@
         "icon": "bi-journal-bookmark-fill",
         "items": [
             {
-                "label": "Research Managementsssss",
+                "label": "DASHBOARD",
+                "icon": "bi-file-earmark-check",
+                "route": "irimkms/index",
+                "permission": "irimkms.view"
+            },
+            {
+                "label": "Research Managementsssssgit",
                 "icon": "bi-journal-text",
                 "permission": "irimkms.view",
                 "children": [

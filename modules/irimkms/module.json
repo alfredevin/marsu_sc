@@ -21,7 +21,7 @@
                         "permission": "irimkms.view"
                     },
                     {
-                        "label": "Research Profiles",
+                        "label": "Researcher Profile",
                         "icon": "bi-person-badge",
                         "route": "irimkms/researchprofiles",
                         "permission": "irimkms.view"

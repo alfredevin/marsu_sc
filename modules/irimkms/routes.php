@@ -8,7 +8,6 @@ use Modules\Irimkms\Controllers\HomeController;
 
 // Module Dashboard & Records
 $router->get('/irimkms', [HomeController::class, 'index'], ['auth', 'permission:irimkms.view']);
-$router->get('/irimkms/dashboard', [HomeController::class, 'index'], ['auth', 'permission:irimkms.view']);
 $router->get('/irimkms/completionreporting', [HomeController::class,'completionreporting'], ['auth', 'permission:irimkms.view']);
 $router->get('/irimkms/evaluationforms', [HomeController::class, 'evaluationforms'], ['auth', 'permission:irimkms.view']);
 $router->get('/irimkms/filemanagement', [HomeController::class, 'filemanagement'], ['auth', 'permission:irimkms.view']);

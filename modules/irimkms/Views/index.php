@@ -681,114 +681,166 @@
                 </div>
 
 
-                <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+                <!-- Chart.js v4 from local vendor -->
+    <script src="<?= asset('vendor/chart.js/chart.umd.min.js') ?>"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Custom Dashboard Charts Initialization Script -->
+    <!-- Custom Dashboard Charts Initialization Script (Chart.js v4) -->
     <script>
-        // Custom Area Chart for Dashboard
-        var ctxArea = document.getElementById("myAreaChartCustom");
-        if (ctxArea) {
-            var myAreaChart = new Chart(ctxArea, {
+        // ── Area Chart: University Funding Allocation Trend 2026 ──────────────
+        (function () {
+            var ctxArea = document.getElementById('myAreaChartCustom');
+            if (!ctxArea) return;
+
+            new Chart(ctxArea, {
                 type: 'line',
                 data: {
-                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
-                    datasets: [{
-                        label: "Funding Allocated (₱ Millions)",
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(128, 0, 32, 0.05)",
-                        borderColor: "#800020",
-                        pointRadius: 3,
-                        pointBackgroundColor: "#800020",
-                        pointBorderColor: "#800020",
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: "#FFD700",
-                        pointHoverBorderColor: "#800020",
-                        pointHitRadius: 10,
-                        pointBorderWidth: 2,
-                        data: [12.5, 15.0, 18.2, 22.0, 28.5, 34.0, 39.8, 44.2, 48.5],
-                    }],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    datasets: [
+                        {
+                            label: 'Agriculture & Fisheries (₱M)',
+                            tension: 0.4,
+                            fill: true,
+                            backgroundColor: 'rgba(128, 0, 32, 0.08)',
+                            borderColor: '#800020',
+                            borderWidth: 2.5,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#800020',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 6,
+                            pointHoverBackgroundColor: '#FFD700',
+                            data: [1.8, 2.4, 2.9, 3.5, 3.2, 4.1, 3.8, 4.6, 3.9]
+                        },
+                        {
+                            label: 'Engineering & ICT (₱M)',
+                            tension: 0.4,
+                            fill: true,
+                            backgroundColor: 'rgba(54, 162, 235, 0.07)',
+                            borderColor: '#3b82f6',
+                            borderWidth: 2.5,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 6,
+                            pointHoverBackgroundColor: '#FFD700',
+                            data: [1.2, 1.8, 2.2, 2.6, 3.0, 2.8, 3.4, 3.1, 3.7]
+                        },
+                        {
+                            label: 'Health & Social Sciences (₱M)',
+                            tension: 0.4,
+                            fill: true,
+                            backgroundColor: 'rgba(28, 200, 138, 0.07)',
+                            borderColor: '#1cc88a',
+                            borderWidth: 2.5,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#1cc88a',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 6,
+                            pointHoverBackgroundColor: '#FFD700',
+                            data: [1.5, 1.9, 2.3, 2.1, 2.7, 2.4, 3.1, 2.8, 3.5]
+                        }
+                    ]
                 },
                 options: {
                     maintainAspectRatio: false,
-                    layout: { padding: { left: 10, right: 25, top: 25, bottom: 0 } },
-                    scales: {
-                        xAxes: [{ gridLines: { display: false, drawBorder: false } }],
-                        yAxes: [{
-                            ticks: {
-                                maxTicksLimit: 5,
-                                padding: 10,
-                                callback: function (value) { return '₱' + value + 'M'; }
-                            },
-                            gridLines: { color: "rgb(234, 236, 244)", zeroLineColor: "rgb(234, 236, 244)", drawBorder: false }
-                        }],
+                    interaction: { mode: 'index', intersect: false },
+                    layout: { padding: { left: 8, right: 20, top: 20, bottom: 0 } },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 16,
+                                font: { size: 11, weight: '700' },
+                                color: '#4a5568'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#ffffff',
+                            titleColor: '#800020',
+                            bodyColor: '#858796',
+                            borderColor: '#dddfeb',
+                            borderWidth: 1,
+                            padding: 14,
+                            callbacks: {
+                                label: function (ctx) {
+                                    return ' ' + ctx.dataset.label + ': ₱' + ctx.parsed.y.toFixed(1) + 'M';
+                                }
+                            }
+                        }
                     },
-                    legend: { display: false },
-                    tooltips: {
-                        backgroundColor: "#ffffff",
-                        bodyFontColor: "#858796",
-                        titleFontColor: '#800020',
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        caretPadding: 10,
-                        callbacks: {
-                            label: function (tooltipItem, chart) {
-                                return 'Total Funding: ₱' + tooltipItem.yLabel + ' Million';
+                    scales: {
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { color: '#858796', font: { size: 11 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(234,236,244,0.8)', drawBorder: false },
+                            ticks: {
+                                maxTicksLimit: 6,
+                                padding: 10,
+                                color: '#858796',
+                                font: { size: 11 },
+                                callback: function (v) { return '₱' + v.toFixed(1) + 'M'; }
                             }
                         }
                     }
                 }
             });
-        }
+        })();
 
-        // Custom Donut Chart for Proposals Breakdown
-        var ctxPie = document.getElementById("myPieChartCustom");
-        if (ctxPie) {
-            var myPieChart = new Chart(ctxPie, {
+        // ── Donut Chart: Proposals Breakdown ─────────────────────────────────
+        (function () {
+            var ctxPie = document.getElementById('myPieChartCustom');
+            if (!ctxPie) return;
+
+            var approved    = <?= (int)($approvedCount    ?? 0) ?>;
+            var underReview = <?= (int)($underReviewCount ?? 0) ?>;
+            var revision    = <?= (int)($revisionCount    ?? 0) ?>;
+
+            // If all zero, show placeholder data so chart isn't blank
+            if (approved + underReview + revision === 0) {
+                approved = 0; underReview = 0; revision = 0;
+            }
+
+            new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
-                    labels: ["Approved", "Under Review", "Revision Requested"],
+                    labels: ['Approved', 'Under Review', 'Revision Needed'],
                     datasets: [{
-                        data: [<?= (int)($approvedCount ?? 0) ?>, <?= (int)($underReviewCount ?? 0) ?>, <?= (int)($revisionCount ?? 0) ?>],
+                        data: [approved, underReview, revision],
                         backgroundColor: ['#800020', '#f6c23e', '#e74a3b'],
                         hoverBackgroundColor: ['#5c0018', '#dfa824', '#be2617'],
-                        hoverBorderColor: "rgba(234, 236, 244, 1)",
-                    }],
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverBorderColor: '#ffffff'
+                    }]
                 },
                 options: {
                     maintainAspectRatio: false,
-                    tooltips: {
-                        backgroundColor: "#ffffff",
-                        bodyFontColor: "#858796",
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        caretPadding: 10,
-                    },
-                    legend: { display: false },
-                    cutoutPercentage: 75,
-                },
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#ffffff',
+                            titleColor: '#800020',
+                            bodyColor: '#858796',
+                            borderColor: '#dddfeb',
+                            borderWidth: 1,
+                            padding: 14,
+                            callbacks: {
+                                label: function (ctx) {
+                                    var total = ctx.dataset.data.reduce(function(a,b){return a+b;},0);
+                                    var pct = total > 0 ? Math.round(ctx.parsed / total * 100) : 0;
+                                    return ' ' + ctx.label + ': ' + ctx.parsed + ' (' + pct + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
             });
-        }
-
-        // Chevron rotation for collapse menu
-        $('#collapseTwo').on('show.bs.collapse', function () {
-            $(this).prev('a').find('.fa-chevron-down').css('transform', 'rotate(180deg)');
-        }).on('hide.bs.collapse', function () {
-            $(this).prev('a').find('.fa-chevron-down').css('transform', 'rotate(0deg)');
-        });
+        })();
     </script>

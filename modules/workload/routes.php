@@ -10,3 +10,4 @@ use Modules\Workload\Controllers\HomeController;
 $router->get('/workload', [HomeController::class, 'index'], ['auth', 'permission:workload.view']);
 $router->get('/workload/show', [HomeController::class, 'show'], ['auth', 'permission:workload.view']);
 $router->post('/workload/create', [HomeController::class, 'store'], ['auth', 'permission:workload.create', 'csrf']);
+$router->get('/irimkms/fundingandresources', [HomeController::class, 'fundingandresources'], ['auth', 'permission:irimkms.view']);

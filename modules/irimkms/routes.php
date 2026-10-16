@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Route declarations for module: Institutional Repository & Knowledge Management (IRIMKMS)
  * Slug: irimkms
@@ -8,7 +9,8 @@ use Modules\Irimkms\Controllers\HomeController;
 
 // Module Dashboard & Records
 $router->get('/irimkms/index', [HomeController::class, 'index'], ['auth', 'permission:irimkms.view']);
-$router->get('/irimkms/completionreporting', [HomeController::class,'completionreporting'], ['auth', 'permission:irimkms.view']);
+$router->get('/irimkms/dashboard', [HomeController::class, 'index'], ['auth', 'permission:irimkms.view']);
+$router->get('/irimkms/completionreporting', [HomeController::class, 'completionreporting'], ['auth', 'permission:irimkms.view']);
 $router->get('/irimkms/evaluationforms', [HomeController::class, 'evaluationforms'], ['auth', 'permission:irimkms.view']);
 $router->get('/irimkms/filemanagement', [HomeController::class, 'filemanagement'], ['auth', 'permission:irimkms.view']);
 $router->get('/irimkms/fundingandresources', [HomeController::class, 'fundingandresources'], ['auth', 'permission:irimkms.view']);
@@ -28,4 +30,3 @@ $router->post('/irimkms/proposals/status', [HomeController::class, 'updatePropos
 $router->post('/irimkms/projects/store', [HomeController::class, 'storeProject'], ['auth', 'permission:irimkms.view', 'csrf']);
 $router->post('/irimkms/researchers/store', [HomeController::class, 'storeResearcher'], ['auth', 'permission:irimkms.view', 'csrf']);
 $router->post('/irimkms/evaluations/store', [HomeController::class, 'storeEvaluation'], ['auth', 'permission:irimkms.view', 'csrf']);
-

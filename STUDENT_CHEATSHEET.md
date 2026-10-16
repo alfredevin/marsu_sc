@@ -31,7 +31,7 @@ Bago ka makapag-commit o makapag-push, kailangan malaman ni Git kung sino ka (Pa
 git config --global user.name "Juan Dela Cruz"
 git config --global user.email "juandelacruz@gmail.com"
 ```
-*(Tip: Gamitin ang email na naka-link sa iyong GitHub account para ma-credit sa GitHub profile mo ang commits mo).*
+*(Tip: Gamitin ang email na naka-link sa iyong GitHub account para ma-credit sa sGitHub profile mo ang commits mo).*
 
 ---
 
@@ -63,6 +63,7 @@ git config --global user.email "juandelacruz@gmail.com"
    /c/xampp/php/php.exe scripts/migrate.php
    /c/xampp/php/php.exe scripts/seed.php
    ```
+   
    *(Note: Awtomatikong ipapasok ng `seed.php` ang 866 MarSU student records, faculty, at subjects. Kung sakaling nag-seed ka na dati at 0 pa rin ang students, i-run lang ang `/c/xampp/php/php.exe scripts/import_real_data.php`).*
    *(Tip: Kung `php: command not found` kapag nag-type ka ng `php`, gamitin ang buong path `/c/xampp/php/php.exe` tulad ng nasa itaas. O kaya i-run muna ang `export PATH=$PATH:/c/xampp/php` sa Git Bash para gumana ang shortcut na `php`).*
 
@@ -303,3 +304,8 @@ Once your group's initial UI design is approved by the Lead, you can start conne
 2. **Testing Your Group Account**:
    - Each group lead has a dedicated account (e.g., `group4_lead`, `group7_lead`, password: `Password123!`).
    - When you log in with your group lead account, your sidebar will **only** display your assigned module!
+
+3. **Step-by-Step Backend Guide**:
+   - Para sa detalyadong code at copy-paste examples sa pag-save at pag-fetch ng data, basahin ang:  
+     👉 **[`STUDENT_CRUD_CHEATSHEET.md`](STUDENT_CRUD_CHEATSHEET.md)**
+

@@ -143,12 +143,6 @@
                         "icon": "bi-records",
                         "route": "teaching_uti",
                         "permission": "workload.view"
-                    },
-                    {
-                        "label": "Reports",
-                        "icon": "bi-card-checklist",
-                        "route": "reports",
-                        "permission": "workload.view"
                     }
                 ]
             }

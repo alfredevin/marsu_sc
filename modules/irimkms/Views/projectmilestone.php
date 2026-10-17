@@ -249,20 +249,6 @@
         </div>
     </div>
 
-    <!-- Quick Portal Nav Pills -->
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="<?= url('/irimkms/proposalsandapprovals') ?>" class="main-nav-pill"><i class="bi bi-file-earmark-check text-maroon me-1"></i> Proposals & Approvals</a>
-        <a href="<?= url('/irimkms/researchprojects') ?>" class="main-nav-pill"><i class="bi bi-journal-code text-maroon me-1"></i> Research Projects</a>
-        <a href="<?= url('/irimkms/projectmilestone') ?>" class="main-nav-pill active"><i class="bi bi-flag text-white me-1"></i> Milestones</a>
-        <a href="<?= url('/irimkms/implementationprogress') ?>" class="main-nav-pill"><i class="bi bi-hourglass-split text-maroon me-1"></i> Implementation Progress</a>
-        <a href="<?= url('/irimkms/fundingandresources') ?>" class="main-nav-pill"><i class="bi bi-cash-coin text-maroon me-1"></i> Grants & Funding</a>
-        <a href="<?= url('/irimkms/knowledgemanagement') ?>" class="main-nav-pill"><i class="bi bi-book-half text-maroon me-1"></i> Publications</a>
-        <a href="<?= url('/irimkms/searchableresearch') ?>" class="main-nav-pill"><i class="bi bi-search text-maroon me-1"></i> Discovery Engine</a>
-        <a href="<?= url('/irimkms/evaluationforms') ?>" class="main-nav-pill"><i class="bi bi-clipboard-data text-maroon me-1"></i> Evaluation Tools</a>
-        <a href="<?= url('/irimkms/completionreporting') ?>" class="main-nav-pill"><i class="bi bi-award text-maroon me-1"></i> Completion Reports</a>
-        <a href="<?= url('/irimkms/performanceindicators') ?>" class="main-nav-pill"><i class="bi bi-graph-up-arrow text-maroon me-1"></i> Performance Analytics</a>
-    </div>
-
     <!-- Top Metric Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-3">
@@ -351,12 +337,12 @@
                                 <option value="all" selected>All Research Projects</option>
                                 <?php if (!empty($projects)): ?>
                                     <?php foreach ($projects as $pj): ?>
-                                        <option value="<?= e($pj['project_code']) ?>"><?= e($pj['project_code']) ?> (<?= e(mb_strimwidth($pj['title'], 0, 25, '...')) ?>)</option>
+                                        <option value="<?= e($pj['project_code']) ?>"><?= e($pj['title']) ?></option>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    <option value="PRJ-2026-001">PRJ-2026-001 (AI Water Quality)</option>
-                                    <option value="PRJ-2024-112">PRJ-2024-112 (Solar Cell)</option>
-                                    <option value="PRJ-2025-084">PRJ-2025-084 (Pest Drone)</option>
+                                    <option value="PRJ-2026-001">Artificial Intelligence-Driven Water Quality Monitoring System</option>
+                                    <option value="PRJ-2024-112">Nanomaterial Enhanced Solar Cells</option>
+                                    <option value="PRJ-2025-084">Smart Agricultural Drone Detection</option>
                                 <?php endif; ?>
                             </select>
                         </div>
@@ -387,7 +373,6 @@
                 <div class="card project-milestone-card shadow mb-4 milestone-project-card" data-project="<?= $code ?>">
                     <div class="card-header py-3 bg-light d-flex flex-wrap justify-content-between align-items-center">
                         <div>
-                            <span class="badge bg-maroon text-white font-weight-bold me-2"><?= $code ?></span>
                             <strong class="text-dark h6 font-weight-bold mb-0"><?= $title ?></strong>
                             <small class="text-muted d-block mt-1">
                                 <i class="fas fa-user-circle text-maroon me-1"></i> Lead PI: <strong><?= $pi ?></strong> (<?= $college ?>)
@@ -407,7 +392,7 @@
                     <div class="card-body p-0">
                         <!-- ITEM 1: Q1 -->
                         <div class="milestone-item-row milestone-row" data-status="<?= $pct >= 25 ? 'completed' : 'progress' ?>"
-                             data-search="<?= strtolower($code . ' Q1 Milestone 1.1 Architecture Design Component Selection ' . $pi . ' ' . $college) ?>">
+                             data-search="<?= strtolower($code . ' Q1 Milestone 1.1 Architecture Design Component Selection ' . $pi . ' ' . $college . ' ' . $title) ?>">
                             <div class="d-flex align-items-center">
                                 <div class="milestone-icon-box <?= $pct >= 25 ? 'completed' : 'progress' ?>">
                                     <i class="fas <?= $pct >= 25 ? 'fa-check' : 'fa-sync-alt' ?>"></i>
@@ -422,12 +407,12 @@
                                 <?php if ($pct >= 25): ?>
                                     <span class="badge bg-success text-white py-1 px-3 mb-1 d-block"><i class="fas fa-check-circle me-1"></i> Verified Deliverable</span>
                                     <button class="btn btn-sm btn-link text-maroon p-0 font-weight-bold small text-decoration-none"
-                                            onclick="openAuditModal('<?= $code ?>', 'Milestone 1.1: Architecture Specification', 'Component_Selection_Report.pdf')">
+                                            onclick="openAuditModal('<?= addslashes($title) ?>', 'Milestone 1.1: Architecture Specification', 'Component_Selection_Report.pdf')">
                                         View Evidence PDF
                                     </button>
                                 <?php else: ?>
                                     <span class="badge bg-warning text-dark py-1 px-3 mb-1 d-block font-weight-bold"><i class="fas fa-spinner fa-spin me-1"></i> In Progress</span>
-                                    <button class="btn btn-sm btn-gold" onclick="openSubmitDeliverableModal('<?= $code ?>', 'Milestone 1.1: Architecture Specification')">
+                                    <button class="btn btn-sm btn-gold" onclick="openSubmitDeliverableModal('<?= addslashes($title) ?>', 'Milestone 1.1: Architecture Specification')">
                                         Upload Deliverable
                                     </button>
                                 <?php endif; ?>
@@ -436,7 +421,7 @@
 
                         <!-- ITEM 2: Q2 -->
                         <div class="milestone-item-row milestone-row" data-status="<?= $pct >= 50 ? 'completed' : ($pct >= 25 ? 'progress' : 'pending') ?>"
-                             data-search="<?= strtolower($code . ' Q2 Milestone 1.2 Prototype Model Training Data ' . $pi . ' ' . $college) ?>">
+                             data-search="<?= strtolower($code . ' Q2 Milestone 1.2 Prototype Model Training Data ' . $pi . ' ' . $college . ' ' . $title) ?>">
                             <div class="d-flex align-items-center">
                                 <div class="milestone-icon-box <?= $pct >= 50 ? 'completed' : ($pct >= 25 ? 'progress' : 'pending') ?>">
                                     <i class="fas <?= $pct >= 50 ? 'fa-check' : ($pct >= 25 ? 'fa-sync-alt' : 'fa-calendar-alt') ?>"></i>
@@ -451,12 +436,12 @@
                                 <?php if ($pct >= 50): ?>
                                     <span class="badge bg-success text-white py-1 px-3 mb-1 d-block"><i class="fas fa-check-circle me-1"></i> Verified Deliverable</span>
                                     <button class="btn btn-sm btn-link text-maroon p-0 font-weight-bold small text-decoration-none"
-                                            onclick="openAuditModal('<?= $code ?>', 'Milestone 1.2: Prototype Validation', 'Prototype_Validation_Matrix.pdf')">
+                                            onclick="openAuditModal('<?= addslashes($title) ?>', 'Milestone 1.2: Prototype Validation', 'Prototype_Validation_Matrix.pdf')">
                                         View Evidence PDF
                                     </button>
                                 <?php elseif ($pct >= 25): ?>
                                     <span class="badge bg-warning text-dark py-1 px-3 mb-1 d-block font-weight-bold"><i class="fas fa-spinner me-1"></i> In Progress</span>
-                                    <button class="btn btn-sm btn-gold" onclick="openSubmitDeliverableModal('<?= $code ?>', 'Milestone 1.2: Prototype Validation')">
+                                    <button class="btn btn-sm btn-gold" onclick="openSubmitDeliverableModal('<?= addslashes($title) ?>', 'Milestone 1.2: Prototype Validation')">
                                         Upload Deliverable
                                     </button>
                                 <?php else: ?>
@@ -467,7 +452,7 @@
 
                         <!-- ITEM 3: Q3 -->
                         <div class="milestone-item-row milestone-row" data-status="<?= $pct >= 75 ? 'completed' : ($pct >= 50 ? 'overdue' : 'pending') ?>"
-                             data-search="<?= strtolower($code . ' Q3 Milestone 1.3 Field Testing Experimental Trials ' . $pi . ' ' . $college) ?>">
+                             data-search="<?= strtolower($code . ' Q3 Milestone 1.3 Field Testing Experimental Trials ' . $pi . ' ' . $college . ' ' . $title) ?>">
                             <div class="d-flex align-items-center">
                                 <div class="milestone-icon-box <?= $pct >= 75 ? 'completed' : ($pct >= 50 ? 'overdue' : 'pending') ?>">
                                     <i class="fas <?= $pct >= 75 ? 'fa-check' : ($pct >= 50 ? 'fa-exclamation' : 'fa-calendar-alt') ?>"></i>
@@ -486,12 +471,12 @@
                                 <?php if ($pct >= 75): ?>
                                     <span class="badge bg-success text-white py-1 px-3 mb-1 d-block"><i class="fas fa-check-circle me-1"></i> Verified Deliverable</span>
                                     <button class="btn btn-sm btn-link text-maroon p-0 font-weight-bold small text-decoration-none"
-                                            onclick="openAuditModal('<?= $code ?>', 'Milestone 1.3: Field Deployment', 'Field_Deployment_Report.pdf')">
+                                            onclick="openAuditModal('<?= addslashes($title) ?>', 'Milestone 1.3: Field Deployment', 'Field_Deployment_Report.pdf')">
                                         View Evidence PDF
                                     </button>
                                 <?php elseif ($pct >= 50): ?>
                                     <span class="badge bg-danger text-white py-1 px-3 mb-1 d-block font-weight-bold"><i class="fas fa-exclamation-triangle me-1"></i> Overdue Evidence</span>
-                                    <button class="btn btn-sm btn-danger" onclick="openSubmitDeliverableModal('<?= $code ?>', 'Milestone 1.3: Field Deployment')">
+                                    <button class="btn btn-sm btn-danger" onclick="openSubmitDeliverableModal('<?= addslashes($title) ?>', 'Milestone 1.3: Field Deployment')">
                                         Submit Now
                                     </button>
                                 <?php else: ?>
@@ -502,7 +487,7 @@
 
                         <!-- ITEM 4: Q4 -->
                         <div class="milestone-item-row milestone-row" data-status="<?= $pct >= 100 ? 'completed' : 'pending' ?>"
-                             data-search="<?= strtolower($code . ' Q4 Milestone 1.4 Dissemination Workshop Terminal Report ' . $pi . ' ' . $college) ?>">
+                             data-search="<?= strtolower($code . ' Q4 Milestone 1.4 Dissemination Workshop Terminal Report ' . $pi . ' ' . $college . ' ' . $title) ?>">
                             <div class="d-flex align-items-center">
                                 <div class="milestone-icon-box <?= $pct >= 100 ? 'completed' : 'pending' ?>">
                                     <i class="fas <?= $pct >= 100 ? 'fa-check' : 'fa-calendar-alt' ?>"></i>
@@ -517,7 +502,7 @@
                                 <?php if ($pct >= 100): ?>
                                     <span class="badge bg-success text-white py-1 px-3 mb-1 d-block"><i class="fas fa-check-circle me-1"></i> Verified Deliverable</span>
                                     <button class="btn btn-sm btn-link text-maroon p-0 font-weight-bold small text-decoration-none"
-                                            onclick="openAuditModal('<?= $code ?>', 'Milestone 1.4: Terminal Report', 'Terminal_Project_Report.pdf')">
+                                            onclick="openAuditModal('<?= addslashes($title) ?>', 'Milestone 1.4: Terminal Report', 'Terminal_Project_Report.pdf')">
                                         View Evidence PDF
                                     </button>
                                 <?php else: ?>
@@ -534,7 +519,6 @@
             <div class="card project-milestone-card shadow mb-4 milestone-project-card" data-project="PRJ-2026-001">
                 <div class="card-header py-3 bg-light d-flex flex-wrap justify-content-between align-items-center">
                     <div>
-                        <span class="badge bg-maroon text-white font-weight-bold me-2">PRJ-2026-001</span>
                         <strong class="text-dark h6 font-weight-bold mb-0">Artificial Intelligence-Driven Water Quality Monitoring System</strong>
                         <small class="text-muted d-block mt-1"><i class="fas fa-user-circle text-maroon me-1"></i> Lead PI: <strong>Mhica Bianca Rodelas</strong> (CIT)</small>
                     </div>
@@ -549,7 +533,7 @@
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <div class="milestone-item-row milestone-row" data-status="completed" data-search="prj-2026-001 system architecture sensor node component selection">
+                    <div class="milestone-item-row milestone-row" data-status="completed" data-search="system architecture sensor node component selection">
                         <div class="d-flex align-items-center">
                             <div class="milestone-icon-box completed"><i class="fas fa-check"></i></div>
                             <div>
@@ -560,7 +544,7 @@
                         </div>
                         <div class="text-end">
                             <span class="badge bg-success text-white py-1 px-3 mb-1 d-block"><i class="fas fa-check-circle me-1"></i> Verified Deliverable</span>
-                            <button class="btn btn-sm btn-link text-maroon p-0 font-weight-bold small text-decoration-none" onclick="openAuditModal('PRJ-2026-001', 'Milestone 1.1', 'Hardware_Selection_Report.pdf')">View Evidence PDF</button>
+                            <button class="btn btn-sm btn-link text-maroon p-0 font-weight-bold small text-decoration-none" onclick="openAuditModal('Artificial Intelligence-Driven Water Quality Monitoring System', 'Milestone 1.1', 'Hardware_Selection_Report.pdf')">View Evidence PDF</button>
                         </div>
                     </div>
                 </div>
@@ -607,8 +591,8 @@
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label font-weight-bold text-dark">Research Project Code <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="modalProjectCode" placeholder="e.g. PRJ-2026-001" required>
+                            <label class="form-label font-weight-bold text-dark">Research Project Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="modalProjectTitle" placeholder="e.g. Artificial Intelligence-Driven Water Quality Monitoring System" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label font-weight-bold text-dark">Milestone Quarter / Stage</label>
@@ -665,7 +649,6 @@
                     <span class="badge bg-success text-white px-3 py-1 font-weight-bold fs-6">
                         <i class="fas fa-check-circle me-1"></i> Verified & Approved
                     </span>
-                    <span class="badge bg-maroon text-white" id="auditModalCode">PRJ-2026-001</span>
                 </div>
 
                 <h6 class="font-weight-bold text-dark mb-1" id="auditModalMilestone">Milestone Title</h6>
@@ -779,9 +762,10 @@
         }
     }
 
-    function openSubmitDeliverableModal(projectCode, milestoneTitle) {
-        if (projectCode) {
-            document.getElementById('modalProjectCode').value = projectCode;
+    function openSubmitDeliverableModal(projectTitle, milestoneTitle) {
+        if (projectTitle) {
+            const titleInput = document.getElementById('modalProjectTitle') || document.getElementById('modalProjectCode');
+            if (titleInput) titleInput.value = projectTitle;
         }
         if (milestoneTitle) {
             document.getElementById('modalDeliverableTitle').value = milestoneTitle;
@@ -796,19 +780,20 @@
 
     function handleDeliverableSubmit(event) {
         event.preventDefault();
-        const code = document.getElementById('modalProjectCode').value;
-        const title = document.getElementById('modalDeliverableTitle').value;
+        const title = (document.getElementById('modalProjectTitle') || document.getElementById('modalProjectCode')).value;
+        const deliverable = document.getElementById('modalDeliverableTitle').value;
 
         const modalEl = document.getElementById('submitDeliverableModal');
         const modalInstance = bootstrap.Modal.getInstance(modalEl);
         if (modalInstance) modalInstance.hide();
 
-        showToast('Deliverable Submitted', `Milestone evidence for ${code} (${title}) uploaded and submitted for M&E review!`);
+        showToast('Deliverable Submitted', `Milestone evidence for "${title}" (${deliverable}) uploaded and submitted for M&E review!`);
     }
 
     let currentEvidenceFile = 'Evidence_Document.pdf';
-    function openAuditModal(projectCode, milestoneTitle, fileName) {
-        document.getElementById('auditModalCode').textContent = projectCode;
+    function openAuditModal(projectTitle, milestoneTitle, fileName) {
+        const codeEl = document.getElementById('auditModalCode');
+        if (codeEl) codeEl.textContent = '';
         document.getElementById('auditModalMilestone').textContent = milestoneTitle;
         currentEvidenceFile = fileName || 'Evidence_Document.pdf';
         document.getElementById('auditModalFileName').textContent = currentEvidenceFile;
@@ -835,7 +820,7 @@
     }
 
     function exportMilestoneReportCSV() {
-        const rows = [["Project Code", "Milestone Deliverable", "Target Deadline / Verified Date", "Status"]];
+        const rows = [["Milestone Deliverable", "Target Deadline / Verified Date", "Status"]];
 
         document.querySelectorAll('.milestone-row').forEach(row => {
             if (row.style.display !== 'none') {
@@ -846,7 +831,7 @@
                 const badgeEl = row.querySelector('.badge');
                 const statusText = badgeEl ? badgeEl.innerText.trim() : '';
 
-                rows.push([`"PRJ-MILESTONE"`, `"${titleText}"`, `"${smallText}"`, `"${statusText}"`]);
+                rows.push([`"${titleText}"`, `"${smallText}"`, `"${statusText}"`]);
             }
         });
 

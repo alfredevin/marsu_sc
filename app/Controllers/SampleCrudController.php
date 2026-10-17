@@ -31,11 +31,15 @@ class SampleCrudController
         Database::insert('sample_items', [
             'title'      => $title,
             'category'   => $category,
+            'location'   => $location,
+
+        // Database::insert() helper
             'location'  => $location,
         Database::insert('sample_items', [
             'title' => $title,
             'category' => $category,
             'location' => $location,
+
             'created_at' => date('Y-m-d H:i:s')
         ]);
 

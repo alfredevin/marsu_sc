@@ -2,7 +2,8 @@
 
     <!-- Custom CSS Safeguards & Theme Tokens -->
     <style>
-        #moduleDashboardRoot, #moduleDashboardRoot * {
+        #moduleDashboardRoot,
+        #moduleDashboardRoot * {
             box-sizing: border-box;
         }
 
@@ -18,9 +19,15 @@
             --gold-light: #fffdf0;
         }
 
-        .text-maroon { color: var(--maroon-main) !important; }
-        .bg-maroon { background-color: var(--maroon-main) !important; color: #fff !important; }
-        
+        .text-maroon {
+            color: var(--maroon-main) !important;
+        }
+
+        .bg-maroon {
+            background-color: var(--maroon-main) !important;
+            color: #fff !important;
+        }
+
         .btn-maroon {
             background-color: var(--maroon-main);
             border-color: var(--maroon-main);
@@ -28,7 +35,9 @@
             font-weight: 600;
             transition: all 0.2s ease-in-out;
         }
-        .btn-maroon:hover, .btn-maroon:focus {
+
+        .btn-maroon:hover,
+        .btn-maroon:focus {
             background-color: var(--maroon-dark);
             border-color: var(--maroon-dark);
             color: #fff;
@@ -42,7 +51,9 @@
             font-weight: 700;
             transition: all 0.2s ease;
         }
-        .btn-gold:hover, .btn-gold:focus {
+
+        .btn-gold:hover,
+        .btn-gold:focus {
             background-color: #c09e2e;
             border-color: #c09e2e;
             color: #111;
@@ -59,6 +70,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .page-hero::after {
             content: '';
             position: absolute;
@@ -66,7 +78,7 @@
             right: -10%;
             width: 320px;
             height: 320px;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.22) 0%, rgba(255,255,255,0) 70%);
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.22) 0%, rgba(255, 255, 255, 0) 70%);
             border-radius: 50%;
             pointer-events: none;
         }
@@ -108,18 +120,20 @@
             border-radius: 14px;
             border: 1px solid #e3e6f0;
             padding: 20px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
             transition: all 0.25s ease;
             height: 100%;
             cursor: pointer;
             position: relative;
             overflow: hidden;
         }
+
         .exec-stat-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 24px rgba(128, 0, 32, 0.12);
             border-color: rgba(128, 0, 32, 0.3);
         }
+
         .exec-stat-card::before {
             content: '';
             position: absolute;
@@ -129,9 +143,18 @@
             height: 100%;
             background: var(--maroon-main);
         }
-        .exec-stat-card.gold-card::before { background: var(--gold-accent); }
-        .exec-stat-card.warning-card::before { background: #f39c12; }
-        .exec-stat-card.info-card::before { background: #0ea5e9; }
+
+        .exec-stat-card.gold-card::before {
+            background: var(--gold-accent);
+        }
+
+        .exec-stat-card.warning-card::before {
+            background: #f39c12;
+        }
+
+        .exec-stat-card.info-card::before {
+            background: #0ea5e9;
+        }
 
         .stat-icon-box {
             width: 48px;
@@ -145,9 +168,21 @@
             color: var(--maroon-main);
             flex-shrink: 0;
         }
-        .gold-card .stat-icon-box { background: var(--gold-light); color: #b89315; }
-        .warning-card .stat-icon-box { background: #fff8ec; color: #d68910; }
-        .info-card .stat-icon-box { background: #e0f2fe; color: #0284c7; }
+
+        .gold-card .stat-icon-box {
+            background: var(--gold-light);
+            color: #b89315;
+        }
+
+        .warning-card .stat-icon-box {
+            background: #fff8ec;
+            color: #d68910;
+        }
+
+        .info-card .stat-icon-box {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
 
         /* Nav Pills Header */
         .main-nav-pill {
@@ -163,14 +198,16 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
             text-decoration: none;
         }
+
         .main-nav-pill:hover {
             background-color: var(--maroon-light);
             color: var(--maroon-main);
             border-color: rgba(128, 0, 32, 0.3);
         }
+
         .main-nav-pill.active {
             background: var(--maroon-main);
             color: #ffffff;
@@ -191,11 +228,13 @@
             height: 100%;
             position: relative;
         }
+
         .portal-nav-card:hover {
             transform: translateY(-4px);
             border-color: var(--maroon-main);
             box-shadow: 0 8px 20px rgba(128, 0, 32, 0.14);
         }
+
         .portal-nav-icon {
             width: 50px;
             height: 50px;
@@ -210,6 +249,7 @@
             flex-shrink: 0;
             transition: all 0.2s ease;
         }
+
         .portal-nav-card:hover .portal-nav-icon {
             background: var(--maroon-main);
             color: #ffffff;
@@ -228,11 +268,13 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
             overflow: hidden;
         }
+
         .dashboard-card-header {
             padding: 18px 22px;
             background: #f8f9fc;
             border-bottom: 1px solid #e3e6f0;
         }
+
         .dashboard-card-header h6 {
             margin: 0;
             font-weight: 700;
@@ -244,12 +286,14 @@
             position: relative;
             max-width: 380px;
         }
+
         .module-search-box input {
             padding-left: 40px;
             border-radius: 25px;
             border: 1px solid #cbd5e1;
             box-shadow: none !important;
         }
+
         .module-search-box i {
             position: absolute;
             left: 14px;
@@ -404,7 +448,7 @@
     <!-- TAB 1: QUICK MODULE ACCESS PORTAL GRID (CATEGORIZED & FILTERABLE)                    -->
     <!-- ==================================================================================== -->
     <div id="indexSectionHome" class="index-tab-view">
-        
+
         <!-- SECTION 1: RESEARCH MANAGEMENT -->
         <div class="category-group-wrapper mb-4" data-category="research-management">
             <div class="category-group-header d-flex align-items-center justify-content-between">
@@ -621,13 +665,13 @@
                                         <td><strong class="text-maroon">₱ <?= number_format($pr['budget_total'] ?? 350000, 2) ?></strong></td>
                                         <td>
                                             <?php
-                                                $st = $pr['status'] ?? 'Under Review';
-                                                $badgeBg = match($st) {
-                                                    'Approved' => 'bg-success text-white',
-                                                    'Under Review' => 'bg-warning text-dark',
-                                                    'Revision Needed' => 'bg-danger text-white',
-                                                    default => 'bg-secondary text-white'
-                                                };
+                                            $st = $pr['status'] ?? 'Under Review';
+                                            $badgeBg = match ($st) {
+                                                'Approved' => 'bg-success text-white',
+                                                'Under Review' => 'bg-warning text-dark',
+                                                'Revision Needed' => 'bg-danger text-white',
+                                                default => 'bg-secondary text-white'
+                                            };
                                             ?>
                                             <span class="badge <?= $badgeBg ?> px-2 py-1"><?= e($st) ?></span>
                                         </td>

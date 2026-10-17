@@ -5,7 +5,8 @@
             <i class="bi bi-code-square me-2 text-gold"></i>CRUD Demo &amp; Reference Guide
         </h1>
         <p class="text-muted small mb-0">
-            Halimbawa ng pinakasimpleng 2-field database operations: <strong>Insert</strong>, <strong>View</strong>, at <strong>Update</strong> gamit ang native PHP at <code>Core\Database</code>.
+            Halimbawa ng pinakasimpleng 2-field database operations: <strong>Insert</strong>, <strong>View</strong>, at
+            <strong>Update</strong> gamit ang native PHP at <code>Core\Database</code>.
         </p>
     </div>
     <div>
@@ -44,31 +45,40 @@
             </div>
             <div class="card-body p-4">
                 <p class="text-muted small mb-3">
-                    Punan ang 2 fields sa ibaba at i-click ang <strong>Save Item</strong> para ma-insert sa MySQL table (<code>sample_items</code>).
+                    Punan ang 2 fields sa ibaba at i-click ang <strong>Save Item</strong> para ma-insert sa MySQL table
+                    (<code>sample_items</code>).
                 </p>
-
-                <!-- FORM PARA SA INSERT -->
                 <form method="POST" action="<?= url('sample-crud/create') ?>">
-                    <!-- MANDATORY: CSRF Token protection -->
                     <?= csrf_field() ?>
-
-                    <!-- Field 1: Title -->
+                    <!-- Field 1 -->
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-dark">
                             Field 1: Item Title <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
                             <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
-                            <input type="text" name="title" class="form-control" placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                            <input type="text" name="title" class="form-control"
+                                placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 2: location <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="location" class="form-control" placeholder="Halimbawa: Library" required autocomplete="off">
                         </div>
                         <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
                     </div>
             
 
+
                     <!-- Field 2: Category -->
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-dark">
-                            Field 2: Category <span class="text-danger">*</span>
+                            Field 3: Category <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
                             <span class="input-group-text bg-light text-muted"><i class="bi bi-tag-fill"></i></span>
@@ -81,7 +91,19 @@
                                 <option value="Other">Other</option>
                             </select>
                         </div>
-                        <div class="form-text small text-muted">Kategorya o uri ng record.</div>
+                    </div>
+
+                    <!-- Field 3: Location -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 3: Item Location <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="location" class="form-control"
+                                placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
                     </div>
                       <!-- Field 3: Location -->
                     <div class="mb-3">
@@ -103,7 +125,8 @@
             </div>
             <div class="card-footer bg-light py-2 px-4 border-top">
                 <small class="text-muted font-monospace" style="font-size: 0.75rem;">
-                    <i class="bi bi-code-slash me-1"></i>Core Helper: <code>Database::insert('sample_items', [...])</code>
+                    <i class="bi bi-code-slash me-1"></i>Core Helper:
+                    <code>Database::insert('sample_items', [...])</code>
                 </small>
             </div>
         </div>
@@ -139,12 +162,19 @@
                                 </td>
                             </tr>
                         <?php else: ?>
+
                             <?php foreach ($items as $item): ?>
                                 <tr>
                                     <td class="ps-3 text-muted fw-bold">#<?= e($item['id']) ?></td>
+
                                     <td>
-                                        <strong class="text-marsu-burgundy fs-6"><?= e($item['title']) ?></strong>
+                                        <?= e($item['title']) ?>
                                     </td>
+
+                                    <td>
+                                        <?= e($item['location']) ?>
+                                    </td>
+
                                     <td>
                                        <?= e($item['location']) ?>
                                     </td>
@@ -156,18 +186,18 @@
                                     </td>
                                     <td class="text-end pe-3">
                                         <!-- UPDATE BUTTON (Opens Modal) -->
-                                        <button type="button"
-                                            class="btn btn-sm btn-outline-marsu me-1"
-                                            onclick='openEditModal(<?= json_encode($item) ?>)'
-                                            title="Edit / Update Item">
+                                        <button type="button" class="btn btn-sm btn-outline-marsu me-1"
+                                            onclick='openEditModal(<?= json_encode($item) ?>)' title="Edit / Update Item">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
 
                                         <!-- DELETE / ARCHIVE BUTTON -->
-                                        <form method="POST" action="<?= url('sample-crud/delete') ?>" class="d-inline" onsubmit="return confirm('Sigurado ka bang nais mong i-delete/i-archive ang item na ito?');">
+                                        <form method="POST" action="<?= url('sample-crud/delete') ?>" class="d-inline"
+                                            onsubmit="return confirm('Sigurado ka bang nais mong i-delete/i-archive ang item na ito?');">
                                             <?= csrf_field() ?>
                                             <input type="hidden" name="id" value="<?= $item['id'] ?>">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete / Archive Item">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                title="Delete / Archive Item">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
@@ -180,7 +210,8 @@
             </div>
             <div class="card-footer bg-light py-2 px-4 border-top">
                 <small class="text-muted font-monospace" style="font-size: 0.75rem;">
-                    <i class="bi bi-code-slash me-1"></i>Core Helper: <code>Database::fetchAll("SELECT * FROM sample_items ...")</code>
+                    <i class="bi bi-code-slash me-1"></i>Core Helper:
+                    <code>Database::fetchAll("SELECT * FROM sample_items ...")</code>
                 </small>
             </div>
         </div>
@@ -191,7 +222,8 @@
 <div class="card shadow-sm border-0 mt-4">
     <div class="card-header bg-marsu text-white py-3 d-flex align-items-center justify-content-between">
         <h6 class="mb-0 fw-bold">
-            <i class="bi bi-file-earmark-code-fill me-2 text-gold"></i>Student Cheatsheet: Paano Gumagana ang Bawat Function sa PHP
+            <i class="bi bi-file-earmark-code-fill me-2 text-gold"></i>Student Cheatsheet: Paano Gumagana ang Bawat
+            Function sa PHP
         </h6>
         <span class="badge bg-secondary bg-opacity-50 text-white">MarSU Native PHP Helper</span>
     </div>
@@ -209,7 +241,8 @@
     'created_at' => date('Y-m-d H:i:s')
 ]);</code></pre>
                     <p class="small text-muted mb-0">
-                        Automatic nang gumagamit ng <strong>prepared statements</strong> kaya protektado laban sa SQL injection.
+                        Automatic nang gumagamit ng <strong>prepared statements</strong> kaya protektado laban sa SQL
+                        injection.
                     </p>
                 </div>
             </div>
@@ -226,7 +259,8 @@
      ORDER BY id DESC"
 );</code></pre>
                     <p class="small text-muted mb-0">
-                        Ibinabalik ang array ng mga rows na pwede nating i-loop gamit ang <code>foreach</code> sa HTML table.
+                        Ibinabalik ang array ng mga rows na pwede nating i-loop gamit ang <code>foreach</code> sa HTML
+                        table.
                     </p>
                 </div>
             </div>
@@ -261,7 +295,8 @@
                 <h5 class="modal-title fs-6 fw-bold" id="editItemModalLabel">
                     <i class="bi bi-pencil-square me-2 text-gold"></i>3. UPDATE (I-edit ang Record)
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
             <!-- FORM PARA SA UPDATE -->
             <form method="POST" action="<?= url('sample-crud/update') ?>">

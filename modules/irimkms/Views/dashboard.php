@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Executive Dashboard View Alias
  * Delegates rendering to index.php

@@ -10,50 +10,73 @@
     "icon": "bi-award-fill",
     "items": [
       {
-        "label": "Organization",
-        "icon": "bi-people",
+      "label": "Student Organization Management",
+      "icon": "bi-people-fill",
         "permission": "orgleadership.view",
         "children": [
-          {
-            "label": "Directory & Profile",
-            "icon": "bi-person-circle",
-            "route": "retention/profile",
-            "permission": "orgleadership.view"
-          },
-          {
-            "label": "Accreditation & Status",
-            "icon": "bi-person-circle",
-            "route": "retention/profile",
-            "permission": "orgleadership.view"
-          },
-          {
-            "label": "Membership Records",
-            "icon": "bi-person-circle",
-            "route": "retention/profile",
-            "permission": "orgleadership.view"
-          }
-        ]
-      },
-      {
-        "label": "Academic Monitoring",
-        "icon": "bi-journal-bookmark",
-        "permission": "orgleadership.view",
-        "children": [
-          {
-            "label": "Grades Tracking (Class Record)",
-            "icon": "bi-pencil-square",
-            "route": "retention/gradestracking",
-            "permission": "orgleadership.view"
-          },
-          {
-            "label": "Subject Performance",
-            "icon": "bi-bar-chart-line",
-            "route": "retention/subjectperformance",
-            "permission": "orgleadership.view"
-          }
-        ]
-      }
-    ]
+        {"label": "Organization Profile Management", "icon": "bi-building", "route": "orgleadership/organization-profile", "permission": "orgleadership.view"},
+        {"label": "Membership Records", "icon": "bi-person-lines-fill", "route": "orgleadership/membership-records", "permission": "orgleadership.view"}
+      ]
+    },
+    {
+      "label": "Leadership Management",
+      "icon": "bi-person-badge-fill",
+      "permission": "orgleadership.view",
+      "children": [
+        {"label": "Officer Profiles", "icon": "bi-person-vcard", "route": "orgleadership/officer-profiles", "permission": "orgleadership.view"},
+        {"label": "Leadership Positions", "icon": "bi-award", "route": "orgleadership/leadership-positions", "permission": "orgleadership.view"},
+        {"label": "Term Management", "icon": "bi-calendar-range", "route": "orgleadership/term-management", "permission": "orgleadership.view"},
+        {"label": "Leadership History Records", "icon": "bi-clock-history", "route": "orgleadership/leadership-history", "permission": "orgleadership.view"},
+        {"label": "Training and Development Tracking", "icon": "bi-mortarboard", "route": "orgleadership/training-development", "permission": "orgleadership.view"}
+      ]
+    },
+    {
+      "label": "Student Activities Management",
+      "icon": "bi-calendar-event-fill",
+      "permission": "orgleadership.view",
+      "children": [
+        {"label": "Activity Proposal Submission", "icon": "bi-file-earmark-plus", "route": "orgleadership/activity-proposals", "permission": "orgleadership.view"},
+        {"label": "Event Approval Workflow", "icon": "bi-check2-square", "route": "orgleadership/event-approvals", "permission": "orgleadership.view"},
+        {"label": "Activity Calendar", "icon": "bi-calendar3", "route": "orgleadership/activity-calendar", "permission": "orgleadership.view"},
+        {"label": "Venue and Schedule Management", "icon": "bi-geo-alt", "route": "orgleadership/venue-schedules", "permission": "orgleadership.view"},
+        {"label": "Event Documentation", "icon": "bi-file-earmark-text", "route": "orgleadership/event-documentation", "permission": "orgleadership.view"}
+      ]
+    },
+    {
+      "label": "Student Engagement Monitoring",
+      "icon": "bi-bar-chart-line-fill",
+      "permission": "orgleadership.view",
+      "children": [
+        {"label": "Attendance Monitoring", "icon": "bi-person-check", "route": "orgleadership/attendance-monitoring", "permission": "orgleadership.view"},
+        {"label": "Participation Tracking", "icon": "bi-graph-up", "route": "orgleadership/participation-tracking", "permission": "orgleadership.view"},
+        {"label": "Student Involvement History", "icon": "bi-list-check", "route": "orgleadership/involvement-history", "permission": "orgleadership.view"},
+        {"label": "Engagement Points and Credits", "icon": "bi-star", "route": "orgleadership/engagement-points", "permission": "orgleadership.view"},
+        {"label": "Recognition Records", "icon": "bi-trophy", "route": "orgleadership/recognition-records", "permission": "orgleadership.view"}
+      ]
+    },
+    {
+      "label": "Communication and Notification",
+      "icon": "bi-megaphone-fill",
+      "permission": "orgleadership.view",
+      "children": [
+        {"label": "Announcements", "icon": "bi-megaphone", "route": "orgleadership/announcements", "permission": "orgleadership.view"},
+        {"label": "Organization Updates", "icon": "bi-arrow-repeat", "route": "orgleadership/organization-updates", "permission": "orgleadership.view"},
+        {"label": "Activity Reminders", "icon": "bi-bell", "route": "orgleadership/activity-reminders", "permission": "orgleadership.view"},
+        {"label": "Approval Notifications", "icon": "bi-bell-fill", "route": "orgleadership/approval-notifications", "permission": "orgleadership.view"}
+      ]
+    },
+    {
+      "label": "Reports and Analytics",
+      "icon": "bi-clipboard-data-fill",
+      "permission": "orgleadership.view",
+      "children": [
+        {"label": "Organization Performance Reports", "icon": "bi-building-check", "route": "orgleadership/organization-performance", "permission": "orgleadership.view"},
+        {"label": "Student Participation Statistics", "icon": "bi-pie-chart", "route": "orgleadership/participation-statistics", "permission": "orgleadership.view"},
+        {"label": "Leadership Involvement Reports", "icon": "bi-person-up", "route": "orgleadership/leadership-reports", "permission": "orgleadership.view"},
+        {"label": "Activity Accomplishment Reports", "icon": "bi-file-bar-graph", "route": "orgleadership/activity-reports", "permission": "orgleadership.view"}
+      ]
+    }
+  ]
   },
   "permissions": {
     "orgleadership.view": "View Student Leaders Directory & Officers",

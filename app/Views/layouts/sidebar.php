@@ -1,9 +1,11 @@
 <?php
+
 use Core\ModuleLoader;
 use Core\Permission;
 
 if (!function_exists('isActive')) {
-    function isActive(?string $route, bool $exact = true): string {
+    function isActive(?string $route, bool $exact = true): string
+    {
         if ($route === null || trim($route) === '') {
             return '';
         }
@@ -57,17 +59,18 @@ $moduleNavGroups = ModuleLoader::getNavItems();
     <!-- Navigation Rail (Flex Scrolling inside 100vh Fixed Sidebar) -->
     <div class="sidebar-nav-scroll py-2">
         <!-- Dashboard -->
-        <ul class="nav flex-column mb-0">
-            <li class="nav-item <?= isActive('dashboard') ?>">
-                <a class="nav-link <?= isActive('dashboard') ?>" href="<?= url('dashboard') ?>">
-                    <i class="bi bi-speedometer2"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-        </ul>
+
 
         <!-- MASTER DATA SECTION -->
         <?php if (can('core.students.view') || can('core.employees.view') || can('core.departments.view') || can('core.subjects.view')): ?>
+            <ul class="nav flex-column mb-0">
+                <li class="nav-item <?= isActive('dashboard') ?>">
+                    <a class="nav-link <?= isActive('dashboard') ?>" href="<?= url('dashboard') ?>">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            </ul>
             <div class="sidebar-heading">Master Data</div>
             <ul class="nav flex-column mb-0">
                 <?php if (can('core.students.view')): ?>
@@ -151,10 +154,10 @@ $moduleNavGroups = ModuleLoader::getNavItems();
                 <?php foreach ($moduleNavGroups as $group): ?>
                     <?php if (!empty($group['items'])): ?>
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center justify-content-between" 
-                               href="#mod_<?= e($group['slug']) ?>" 
-                               data-bs-toggle="collapse" 
-                               aria-expanded="<?= isActive($group['slug'], false) ? 'true' : 'false' ?>">
+                            <a class="nav-link d-flex align-items-center justify-content-between"
+                                href="#mod_<?= e($group['slug']) ?>"
+                                data-bs-toggle="collapse"
+                                aria-expanded="<?= isActive($group['slug'], false) ? 'true' : 'false' ?>">
                                 <div>
                                     <i class="bi <?= e($group['icon']) ?>"></i>
                                     <span><?= e($group['title']) ?></span>
@@ -165,21 +168,21 @@ $moduleNavGroups = ModuleLoader::getNavItems();
                                 <ul class="sidebar-submenu">
                                     <?php foreach ($group['items'] as $subIdx => $subItem): ?>
                                         <?php if (!empty($subItem['children'])): ?>
-                                            <?php 
-                                                $childActive = false;
-                                                foreach ($subItem['children'] as $c) {
-                                                    if (!empty($c['route']) && isActive($c['route'], true) === 'active') {
-                                                        $childActive = true;
-                                                        break;
-                                                    }
+                                            <?php
+                                            $childActive = false;
+                                            foreach ($subItem['children'] as $c) {
+                                                if (!empty($c['route']) && isActive($c['route'], true) === 'active') {
+                                                    $childActive = true;
+                                                    break;
                                                 }
-                                                $subCollapseId = 'sub_' . e($group['slug']) . '_' . $subIdx;
+                                            }
+                                            $subCollapseId = 'sub_' . e($group['slug']) . '_' . $subIdx;
                                             ?>
                                             <li class="nav-item">
-                                                <a class="sidebar-category-toggle nav-link d-flex align-items-center justify-content-between <?= $childActive ? 'category-active' : '' ?>" 
-                                                   href="#<?= $subCollapseId ?>" 
-                                                   data-bs-toggle="collapse" 
-                                                   aria-expanded="<?= $childActive ? 'true' : 'false' ?>">
+                                                <a class="sidebar-category-toggle nav-link d-flex align-items-center justify-content-between <?= $childActive ? 'category-active' : '' ?>"
+                                                    href="#<?= $subCollapseId ?>"
+                                                    data-bs-toggle="collapse"
+                                                    aria-expanded="<?= $childActive ? 'true' : 'false' ?>">
                                                     <span class="d-flex align-items-center">
                                                         <?php if (!empty($subItem['icon'])): ?>
                                                             <i class="bi <?= e($subItem['icon']) ?> me-2"></i>
@@ -192,8 +195,8 @@ $moduleNavGroups = ModuleLoader::getNavItems();
                                                     <ul class="sidebar-nested-submenu">
                                                         <?php foreach ($subItem['children'] as $child): ?>
                                                             <li>
-                                                                <a class="nav-link <?= !empty($child['route']) ? isActive($child['route'], true) : '' ?>" 
-                                                                   href="<?= url($child['route'] ?? '') ?>">
+                                                                <a class="nav-link <?= !empty($child['route']) ? isActive($child['route'], true) : '' ?>"
+                                                                    href="<?= url($child['route'] ?? '') ?>">
                                                                     <i class="bi bi-dash me-1 opacity-50"></i>
                                                                     <?= e($child['label']) ?>
                                                                 </a>

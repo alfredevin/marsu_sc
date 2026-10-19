@@ -48,13 +48,9 @@
                     Punan ang 2 fields sa ibaba at i-click ang <strong>Save Item</strong> para ma-insert sa MySQL table
                     (<code>sample_items</code>).
                 </p>
-
-                <!-- FORM PARA SA INSERT -->
                 <form method="POST" action="<?= url('sample-crud/create') ?>">
-                    <!-- MANDATORY: CSRF Token protection -->
                     <?= csrf_field() ?>
-
-                    <!-- Field 1: Title -->
+                    <!-- Field 1 -->
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-dark">
                             Field 1: Item Title <span class="text-danger">*</span>
@@ -66,11 +62,36 @@
                         </div>
                         <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 2: location <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="location" class="form-control" placeholder="Halimbawa: Library" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
+                    </div>
+            
 
-                    <!-- Field 2: Category -->
+
+                    <!-- Field 2: Location -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 1: location <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="location" class="form-control"
+                                placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
+                    </div>
+
+                    <!-- Field 3: Category -->
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-dark">
-                            Field 2: Category <span class="text-danger">*</span>
+                            Field 3: Category <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
                             <span class="input-group-text bg-light text-muted"><i class="bi bi-tag-fill"></i></span>
@@ -97,6 +118,19 @@
                         </div>
                         <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
                     </div>
+                      <!-- Field 3: Location -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 3: Item Location <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="location" class="form-control" placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Location ng item.</div>
+                    </div>
+
+
 
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-marsu w-100 py-2 shadow-sm">
@@ -143,9 +177,11 @@
                                 </td>
                             </tr>
                         <?php else: ?>
+
                             <?php foreach ($items as $item): ?>
                                 <tr>
                                     <td class="ps-3 text-muted fw-bold">#<?= e($item['id']) ?></td>
+
                                     <td>
                                         <?= e($item['title']) ?>
                                     </td>
@@ -154,6 +190,9 @@
                                         <?= e($item['location']) ?>
                                     </td>
 
+                                    <td>
+                                       <?= e($item['location']) ?>
+                                    </td>
                                     <td>
                                         <span class="badge badge-gold font-monospace"><?= e($item['category']) ?></span>
                                     </td>

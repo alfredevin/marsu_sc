@@ -226,6 +226,21 @@
             margin-bottom: 1.5rem;
         }
 
+        /* Bottom Action Toolbar */
+        .sticky-form-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: #ffffff;
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            border: 1px solid #e3e6f0;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.08);
+            margin-top: 1.5rem;
+        }
+
         .btn-gold {
             background-color: #d4af37;
             border-color: #d4af37;
@@ -332,20 +347,6 @@
                 <i class="fas fa-plus-circle me-1"></i> Submit Proposal
             </button>
         </div>
-    </div>
-
-    <!-- Quick Portal Nav Pills -->
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="<?= url('/irimkms/proposalsandapprovals') ?>" class="main-nav-pill active"><i class="bi bi-file-earmark-check text-white me-1"></i> Proposals & Approvals</a>
-        <a href="<?= url('/irimkms/researchprojects') ?>" class="main-nav-pill"><i class="bi bi-journal-code text-maroon me-1"></i> Research Projects</a>
-        <a href="<?= url('/irimkms/projectmilestone') ?>" class="main-nav-pill"><i class="bi bi-flag text-maroon me-1"></i> Milestones</a>
-        <a href="<?= url('/irimkms/implementationprogress') ?>" class="main-nav-pill"><i class="bi bi-hourglass-split text-maroon me-1"></i> Implementation Progress</a>
-        <a href="<?= url('/irimkms/fundingandresources') ?>" class="main-nav-pill"><i class="bi bi-cash-coin text-maroon me-1"></i> Grants & Funding</a>
-        <a href="<?= url('/irimkms/knowledgemanagement') ?>" class="main-nav-pill"><i class="bi bi-book-half text-maroon me-1"></i> Publications</a>
-        <a href="<?= url('/irimkms/searchableresearch') ?>" class="main-nav-pill"><i class="bi bi-search text-maroon me-1"></i> Discovery Engine</a>
-        <a href="<?= url('/irimkms/evaluationforms') ?>" class="main-nav-pill"><i class="bi bi-clipboard-data text-maroon me-1"></i> Evaluation Tools</a>
-        <a href="<?= url('/irimkms/completionreporting') ?>" class="main-nav-pill"><i class="bi bi-award text-maroon me-1"></i> Completion Reports</a>
-        <a href="<?= url('/irimkms/performanceindicators') ?>" class="main-nav-pill"><i class="bi bi-graph-up-arrow text-maroon me-1"></i> Performance Analytics</a>
     </div>
 
     <!-- Portal Inner Sub-Tabs -->
@@ -948,20 +949,22 @@
 
         </form>
 
-        <!-- Sticky Bottom Action Toolbar -->
-        <div class="sticky-form-nav mb-5">
-            <button class="btn btn-outline-secondary px-4" id="btnPrevStep" onclick="changeStep(-1)" disabled>
-                <i class="fas fa-arrow-left mr-2"></i> Previous Step
-            </button>
+        <!-- Action Toolbar -->
+        <div class="sticky-form-nav d-flex justify-content-between align-items-center flex-wrap gap-2 mb-5 p-3 bg-white rounded shadow-sm border">
             <div>
-                <button class="btn btn-outline-primary px-3 mr-2" onclick="saveDraftNotification()">
-                    <i class="fas fa-save mr-1"></i> Save Draft
+                <button class="btn btn-outline-secondary px-4" id="btnPrevStep" type="button" onclick="changeStep(-1)" disabled>
+                    <i class="fas fa-arrow-left me-2"></i> Previous Step
                 </button>
-                <button class="btn btn-maroon px-4" id="btnNextStep" onclick="changeStep(1)">
-                    Next Step <i class="fas fa-arrow-right ml-2"></i>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-primary px-3" type="button" onclick="saveDraftNotification()">
+                    <i class="fas fa-save me-1"></i> Save Draft
                 </button>
-                <button class="btn btn-gold px-4 d-none" id="btnSubmitFinal" onclick="submitProposal()">
-                    <i class="fas fa-paper-plane mr-2"></i> Submit Proposal
+                <button class="btn btn-maroon px-4" id="btnNextStep" type="button" onclick="changeStep(1)">
+                    Next Step <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+                <button class="btn btn-gold px-4 d-none" id="btnSubmitFinal" type="button" onclick="submitProposal()">
+                    <i class="fas fa-paper-plane me-2"></i> Submit Proposal
                 </button>
             </div>
         </div>

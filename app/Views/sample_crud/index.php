@@ -75,7 +75,20 @@
             
 
 
-                    <!-- Field 2: Category -->
+                    <!-- Field 2: Location -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 1: location <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="location" class="form-control"
+                                placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
+                    </div>
+
+                    <!-- Field 3: Category -->
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-dark">
                             Field 3: Category <span class="text-danger">*</span>
@@ -116,6 +129,8 @@
                         </div>
                         <div class="form-text small text-muted">Location ng item.</div>
                     </div>
+
+
 
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-marsu w-100 py-2 shadow-sm">

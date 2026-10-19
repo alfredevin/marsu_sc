@@ -276,20 +276,6 @@
         </div>
     </div>
 
-    <!-- Quick Portal Nav Pills -->
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="<?= url('/irimkms/proposalsandapprovals') ?>" class="main-nav-pill"><i class="bi bi-file-earmark-check text-maroon me-1"></i> Proposals & Approvals</a>
-        <a href="<?= url('/irimkms/researchprofiles') ?>" class="main-nav-pill active"><i class="bi bi-person-badge text-white me-1"></i> Faculty Directory</a>
-        <a href="<?= url('/irimkms/researchprojects') ?>" class="main-nav-pill"><i class="bi bi-journal-code text-maroon me-1"></i> Research Projects</a>
-        <a href="<?= url('/irimkms/projectmilestone') ?>" class="main-nav-pill"><i class="bi bi-flag text-maroon me-1"></i> Milestones</a>
-        <a href="<?= url('/irimkms/implementationprogress') ?>" class="main-nav-pill"><i class="bi bi-hourglass-split text-maroon me-1"></i> Implementation Progress</a>
-        <a href="<?= url('/irimkms/fundingandresources') ?>" class="main-nav-pill"><i class="bi bi-cash-coin text-maroon me-1"></i> Grants & Funding</a>
-        <a href="<?= url('/irimkms/knowledgemanagement') ?>" class="main-nav-pill"><i class="bi bi-book-half text-maroon me-1"></i> Publications</a>
-        <a href="<?= url('/irimkms/evaluationforms') ?>" class="main-nav-pill"><i class="bi bi-clipboard-data text-maroon me-1"></i> Evaluation Tools</a>
-        <a href="<?= url('/irimkms/completionreporting') ?>" class="main-nav-pill"><i class="bi bi-award text-maroon me-1"></i> Completion Reports</a>
-        <a href="<?= url('/irimkms/performanceindicators') ?>" class="main-nav-pill"><i class="bi bi-graph-up-arrow text-maroon me-1"></i> Performance Analytics</a>
-    </div>
-
     <!-- Dynamic Flash Messages -->
     <?php if (!empty($_SESSION['flash_success'])): ?>
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
@@ -439,15 +425,6 @@
             <?php foreach ($researchers as $idx => $r): ?>
                 <?php
                     $specs = array_filter(array_map('trim', explode(',', $r['specializations'] ?? '')));
-                    $badgeColor = match($r['badge_color'] ?? 'warning') {
-                        'gold' => 'background:#FFD700; color:#800020;',
-                        'success' => 'background:#1cc88a; color:#fff;',
-                        'info' => 'background:#36b9cc; color:#fff;',
-                        'primary' => 'background:#4e73df; color:#fff;',
-                        'danger' => 'background:#e74a3b; color:#fff;',
-                        'secondary' => 'background:#858796; color:#fff;',
-                        default => 'background:#f6c23e; color:#000;'
-                    };
                     $jsonAttr = htmlspecialchars(json_encode($r), ENT_QUOTES, 'UTF-8');
                     $searchData = strtolower(e($r['full_name'] . ' ' . $r['department'] . ' ' . $r['college'] . ' ' . $r['specializations'] . ' ' . $r['orcid'] . ' ' . $r['title_rank'] . ' ' . $r['research_domain']));
                 ?>
@@ -457,13 +434,7 @@
                      data-domain="<?= e($r['research_domain'] ?? '') ?>" 
                      data-search="<?= $searchData ?>">
                     <div class="card profile-card shadow">
-                        <div class="profile-card-header">
-                            <?php if (!empty($r['badge_label'])): ?>
-                                <span class="badge font-weight-bold position-absolute" style="top:10px; right:10px; <?= $badgeColor ?>">
-                                    <?= e($r['badge_label']) ?>
-                                </span>
-                            <?php endif; ?>
-                        </div>
+                        <div class="profile-card-header"></div>
                         <div class="profile-avatar-wrapper">
                             <img src="<?= asset('assets/img/undraw_profile.svg') ?>" 
                                  onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($r['full_name']) ?>&background=800020&color=ffffff&size=128'" 
@@ -635,22 +606,6 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label font-weight-bold text-dark">Badge / Distinction Tag</label>
-                            <input type="text" class="form-control" name="badge_label" placeholder="e.g. Lead PI, DOST Grantee, Senior Fellow">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label font-weight-bold text-dark">Badge Color Style</label>
-                            <select class="form-select" name="badge_color">
-                                <option value="warning">Gold / Yellow (Lead PI)</option>
-                                <option value="success">Green (Grantee / Funded)</option>
-                                <option value="info">Cyan (Senior Fellow)</option>
-                                <option value="primary">Blue (Chair / Coordinator)</option>
-                                <option value="danger">Red (Director)</option>
-                            </select>
-                        </div>
-                    </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
@@ -714,18 +669,11 @@
                 </div>
 
                 <div class="p-4 pt-5">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <h4 class="font-weight-bold text-dark mb-0" id="dossierFullName">Dr. Researcher Name</h4>
-                            <div class="text-maroon font-weight-bold" id="dossierTitleRank">Full Professor</div>
-                            <div class="text-muted small" id="dossierDeptCollege">
-                                <i class="fas fa-university me-1"></i> Department of Computer Science (CIT)
-                            </div>
-                        </div>
-                        <div>
-                            <span class="badge bg-warning text-dark font-weight-bold px-3 py-2 fs-6" id="dossierBadge">
-                                Lead PI
-                            </span>
+                    <div class="mb-3">
+                        <h4 class="font-weight-bold text-dark mb-0" id="dossierFullName">Dr. Researcher Name</h4>
+                        <div class="text-maroon font-weight-bold" id="dossierTitleRank">Full Professor</div>
+                        <div class="text-muted small" id="dossierDeptCollege">
+                            <i class="fas fa-university me-1"></i> Department of Computer Science (CIT)
                         </div>
                     </div>
 
@@ -876,13 +824,6 @@
         const collegeText = data.college ? ` (${data.college})` : '';
         document.getElementById('dossierDeptCollege').innerHTML = `<i class="fas fa-university me-1"></i> ${data.department || 'Faculty of Research'}${collegeText}`;
 
-        const badgeEl = document.getElementById('dossierBadge');
-        if (data.badge_label) {
-            badgeEl.textContent = data.badge_label;
-            badgeEl.style.display = 'inline-block';
-        } else {
-            badgeEl.style.display = 'none';
-        }
 
         document.getElementById('dossierProjects').textContent = data.active_projects || '0';
         document.getElementById('dossierPublications').textContent = data.publications_count || '0';

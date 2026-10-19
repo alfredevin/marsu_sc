@@ -215,18 +215,6 @@
         </div>
     </div>
 
-    <!-- Quick Portal Nav Pills -->
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="<?= url('/irimkms/proposalsandapprovals') ?>" class="main-nav-pill"><i class="bi bi-file-earmark-check text-maroon me-1"></i> Proposals & Approvals</a>
-        <a href="<?= url('/irimkms/researchprojects') ?>" class="main-nav-pill"><i class="bi bi-journal-code text-maroon me-1"></i> Research Projects</a>
-        <a href="<?= url('/irimkms/projectmilestone') ?>" class="main-nav-pill"><i class="bi bi-flag text-maroon me-1"></i> Milestones</a>
-        <a href="<?= url('/irimkms/implementationprogress') ?>" class="main-nav-pill"><i class="bi bi-hourglass-split text-maroon me-1"></i> Implementation Progress</a>
-        <a href="<?= url('/irimkms/fundingandresources') ?>" class="main-nav-pill"><i class="bi bi-cash-coin text-maroon me-1"></i> Grants & Funding</a>
-        <a href="<?= url('/irimkms/knowledgemanagement') ?>" class="main-nav-pill"><i class="bi bi-book-half text-maroon me-1"></i> Publications</a>
-        <a href="<?= url('/irimkms/evaluationforms') ?>" class="main-nav-pill"><i class="bi bi-clipboard-data text-maroon me-1"></i> Evaluation Tools</a>
-        <a href="<?= url('/irimkms/completionreporting') ?>" class="main-nav-pill active"><i class="bi bi-award text-white me-1"></i> Completion Reports</a>
-        <a href="<?= url('/irimkms/performanceindicators') ?>" class="main-nav-pill"><i class="bi bi-graph-up-arrow text-maroon me-1"></i> Performance Analytics</a>
-    </div>
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-3">
             <div class="card border-left-maroon shadow h-100 py-2">
@@ -585,16 +573,16 @@
                             <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-cog me-2 text-maroon"></i>Certificate Parameters</h6>
 
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold text-dark">Select Project Code</label>
+                                <label class="form-label font-weight-bold text-dark">Select Research Project</label>
                                 <select class="form-select" id="certGenProjectSelect" onchange="updateCertPreviewLive(this)">
                                     <option value="RMIS-2025-088" data-title="Smart Agriculture Monitoring System" data-pi="Mhica Bianca Rodelas" data-college="College of Engineering" selected>
-                                        RMIS-2025-088 (Smart Agriculture Monitoring System)
+                                        Smart Agriculture Monitoring System
                                     </option>
                                     <option value="RMIS-2025-061" data-title="Indigenous Botanical Extracts" data-pi="Dr. Elena Cruz" data-college="College of Science">
-                                        RMIS-2025-061 (Indigenous Botanical Extracts)
+                                        Indigenous Botanical Extracts
                                     </option>
                                     <option value="PRJ-2026-001" data-title="AI-Driven Water Quality Monitoring" data-pi="Mhica Bianca Rodelas" data-college="College of Info Tech">
-                                        PRJ-2026-001 (AI-Driven Water Quality Monitoring)
+                                        AI-Driven Water Quality Monitoring
                                     </option>
                                 </select>
                             </div>
@@ -783,18 +771,15 @@
             </div>
             <form onsubmit="handleSubmitTerminalReport(event)">
                 <div class="modal-body p-4">
+                    <input type="hidden" id="modalProjectCode" value="PRJ-COMPLETION">
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold text-dark">Research Project Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="modalProjectTitle" placeholder="e.g. AI-Based Telemetry for River Basin Quality" required>
+                    </div>
                     <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label font-weight-bold text-dark">Project Code <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="modalProjectCode" placeholder="e.g. RMIS-2026-099" required>
-                        </div>
                         <div class="col-md-6">
                             <label class="form-label font-weight-bold text-dark">Lead Principal Investigator <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="modalPiName" placeholder="e.g. Mhica Bianca Rodelas" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label font-weight-bold text-dark">Research Title <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="modalProjectTitle" placeholder="e.g. AI-Based Telemetry for River Basin Quality" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label font-weight-bold text-dark">College / Unit</label>
@@ -805,7 +790,7 @@
                                 <option value="College of Information Tech" selected>College of Information Tech</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12">
                             <label class="form-label font-weight-bold text-dark">Completion Date</label>
                             <input type="date" class="form-control" id="modalCompletionDate" value="<?= date('Y-m-d') ?>">
                         </div>

@@ -16,6 +16,7 @@ $router->post('/welfare/create', [HomeController::class, 'store'], ['auth', 'per
 $router->get('/welfare/student-profile-information', [HomeController::class, 'studentprofileinformation'], ['auth', 'permission:welfare.view']);
 $router->get('/welfare/support-assessment', [HomeController::class, 'supportassessment'], ['auth', 'permission:welfare.view']);
 $router->get('/welfare/socio-economic-background', [HomeController::class, 'socioeconomicbackground'], ['auth', 'permission:welfare.view']);
+$router->post('/welfare/socio-economic-background', [HomeController::class, 'socioeconomicbackground'], ['auth', 'permission:welfare.view', 'csrf']);
 $router->get('/welfare/welfare-history-records', [HomeController::class, 'welfarehistoryrecords'], ['auth', 'permission:welfare.view']);
 $router->get('/welfare/student-concerns ', [HomeController::class, 'studentconcerns'], ['auth', 'permission:welfare.view']);
 $router->get('/welfare/case-management', [HomeController::class, 'casemanagement'], ['auth', 'permission:welfare.view']);

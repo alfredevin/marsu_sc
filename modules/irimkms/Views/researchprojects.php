@@ -253,20 +253,6 @@
         </div>
     </div>
 
-    <!-- Quick Portal Nav Pills -->
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="<?= url('/irimkms/proposalsandapprovals') ?>" class="main-nav-pill"><i class="bi bi-file-earmark-check text-maroon me-1"></i> Proposals & Approvals</a>
-        <a href="<?= url('/irimkms/researchprojects') ?>" class="main-nav-pill active"><i class="bi bi-journal-code text-white me-1"></i> Research Projects</a>
-        <a href="<?= url('/irimkms/projectmilestone') ?>" class="main-nav-pill"><i class="bi bi-flag text-maroon me-1"></i> Milestones</a>
-        <a href="<?= url('/irimkms/implementationprogress') ?>" class="main-nav-pill"><i class="bi bi-hourglass-split text-maroon me-1"></i> Implementation Progress</a>
-        <a href="<?= url('/irimkms/fundingandresources') ?>" class="main-nav-pill"><i class="bi bi-cash-coin text-maroon me-1"></i> Grants & Funding</a>
-        <a href="<?= url('/irimkms/knowledgemanagement') ?>" class="main-nav-pill"><i class="bi bi-book-half text-maroon me-1"></i> Publications</a>
-        <a href="<?= url('/irimkms/searchableresearch') ?>" class="main-nav-pill"><i class="bi bi-search text-maroon me-1"></i> Discovery Engine</a>
-        <a href="<?= url('/irimkms/evaluationforms') ?>" class="main-nav-pill"><i class="bi bi-clipboard-data text-maroon me-1"></i> Evaluation Tools</a>
-        <a href="<?= url('/irimkms/completionreporting') ?>" class="main-nav-pill"><i class="bi bi-award text-maroon me-1"></i> Completion Reports</a>
-        <a href="<?= url('/irimkms/performanceindicators') ?>" class="main-nav-pill"><i class="bi bi-graph-up-arrow text-maroon me-1"></i> Performance Analytics</a>
-    </div>
-
     <!-- View Mode Controls & Summary Bar -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h6 class="font-weight-bold text-maroon m-0"><i class="fas fa-list-alt me-1"></i> Active Projects Portfolio</h6>
@@ -442,7 +428,6 @@
                     <div class="project-card shadow-sm">
                         <div class="project-card-header d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="badge bg-maroon text-white me-1"><?= e($proj['project_code']) ?></span>
                                 <span class="badge bg-light text-dark border"><?= e($proj['college'] ?? 'N/A') ?></span>
                             </div>
                             <span class="badge <?= $badgeSt ?> px-2 py-1"><?= e($pst) ?></span>
@@ -520,7 +505,6 @@
                 <table class="table table-hover align-middle mb-0" id="projectTable">
                     <thead class="bg-light text-dark">
                         <tr>
-                            <th>Project Code</th>
                             <th>Research Title & Lead PI</th>
                             <th>College</th>
                             <th>Research Thrust</th>
@@ -552,9 +536,6 @@
                                     data-college="<?= e($proj['college'] ?? '') ?>"
                                     data-thrust="<?= e($proj['research_thrust'] ?? '') ?>"
                                     data-search="<?= $searchData ?>">
-                                    <td>
-                                        <span class="badge bg-maroon text-white px-2 py-1"><?= e($proj['project_code']) ?></span>
-                                    </td>
                                     <td>
                                         <strong class="text-dark d-block"><?= e($proj['title']) ?></strong>
                                         <small class="text-muted"><i class="fas fa-user-circle text-maroon me-1"></i> <?= e($proj['lead_pi']) ?> (Lead PI)</small>
@@ -626,15 +607,9 @@
                         <i class="fas fa-info-circle me-1 text-maroon"></i> Register approved research proposals to activate university grant tracking, milestone monitoring, and financial allocation records.
                     </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label font-weight-bold text-dark">Project Code</label>
-                            <input type="text" class="form-control" name="project_code" placeholder="e.g. PRJ-2026-005 (Auto if blank)">
-                        </div>
-                        <div class="col-md-8">
-                            <label class="form-label font-weight-bold text-dark">Project Title <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="title" placeholder="Full research project title" required>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold text-dark">Project Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="title" placeholder="Full research project title" required>
                     </div>
 
                     <div class="row g-3 mb-3">
@@ -735,7 +710,7 @@
             <div class="dossier-header-cover">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <span class="badge bg-gold text-dark mb-2" id="dossierCodeTag">PRJ-2026-001</span>
+                        <span class="badge bg-gold text-dark mb-2 d-none" id="dossierCodeTag"></span>
                         <h4 class="font-weight-bold mb-1" id="dossierTitle">Project Title</h4>
                         <div class="small text-white-50" id="dossierCollegeThrust">
                             <i class="fas fa-university me-1"></i> College of Information Technology | IT & AI Innovation
@@ -972,21 +947,20 @@
     }
 
     function exportCSV() {
-        const rows = [["Project Code", "Title", "Lead PI", "College", "Research Thrust", "Budget", "Progress (%)", "Status"]];
+        const rows = [["Title & Lead PI", "College", "Research Thrust", "Budget", "Progress (%)", "Status"]];
 
         document.querySelectorAll('#projectTable tbody tr.project-table-row').forEach(row => {
             if (row.style.display !== 'none') {
                 const cols = row.querySelectorAll('td');
-                if (cols.length >= 7) {
-                    const code = cols[0].innerText.trim();
-                    const titlePi = cols[1].innerText.replace(/\n/g, ' - ').trim();
-                    const college = cols[2].innerText.trim();
-                    const thrust = cols[3].innerText.trim();
-                    const budget = cols[4].innerText.replace(/\n/g, ' ').trim();
-                    const progress = cols[5].innerText.replace(/\n/g, ' ').trim();
-                    const status = cols[6].innerText.trim();
+                if (cols.length >= 6) {
+                    const titlePi = cols[0].innerText.replace(/\n/g, ' - ').trim();
+                    const college = cols[1].innerText.trim();
+                    const thrust = cols[2].innerText.trim();
+                    const budget = cols[3].innerText.replace(/\n/g, ' ').trim();
+                    const progress = cols[4].innerText.replace(/\n/g, ' ').trim();
+                    const status = cols[5].innerText.trim();
 
-                    rows.push([`"${code}"`, `"${titlePi}"`, `"${college}"`, `"${thrust}"`, `"${budget}"`, `"${progress}"`, `"${status}"`]);
+                    rows.push([`"${titlePi}"`, `"${college}"`, `"${thrust}"`, `"${budget}"`, `"${progress}"`, `"${status}"`]);
                 }
             }
         });

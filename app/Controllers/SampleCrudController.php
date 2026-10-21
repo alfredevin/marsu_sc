@@ -25,10 +25,14 @@ class SampleCrudController
         $category = trim($_POST['category'] ?? '');
         $location = trim($_POST['location'] ?? '');
         $gender = trim($_POST['gender'] ?? '');
+
+
+
+        // Database::insert() helper
         Database::insert('sample_items', [
-            'title' => $title,
-            'category' => $category,
-            'location' => $location,
+            'title'      => $title,
+            'category'   => $category,
+            'location'  => $location,
             'gender' => $gender,
             'created_at' => date('Y-m-d H:i:s')
         ]);
@@ -40,6 +44,15 @@ class SampleCrudController
         $id = (int) ($_POST['id'] ?? 0);
         $title = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
+
+        // Validation
+        if ($id <= 0 || empty($title) || empty($category)) {
+            Session::flash('error', 'May kulang na impormasyon para sa pag-update.');
+            redirect(url('sample-crud'));
+            return;
+        }
+
+        // Database::update() helper na may prepared statement
         Database::update('sample_items', [
             'title' => $title,
             'category' => $category,

@@ -5,14 +5,146 @@
     "description": "Calculates faculty teaching units, preparation credits, administrative designations, and overload compensations.",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Academic Affairs",
+    "section": "Faculty Workload",
     "menu": {
         "icon": "bi-briefcase-fill",
         "items": [
             {
-                "label": "Overview & Records",
-                "route": "workload",
-                "permission": "workload.view"
+                "label": "Faculty Management",
+                "icon": "bi-people",
+                "permission": "workload.view",
+                "children": [
+                    {
+                        "label": "Faculty Directory",
+                        "icon": "bi-person-circle",
+                        "route": "workload/profile",
+                        "permission": "workload.view"
+                    }
+                ]
+            },
+            {
+                "label": "Workload Management Monitoring",
+                "icon": "bi-journal-bookmark",
+                "permission": "workload.view",
+                "children": [
+                    {
+                        "label": "Workload Overview",
+                        "icon": "bi-layout-dashboard",
+                        "route": "workload/profile",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Course/Subject Assignment",
+                        "icon": "bi-journal-text",
+                        "route": "workload/course",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Course / Subject Monitoring",
+                        "icon": "bi-card-checklist",
+                        "route": "workload/course_monitoring",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Workload Approval",
+                        "icon": "bi-exclamation-triangle",
+                        "route": "retention/failedincompletemonitoring",
+                        "permission": "workload.view"
+                    }
+                ]
+            },
+            {
+                "label": "Instructional Scheduling",
+                "icon": "bi-briefcase-fill",
+                "permission": "workload.view",
+                "children": [
+                    {
+                        "label": "Class Schedule",
+                        "icon": "bi-pencil-square",
+                        "route": "class_sched",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Schedule Management",
+                        "icon": "bi-book-open",
+                        "route": "sched_man",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Room & Time Assignment",
+                        "icon": "bi-doors",
+                        "route": "rooms/time",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Faculty Availability",
+                        "icon": "bi-card-checklist",
+                        "route": "availability",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Conflict Detection",
+                        "icon": "bi-exclamation-triangle",
+                        "route": "conflict-detection",
+                        "permission": "workload.view"
+                    }
+                ]
+            },
+            {
+                "label": "Academic Monitoring",
+                "icon": "bi-card-checklist",
+                "permission": "workload.view",
+                "children": [
+                    {
+                        "label": "Teaching Assigments",
+                        "icon": "bi-pencil-square",
+                        "route": "teachings",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Course Handling History",
+                        "icon": "bi-history",
+                        "route": "sched_man",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Instructional Records",
+                        "icon": "bi-records",
+                        "route": "records",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Research & Extension",
+                        "icon": "bi-card-checklist",
+                        "route": "reseach/ext",
+                        "permission": "workload.view"
+                    }
+                ]
+            },
+            {
+                "label": "Analytics and Reports",
+                "icon": "bi-bar-chart-line",
+                "permission": "workload.view",
+                "children": [
+                    {
+                        "label": "Workload Analytics",
+                        "icon": "bi-pencil-square",
+                        "route": "work_analytics",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Program Distribution",
+                        "icon": "bi-history",
+                        "route": "prog_distribution",
+                        "permission": "workload.view"
+                    },
+                    {
+                        "label": "Teaching Utilization",
+                        "icon": "bi-records",
+                        "route": "teaching_uti",
+                        "permission": "workload.view"
+                    }
+                ]
             }
         ]
     },

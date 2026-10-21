@@ -118,6 +118,19 @@
                         </div>
                         <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
                     </div>
+<<<<<<< HEAD
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 3: Item Gebder <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="gender" class="form-control"
+                                placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
+                    </div>
+=======
                       <!-- Field 3: Location -->
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-dark">
@@ -143,6 +156,7 @@
                     </div>
 
 
+>>>>>>> dfbd980ae6f1755eb5738fc7a05e83bcd554dddd
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-marsu w-100 py-2 shadow-sm">
                         <i class="bi bi-cloud-arrow-up-fill me-2"></i>Save Item to Database (Insert)
@@ -175,6 +189,7 @@
                             <th>Title (Field 1)</th>
                             <th>Location (Field 3)</th>
                             <th>Location</th>
+                            <th>Gender</th>
                             <th>Category (Field 2)</th>
                             <th>Date Added</th>
                             <th class="text-end pe-3" style="width: 130px;">Action</th>
@@ -200,6 +215,9 @@
 
                                     <td>
                                         <?= e($item['location']) ?>
+                                    </td>
+                                    <td>
+                                        <?= e($item['gender']) ?>
                                     </td>
 
                                     <td>

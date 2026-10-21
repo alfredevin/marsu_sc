@@ -8,7 +8,6 @@ use Core\Session;
 
 class SampleCrudController
 {
-
     public function index(): void
     {
         $items = Database::fetchAll(
@@ -25,34 +24,26 @@ class SampleCrudController
         $title = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
         $location = trim($_POST['location'] ?? '');
+        $gender = trim($_POST['gender'] ?? '');
+
 
 
         // Database::insert() helper
         Database::insert('sample_items', [
             'title'      => $title,
-            'category'   => $category,
-            'location'   => $location,
-
-        // Database::insert() helper
+            'category'   => $category, 
             'location'  => $location,
-        Database::insert('sample_items', [
-            'title' => $title,
-            'category' => $category,
-            'location' => $location,
-
+            'gender' => $gender,
             'created_at' => date('Y-m-d H:i:s')
         ]);
-
         Session::flash('success', "Tagumpay na na-insert ang item: \"{$title}\"!");
         redirect(url('sample-crud'));
     }
-
     public function update(): void
     {
         $id = (int) ($_POST['id'] ?? 0);
         $title = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
-
 
         // Validation
         if ($id <= 0 || empty($title) || empty($category)) {
@@ -67,11 +58,9 @@ class SampleCrudController
             'category' => $category,
             'updated_at' => date('Y-m-d H:i:s')
         ], 'id = :id', ['id' => $id]);
-
         Session::flash('success', "Na-update na ang Item #{$id} (\"{$title}\")!");
         redirect(url('sample-crud'));
     }
-
     public function delete(): void
     {
         $id = (int) ($_POST['id'] ?? 0);
@@ -80,10 +69,8 @@ class SampleCrudController
             Database::update('sample_items', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
-
             Session::flash('success', "Na-archive / na-delete ang Item #{$id}.");
         }
-
         redirect(url('sample-crud'));
     }
 }

@@ -154,8 +154,8 @@ class HomeController
     public function caseprogress(): void
     {
         $user = Auth::user();
-        View::render('guidance/Views/counseling_session', [
-            'title' => 'Counseling Session',
+        View::render('guidance/Views/case_progress', [
+            'title' => 'Case Progress',
             'slug' => 'guidance'
         ]);
     }

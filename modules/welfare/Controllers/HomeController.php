@@ -220,11 +220,11 @@ class HomeController
             'slug'  => 'welfare'
         ]);
     }
-    public function studentconcern(): void
+    public function caselogging(): void
     {
         $user = Auth::user();
-        View::render('welfare/Views/student-concern', [
-            'title' => 'Student concern',
+        View::render('welfare/Views/case-logging', [
+            'title' => 'Case logging',
             'slug'  => 'welfare'
         ]);
     }
@@ -271,7 +271,7 @@ class HomeController
     public function scholarshipgrantmonitoring(): void
     {
         $user = Auth::user();
-        View::render('welfare/Views/scholrship-grant-monitoring', [
+        View::render('welfare/Views/scholarship-grant-monitoring', [
             'title' => 'Scholarship grant monitoring',
             'slug'  => 'welfare'
         ]);

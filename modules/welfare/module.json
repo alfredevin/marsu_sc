@@ -42,8 +42,8 @@
                 "permission": "welfare.view",
                 "children": [
                     {
-                        "label": "Student concern",
-                        "route": "welfare/student-concern",
+                        "label": "Case logging",
+                        "route": "welfare/case-logging",
                         "permission": "welfare.view"
                     },
                     {

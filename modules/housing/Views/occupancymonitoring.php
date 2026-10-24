@@ -1,4 +1,5 @@
 <!-- Occupancy Monitoring View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -14,6 +15,37 @@
             <i class="bi bi-printer me-1"></i>Print Summary
         </button>
     </div>
+</div>
+
+<!-- Sub-navigation Pills -->
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/roomandinventory') ?>">
+                <i class="bi bi-box-seam me-1"></i>Room & Inventory
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/availabilitytracking') ?>">
+                <i class="bi bi-calendar-check me-1"></i>Availability Tracking
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/roomassignment') ?>">
+                <i class="bi bi-door-open me-1"></i>Room Assignments
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?= url('housing/occupancymonitoring') ?>">
+                <i class="bi bi-pie-chart me-1"></i>Occupancy Monitoring
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/bedallocation') ?>">
+                <i class="bi bi-grid-3x3 me-1"></i>Bed Allocation
+            </a>
+        </li>
+    </ul>
 </div>
 
 <!-- Occupancy Metric Progress Cards -->
@@ -36,9 +68,9 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
+        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
             <div class="text-muted small text-uppercase fw-bold">Male Residents</div>
-            <div class="h3 font-weight-bold mb-0 text-primary">26 Students</div>
+            <div class="h3 font-weight-bold mb-0 text-gold">26 Students</div>
             <div class="small text-muted mt-1">40.6% of total population</div>
         </div>
     </div>

@@ -39,52 +39,6 @@
         </div>
     </div>
 
-    <!-- 4 KPI Metrics -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">Institutional Retention Rate</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= htmlspecialchars((string) ($overallRetentionRate ?? '96.2')) ?>%</h3>
-                    <span class="badge bg-success-subtle text-success border border-success">+1.5% YoY</span>
-                </div>
-                <small class="text-muted mt-2 d-block">CHED Benchmark standard: &ge; 85%</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">First-Year Retention</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= htmlspecialchars((string) ($firstYearRetention ?? '94.8')) ?>%</h3>
-                    <span class="badge bg-primary-subtle text-primary border border-primary">Freshman Persistence</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Transition from 1st Year to 2nd Year</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Annual Attrition Rate</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= htmlspecialchars((string) ($attritionRate ?? '3.8')) ?>%</h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">-0.4% Improvement</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Dropouts, LOA, and unrenewed enrollments</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">Prevented Dropouts</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= htmlspecialchars((string) ($preventedCount ?? '34')) ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Intervention Impact</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Students rescued via EWS interventions</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Analytics Breakdown Matrix -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">

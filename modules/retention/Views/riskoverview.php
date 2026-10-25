@@ -33,52 +33,6 @@
         </form>
     </div>
 
-    <!-- 4 KPI Metrics -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">Cohort Retention Rate</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= htmlspecialchars((string) ($retentionRate ?? '94.2')) ?>%</h3>
-                    <span class="badge bg-success-subtle text-success border border-success">+1.8% vs Target</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Overall institutional retention</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">High-Risk Students</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= htmlspecialchars((string) ($highRiskCount ?? '7')) ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger"><?= htmlspecialchars((string) ($highRiskPercent ?? '4.8')) ?>% of Cohort</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Immediate intervention required</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">Intervention Coverage</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= htmlspecialchars((string) ($coverageRate ?? '88.5')) ?>%</h3>
-                    <span class="badge bg-primary-subtle text-primary border border-primary">Active Care</span>
-                </div>
-                <small class="text-muted mt-2 d-block">At-risk students receiving help</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Moderate / Monitored</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= htmlspecialchars((string) ($moderateRiskCount ?? 18)) ?></h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">Watchlist</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Monitored for early grade decline</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Departmental Breakdown Table -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">

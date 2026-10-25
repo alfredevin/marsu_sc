@@ -77,63 +77,19 @@
         </form>
     </div>
 
-    <!-- 4 KPI Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">Cohort Attendance Rate</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= htmlspecialchars((string) ($cohortRate ?? '91.8')) ?>%</h3>
-                    <span class="badge bg-success-subtle text-success border border-success">Target &ge; 80%</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Overall compliant class presence</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">Chronic Absenteeism Flag</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= htmlspecialchars((string) ($chronicCount ?? 0)) ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Risk Breached</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Absences &gt; 20% limit (&lt; 80% attendance)</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Excused Absences</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-info"><?= htmlspecialchars((string) ($excusedCount ?? 0)) ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">Verified Slips</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Clinic & formal excuse slips filed</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">Monitored Cohort Roster</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= htmlspecialchars((string) ($totalStudents ?? count($attendanceList ?? []))) ?></h3>
-                    <span class="badge bg-primary-subtle text-primary border border-primary">Active Students</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Total matching cohort enrollment</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Attendance Table -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">
-        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="m-0 fw-bold marsu-maroon-text">
                 <i class="bi bi-person-lines-fill me-1"></i> Student Roll-Call Attendance Ledger
             </h6>
-            <span class="badge bg-light text-dark border">Showing <?= count($attendanceList ?? []) ?> records</span>
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" id="attendanceSearchInput" class="form-control form-control-sm" placeholder="Search ID, Name, or Program..." style="width: 250px;">
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+            <table class="table table-hover align-middle mb-0" id="attendanceTable" style="font-size: 13px;">
                 <thead class="table-light text-uppercase small text-muted">
                     <tr>
                         <th class="ps-3 py-3" style="width: 140px;">Student Number</th>
@@ -165,7 +121,7 @@
                                 $statusBadge = 'bg-warning-subtle text-dark border border-warning';
                             }
                             ?>
-                            <tr>
+                            <tr class="attendance-row">
                                 <td class="ps-3 font-monospace fw-semibold text-secondary">
                                     <?= htmlspecialchars($std['student_number'] ?? '') ?>
                                 </td>
@@ -216,6 +172,8 @@
                 </tbody>
             </table>
         </div>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
     </div>
 </div>
 

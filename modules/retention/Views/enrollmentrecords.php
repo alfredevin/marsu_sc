@@ -84,7 +84,7 @@
 
     <!-- Roster Table Display -->
     <div class="table-responsive bg-white rounded border">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle mb-0" id="enrollmentTable">
             <thead class="table-light text-uppercase small text-muted">
                 <tr>
                     <th class="ps-3 py-3">Student ID</th>
@@ -99,7 +99,7 @@
             <tbody>
                 <?php if (!empty($enrollmentList)): ?>
                     <?php foreach ($enrollmentList as $row): ?>
-                        <tr>
+                        <tr class="enrollment-row">
                             <td class="ps-3 fw-semibold text-secondary">
                                 <?= htmlspecialchars($row['student_id'] ?? $row['id']) ?>
                             </td>
@@ -142,5 +142,7 @@
             </tbody>
         </table>
     </div>
+    <!-- Server-Side Table Pagination -->
+    <?= $pagination['html'] ?? '' ?>
 
 </div>

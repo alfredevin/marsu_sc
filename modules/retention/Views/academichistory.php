@@ -225,7 +225,7 @@
                 <!-- Search Box na may Automatic Backspace Clear -->
                 <div class="input-group input-group-sm" style="width: 220px;">
                     <input type="search" id="searchInput" name="q" class="form-control" placeholder="Search ID / Name..."
-                        value="<?= htmlspecialchars($search ?? '') ?>" oninput="handleSearch(this)" autocomplete="off">
+                        value="<?= htmlspecialchars($search ?? '') ?>" autocomplete="off">
                     <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                 </div>
 
@@ -332,40 +332,8 @@
                 </tbody>
             </table>
         </div>
-
-        <script>
-            const hadQuery = <?= !empty($search) ? 'true' : 'false' ?>;
-
-            function handleSearch(input) {
-                const query = input.value.trim().toLowerCase();
-                const rows = document.querySelectorAll('.student-row');
-
-                // Live filter table rows while typing
-                rows.forEach(row => {
-                    const text = row.innerText.toLowerCase();
-                    row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
-                });
-
-                // Automatically restore list when search is cleared
-                if (query === '' && hadQuery) {
-                    const url = new URL(window.location.href);
-                    url.searchParams.delete('q');
-                    window.location.href = url.toString();
-                }
-            }
-
-            // When clear button (x) is clicked in search input
-            const sBox = document.getElementById('searchInput');
-            if (sBox) {
-                sBox.addEventListener('search', function () {
-                    if (this.value === '' && hadQuery) {
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete('q');
-                        window.location.href = url.toString();
-                    }
-                });
-            }
-        </script>
+        <!-- Academic History Table Pagination Container -->
+        <?= $pagination['html'] ?? '' ?>
 
     <?php endif; ?>
 

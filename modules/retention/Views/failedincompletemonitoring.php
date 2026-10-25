@@ -86,56 +86,6 @@
         </form>
     </div>
 
-    <!-- 2. SUMMARY KPI CARDS -->
-    <div class="row g-3 mb-4">
-        <!-- Total Deficiencies -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">Total Deficiencies</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= $totalDeficiencies ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Active List</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Total active failing (5.00) or incomplete records</small>
-            </div>
-        </div>
-
-        <!-- Incomplete Marks (INC) -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Incomplete Marks (INC)</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= $totalInc ?></h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">1-Year Window</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Missing final exam or course requirement</small>
-            </div>
-        </div>
-
-        <!-- Course Failures (5.00) -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">Course Failures (5.00)</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= $totalFailed ?></h3>
-                    <span class="badge bg-light text-danger border border-danger">Retake Required</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Requires course re-enrollment and advising</small>
-            </div>
-        </div>
-
-        <!-- Pending Resolutions -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Pending Resolutions</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= $totalPendingRem ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">In Progress</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Removal exams or completion in progress</small>
-            </div>
-        </div>
-    </div>
 
     <!-- 3. DEFICIENCY LEDGER TABLE -->
     <div class="card border rounded-3 shadow-sm bg-white mb-3">
@@ -152,8 +102,9 @@
                     <button type="button" class="btn btn-outline-warning text-dark quick-filter-btn" data-filter="Incomplete (INC)">INC Marks</button>
                 </div>
 
-                <input type="text" id="defSearchInput" class="form-control form-control-sm"
-                    placeholder="Search ID, Name, or Subject..." style="width: 250px;" onkeyup="filterDeficiencyTable()">
+                    <input type="text" id="defSearchInput" class="form-control form-control-sm"
+                        placeholder="Search ID, Name, or Subject..." style="width: 250px;">
+                </div>
             </div>
         </div>
 
@@ -262,43 +213,8 @@
                     <?php endif; ?>
                 </tbody>
             </table>
-        </div>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
     </div>
 
 </div>
-
-<!-- Search and Filter Script -->
-<script>
-    function filterDeficiencyTable() {
-        const input = document.getElementById('defSearchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('.def-row');
-
-        rows.forEach(row => {
-            const idText = row.querySelector('.id-cell')?.innerText.toLowerCase() || '';
-            const nameText = row.querySelector('.name-cell')?.innerText.toLowerCase() || '';
-            const courseText = row.querySelector('.course-cell')?.innerText.toLowerCase() || '';
-            if (idText.includes(input) || nameText.includes(input) || courseText.includes(input)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
-
-    // Quick Button Filters (All, 5.00, INC)
-    document.querySelectorAll('.quick-filter-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            document.querySelectorAll('.quick-filter-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            const filter = this.dataset.filter;
-
-            document.querySelectorAll('.def-row').forEach(row => {
-                if (filter === 'all' || row.dataset.type === filter) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    });
-</script>

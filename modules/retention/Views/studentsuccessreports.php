@@ -35,52 +35,6 @@
         </div>
     </div>
 
-    <!-- 4 KPI Metrics -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">President's Listers</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= htmlspecialchars((string) ($presidentsListers ?? 48)) ?></h3>
-                    <span class="badge bg-success-subtle text-success border border-success">GWA 1.00 – 1.45</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Highest academic honors achievers</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">Dean's List Candidates</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= htmlspecialchars((string) ($deansListers ?? 142)) ?></h3>
-                    <span class="badge bg-primary-subtle text-primary border border-primary">GWA 1.46 – 1.75</span>
-                </div>
-                <small class="text-muted mt-2 d-block">College scholastic honor roll</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Graduating Candidates</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= htmlspecialchars((string) ($graduatingCount ?? 215)) ?></h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">4th Year On-Track</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Candidates completing degree in A.Y. 2026-2027</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Total Scholastic Honors</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-info"><?= htmlspecialchars((string) ($honorCandidates ?? 190)) ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">Excellence Ratio: 21.9%</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Combined honor achievers cohort</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Table -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">

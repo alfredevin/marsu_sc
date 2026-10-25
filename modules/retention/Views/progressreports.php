@@ -68,56 +68,6 @@
         </form>
     </div>
 
-    <!-- 2. SUMMARY KPI CARDS -->
-    <div class="row g-3 mb-4">
-        <!-- On-Track Rate -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">On-Track Rate</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= $onTrackRate ?>%</h3>
-                    <span class="badge bg-success-subtle text-success border border-success">Target: ≥ 80%</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Students meeting standard curriculum timeline</small>
-            </div>
-        </div>
-
-        <!-- Average Degree Progress -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">Average Degree Progress</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= $avgProgress ?>%</h3>
-                    <span class="badge bg-light text-secondary border">Total Units: 144-146</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Average percentage of completed degree units</small>
-            </div>
-        </div>
-
-        <!-- Delayed Students -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Delayed Students</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= $delayedCount ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Needs Advising</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Students delayed due to failed or incomplete units</small>
-            </div>
-        </div>
-
-        <!-- Graduating Candidates -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Graduating Candidates</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= $graduatingCount ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">Final Year</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Senior students reaching degree completion</small>
-            </div>
-        </div>
-    </div>
 
     <!-- 3. STUDENT DEGREE COMPLETION TABLE -->
     <div class="card border rounded-3 shadow-sm bg-white mb-3">
@@ -126,7 +76,7 @@
                 <i class="bi bi-person-check-fill me-1"></i> Student Degree Progress List
             </h6>
             <div class="d-flex align-items-center gap-2">
-                <input type="text" id="studentSearchInput" class="form-control form-control-sm" placeholder="Search ID or Name..." style="width: 250px;" onkeyup="filterProgressTable()">
+                <input type="text" id="studentSearchInput" class="form-control form-control-sm" placeholder="Search ID or Name..." style="width: 250px;">
             </div>
         </div>
 
@@ -235,25 +185,8 @@
                     <?php endif; ?>
                 </tbody>
             </table>
-        </div>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
     </div>
 
 </div>
-
-<!-- Instant Search Filter -->
-<script>
-function filterProgressTable() {
-    const input = document.getElementById('studentSearchInput').value.toLowerCase();
-    const rows = document.querySelectorAll('.progress-row');
-
-    rows.forEach(row => {
-        const idText = row.querySelector('.id-cell')?.innerText.toLowerCase() || '';
-        const nameText = row.querySelector('.name-cell')?.innerText.toLowerCase() || '';
-        if (idText.includes(input) || nameText.includes(input)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-}
-</script>

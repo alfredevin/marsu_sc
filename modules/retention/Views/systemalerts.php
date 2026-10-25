@@ -1,8 +1,14 @@
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
-        .marsu-maroon-bg { background-color: #58111a !important; color: #fff !important; }
-        .marsu-maroon-text { color: #58111a !important; }
+        .marsu-maroon-bg {
+            background-color: #58111a !important;
+            color: #fff !important;
+        }
+
+        .marsu-maroon-text {
+            color: #58111a !important;
+        }
     </style>
 
     <!-- Header -->
@@ -11,12 +17,14 @@
             <h6 class="fw-bold marsu-maroon-text mb-0 text-nowrap">
                 <i class="bi bi-bell-fill me-1"></i> Automated Retention Risk Alerts & System Notifications
             </h6>
-            <small class="text-muted">Real-time alerts triggered by grade entry, unexcused absence accumulation, and removal deadlines.</small>
+            <small class="text-muted">Real-time alerts triggered by grade entry, unexcused absence accumulation, and
+                removal deadlines.</small>
         </div>
 
         <div class="d-flex gap-2 align-items-center">
             <span class="badge bg-danger"><?= htmlspecialchars((string) ($criticalCount ?? 2)) ?> Critical Flags</span>
-            <span class="badge bg-dark"><?= htmlspecialchars((string) ($totalAlerts ?? count($alertList ?? []))) ?> Total Alerts</span>
+            <span class="badge bg-dark"><?= htmlspecialchars((string) ($totalAlerts ?? count($alertList ?? []))) ?>
+                Total Alerts</span>
         </div>
     </div>
 
@@ -46,14 +54,19 @@
                             <div class="d-flex justify-content-between align-items-start mb-1 flex-wrap gap-2">
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($sev) ?> Priority</span>
-                                    <span class="badge bg-secondary-subtle text-secondary border"><?= htmlspecialchars($category) ?></span>
-                                    <h6 class="fw-bold mb-0 text-dark">Student #<?= htmlspecialchars($alert['student_id'] ?? 'N/A') ?></h6>
+                                    <span
+                                        class="badge bg-secondary-subtle text-secondary border"><?= htmlspecialchars($category) ?></span>
+                                    <h6 class="fw-bold mb-0 text-dark">Student
+                                        #<?= htmlspecialchars($alert['student_id'] ?? 'N/A') ?></h6>
                                 </div>
-                                <small class="text-muted font-monospace"><?= htmlspecialchars($alert['created_at'] ?? date('Y-m-d H:i')) ?></small>
+                                <small
+                                    class="text-muted font-monospace"><?= htmlspecialchars($alert['created_at'] ?? date('Y-m-d H:i')) ?></small>
                             </div>
-                            <p class="small text-secondary mb-2"><?= htmlspecialchars($alert['message'] ?? 'Risk indicator logged by system.') ?></p>
+                            <p class="small text-secondary mb-2">
+                                <?= htmlspecialchars($alert['message'] ?? 'Risk indicator logged by system.') ?></p>
                             <div class="d-flex gap-2 flex-wrap">
-                                <a href="profile?student_id=<?= urlencode($alert['student_id'] ?? '') ?>" class="btn btn-xs btn-outline-primary">
+                                <a href="profile?student_id=<?= urlencode($alert['student_id'] ?? '') ?>"
+                                    class="btn btn-xs btn-outline-primary">
                                     <i class="bi bi-person me-1"></i> Student Dossier
                                 </a>
                                 <a href="guidancereferrals" class="btn btn-xs btn-outline-danger">

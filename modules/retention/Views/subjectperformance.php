@@ -34,12 +34,14 @@
             <h6 class="fw-bold marsu-maroon-text mb-0">
                 <i class="bi bi-bar-chart-steps me-1"></i> Course and Subject Performance
             </h6>
-            <small class="text-muted">Subject-level grades, passing rates, and subjects where students need extra help.</small>
+            <small class="text-muted">Subject-level grades, passing rates, and subjects where students need extra
+                help.</small>
         </div>
 
         <form method="GET" action="" class="d-flex align-items-center gap-2 flex-wrap">
             <span class="small fw-semibold text-secondary">PROGRAM:</span>
-            <select name="department" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+            <select name="department" class="form-select form-select-sm" style="width: auto;"
+                onchange="this.form.submit()">
                 <option value="">All Programs</option>
                 <?php foreach ($departments as $dept): ?>
                     <option value="<?= htmlspecialchars($dept) ?>" <?= $department === $dept ? 'selected' : '' ?>>
@@ -49,7 +51,8 @@
             </select>
 
             <span class="small fw-semibold text-secondary ms-1">SCHOOL YEAR:</span>
-            <select name="school_year" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+            <select name="school_year" class="form-select form-select-sm" style="width: auto;"
+                onchange="this.form.submit()">
                 <?php foreach ($schoolYears as $sy): ?>
                     <option value="<?= htmlspecialchars($sy) ?>" <?= $schoolYear === $sy ? 'selected' : '' ?>>
                         <?= htmlspecialchars($sy) ?>
@@ -58,7 +61,8 @@
             </select>
 
             <span class="small fw-semibold text-secondary ms-1">SEMESTER:</span>
-            <select name="semester" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+            <select name="semester" class="form-select form-select-sm" style="width: auto;"
+                onchange="this.form.submit()">
                 <?php foreach ($semesters as $sem): ?>
                     <option value="<?= htmlspecialchars($sem) ?>" <?= $semester === $sem ? 'selected' : '' ?>>
                         <?= htmlspecialchars($sem) ?>
@@ -75,7 +79,8 @@
 
     <!-- 4. SUBJECT-BY-SUBJECT LIST -->
     <div class="card border rounded-3 shadow-sm bg-white mb-3">
-        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div
+            class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="m-0 fw-bold marsu-maroon-text">
                 <i class="bi bi-journal-text me-1"></i> Subject Performance List
             </h6>
@@ -113,15 +118,18 @@
                                 <td class="title-cell">
                                     <div class="fw-semibold text-dark"><?= htmlspecialchars($row['course_title']) ?></div>
                                     <small class="text-muted">
-                                        <i class="bi bi-person me-1"></i><?= htmlspecialchars($row['instructor'] ?? 'Faculty Instructor') ?>
+                                        <i
+                                            class="bi bi-person me-1"></i><?= htmlspecialchars($row['instructor'] ?? 'Faculty Instructor') ?>
                                     </small>
                                 </td>
                                 <td>
-                                    <span class="badge bg-light text-dark border"><?= htmlspecialchars($row['department'] ?? 'General') ?></span>
+                                    <span
+                                        class="badge bg-light text-dark border"><?= htmlspecialchars($row['department'] ?? 'General') ?></span>
                                 </td>
                                 <td class="text-center fw-medium"><?= number_format($row['units'] ?? 3.0, 1) ?></td>
                                 <td class="text-center fw-semibold"><?= number_format($row['enrolled'] ?? 0) ?></td>
-                                <td class="text-center fw-bold <?= ($row['mean_gpa'] ?? 0) > 3.0 ? 'text-danger' : 'text-primary' ?>">
+                                <td
+                                    class="text-center fw-bold <?= ($row['mean_gpa'] ?? 0) > 3.0 ? 'text-danger' : 'text-primary' ?>">
                                     <?= number_format($row['mean_gpa'] ?? 0, 2) ?>
                                 </td>
                                 <td class="text-center">

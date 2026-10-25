@@ -1,12 +1,30 @@
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
-        .marsu-maroon-bg { background-color: #58111a !important; color: #fff !important; }
-        .marsu-maroon-text { color: #58111a !important; }
-        .kpi-border-success { border-left: 4px solid #198754 !important; }
-        .kpi-border-primary { border-left: 4px solid #0d6efd !important; }
-        .kpi-border-warning { border-left: 4px solid #ffc107 !important; }
-        .kpi-border-info { border-left: 4px solid #0dcaf0 !important; }
+        .marsu-maroon-bg {
+            background-color: #58111a !important;
+            color: #fff !important;
+        }
+
+        .marsu-maroon-text {
+            color: #58111a !important;
+        }
+
+        .kpi-border-success {
+            border-left: 4px solid #198754 !important;
+        }
+
+        .kpi-border-primary {
+            border-left: 4px solid #0d6efd !important;
+        }
+
+        .kpi-border-warning {
+            border-left: 4px solid #ffc107 !important;
+        }
+
+        .kpi-border-info {
+            border-left: 4px solid #0dcaf0 !important;
+        }
     </style>
 
     <!-- Header -->
@@ -15,7 +33,8 @@
             <h6 class="fw-bold marsu-maroon-text mb-0 text-nowrap">
                 <i class="bi bi-trophy-fill me-1"></i> Student Success & Honor Candidate Reports
             </h6>
-            <small class="text-muted">Tracking Dean's Listers, academic achievers, and timely graduation candidate metrics.</small>
+            <small class="text-muted">Tracking Dean's Listers, academic achievers, and timely graduation candidate
+                metrics.</small>
         </div>
 
         <div class="d-flex gap-2 align-items-center flex-wrap ms-auto">
@@ -63,13 +82,16 @@
                         ['code' => 'BAPoS', 'name' => 'BA Political Science', 'pres' => 7, 'dean' => 30, 'total' => 37],
                     ];
                     foreach ($honors as $row):
-                    ?>
+                        ?>
                         <tr>
                             <td class="ps-3 fw-bold text-dark font-monospace"><?= htmlspecialchars($row['code']) ?></td>
                             <td><?= htmlspecialchars($row['name']) ?></td>
-                            <td class="text-center font-monospace text-success fw-bold"><?= number_format($row['pres']) ?></td>
-                            <td class="text-center font-monospace text-primary fw-bold"><?= number_format($row['dean']) ?></td>
-                            <td class="text-center fw-bold text-success pe-3 font-monospace"><?= number_format($row['total']) ?></td>
+                            <td class="text-center font-monospace text-success fw-bold"><?= number_format($row['pres']) ?>
+                            </td>
+                            <td class="text-center font-monospace text-primary fw-bold"><?= number_format($row['dean']) ?>
+                            </td>
+                            <td class="text-center fw-bold text-success pe-3 font-monospace">
+                                <?= number_format($row['total']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

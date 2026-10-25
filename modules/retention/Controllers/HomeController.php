@@ -247,14 +247,57 @@ class HomeController
                 $status = trim($_POST['status'] ?? 'Present');
                 $remarks = trim($_POST['remarks'] ?? '');
 
+                // 1. Look up subject_id
+                $subjRow = Database::fetchOne("SELECT id FROM `subjects` WHERE `code` = ? LIMIT 1", [$subjectCode]);
+                $subjectId = $subjRow['id'] ?? null;
+
+                // 2. Look up active academic year and semester
+                $activeAY = Database::fetchOne("SELECT id FROM `academic_years` WHERE `is_active` = 1 LIMIT 1");
+                $ayId = $activeAY['id'] ?? 3;
+                $activeSem = Database::fetchOne("SELECT id FROM `semesters` WHERE `academic_year_id` = ? AND `is_active` = 1 LIMIT 1", [$ayId]);
+                $semId = $activeSem['id'] ?? 7;
+
+                // 3. Insert into dedicated ret_attendance_records table
+                Database::insert('ret_attendance_records', [
+                    'student_id'       => $studentId,
+                    'subject_id'       => $subjectId,
+                    'subject_code'     => $subjectCode,
+                    'academic_year_id' => $ayId,
+                    'semester_id'      => $semId,
+                    'session_date'     => $sessionDate,
+                    'status'           => $status,
+                    'remarks'          => $remarks,
+                    'logged_by'        => $userId,
+                    'created_at'       => date('Y-m-d H:i:s')
+                ]);
+
+                // 4. Activity log in ret_records
                 Database::insert('ret_records', [
-                    'title' => "Attendance: " . ($subjectCode ?: 'General') . " - {$status} for Student {$studentId}",
+                    'title' => "Attendance: {$subjectCode} - {$status} for Student {$studentId}",
                     'description' => "Date: {$sessionDate} | Status: {$status} | Notes: {$remarks}",
                     'status' => 'active',
                     'created_by' => $userId,
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
-                Session::flash('success', 'Roll-call attendance session logged successfully.');
+
+                // 5. Activity log if unexcused absence
+                if ($status === 'Absent') {
+                    $unexcusedCount = (int) (Database::fetchColumn(
+                        "SELECT COUNT(*) FROM `ret_attendance_records` WHERE `student_id` = ? AND `status` = 'Absent' AND `deleted_at` IS NULL",
+                        [$studentId]
+                    ) ?: 0);
+                    if ($unexcusedCount >= 4) {
+                        Database::insert('ret_records', [
+                            'title' => "Absence Warning: Student {$studentId} reached {$unexcusedCount} unexcused cuts",
+                            'description' => "Student {$studentId} has exceeded the standard attendance warning limit in {$subjectCode}.",
+                            'status' => 'pending',
+                            'created_by' => $userId,
+                            'created_at' => date('Y-m-d H:i:s')
+                        ]);
+                    }
+                }
+
+                Session::flash('success', 'Attendance record saved successfully.');
                 redirect(url('retention/attendancerecords'));
                 return;
             }
@@ -1370,31 +1413,64 @@ class HomeController
         $department = trim($_GET['department'] ?? '');
         $yearLevel = trim($_GET['year_level'] ?? '');
         $section = trim($_GET['section'] ?? '');
+        $subjectCode = trim($_GET['subject_code'] ?? '');
+        $complianceFilter = trim($_GET['compliance'] ?? '');
         $search = trim($_GET['q'] ?? '');
 
+        // 1. Fetch Active Academic Year & Semester
+        $activeYear = Database::fetchOne("SELECT id, code, label FROM `academic_years` WHERE `is_active` = 1 LIMIT 1");
+        $ayId = (int) ($activeYear['id'] ?? 3);
+        $ayLabel = $activeYear['label'] ?? 'Academic Year 2026-2027';
+
+        $activeSem = Database::fetchOne("SELECT id, code, name FROM `semesters` WHERE `academic_year_id` = ? AND `is_active` = 1 LIMIT 1", [$ayId]);
+        $semId = (int) ($activeSem['id'] ?? 7);
+        $semName = $activeSem['name'] ?? '1st Semester';
+
+        // 2. Reference Programs, Sections, and Subjects
         $departments = [];
         $sections = [];
+        $subjects = [];
         try {
             $deptRows = Database::fetchAll("SELECT DISTINCT `code` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
             $departments = array_column($deptRows, 'code');
             $secRows = Database::fetchAll("SELECT DISTINCT `name` FROM `sections` WHERE `deleted_at` IS NULL ORDER BY `name` ASC");
             $sections = array_column($secRows, 'name');
+            $subjects = Database::fetchAll("SELECT id, code, title FROM `subjects` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
         } catch (\Throwable $e) {
             $departments = ['BSIS', 'BSTM', 'BEED', 'BAPoS', 'BSCS', 'ACT'];
+            $sections = ['BSIS 1st Year', 'BSIS 2nd Year', 'BSTM 1st Year'];
+            $subjects = [];
         }
 
+        // 3. Query Real Student Attendance Records
         $attendanceList = [];
         try {
             $sql = "SELECT s.id, s.student_number,
                            CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) AS full_name,
                            COALESCE(p.code, 'N/A') AS program_code,
                            s.year_level,
-                           COALESCE(sec.name, 'A') AS section_name
+                           COALESCE(sec.name, 'A') AS section_name,
+                           COUNT(att.id) AS total_sessions,
+                           SUM(CASE WHEN att.status = 'Present' THEN 1 ELSE 0 END) AS present_count,
+                           SUM(CASE WHEN att.status = 'Absent' THEN 1 ELSE 0 END) AS absent_count,
+                           SUM(CASE WHEN att.status = 'Excused' THEN 1 ELSE 0 END) AS excused_count,
+                           SUM(CASE WHEN att.status = 'Late' THEN 1 ELSE 0 END) AS late_count,
+                           COUNT(DISTINCT att.subject_code) AS enrolled_courses_count
                     FROM `students` s
                     LEFT JOIN `programs` p ON s.program_id = p.id
                     LEFT JOIN `sections` sec ON s.section_id = sec.id
-                    WHERE s.deleted_at IS NULL";
-            $params = [];
+                    LEFT JOIN `ret_attendance_records` att ON att.student_id = s.student_number
+                        AND att.deleted_at IS NULL
+                        AND att.academic_year_id = ?
+                        AND att.semester_id = ?";
+            $params = [$ayId, $semId];
+
+            if (!empty($subjectCode)) {
+                $sql .= " AND att.subject_code = ?";
+                $params[] = $subjectCode;
+            }
+
+            $sql .= " WHERE s.deleted_at IS NULL";
 
             if (!empty($search)) {
                 $sql .= " AND (s.student_number LIKE ? OR s.first_name LIKE ? OR s.last_name LIKE ? OR CONCAT(s.first_name, ' ', s.last_name) LIKE ?)";
@@ -1417,22 +1493,59 @@ class HomeController
                 $params[] = $section;
             }
 
-            $sql .= " ORDER BY s.id ASC";
+            $sql .= " GROUP BY s.id ORDER BY absent_count DESC, s.last_name ASC";
             $rawStudents = Database::fetchAll($sql, $params);
 
             foreach ($rawStudents as $std) {
-                $seed = (int) $std['id'];
-                $totalSessions = 30;
-                $absentCount = ($seed % 17 === 0) ? 7 : (($seed % 7 === 0) ? 4 : ($seed % 3));
-                $excusedCount = ($seed % 5 === 0) ? 2 : (($seed % 9 === 0) ? 1 : 0);
-                $presentCount = max(0, $totalSessions - $absentCount - $excusedCount);
-                $attendanceRate = round(($presentCount + ($excusedCount * 0.5)) / $totalSessions * 100, 1);
+                $totalSessions = (int) ($std['total_sessions'] ?? 0);
+                $presentCount = (int) ($std['present_count'] ?? 0);
+                $absentCount = (int) ($std['absent_count'] ?? 0);
+                $excusedCount = (int) ($std['excused_count'] ?? 0);
+                $lateCount = (int) ($std['late_count'] ?? 0);
+                $coursesCount = max(1, (int) ($std['enrolled_courses_count'] ?? 1));
+
+                if ($totalSessions > 0) {
+                    $attendanceRate = round((($presentCount + ($lateCount * 0.75) + $excusedCount) / $totalSessions) * 100, 1);
+                    $termAllowableCuts = max(3, (int) round($totalSessions * 0.20));
+                    $remainingCuts = max(0, $termAllowableCuts - $absentCount);
+
+                    if ($absentCount >= $termAllowableCuts || $attendanceRate < 80.0) {
+                        $complianceStatus = 'Critical Risk';
+                        $complianceBadge = 'bg-danger-subtle text-danger border border-danger';
+                        $chedNote = 'Policy Exceeded (>20% Cuts)';
+                    } elseif ($absentCount >= ($termAllowableCuts - 1) || $attendanceRate < 88.0) {
+                        $complianceStatus = 'Monitored';
+                        $complianceBadge = 'bg-warning-subtle text-dark border border-warning';
+                        $chedNote = $remainingCuts . ' cut' . ($remainingCuts == 1 ? '' : 's') . ' remaining';
+                    } else {
+                        $complianceStatus = 'Compliant';
+                        $complianceBadge = 'bg-success-subtle text-success border border-success';
+                        $chedNote = 'In Good Standing';
+                    }
+                } else {
+                    $attendanceRate = null;
+                    $complianceStatus = 'No Logs Yet';
+                    $complianceBadge = 'bg-light text-secondary border';
+                    $chedNote = 'No sessions recorded';
+                }
 
                 $std['total_sessions'] = $totalSessions;
                 $std['present_count'] = $presentCount;
                 $std['absent_count'] = $absentCount;
                 $std['excused_count'] = $excusedCount;
+                $std['late_count'] = $lateCount;
                 $std['attendance_rate'] = $attendanceRate;
+                $std['enrolled_courses_count'] = $coursesCount;
+                $std['compliance_status'] = $complianceStatus;
+                $std['compliance_badge'] = $complianceBadge;
+                $std['ched_note'] = $chedNote;
+
+                if (!empty($complianceFilter)) {
+                    if ($complianceFilter === 'chronic' && $complianceStatus !== 'Critical Risk') continue;
+                    if ($complianceFilter === 'monitored' && $complianceStatus !== 'Monitored') continue;
+                    if ($complianceFilter === 'compliant' && $complianceStatus !== 'Compliant') continue;
+                }
+
                 $attendanceList[] = $std;
             }
         } catch (\Throwable $e) {
@@ -1440,9 +1553,11 @@ class HomeController
         }
 
         $totalStudents = count($attendanceList);
-        $cohortRate = $totalStudents > 0 ? round(array_sum(array_column($attendanceList, 'attendance_rate')) / $totalStudents, 1) : 91.8;
-        $chronicCount = count(array_filter($attendanceList, fn($s) => ($s['attendance_rate'] ?? 100) < 80.0));
-        $excusedCount = array_sum(array_column($attendanceList, 'excused_count'));
+        $activeWithLogs = array_filter($attendanceList, fn($s) => ($s['total_sessions'] ?? 0) > 0);
+        $cohortRate = count($activeWithLogs) > 0 ? round(array_sum(array_column($activeWithLogs, 'attendance_rate')) / count($activeWithLogs), 1) : 0.0;
+        $criticalCount = count(array_filter($attendanceList, fn($s) => ($s['compliance_status'] ?? '') === 'Critical Risk'));
+        $monitoredCount = count(array_filter($attendanceList, fn($s) => ($s['compliance_status'] ?? '') === 'Monitored'));
+        $compliantCount = count(array_filter($attendanceList, fn($s) => ($s['compliance_status'] ?? '') === 'Compliant'));
 
         $page = max(1, (int) ($_GET['page'] ?? 1));
         $perPage = 20;
@@ -1456,21 +1571,27 @@ class HomeController
             'user' => $user,
             'crumbs' => [
                 'Retention (ISREMS)' => url('retention'),
-                'Academic Monitoring' => '',
+                'Attendance & Engagement' => '',
                 'Attendance Records' => ''
             ],
             'attendanceList' => $paginatedAttendance,
             'pagination' => $pagination,
             'departments' => $departments,
             'sections' => $sections,
+            'subjects' => $subjects,
             'department' => $department,
             'yearLevel' => $yearLevel,
             'section' => $section,
+            'subjectCode' => $subjectCode,
+            'complianceFilter' => $complianceFilter,
             'search' => $search,
             'cohortRate' => $cohortRate,
-            'chronicCount' => $chronicCount,
-            'excusedCount' => $excusedCount,
-            'totalStudents' => $totalStudents
+            'criticalCount' => $criticalCount,
+            'monitoredCount' => $monitoredCount,
+            'compliantCount' => $compliantCount,
+            'totalStudents' => $totalStudents,
+            'ayLabel' => $ayLabel,
+            'semName' => $semName
         ]);
     }
 

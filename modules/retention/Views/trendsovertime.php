@@ -1,12 +1,30 @@
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
-        .marsu-maroon-bg { background-color: #58111a !important; color: #fff !important; }
-        .marsu-maroon-text { color: #58111a !important; }
-        .kpi-border-success { border-left: 4px solid #198754 !important; }
-        .kpi-border-primary { border-left: 4px solid #0d6efd !important; }
-        .kpi-border-info { border-left: 4px solid #0dcaf0 !important; }
-        .kpi-border-warning { border-left: 4px solid #ffc107 !important; }
+        .marsu-maroon-bg {
+            background-color: #58111a !important;
+            color: #fff !important;
+        }
+
+        .marsu-maroon-text {
+            color: #58111a !important;
+        }
+
+        .kpi-border-success {
+            border-left: 4px solid #198754 !important;
+        }
+
+        .kpi-border-primary {
+            border-left: 4px solid #0d6efd !important;
+        }
+
+        .kpi-border-info {
+            border-left: 4px solid #0dcaf0 !important;
+        }
+
+        .kpi-border-warning {
+            border-left: 4px solid #ffc107 !important;
+        }
     </style>
 
     <!-- Header -->
@@ -15,7 +33,8 @@
             <h6 class="fw-bold marsu-maroon-text mb-0 text-nowrap">
                 <i class="bi bi-graph-up-arrow me-1"></i> Multi-Year Longitudinal Trends & Predictive Analytics
             </h6>
-            <small class="text-muted">Comparative historical analysis of student retention, GPA trajectories, and intervention outcomes across academic years.</small>
+            <small class="text-muted">Comparative historical analysis of student retention, GPA trajectories, and
+                intervention outcomes across academic years.</small>
         </div>
 
         <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
@@ -51,15 +70,20 @@
                         ['year' => 'AY 2024-2025', 'enrolled' => 798, 'gwa' => 2.23, 'retention' => 94.1, 'dropout' => 5.9, 'success' => 83.7],
                     ];
                     foreach ($trends as $row):
-                    ?>
+                        ?>
                         <tr>
                             <td class="ps-3 fw-bold text-dark"><?= htmlspecialchars($row['year']) ?></td>
                             <td class="text-center font-monospace"><?= number_format($row['enrolled']) ?></td>
                             <td class="text-center font-monospace"><?= number_format($row['gwa'], 2) ?></td>
-                            <td class="text-center fw-bold text-success font-monospace"><?= number_format($row['retention'], 1) ?>%</td>
-                            <td class="text-center font-monospace text-danger"><?= number_format($row['dropout'], 1) ?>%</td>
-                            <td class="text-center fw-bold text-primary pe-3 font-monospace"><?= number_format($row['success'], 1) ?>%</td>
-                        </tr>
+                            <td class="text-center fw-bold text-success font-monospace">
+                            
+                                <?= number_format($row['retention'], 1) ?>%</td>
+                            <td class="text-center font-monospace text-danger"><?= number_format($row['dropout'], 1) ?>%
+                            </td>
+
+                                                        <td class="text-center fw-bold text-primary pe-3 font-monospace">
+                                    <?= number_format($row['success'], 1) ?>%</td>
+                            </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>

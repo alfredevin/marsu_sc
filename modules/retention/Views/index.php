@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: SPAMS Core Overview (Modules 1 - 3)
+ * View: Main Dashboard & Analytics Overview (index.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <!-- Local Chart.js Vendor Asset for Module Dashboard -->
 <script src="<?= asset('assets/vendor/chart.js/chart.umd.min.js') ?>"></script>
 

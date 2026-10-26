@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 2 - Academic Monitoring
+ * View: Academic Progress Reports & Curriculum Checklist (progressreports.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>

@@ -264,7 +264,7 @@ class HomeController
     {
         $user = Auth::user();
         View::render('welfare/Views/financial-assistance-records', [
-            'title' => 'Financial assistance records',
+            'title' => 'Financial assistance recordsdss',
             'slug'  => 'welfare'
         ]);
     }

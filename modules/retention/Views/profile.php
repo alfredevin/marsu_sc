@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 1 - Student Information Management
+ * View: Comprehensive Student Profile (profile.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -1024,7 +1035,7 @@
                 <!-- Search Input na may Instant Filter & Clear Support -->
                 <div class="input-group input-group-sm" style="width: 220px;">
                     <input type="search" id="searchInput" name="q" class="form-control" placeholder="Search ID / Name..."
-                        value="<?= htmlspecialchars($search ?? '') ?>" oninput="handleSearchInput(this)" autocomplete="off">
+                        value="<?= htmlspecialchars($search ?? '') ?>" autocomplete="off">
                     <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                 </div>
 
@@ -1138,37 +1149,8 @@
                 </tbody>
             </table>
         </div>
-
-        <script>
-            const hadServerQuery = <?= !empty($search) ? 'true' : 'false' ?>;
-
-            function handleSearchInput(input) {
-                const query = input.value.trim().toLowerCase();
-                const rows = document.querySelectorAll('.student-row');
-
-                rows.forEach(row => {
-                    const text = row.innerText.toLowerCase();
-                    row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
-                });
-
-                if (query === '' && hadServerQuery) {
-                    const url = new URL(window.location.href);
-                    url.searchParams.delete('q');
-                    window.location.href = url.toString();
-                }
-            }
-
-            const searchBox = document.getElementById('searchInput');
-            if (searchBox) {
-                searchBox.addEventListener('search', function () {
-                    if (this.value === '' && hadServerQuery) {
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete('q');
-                        window.location.href = url.toString();
-                    }
-                });
-            }
-        </script>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
 
     <?php endif; ?>
 

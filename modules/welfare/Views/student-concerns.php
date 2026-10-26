@@ -1,4 +1,4 @@
-<!-- Student Concerns & Health Records Management -->
+<!-- Student Concerns & Health Records Management (Single-Row Aligned Controls) -->
 <div class="p-3 p-md-4" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -23,7 +23,7 @@
         /* Uncompressed Table with Generous Cell Padding */
         .uncompressed-table {
             width: 100% !important;
-            min-width: 1220px; /* Guarantees horizontal breathing room for all columns */
+            min-width: 1220px;
             border-collapse: separate;
             border-spacing: 0;
         }
@@ -94,7 +94,7 @@
             color: #6c757d;
         }
 
-        /* Spacious Toolbar Controls */
+        /* Spacious Toolbar Controls Card */
         .toolbar-card {
             border: 1px solid #eaeaea !important;
             background-color: #fdfdfd !important;
@@ -103,18 +103,17 @@
             margin-bottom: 1.75rem !important;
         }
 
-        /* Pill Search Input with Generous Internal Cushioning */
+        /* Search Pill Input - Fully Aligned & Flex Growing */
         .search-pill-wrapper {
             background-color: #ffffff;
             border: 1.5px solid #e2d8d8;
             border-radius: 50rem !important;
-            padding: 8px 20px;
+            padding: 7px 18px;
             display: flex;
             align-items: center;
             transition: all 0.2s ease-in-out;
-            min-width: 300px;
+            min-width: 240px;
             flex-grow: 1;
-            max-width: 420px;
         }
 
         .search-pill-wrapper:focus-within {
@@ -128,7 +127,7 @@
             background: transparent !important;
             box-shadow: none !important;
             outline: none !important;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: #495057;
             width: 100%;
         }
@@ -136,8 +135,8 @@
         /* Filter Select Dropdowns */
         .filter-select {
             width: auto !important;
-            min-width: 170px;
-            padding: 6px 12px !important;
+            min-width: 160px;
+            padding: 7px 12px !important;
             font-size: 0.875rem !important;
             border-radius: 8px !important;
         }
@@ -187,7 +186,7 @@
             display: inline-block !important;
         }
 
-        /* Status Badges with Roomy Padding */
+        /* Status Badges */
         .status-badge-scheduled {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
@@ -346,48 +345,49 @@
         </div>
     </div>
 
-    <!-- Filter and Search Toolbar -->
+    <!-- Filter & Search Toolbar (Search Bar, Concern Category, Follow-up Status, at Add Health Record Button ay Aligned sa Iisang Row) -->
     <div class="card toolbar-card shadow-sm">
         <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
             
-            <!-- Pill Search Input -->
-            <div class="search-pill-wrapper">
+            <!-- 1. Search Bar (Flex Growing) -->
+            <div class="search-pill-wrapper me-2">
                 <i class="bi bi-search text-muted me-2 icon-shrink-0"></i>
                 <input type="search" id="searchHealth" class="search-pill-input" placeholder="Search student name, diagnosis, or attending staff..." oninput="filterTable('searchHealth','tblHealth')" autocomplete="off">
             </div>
 
-            <!-- Toolbar Filters & Primary Action Button -->
-            <div class="d-flex flex-wrap gap-3 align-items-center ms-auto">
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Concern Category:</label>
-                    <select class="form-select form-select-sm filter-select" id="categoryFilter">
-                        <option value="">All Concern Categories</option>
-                        <option value="Mental Health">Mental Health & Psychological</option>
-                        <option value="Physical Illness">Physical Illness & Fever</option>
-                        <option value="Injury / Trauma">Sports & Physical Injury</option>
-                        <option value="Stress & Wellness">Stress & Somatic Conditions</option>
-                    </select>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Follow-up Status:</label>
-                    <select class="form-select form-select-sm filter-select" id="healthStatus" onchange="filterStatus('healthStatus','tblHealth',7)">
-                        <option value="">All Statuses</option>
-                        <option value="Scheduled">Scheduled</option>
-                        <option value="Monitoring">Monitoring</option>
-                        <option value="Cleared">Cleared</option>
-                        <option value="None needed">None needed</option>
-                    </select>
-                </div>
-
-                <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2" onclick="openModal('modalHealth')">
-                    <i class="bi bi-plus-circle icon-shrink-0"></i> Add Health Record
-                </button>
+            <!-- 2. Concern Category Filter -->
+            <div class="d-flex align-items-center gap-2">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Category:</label>
+                <select class="form-select form-select-sm filter-select" id="categoryFilter">
+                    <option value="">All Concern Categories</option>
+                    <option value="Mental Health">Mental Health & Psychological</option>
+                    <option value="Physical Illness">Physical Illness & Fever</option>
+                    <option value="Injury / Trauma">Sports & Physical Injury</option>
+                    <option value="Stress & Wellness">Stress & Somatic Conditions</option>
+                </select>
             </div>
+
+            <!-- 3. Follow-up Status Filter -->
+            <div class="d-flex align-items-center gap-2">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Follow-up:</label>
+                <select class="form-select form-select-sm filter-select" id="healthStatus" onchange="filterStatus('healthStatus','tblHealth',7)">
+                    <option value="">All Statuses</option>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Monitoring">Monitoring</option>
+                    <option value="Cleared">Cleared</option>
+                    <option value="None needed">None needed</option>
+                </select>
+            </div>
+
+            <!-- 4. Add Health Record Button -->
+            <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2" onclick="openModal('modalHealth')">
+                <i class="bi bi-plus-circle icon-shrink-0"></i> Add Health Record
+            </button>
+
         </div>
     </div>
 
-    <!-- Student Health & Categorized Concern Table with Enhanced Spacing -->
+    <!-- Student Health & Categorized Concern Table -->
     <div class="table-responsive-spaced bg-white border">
         <table class="table table-hover align-middle mb-0 uncompressed-table" id="tblHealth">
             <thead class="table-light text-uppercase small text-muted">

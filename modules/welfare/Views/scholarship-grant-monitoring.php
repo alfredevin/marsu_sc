@@ -1,4 +1,4 @@
-<!-- Financial Assistance Records Management -->
+<!-- Financial Assistance Records Management (Single-Row Aligned Controls) -->
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -20,7 +20,7 @@
         /* Flexible Table Columns - No Hard Compression */
         .uncompressed-table {
             width: 100% !important;
-            min-width: 1200px; /* Guarantees comfortable breathing room for financial columns */
+            min-width: 1200px;
             border-collapse: separate;
             border-spacing: 0;
         }
@@ -28,7 +28,7 @@
         .uncompressed-table td, 
         .uncompressed-table th {
             vertical-align: middle;
-            white-space: normal !important; /* Allows text to wrap naturally without text clipping */
+            white-space: normal !important;
             word-break: break-word;
             padding: 12px 14px !important;
             line-height: 1.45;
@@ -91,21 +91,21 @@
             color: #6c757d;
         }
 
-        /* Search Pill Input Styling */
-        .search-pill-wrapper {
-            background-color: #fcfcfd;
+        /* Shorter Search Pill Input - Fixed Width for Single Line */
+        .search-pill-wrapper-short {
+            background-color: #ffffff;
             border: 1px solid #ebdede;
             border-radius: 50rem !important;
-            padding: 6px 18px;
+            padding: 6px 14px;
             display: flex;
             align-items: center;
             transition: all 0.2s ease-in-out;
-            min-width: 280px;
-            flex-grow: 1;
-            max-width: 380px;
+            width: 220px !important;
+            max-width: 240px !important;
+            flex-shrink: 0;
         }
 
-        .search-pill-wrapper:focus-within {
+        .search-pill-wrapper-short:focus-within {
             border-color: #58111a;
             box-shadow: 0 0 0 0.15rem rgba(88, 17, 26, 0.15);
             background-color: #ffffff;
@@ -116,15 +116,18 @@
             background: transparent !important;
             box-shadow: none !important;
             outline: none !important;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             color: #495057;
             width: 100%;
         }
 
-        /* Filter Selects */
+        /* Compact Filter Select Dropdowns */
         .filter-select {
             width: auto !important;
-            min-width: 150px;
+            min-width: 140px;
+            padding: 6px 10px !important;
+            font-size: 0.85rem !important;
+            border-radius: 8px !important;
         }
 
         /* Program / Assistance Badges */
@@ -198,8 +201,8 @@
             color: #ffffff !important;
             border: 1.5px solid #3b0b11 !important;
             font-weight: 600;
-            font-size: 0.875rem;
-            padding: 7px 18px;
+            font-size: 0.85rem;
+            padding: 7px 16px;
             border-radius: 6px;
             transition: all 0.2s ease-in-out;
             white-space: nowrap;
@@ -296,44 +299,45 @@
         </div>
     </div>
 
-    <!-- Filter and Search Toolbar -->
+    <!-- Filter and Search Toolbar (Strict Single Row Alignment) -->
     <div class="card border-0 bg-light p-3 rounded-3 mb-3">
-        <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
+        <div class="d-flex flex-nowrap gap-2.5 align-items-center justify-content-between overflow-x-auto">
             
-            <!-- Pill Search Input -->
-            <div class="search-pill-wrapper">
+            <!-- 1. Search Bar -->
+            <div class="search-pill-wrapper-short">
                 <i class="bi bi-search text-muted me-2 icon-shrink-0"></i>
-                <input type="search" id="financialSearch" class="search-pill-input" placeholder="Search grant ID, student, program, or fund..." oninput="filterTable('financialSearch','financialTable')" autocomplete="off">
+                <input type="search" id="financialSearch" class="search-pill-input" placeholder="Search..." oninput="filterTable('financialSearch','financialTable')" autocomplete="off">
             </div>
 
-            <!-- Toolbar Actions & Filters -->
-            <div class="d-flex flex-wrap gap-2 align-items-center ms-auto">
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Program Type:</label>
-                    <select class="form-select form-select-sm filter-select" id="programFilter">
-                        <option value="">All Programs</option>
-                        <option value="TDP-TES">TDP-TES Grant</option>
-                        <option value="Emergency Aid">Emergency Aid</option>
-                        <option value="Student Assistantship">Student Assistantship</option>
-                        <option value="CHED Tulong Dunong">CHED Tulong Dunong</option>
-                    </select>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Disbursement Status:</label>
-                    <select class="form-select form-select-sm filter-select" id="financialStatus" onchange="filterStatus('financialStatus','financialTable',7)">
-                        <option value="">All Statuses</option>
-                        <option value="Under Review">Under Review</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Approved">Approved for Release</option>
-                        <option value="Disbursed">Disbursed</option>
-                    </select>
-                </div>
-
-                <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-1" onclick="openModal('modalNewFinancialGrant')">
-                    <i class="bi bi-plus-circle me-1 icon-shrink-0"></i> Record Financial Grant
-                </button>
+            <!-- 2. Program Type Filter -->
+            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Program Type:</label>
+                <select class="form-select form-select-sm filter-select" id="programFilter">
+                    <option value="">All Programs</option>
+                    <option value="TDP-TES">TDP-TES Grant</option>
+                    <option value="Emergency Aid">Emergency Aid</option>
+                    <option value="Student Assistantship">Student Assistantship</option>
+                    <option value="CHED Tulong Dunong">CHED Tulong Dunong</option>
+                </select>
             </div>
+
+            <!-- 3. Disbursement Status Filter -->
+            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Disbursement Status:</label>
+                <select class="form-select form-select-sm filter-select" id="financialStatus" onchange="filterStatus('financialStatus','financialTable',7)">
+                    <option value="">All Statuses</option>
+                    <option value="Under Review">Under Review</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Approved">Approved for Release</option>
+                    <option value="Disbursed">Disbursed</option>
+                </select>
+            </div>
+
+            <!-- 4. Record Financial Grant Button -->
+            <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-1 flex-shrink-0" onclick="openModal('modalNewFinancialGrant')">
+                <i class="bi bi-plus-circle me-1 icon-shrink-0"></i> Record Financial Grant
+            </button>
+
         </div>
     </div>
 

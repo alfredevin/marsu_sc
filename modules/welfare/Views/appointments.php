@@ -1,4 +1,4 @@
-<!-- Appointments & Consultations Management -->
+<!-- Appointments & Consultations Management (Single-Row Aligned Controls) -->
 <div class="p-3 p-md-4" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -23,7 +23,7 @@
         /* Uncompressed Table with Generous Cell Padding */
         .uncompressed-table {
             width: 100% !important;
-            min-width: 1200px; /* Guarantees horizontal breathing room for appointment details */
+            min-width: 1200px;
             border-collapse: separate;
             border-spacing: 0;
         }
@@ -94,7 +94,7 @@
             color: #6c757d;
         }
 
-        /* Spacious Toolbar Controls */
+        /* Spacious Toolbar Controls Card */
         .toolbar-card {
             border: 1px solid #eaeaea !important;
             background-color: #fdfdfd !important;
@@ -103,18 +103,17 @@
             margin-bottom: 1.75rem !important;
         }
 
-        /* Pill Search Input with Generous Internal Cushioning */
+        /* Search Pill Input - Fully Aligned & Flex Growing */
         .search-pill-wrapper {
             background-color: #ffffff;
             border: 1.5px solid #e2d8d8;
             border-radius: 50rem !important;
-            padding: 8px 20px;
+            padding: 7px 18px;
             display: flex;
             align-items: center;
             transition: all 0.2s ease-in-out;
-            min-width: 300px;
+            min-width: 240px;
             flex-grow: 1;
-            max-width: 420px;
         }
 
         .search-pill-wrapper:focus-within {
@@ -128,7 +127,7 @@
             background: transparent !important;
             box-shadow: none !important;
             outline: none !important;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: #495057;
             width: 100%;
         }
@@ -136,13 +135,13 @@
         /* Filter Select Dropdowns */
         .filter-select {
             width: auto !important;
-            min-width: 170px;
-            padding: 6px 12px !important;
+            min-width: 160px;
+            padding: 7px 12px !important;
             font-size: 0.875rem !important;
             border-radius: 8px !important;
         }
 
-        /* Service / Category Badges */
+        /* Service Badges */
         .badge-service {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
@@ -154,7 +153,7 @@
             display: inline-block !important;
         }
 
-        /* Status Badges with Roomy Padding */
+        /* Status Badges */
         .status-badge-scheduled {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
@@ -313,44 +312,45 @@
         </div>
     </div>
 
-    <!-- Filter and Search Toolbar -->
+    <!-- Filter & Search Toolbar (Search Bar, Service Type, Status, at Book Appointment ay Aligned sa Iisang Row) -->
     <div class="card toolbar-card shadow-sm">
         <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
             
-            <!-- Pill Search Input -->
-            <div class="search-pill-wrapper">
+            <!-- 1. Search Bar (Flex Growing) -->
+            <div class="search-pill-wrapper me-2">
                 <i class="bi bi-search text-muted me-2 icon-shrink-0"></i>
                 <input type="search" id="appointmentSearch" class="search-pill-input" placeholder="Search student, counselor, or service type..." oninput="filterTable('appointmentSearch','appointmentTable')" autocomplete="off">
             </div>
 
-            <!-- Toolbar Filters & Primary Action Button -->
-            <div class="d-flex flex-wrap gap-3 align-items-center ms-auto">
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Service Type:</label>
-                    <select class="form-select form-select-sm filter-select" id="serviceFilter">
-                        <option value="">All Services</option>
-                        <option value="Guidance Counseling">Guidance Counseling</option>
-                        <option value="Financial Aid Inquiry">Financial Aid Inquiry</option>
-                        <option value="Grievance Consultation">Grievance Consultation</option>
-                        <option value="Student Org Clearance">Student Org Clearance</option>
-                    </select>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Status:</label>
-                    <select class="form-select form-select-sm filter-select" id="appointmentStatus" onchange="filterStatus('appointmentStatus','appointmentTable',6)">
-                        <option value="">All Statuses</option>
-                        <option value="Confirmed">Confirmed</option>
-                        <option value="Pending Approval">Pending Approval</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
-                    </select>
-                </div>
-
-                <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2" onclick="openModal('modalBookAppointment')">
-                    <i class="bi bi-calendar-plus icon-shrink-0"></i> Book Appointment
-                </button>
+            <!-- 2. Service Type Filter -->
+            <div class="d-flex align-items-center gap-2">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Service Type:</label>
+                <select class="form-select form-select-sm filter-select" id="serviceFilter">
+                    <option value="">All Services</option>
+                    <option value="Guidance Counseling">Guidance Counseling</option>
+                    <option value="Financial Aid Inquiry">Financial Aid Inquiry</option>
+                    <option value="Grievance Consultation">Grievance Consultation</option>
+                    <option value="Student Org Clearance">Student Org Clearance</option>
+                </select>
             </div>
+
+            <!-- 3. Status Filter -->
+            <div class="d-flex align-items-center gap-2">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Status:</label>
+                <select class="form-select form-select-sm filter-select" id="appointmentStatus" onchange="filterStatus('appointmentStatus','appointmentTable',6)">
+                    <option value="">All Statuses</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Pending Approval">Pending Approval</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+
+            <!-- 4. Book Appointment Button -->
+            <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2" onclick="openModal('modalBookAppointment')">
+                <i class="bi bi-calendar-plus icon-shrink-0"></i> Book Appointment
+            </button>
+
         </div>
     </div>
 

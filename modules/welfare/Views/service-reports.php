@@ -1,4 +1,4 @@
-<!-- OSAS Services Analytics & Comprehensive Welfare Dashboard -->
+<!-- OSAS Services Analytics & Comprehensive Welfare Dashboard (Short Search Bar & Single Line Layout) -->
 <div class="p-3 p-md-4" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -108,30 +108,30 @@
             background-color: #58111a !important;
         }
 
-        /* Spacious Toolbar Controls */
+        /* Spacious Toolbar Controls Card */
         .toolbar-card {
             border: 1px solid #eaeaea !important;
             background-color: #fdfdfd !important;
             border-radius: 12px !important;
-            padding: 1.25rem !important;
+            padding: 1rem 1.25rem !important;
             margin-bottom: 1.75rem !important;
         }
 
-        /* Pill Search Input with Generous Cushioning */
-        .search-pill-wrapper {
+        /* Shorter Search Pill Input - Fixed Max Width for Single Line */
+        .search-pill-wrapper-short {
             background-color: #ffffff;
             border: 1.5px solid #e2d8d8;
             border-radius: 50rem !important;
-            padding: 8px 20px;
+            padding: 6px 14px;
             display: flex;
             align-items: center;
             transition: all 0.2s ease-in-out;
-            min-width: 300px;
-            flex-grow: 1;
-            max-width: 420px;
+            width: 240px !important; /* Shorter Length */
+            max-width: 260px !important;
+            flex-shrink: 0;
         }
 
-        .search-pill-wrapper:focus-within {
+        .search-pill-wrapper-short:focus-within {
             border-color: #58111a;
             box-shadow: 0 0 0 0.2rem rgba(88, 17, 26, 0.12);
             background-color: #ffffff;
@@ -142,17 +142,17 @@
             background: transparent !important;
             box-shadow: none !important;
             outline: none !important;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #495057;
             width: 100%;
         }
 
-        /* Filter Select Dropdowns */
+        /* Compact Filter Select Dropdowns */
         .filter-select {
             width: auto !important;
-            min-width: 170px;
-            padding: 6px 12px !important;
-            font-size: 0.875rem !important;
+            min-width: 150px;
+            padding: 6px 10px !important;
+            font-size: 0.85rem !important;
             border-radius: 8px !important;
         }
 
@@ -168,7 +168,7 @@
             display: inline-block !important;
         }
 
-        /* Status Badges with Roomy Padding */
+        /* Status Badges */
         .status-badge-active {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
@@ -214,8 +214,8 @@
             color: #ffffff !important;
             border: 1.5px solid #3b0b11 !important;
             font-weight: 600;
-            font-size: 0.875rem;
-            padding: 8px 20px;
+            font-size: 0.85rem;
+            padding: 7px 16px;
             border-radius: 8px;
             transition: all 0.2s ease-in-out;
             white-space: nowrap;
@@ -420,43 +420,44 @@
         </div>
     </div>
 
-    <!-- Filter and Search Toolbar -->
+    <!-- Filter & Search Toolbar (Strict Single Row Alignment with Short Search Bar) -->
     <div class="card toolbar-card shadow-sm">
-        <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
+        <div class="d-flex flex-nowrap gap-2.5 align-items-center justify-content-between overflow-x-auto">
             
-            <!-- Pill Search Input -->
-            <div class="search-pill-wrapper">
+            <!-- 1. Shorter Search Bar -->
+            <div class="search-pill-wrapper-short">
                 <i class="bi bi-search text-muted me-2 icon-shrink-0"></i>
-                <input type="search" id="analyticsSearch" class="search-pill-input" placeholder="Search service unit, module ID, or lead staff..." oninput="filterTable('analyticsSearch','serviceTable')" autocomplete="off">
+                <input type="search" id="analyticsSearch" class="search-pill-input" placeholder="Search..." oninput="filterTable('analyticsSearch','serviceTable')" autocomplete="off">
             </div>
 
-            <!-- Toolbar Filters & Export Action Button -->
-            <div class="d-flex flex-wrap gap-3 align-items-center ms-auto">
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Service Module:</label>
-                    <select class="form-select form-select-sm filter-select" id="moduleFilter">
-                        <option value="">All Services</option>
-                        <option value="Health Services">Health Services</option>
-                        <option value="Financial Assistance">Financial Assistance</option>
-                        <option value="Case Management">Case Management</option>
-                        <option value="Support Programs">Support Programs</option>
-                    </select>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Performance Status:</label>
-                    <select class="form-select form-select-sm filter-select" id="performanceStatus" onchange="filterStatus('performanceStatus','serviceTable',6)">
-                        <option value="">All Statuses</option>
-                        <option value="Active / On Track">Active / On Track</option>
-                        <option value="High Volume">High Volume</option>
-                        <option value="Pending Review">Pending Review</option>
-                    </select>
-                </div>
-
-                <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2" onclick="window.print()">
-                    <i class="bi bi-file-earmark-pdf icon-shrink-0"></i> Export Comprehensive Report
-                </button>
+            <!-- 2. Service Module Filter -->
+            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Service Module:</label>
+                <select class="form-select form-select-sm filter-select" id="moduleFilter">
+                    <option value="">All Services</option>
+                    <option value="Health Services">Health Services</option>
+                    <option value="Financial Assistance">Financial Assistance</option>
+                    <option value="Case Management">Case Management</option>
+                    <option value="Support Programs">Support Programs</option>
+                </select>
             </div>
+
+            <!-- 3. Performance Status Filter -->
+            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Performance:</label>
+                <select class="form-select form-select-sm filter-select" id="performanceStatus" onchange="filterStatus('performanceStatus','serviceTable',6)">
+                    <option value="">All Statuses</option>
+                    <option value="Active / On Track">Active / On Track</option>
+                    <option value="High Volume">High Volume</option>
+                    <option value="Pending Review">Pending Review</option>
+                </select>
+            </div>
+
+            <!-- 4. Export Button -->
+            <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2 flex-shrink-0" onclick="window.print()">
+                <i class="bi bi-file-earmark-pdf icon-shrink-0"></i> Export Comprehensive Report
+            </button>
+
         </div>
     </div>
 

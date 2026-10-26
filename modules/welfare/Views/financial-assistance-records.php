@@ -1,5 +1,5 @@
-<!-- Financial Assistance Records Management -->
-<div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
+<!-- OSAS Financial Aid & Scholarship Grant Management (Single-Row Aligned Controls) -->
+<div class="p-3 p-md-4" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
         .marsu-maroon-bg {
@@ -12,15 +12,18 @@
         }
 
         /* Responsive Table Container with Smooth Touch Scroll */
-        .table-responsive {
+        .table-responsive-spaced {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            margin-bottom: 1.75rem;
         }
 
-        /* Flexible Table Columns - No Hard Compression */
+        /* Uncompressed Table with Generous Cell Padding */
         .uncompressed-table {
             width: 100% !important;
-            min-width: 1200px; /* Guarantees comfortable breathing room for financial columns */
+            min-width: 1220px;
             border-collapse: separate;
             border-spacing: 0;
         }
@@ -28,10 +31,10 @@
         .uncompressed-table td, 
         .uncompressed-table th {
             vertical-align: middle;
-            white-space: normal !important; /* Allows text to wrap naturally without text clipping */
+            white-space: normal !important;
             word-break: break-word;
-            padding: 12px 14px !important;
-            line-height: 1.45;
+            padding: 14px 18px !important;
+            line-height: 1.5;
         }
 
         /* Enhanced Metric Cards Styling */
@@ -63,9 +66,9 @@
         }
 
         .accent-maroon::before { background-color: #58111a; }
-        .accent-warning::before { background-color: #ffc107; }
         .accent-success::before { background-color: #198754; }
         .accent-primary::before { background-color: #0d6efd; }
+        .accent-warning::before { background-color: #ffc107; }
 
         /* Soft Background Badges for Metric Icons */
         .icon-wrapper-soft {
@@ -79,9 +82,9 @@
         }
 
         .bg-soft-maroon { background-color: rgba(88, 17, 26, 0.08); color: #58111a; }
-        .bg-soft-warning { background-color: rgba(255, 193, 7, 0.15); color: #856404; }
         .bg-soft-success { background-color: rgba(25, 135, 84, 0.1); color: #198754; }
         .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+        .bg-soft-warning { background-color: rgba(255, 193, 7, 0.15); color: #856404; }
 
         .metric-label {
             font-size: 0.78rem;
@@ -91,23 +94,46 @@
             color: #6c757d;
         }
 
-        /* Search Pill Input Styling */
-        .search-pill-wrapper {
-            background-color: #fcfcfd;
-            border: 1px solid #ebdede;
+        /* Analytics Visual Card Styling */
+        .analytics-card {
+            background: #ffffff;
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            height: 100%;
+        }
+
+        .progress-bar-maroon {
+            background-color: #58111a !important;
+        }
+
+        /* Spacious Toolbar Controls Card */
+        .toolbar-card {
+            border: 1px solid #eaeaea !important;
+            background-color: #fdfdfd !important;
+            border-radius: 12px !important;
+            padding: 1rem 1.25rem !important;
+            margin-bottom: 1.75rem !important;
+        }
+
+        /* Shorter Search Pill Input - Fixed Width for Single Line */
+        .search-pill-wrapper-short {
+            background-color: #ffffff;
+            border: 1.5px solid #e2d8d8;
             border-radius: 50rem !important;
-            padding: 6px 18px;
+            padding: 6px 14px;
             display: flex;
             align-items: center;
             transition: all 0.2s ease-in-out;
-            min-width: 280px;
-            flex-grow: 1;
-            max-width: 380px;
+            width: 220px !important;
+            max-width: 240px !important;
+            flex-shrink: 0;
         }
 
-        .search-pill-wrapper:focus-within {
+        .search-pill-wrapper-short:focus-within {
             border-color: #58111a;
-            box-shadow: 0 0 0 0.15rem rgba(88, 17, 26, 0.15);
+            box-shadow: 0 0 0 0.2rem rgba(88, 17, 26, 0.12);
             background-color: #ffffff;
         }
 
@@ -116,19 +142,22 @@
             background: transparent !important;
             box-shadow: none !important;
             outline: none !important;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             color: #495057;
             width: 100%;
         }
 
-        /* Filter Selects */
+        /* Compact Filter Select Dropdowns */
         .filter-select {
             width: auto !important;
-            min-width: 150px;
+            min-width: 140px;
+            padding: 6px 10px !important;
+            font-size: 0.85rem !important;
+            border-radius: 8px !important;
         }
 
-        /* Program / Assistance Badges */
-        .badge-program {
+        /* Category Badges */
+        .badge-category {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
             padding: 4px 10px !important;
@@ -139,11 +168,11 @@
             display: inline-block !important;
         }
 
-        /* Status Badges - Uncompressed & Wrap-Protected */
+        /* Status Badges */
         .status-badge-disbursed {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
-            padding: 5px 12px !important;
+            padding: 6px 14px !important;
             border-radius: 50rem !important;
             background-color: #d4edda !important;
             color: #0f5132 !important;
@@ -153,10 +182,10 @@
             white-space: nowrap !important;
         }
 
-        .status-badge-approved {
+        .status-badge-processing {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
-            padding: 5px 12px !important;
+            padding: 6px 14px !important;
             border-radius: 50rem !important;
             background-color: #cff4fc !important;
             color: #055160 !important;
@@ -166,10 +195,10 @@
             white-space: nowrap !important;
         }
 
-        .status-badge-processing {
+        .status-badge-pending {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
-            padding: 5px 12px !important;
+            padding: 6px 14px !important;
             border-radius: 50rem !important;
             background-color: #fff3cd !important;
             color: #664d03 !important;
@@ -179,28 +208,15 @@
             white-space: nowrap !important;
         }
 
-        .status-badge-review {
-            font-size: 0.8rem !important;
-            font-weight: 600 !important;
-            padding: 5px 12px !important;
-            border-radius: 50rem !important;
-            background-color: #e2e3e5 !important;
-            color: #41464b !important;
-            border: 1px solid #ced4da !important;
-            display: inline-flex !important;
-            align-items: center;
-            white-space: nowrap !important;
-        }
-
-        /* Primary Action Button */
+        /* Action Buttons */
         .btn-maroon-primary {
             background-color: #58111a !important;
             color: #ffffff !important;
             border: 1.5px solid #3b0b11 !important;
             font-weight: 600;
-            font-size: 0.875rem;
-            padding: 7px 18px;
-            border-radius: 6px;
+            font-size: 0.85rem;
+            padding: 7px 16px;
+            border-radius: 8px;
             transition: all 0.2s ease-in-out;
             white-space: nowrap;
         }
@@ -211,8 +227,25 @@
             border-color: #24060a !important;
         }
 
+        .btn-view-maroon {
+            color: #58111a !important;
+            border: 1.5px solid #58111a !important;
+            background-color: #ffffff !important;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 6px;
+            font-size: 0.825rem;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+
+        .btn-view-maroon:hover {
+            color: #ffffff !important;
+            background-color: #58111a !important;
+        }
+
         .table-hover tbody tr:hover {
-            background-color: #fcfcfd;
+            background-color: #fafbfc;
         }
 
         .icon-shrink-0 {
@@ -221,212 +254,236 @@
     </style>
 
     <!-- Breadcrumb Navigation Header -->
-    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom flex-wrap gap-2">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom flex-wrap gap-3">
         <div class="d-flex align-items-center gap-2 flex-wrap">
-            <a href="#" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center">
-                <i class="bi bi-house me-1 icon-shrink-0"></i> Home
+            <a href="#" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center px-3 py-1.5">
+                <i class="bi bi-house me-1.5 icon-shrink-0"></i> Home
             </a>
-            <span class="text-muted">/</span>
+            <span class="text-muted opacity-50">/</span>
             <span class="small fw-bold text-secondary">STUDENT AFFAIRS (OSAS)</span>
-            <span class="text-muted">/</span>
-            <span class="small fw-bold text-secondary">STUDENT FINANCIAL SERVICES</span>
-            <span class="text-muted">/</span>
-            <span class="small fw-bold marsu-maroon-text">FINANCIAL ASSISTANCE RECORDS</span>
+            <span class="text-muted opacity-50">/</span>
+            <span class="small fw-bold text-secondary">SCHOLARSHIP & FINANCIAL AID</span>
+            <span class="text-muted opacity-50">/</span>
+            <span class="small fw-bold marsu-maroon-text">DISBURSEMENT RECORDS</span>
         </div>
     </div>
 
-    <!-- Page Title & Overview -->
-    <div class="mb-4">
-        <h4 class="fw-bold marsu-maroon-text mb-1">Financial Assistance Records</h4>
-        <p class="text-muted small mb-0">Track student grant applications, emergency stipends, aid disbursements, and fund distribution status.</p>
+    <!-- Page Title & Overview Section -->
+    <div class="mb-4 pb-1">
+        <h3 class="fw-bold marsu-maroon-text mb-2">Financial Assistance & Grant Management</h3>
+        <p class="text-muted small mb-0 lh-base" style="max-width: 850px;">
+            Manage and track institutional scholarship distributions, TDP-TES grants, emergency financial aid disbursements, and beneficiary payroll processing.
+        </p>
     </div>
 
-    <!-- Modern Summary Metrics Dashboard Cards -->
+    <!-- Executive KPI Metrics Summary Grid -->
     <div class="row g-3 mb-4">
-        <!-- Total Disbursed -->
+        <!-- Total Active Beneficiaries -->
         <div class="col-12 col-sm-6 col-lg-3">
             <div class="metric-card-enhanced accent-maroon d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="metric-label mb-1">Total Disbursed</div>
-                    <div class="fs-2 fw-bold marsu-maroon-text lh-1">₱48,000</div>
+                    <div class="metric-label mb-1">Total Beneficiaries</div>
+                    <div class="fs-2 fw-bold marsu-maroon-text lh-1">1,240</div>
+                    <div class="small text-muted mt-1" style="font-size: 0.75rem;"> Current Semester</div>
                 </div>
                 <div class="icon-wrapper-soft bg-soft-maroon ms-2">
+                    <i class="bi bi-people-fill fs-4"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Disbursed -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="metric-card-enhanced accent-success d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="metric-label mb-1">Total Disbursed</div>
+                    <div class="fs-2 fw-bold text-success lh-1">₱1.28M</div>
+                    <div class="small text-success fw-semibold mt-1" style="font-size: 0.75rem;"><i class="bi bi-check-circle me-1"></i> 88.5% Release Rate</div>
+                </div>
+                <div class="icon-wrapper-soft bg-soft-success ms-2">
                     <i class="bi bi-cash-stack fs-4"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Pending Applications -->
+        <!-- Processing Payroll -->
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="metric-card-enhanced accent-warning d-flex align-items-center justify-content-between">
+            <div class="metric-card-enhanced accent-primary d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="metric-label mb-1">Pending Review</div>
-                    <div class="fs-2 fw-bold text-dark lh-1">3</div>
+                    <div class="metric-label mb-1">In Processing</div>
+                    <div class="fs-2 fw-bold text-primary lh-1">₱185K</div>
+                    <div class="small text-muted mt-1" style="font-size: 0.75rem;"> 145 Pending Payees</div>
                 </div>
-                <div class="icon-wrapper-soft bg-soft-warning ms-2">
+                <div class="icon-wrapper-soft bg-soft-primary ms-2">
                     <i class="bi bi-hourglass-split fs-4"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Approved / For Release -->
+        <!-- Emergency Aid Fund -->
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="metric-card-enhanced accent-primary d-flex align-items-center justify-content-between">
+            <div class="metric-card-enhanced accent-warning d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="metric-label mb-1">For Release</div>
-                    <div class="fs-2 fw-bold text-primary lh-1">2</div>
+                    <div class="metric-label mb-1">Emergency Fund</div>
+                    <div class="fs-2 fw-bold text-dark lh-1">₱50K</div>
+                    <div class="small text-muted mt-1" style="font-size: 0.75rem;"> Ready Allocation</div>
                 </div>
-                <div class="icon-wrapper-soft bg-soft-primary ms-2">
-                    <i class="bi bi-wallet2 fs-4"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Disbursed Grants -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="metric-card-enhanced accent-success d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="metric-label mb-1">Completed Grants</div>
-                    <div class="fs-2 fw-bold text-success lh-1">12</div>
-                </div>
-                <div class="icon-wrapper-soft bg-soft-success ms-2">
-                    <i class="bi bi-check-circle fs-4"></i>
+                <div class="icon-wrapper-soft bg-soft-warning ms-2">
+                    <i class="bi bi-shield-plus fs-4"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Filter and Search Toolbar -->
-    <div class="card border-0 bg-light p-3 rounded-3 mb-3">
-        <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
+    <!-- Filter & Search Toolbar (Single Line: Search Bar, Program Type, Disbursement Status, Record Financial Grant) -->
+    <div class="card toolbar-card shadow-sm">
+        <div class="d-flex flex-nowrap gap-2.5 align-items-center justify-content-between overflow-x-auto">
             
-            <!-- Pill Search Input -->
-            <div class="search-pill-wrapper">
+            <!-- 1. Search Bar -->
+            <div class="search-pill-wrapper-short">
                 <i class="bi bi-search text-muted me-2 icon-shrink-0"></i>
-                <input type="search" id="financialSearch" class="search-pill-input" placeholder="Search grant ID, student, program, or fund..." oninput="filterTable('financialSearch','financialTable')" autocomplete="off">
+                <input type="search" id="grantSearch" class="search-pill-input" placeholder="Search student or grant ID..." oninput="filterTable('grantSearch','grantTable')" autocomplete="off">
             </div>
 
-            <!-- Toolbar Actions & Filters -->
-            <div class="d-flex flex-wrap gap-2 align-items-center ms-auto">
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Program Type:</label>
-                    <select class="form-select form-select-sm filter-select" id="programFilter">
-                        <option value="">All Programs</option>
-                        <option value="TDP-TES">TDP-TES Grant</option>
-                        <option value="Emergency Aid">Emergency Aid</option>
-                        <option value="Student Assistantship">Student Assistantship</option>
-                        <option value="CHED Tulong Dunong">CHED Tulong Dunong</option>
-                    </select>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Disbursement Status:</label>
-                    <select class="form-select form-select-sm filter-select" id="financialStatus" onchange="filterStatus('financialStatus','financialTable',7)">
-                        <option value="">All Statuses</option>
-                        <option value="Under Review">Under Review</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Approved">Approved for Release</option>
-                        <option value="Disbursed">Disbursed</option>
-                    </select>
-                </div>
-
-                <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-1" onclick="openModal('modalNewFinancialGrant')">
-                    <i class="bi bi-plus-circle me-1 icon-shrink-0"></i> Record Financial Grant
-                </button>
+            <!-- 2. Program Type Filter -->
+            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Program Type:</label>
+                <select class="form-select form-select-sm filter-select" id="programTypeFilter">
+                    <option value="">All Programs</option>
+                    <option value="TDP-TES">TDP-TES Grant</option>
+                    <option value="CHED StuFAP">CHED StuFAP</option>
+                    <option value="Institutional Scholarship">Institutional Scholarship</option>
+                    <option value="Emergency Financial Assistance">Emergency Assistance</option>
+                </select>
             </div>
+
+            <!-- 3. Disbursement Status Filter -->
+            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Disbursement Status:</label>
+                <select class="form-select form-select-sm filter-select" id="disbursementStatusFilter" onchange="filterStatus('disbursementStatusFilter','grantTable',6)">
+                    <option value="">All Statuses</option>
+                    <option value="Disbursed">Disbursed</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Pending Clearance">Pending Clearance</option>
+                </select>
+            </div>
+
+            <!-- 4. Record Financial Grant Button -->
+            <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2 flex-shrink-0" onclick="openModal('modalGrant')">
+                <i class="bi bi-plus-circle icon-shrink-0"></i> Record Financial Grant
+            </button>
+
         </div>
     </div>
 
-    <!-- Financial Assistance Records Table -->
-    <div class="table-responsive bg-white rounded border shadow-sm mb-3">
-        <table class="table table-hover align-middle mb-0 uncompressed-table" id="financialTable">
+    <!-- Financial Grants & Disbursement Table -->
+    <div class="table-responsive-spaced bg-white border">
+        <table class="table table-hover align-middle mb-0 uncompressed-table" id="grantTable">
             <thead class="table-light text-uppercase small text-muted">
                 <tr>
-                    <th class="ps-3 py-3" style="width: 11%;">Grant Ref No.</th>
-                    <th class="py-3" style="width: 15%;">Student Name</th>
-                    <th class="py-3" style="width: 15%;">Assistance Type</th>
-                    <th class="py-3 text-end" style="width: 11%;">Amount Grant</th>
-                    <th class="py-3" style="width: 12%;">Fund Source</th>
-                    <th class="py-3" style="width: 11%;">Disbursement Date</th>
-                    <th class="py-3 text-center" style="width: 12%;">Status</th>
-                    <th class="py-3 pe-3" style="width: 13%;">Remarks / Details</th>
+                    <th class="ps-4 py-3.5" style="width: 12%;">Grant ID</th>
+                    <th class="py-3.5" style="width: 18%;">Student Name</th>
+                    <th class="py-3.5" style="width: 18%;">Program Type</th>
+                    <th class="py-3.5 text-center" style="width: 12%;">Amount</th>
+                    <th class="py-3.5" style="width: 14%;">Disbursement Date</th>
+                    <th class="py-3.5" style="width: 14%;">Disbursing Officer</th>
+                    <th class="py-3.5 text-center" style="width: 12%;">Status</th>
+                    <th class="py-3.5 text-center pe-4" style="width: 8%;">Action</th>
                 </tr>
             </thead>
             <tbody class="small">
                 <tr>
-                    <td class="ps-3 fw-semibold text-secondary text-nowrap">FA-2026-0104</td>
-                    <td class="fw-semibold text-dark">Adamos, Mariedhen L.</td>
+                    <td class="ps-4 fw-semibold text-secondary text-nowrap">GNT-2026-089</td>
+                    <td class="fw-semibold text-dark">Reyes, Janine C.</td>
                     <td>
-                        <span class="badge-program">Emergency Aid</span>
+                        <span class="badge-category">TDP-TES Grant</span>
                     </td>
-                    <td class="text-end fw-bold text-dark text-nowrap">₱5,000.00</td>
-                    <td class="text-muted">OSAS Welfare Fund</td>
-                    <td class="text-muted text-nowrap">Oct 14, 2026</td>
+                    <td class="text-center fw-bold text-dark">₱15,000.00</td>
+                    <td class="text-muted text-nowrap">Oct 12, 2026</td>
+                    <td class="text-muted">OSAS Aid Officer</td>
                     <td class="text-center">
                         <span class="status-badge-disbursed">Disbursed</span>
                     </td>
-                    <td class="text-muted">Direct ATM credit verified</td>
+                    <td class="text-center pe-4">
+                        <button type="button" class="btn btn-view-maroon btn-sm">
+                            <i class="bi bi-eye me-1"></i> View
+                        </button>
+                    </td>
                 </tr>
                 <tr>
-                    <td class="ps-3 fw-semibold text-secondary text-nowrap">FA-2026-0103</td>
-                    <td class="fw-semibold text-dark">Ali, Kyla Diane M.</td>
+                    <td class="ps-4 fw-semibold text-secondary text-nowrap">GNT-2026-088</td>
+                    <td class="fw-semibold text-dark">Mendoza, Carlos P.</td>
                     <td>
-                        <span class="badge-program">CHED Tulong Dunong</span>
+                        <span class="badge-category">Emergency Assistance</span>
                     </td>
-                    <td class="text-end fw-bold text-dark text-nowrap">₱15,000.00</td>
-                    <td class="text-muted">CHED Grant Allotment</td>
-                    <td class="text-muted text-nowrap">Oct 12, 2026</td>
-                    <td class="text-center">
-                        <span class="status-badge-approved">Approved for Release</span>
-                    </td>
-                    <td class="text-muted">Payroll signed; scheduled release</td>
-                </tr>
-                <tr>
-                    <td class="ps-3 fw-semibold text-secondary text-nowrap">FA-2026-0102</td>
-                    <td class="fw-semibold text-dark">Almonte, Hanz Andrei R.</td>
-                    <td>
-                        <span class="badge-program">Student Assistantship</span>
-                    </td>
-                    <td class="text-end fw-bold text-dark text-nowrap">₱8,000.00</td>
-                    <td class="text-muted">University Payroll</td>
-                    <td class="text-muted text-nowrap">—</td>
+                    <td class="text-center fw-bold text-dark">₱5,000.00</td>
+                    <td class="text-muted text-nowrap">Oct 10, 2026</td>
+                    <td class="text-muted">OSAS Finance Lead</td>
                     <td class="text-center">
                         <span class="status-badge-processing">Processing</span>
                     </td>
-                    <td class="text-muted">Daily Time Record verification</td>
+                    <td class="text-center pe-4">
+                        <button type="button" class="btn btn-view-maroon btn-sm">
+                            <i class="bi bi-eye me-1"></i> View
+                        </button>
+                    </td>
                 </tr>
                 <tr>
-                    <td class="ps-3 fw-semibold text-secondary text-nowrap">FA-2026-0101</td>
-                    <td class="fw-semibold text-dark">Andaya, Patricia M.</td>
+                    <td class="ps-4 fw-semibold text-secondary text-nowrap">GNT-2026-087</td>
+                    <td class="fw-semibold text-dark">Dizon, Maria S.</td>
                     <td>
-                        <span class="badge-program">TDP-TES Grant</span>
+                        <span class="badge-category">Institutional Scholarship</span>
                     </td>
-                    <td class="text-end fw-bold text-dark text-nowrap">₱20,000.00</td>
-                    <td class="text-muted">UniFAST Budget</td>
-                    <td class="text-muted text-nowrap">—</td>
+                    <td class="text-center fw-bold text-dark">₱8,000.00</td>
+                    <td class="text-muted text-nowrap">Oct 05, 2026</td>
+                    <td class="text-muted">OSAS Aid Officer</td>
                     <td class="text-center">
-                        <span class="status-badge-review">Under Review</span>
+                        <span class="status-badge-disbursed">Disbursed</span>
                     </td>
-                    <td class="text-muted">Evaluating documentary requirements</td>
+                    <td class="text-center pe-4">
+                        <button type="button" class="btn btn-view-maroon btn-sm">
+                            <i class="bi bi-eye me-1"></i> View
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ps-4 fw-semibold text-secondary text-nowrap">GNT-2026-086</td>
+                    <td class="fw-semibold text-dark">Gonzales, Mark L.</td>
+                    <td>
+                        <span class="badge-category">CHED StuFAP</span>
+                    </td>
+                    <td class="text-center fw-bold text-dark">₱10,000.00</td>
+                    <td class="text-muted text-nowrap">Sep 28, 2026</td>
+                    <td class="text-muted">OSAS Finance Lead</td>
+                    <td class="text-center">
+                        <span class="status-badge-pending">Pending Clearance</span>
+                    </td>
+                    <td class="text-center pe-4">
+                        <button type="button" class="btn btn-view-maroon btn-sm">
+                            <i class="bi bi-eye me-1"></i> View
+                        </button>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Table Pagination / Summary Footer -->
+    <!-- Pagination & Summary Footer -->
     <div class="d-flex justify-content-between align-items-center text-muted small px-1 mb-4">
-        <span>Showing 4 of 18 financial records</span>
-        <span>Page 1 of 5</span>
+        <span>Showing 4 of 1,240 financial grant entries</span>
+        <span>Page 1 of 310</span>
     </div>
 
-    <!-- Financial Disbursement Protocol Banner -->
-    <div class="card border-0 bg-light rounded-3 p-3">
-        <div class="d-flex align-items-start gap-3">
-            <i class="bi bi-bank2 marsu-maroon-text fs-3 icon-shrink-0 mt-1"></i>
+    <!-- Financial Governance Protocol Banner -->
+    <div class="card border-0 bg-light rounded-3 p-4 shadow-sm">
+        <div class="d-flex align-items-start gap-3.5">
+            <div class="p-2 bg-white rounded-circle shadow-sm icon-shrink-0">
+                <i class="bi bi-shield-check marsu-maroon-text fs-3"></i>
+            </div>
             <div>
-                <h6 class="fw-bold text-dark mb-1">Financial Audit & Disbursement Protocol</h6>
-                <p class="text-muted small mb-0">
-                    All financial assistance allocations require verified endorsement, complete documentary requirements, budget availability verification, and official receipt or payroll sign-off prior to disbursement. Keep financial ledgers updated for internal and Commission on Audit (COA) compliance reviews.
+                <h6 class="fw-bold text-dark mb-1.5">Financial Assistance Audit & Accountability Governance</h6>
+                <p class="text-muted small mb-0 lh-base" style="max-width: 950px;">
+                    All financial grant distributions are reconciled against institutional budget allocations and Commission on Higher Education (CHED) liquidation guidelines. Direct disbursements require verified student identification and signed acknowledgement receipts.
                 </p>
             </div>
         </div>

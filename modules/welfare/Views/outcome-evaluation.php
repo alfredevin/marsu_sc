@@ -1,4 +1,4 @@
-<!-- Outcome Evaluation Management (Enhanced Spacing & Layout) -->
+<!-- Outcome Evaluation Management (Single-Row Controls & Status Badges) -->
 <div class="p-3 p-md-4" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -17,13 +17,13 @@
             -webkit-overflow-scrolling: touch;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            margin-bottom: 1.75rem; /* Spacious bottom gap before banners */
+            margin-bottom: 1.75rem;
         }
 
         /* Uncompressed Table with Generous Cell Padding */
         .uncompressed-table {
             width: 100% !important;
-            min-width: 1100px; /* Guarantees horizontal breathing room */
+            min-width: 1100px;
             border-collapse: separate;
             border-spacing: 0;
         }
@@ -33,7 +33,7 @@
             vertical-align: middle;
             white-space: normal !important;
             word-break: break-word;
-            padding: 14px 18px !important; /* Expanded padding for comfortable cell reading */
+            padding: 14px 18px !important;
             line-height: 1.5;
         }
 
@@ -42,22 +42,21 @@
             border: 1px solid #eaeaea !important;
             background-color: #fdfdfd !important;
             border-radius: 12px !important;
-            padding: 1.25rem !important; /* Increased inner container padding */
+            padding: 1.25rem !important;
             margin-bottom: 1.75rem !important;
         }
 
-        /* Pill Search Input with Generous Internal Cushioning */
+        /* Search Pill Input - Fully Aligned & Flex Growing */
         .search-pill-wrapper {
             background-color: #ffffff;
             border: 1.5px solid #e2d8d8;
             border-radius: 50rem !important;
-            padding: 8px 20px; /* Enhanced vertical & horizontal cushion */
+            padding: 7px 18px;
             display: flex;
             align-items: center;
             transition: all 0.2s ease-in-out;
-            min-width: 300px;
+            min-width: 240px;
             flex-grow: 1;
-            max-width: 420px;
         }
 
         .search-pill-wrapper:focus-within {
@@ -71,21 +70,21 @@
             background: transparent !important;
             box-shadow: none !important;
             outline: none !important;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: #495057;
             width: 100%;
         }
 
-        /* Filter Select Dropdowns with Ample Height & Spacing */
+        /* Filter Select Dropdowns */
         .filter-select {
             width: auto !important;
             min-width: 170px;
-            padding: 6px 12px !important;
+            padding: 7px 12px !important;
             font-size: 0.875rem !important;
             border-radius: 8px !important;
         }
 
-        /* Status Badges with Roomy Padding */
+        /* Highlighted Status / Recommendation Badges */
         .status-badge-effective {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
@@ -99,7 +98,20 @@
             white-space: nowrap !important;
         }
 
-        .status-badge-partial {
+        .status-badge-monitoring {
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            padding: 6px 14px !important;
+            border-radius: 50rem !important;
+            background-color: #cff4fc !important;
+            color: #055160 !important;
+            border: 1px solid #b6effb !important;
+            display: inline-flex !important;
+            align-items: center;
+            white-space: nowrap !important;
+        }
+
+        .status-badge-verifying {
             font-size: 0.8rem !important;
             font-weight: 600 !important;
             padding: 6px 14px !important;
@@ -125,14 +137,14 @@
             white-space: nowrap !important;
         }
 
-        /* Primary Action Button with Spacious Dimensions */
+        /* Primary Action Button */
         .btn-maroon-primary {
             background-color: #58111a !important;
             color: #ffffff !important;
             border: 1.5px solid #3b0b11 !important;
             font-weight: 600;
             font-size: 0.875rem;
-            padding: 8px 20px; /* Spacious button target */
+            padding: 8px 20px;
             border-radius: 8px;
             transition: all 0.2s ease-in-out;
             white-space: nowrap;
@@ -153,7 +165,7 @@
         }
     </style>
 
-    <!-- Breadcrumb Navigation Header with Generous Margins -->
+    <!-- Breadcrumb Navigation Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom flex-wrap gap-3">
         <div class="d-flex align-items-center gap-2 flex-wrap">
             <a href="#" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center px-3 py-1.5">
@@ -176,37 +188,37 @@
         </p>
     </div>
 
-    <!-- Filter and Search Toolbar with Expanded Gaps -->
+    <!-- Filter and Search Toolbar (Aligned Controls) -->
     <div class="card toolbar-card shadow-sm">
         <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
             
-            <!-- Pill Search Input -->
-            <div class="search-pill-wrapper">
+            <!-- 1. Search Bar -->
+            <div class="search-pill-wrapper me-2">
                 <i class="bi bi-search text-muted me-2 icon-shrink-0"></i>
                 <input type="search" id="outcomeSearch" class="search-pill-input" placeholder="Search case, student, or outcome..." oninput="filterTable('outcomeSearch','outcomeTable')" autocomplete="off">
             </div>
 
-            <!-- Toolbar Filters & Primary Action Button -->
-            <div class="d-flex flex-wrap gap-3 align-items-center ms-auto">
-                <div class="d-flex align-items-center gap-2">
-                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Result:</label>
-                    <select class="form-select form-select-sm filter-select" id="outcomeStatus" onchange="filterStatus('outcomeStatus','outcomeTable',5)">
-                        <option value="">All Results</option>
-                        <option value="Effective">Effective</option>
-                        <option value="Partially Effective">Partially Effective</option>
-                        <option value="Needs Further Support">Needs Further Support</option>
-                        <option value="Pending Evaluation">Pending Evaluation</option>
-                    </select>
-                </div>
-
-                <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2" onclick="addInterventionOutcome()">
-                    <i class="bi bi-plus-circle icon-shrink-0"></i> Add Evaluation
-                </button>
+            <!-- 2. Result Filter Dropdown -->
+            <div class="d-flex align-items-center gap-2">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Result / Recommendation:</label>
+                <select class="form-select form-select-sm filter-select" id="outcomeStatus" onchange="filterStatus('outcomeStatus','outcomeTable',5)">
+                    <option value="">All Results</option>
+                    <option value="Monitoring">Monitoring</option>
+                    <option value="Verifying">Verifying</option>
+                    <option value="Effective">Effective</option>
+                    <option value="Pending">Pending Evaluation</option>
+                </select>
             </div>
+
+            <!-- 3. Add Evaluation Button -->
+            <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2" onclick="addInterventionOutcome()">
+                <i class="bi bi-plus-circle icon-shrink-0"></i> Add Evaluation
+            </button>
+
         </div>
     </div>
 
-    <!-- Outcome Evaluation Table with Increased Internal & External Breathing Room -->
+    <!-- Outcome Evaluation Table with Highlighted Recommendation Badges -->
     <div class="table-responsive-spaced bg-white border">
         <table class="table table-hover align-middle mb-0 uncompressed-table" id="outcomeTable">
             <thead class="table-light text-uppercase small text-muted">
@@ -214,9 +226,9 @@
                     <th class="ps-4 py-3.5" style="width: 14%;">Evaluation ID</th>
                     <th class="py-3.5" style="width: 14%;">Case No.</th>
                     <th class="py-3.5" style="width: 18%;">Student</th>
-                    <th class="py-3.5" style="width: 18%;">Intervention</th>
-                    <th class="py-3.5" style="width: 20%;">Evaluation Date</th>
-                    <th class="py-3.5 pe-4" style="width: 18%;">Recommendations</th>
+                    <th class="py-3.5" style="width: 22%;">Intervention</th>
+                    <th class="py-3.5" style="width: 16%;">Evaluation Date</th>
+                    <th class="py-3.5 text-center pe-4" style="width: 16%;">Recommendations</th>
                 </tr>
             </thead>
             <tbody class="small">
@@ -226,7 +238,9 @@
                     <td class="fw-semibold text-dark">Santos, Paolo R.</td>
                     <td class="text-muted">Family Consultation</td>
                     <td class="text-muted text-nowrap">Oct 10, 2026</td>
-                    <td class="text-muted pe-4">Monitoring</td>
+                    <td class="text-center pe-4">
+                        <span class="status-badge-monitoring">Monitoring</span>
+                    </td>
                 </tr>
                 <tr>
                     <td class="ps-4 fw-semibold text-secondary text-nowrap">OE-2026-009</td>
@@ -234,7 +248,9 @@
                     <td class="fw-semibold text-dark">Reyes, Maricel S.</td>
                     <td class="text-muted">Financial Assistance Facilitation</td>
                     <td class="text-muted text-nowrap">Oct 08, 2026</td>
-                    <td class="text-muted pe-4">Verifying</td>
+                    <td class="text-center pe-4">
+                        <span class="status-badge-verifying">Verifying</span>
+                    </td>
                 </tr>
                 <tr>
                     <td class="ps-4 fw-semibold text-secondary text-nowrap">OE-2026-008</td>
@@ -242,13 +258,15 @@
                     <td class="fw-semibold text-dark">Dela Cruz, Angelo M.</td>
                     <td class="text-muted">Academic Coaching</td>
                     <td class="text-muted text-nowrap">—</td>
-                    <td class="text-muted pe-4">Pending</td>
+                    <td class="text-center pe-4">
+                        <span class="status-badge-pending">Pending</span>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Evaluation Checklist Notice Banner with Roomy Internal Grid & Icon Gap -->
+    <!-- Evaluation Checklist Notice Banner -->
     <div class="card border-0 bg-light rounded-3 p-4 shadow-sm">
         <div class="d-flex align-items-start gap-3.5">
             <div class="p-2 bg-white rounded-circle shadow-sm icon-shrink-0">

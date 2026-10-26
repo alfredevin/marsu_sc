@@ -1,83 +1,463 @@
- <!-- ============ INTERVENTION LOG ============ -->
-          <section class="page-section" id="page-interventions">
-            <div class="page-head">
-              <div>
-                <div class="eyebrow">Case Handling</div>
-                <h1>Intervention Documentation</h1>
-                <p>Record of guidance, health, and welfare interventions provided to students, and their outcomes.
+<!-- Intervention Documentation & Case Logs Management (Aligned Toolbar) -->
+<div class="p-3 p-md-4" style="font-family: system-ui, -apple-system, sans-serif;">
+
+    <style>
+        .marsu-maroon-bg {
+            background-color: #58111a !important;
+            color: #fff !important;
+        }
+
+        .marsu-maroon-text {
+            color: #58111a !important;
+        }
+
+        /* Responsive Table Container with Touch Scroll & Spacing */
+        .table-responsive-spaced {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            margin-bottom: 1.75rem;
+        }
+
+        /* Flexible Table Columns - Ample Horizontal Breathing Room */
+        .uncompressed-table {
+            width: 100% !important;
+            min-width: 1220px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .uncompressed-table td, 
+        .uncompressed-table th {
+            vertical-align: middle;
+            white-space: normal !important;
+            word-break: break-word;
+            padding: 14px 18px !important;
+            line-height: 1.5;
+        }
+
+        /* Enhanced Metric Cards Styling */
+        .metric-card-enhanced {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1.25rem 1.25rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .metric-card-enhanced:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Status Accent Left Bars */
+        .metric-card-enhanced::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .accent-maroon::before { background-color: #58111a; }
+        .accent-warning::before { background-color: #ffc107; }
+        .accent-primary::before { background-color: #0d6efd; }
+        .accent-success::before { background-color: #198754; }
+
+        /* Soft Background Badges for Metric Icons */
+        .icon-wrapper-soft {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .bg-soft-maroon { background-color: rgba(88, 17, 26, 0.08); color: #58111a; }
+        .bg-soft-warning { background-color: rgba(255, 193, 7, 0.15); color: #856404; }
+        .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+        .bg-soft-success { background-color: rgba(25, 135, 84, 0.1); color: #198754; }
+
+        .metric-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+        }
+
+        /* Spacious Toolbar Controls Card */
+        .toolbar-card {
+            border: 1px solid #eaeaea !important;
+            background-color: #fdfdfd !important;
+            border-radius: 12px !important;
+            padding: 1.25rem !important;
+            margin-bottom: 1.75rem !important;
+        }
+
+        /* Search Pill Input - Fully Aligned */
+        .search-pill-wrapper {
+            background-color: #ffffff;
+            border: 1.5px solid #e2d8d8;
+            border-radius: 50rem !important;
+            padding: 7px 18px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease-in-out;
+            min-width: 240px;
+            flex-grow: 1;
+        }
+
+        .search-pill-wrapper:focus-within {
+            border-color: #58111a;
+            box-shadow: 0 0 0 0.2rem rgba(88, 17, 26, 0.12);
+            background-color: #ffffff;
+        }
+
+        .search-pill-input {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
+            font-size: 0.875rem;
+            color: #495057;
+            width: 100%;
+        }
+
+        /* Filter Select Dropdowns */
+        .filter-select {
+            width: auto !important;
+            min-width: 160px;
+            padding: 7px 12px !important;
+            font-size: 0.875rem !important;
+            border-radius: 8px !important;
+        }
+
+        /* Intervention Type Badges */
+        .badge-type {
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            padding: 4px 10px !important;
+            border-radius: 6px !important;
+            background-color: #f8f9fa !important;
+            color: #495057 !important;
+            border: 1px solid #dcdcdc !important;
+            display: inline-block !important;
+        }
+
+        /* Outcome Status Badges */
+        .status-badge-monitoring {
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            padding: 6px 14px !important;
+            border-radius: 50rem !important;
+            background-color: #fff3cd !important;
+            color: #664d03 !important;
+            border: 1px solid #ffecb5 !important;
+            display: inline-flex !important;
+            align-items: center;
+            white-space: nowrap !important;
+        }
+
+        .status-badge-progress {
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            padding: 6px 14px !important;
+            border-radius: 50rem !important;
+            background-color: #cff4fc !important;
+            color: #055160 !important;
+            border: 1px solid #b6effb !important;
+            display: inline-flex !important;
+            align-items: center;
+            white-space: nowrap !important;
+        }
+
+        .status-badge-referred {
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            padding: 6px 14px !important;
+            border-radius: 50rem !important;
+            background-color: #e2e3e5 !important;
+            color: #41464b !important;
+            border: 1px solid #ced4da !important;
+            display: inline-flex !important;
+            align-items: center;
+            white-space: nowrap !important;
+        }
+
+        .status-badge-effective {
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            padding: 6px 14px !important;
+            border-radius: 50rem !important;
+            background-color: #d4edda !important;
+            color: #0f5132 !important;
+            border: 1px solid #198754 !important;
+            display: inline-flex !important;
+            align-items: center;
+            white-space: nowrap !important;
+        }
+
+        /* Primary Action Button */
+        .btn-maroon-primary {
+            background-color: #58111a !important;
+            color: #ffffff !important;
+            border: 1.5px solid #3b0b11 !important;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 8px 20px;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+
+        .btn-maroon-primary:hover {
+            background-color: #3b0b11 !important;
+            color: #ffffff !important;
+            border-color: #24060a !important;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #fafbfc;
+        }
+
+        .icon-shrink-0 {
+            flex-shrink: 0 !important;
+        }
+    </style>
+
+    <!-- Breadcrumb Navigation Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="#" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center px-3 py-1.5">
+                <i class="bi bi-house me-1.5 icon-shrink-0"></i> Home
+            </a>
+            <span class="text-muted opacity-50">/</span>
+            <span class="small fw-bold text-secondary">STUDENT AFFAIRS (OSAS)</span>
+            <span class="text-muted opacity-50">/</span>
+            <span class="small fw-bold text-secondary">CASE HANDLING</span>
+            <span class="text-muted opacity-50">/</span>
+            <span class="small fw-bold marsu-maroon-text">INTERVENTION LOG</span>
+        </div>
+    </div>
+
+    <!-- Page Title & Overview Section -->
+    <div class="mb-4 pb-1">
+        <h3 class="fw-bold marsu-maroon-text mb-2">Intervention Documentation</h3>
+        <p class="text-muted small mb-0 lh-base" style="max-width: 850px;">
+            Comprehensive record of guidance, health clinic visits, crisis management, and student welfare interventions provided to students, along with their evaluated outcomes.
+        </p>
+    </div>
+
+    <!-- Summary Metrics Dashboard Cards -->
+    <div class="row g-3 mb-4">
+        <!-- Total Interventions -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="metric-card-enhanced accent-maroon d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="metric-label mb-1">Total Interventions</div>
+                    <div class="fs-2 fw-bold marsu-maroon-text lh-1">73</div>
+                </div>
+                <div class="icon-wrapper-soft bg-soft-maroon ms-2">
+                    <i class="bi bi-journal-bookmark-fill fs-4"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active / In Progress -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="metric-card-enhanced accent-primary d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="metric-label mb-1">In Progress</div>
+                    <div class="fs-2 fw-bold text-primary lh-1">18</div>
+                </div>
+                <div class="icon-wrapper-soft bg-soft-primary ms-2">
+                    <i class="bi bi-arrow-repeat fs-4"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Under Active Monitoring -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="metric-card-enhanced accent-warning d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="metric-label mb-1">Under Monitoring</div>
+                    <div class="fs-2 fw-bold text-dark lh-1">14</div>
+                </div>
+                <div class="icon-wrapper-soft bg-soft-warning ms-2">
+                    <i class="bi bi-eye-fill fs-4"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resolved / Effective -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="metric-card-enhanced accent-success d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="metric-label mb-1">Effective / Resolved</div>
+                    <div class="fs-2 fw-bold text-success lh-1">41</div>
+                </div>
+                <div class="icon-wrapper-soft bg-soft-success ms-2">
+                    <i class="bi bi-check-circle-fill fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Search Toolbar (Lahat ng Controls ay Aligned sa Iisang Row) -->
+    <div class="card toolbar-card shadow-sm">
+        <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
+            
+            <!-- 1. Search Bar (Flex-Grow) -->
+            <div class="search-pill-wrapper me-2">
+                <i class="bi bi-search text-muted me-2 icon-shrink-0"></i>
+                <input type="search" id="searchInterventions" class="search-pill-input" placeholder="Search student name, case no, or staff..." oninput="filterTable('searchInterventions','tblInterventions')" autocomplete="off">
+            </div>
+
+            <!-- 2. Intervention Type Dropdown -->
+            <div class="d-flex align-items-center gap-2">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Type:</label>
+                <select class="form-select form-select-sm filter-select" id="typeFilter">
+                    <option value="">All Types</option>
+                    <option value="Crisis Intervention">Crisis Intervention</option>
+                    <option value="Academic Coaching">Academic Coaching</option>
+                    <option value="Financial Assistance Facilitation">Financial Assistance</option>
+                    <option value="Family Consultation">Family Consultation</option>
+                    <option value="Behavioral Contract">Behavioral Contract</option>
+                </select>
+            </div>
+
+            <!-- 3. Outcome Dropdown -->
+            <div class="d-flex align-items-center gap-2">
+                <label class="small fw-semibold text-muted mb-0 text-nowrap">Outcome:</label>
+                <select class="form-select form-select-sm filter-select" id="outcomeFilter" onchange="filterStatus('outcomeFilter','tblInterventions',6)">
+                    <option value="">All Outcomes</option>
+                    <option value="Monitoring">Monitoring</option>
+                    <option value="In progress">In progress</option>
+                    <option value="Referred out">Referred out</option>
+                    <option value="Effective">Effective</option>
+                </select>
+            </div>
+
+            <!-- 4. Log Intervention Button -->
+            <button type="button" class="btn btn-maroon-primary d-inline-flex align-items-center gap-2" onclick="openModal('modalIntervention')">
+                <i class="bi bi-plus-circle icon-shrink-0"></i> Log Intervention
+            </button>
+
+        </div>
+    </div>
+
+    <!-- Intervention Documentation Table -->
+    <div class="table-responsive-spaced bg-white border">
+        <table class="table table-hover align-middle mb-0 uncompressed-table" id="tblInterventions">
+            <thead class="table-light text-uppercase small text-muted">
+                <tr>
+                    <th class="ps-4 py-3.5" style="width: 12%;">Intervention No.</th>
+                    <th class="py-3.5" style="width: 13%;">Case No.</th>
+                    <th class="py-3.5" style="width: 18%;">Student Name</th>
+                    <th class="py-3.5" style="width: 22%;">Intervention Type</th>
+                    <th class="py-3.5" style="width: 12%;">Date Logged</th>
+                    <th class="py-3.5" style="width: 13%;">Provided By</th>
+                    <th class="py-3.5 text-center pe-4" style="width: 10%;">Outcome</th>
+                </tr>
+            </thead>
+            <tbody class="small">
+                <tr>
+                    <td class="ps-4 fw-semibold text-secondary text-nowrap">IV-0731</td>
+                    <td class="fw-semibold text-dark text-nowrap">CM-2026-0246</td>
+                    <td class="fw-semibold text-dark">Villanueva, Kim D.</td>
+                    <td>
+                        <span class="badge-type">Crisis Intervention</span>
+                    </td>
+                    <td class="text-muted text-nowrap">Sep 12, 2026</td>
+                    <td class="text-muted">J. Marasigan</td>
+                    <td class="text-center pe-4">
+                        <span class="status-badge-monitoring">Monitoring</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ps-4 fw-semibold text-secondary text-nowrap">IV-0730</td>
+                    <td class="fw-semibold text-dark text-nowrap">CM-2026-0248</td>
+                    <td class="fw-semibold text-dark">Dela Cruz, Angelo M.</td>
+                    <td>
+                        <span class="badge-type">Academic Coaching</span>
+                    </td>
+                    <td class="text-muted text-nowrap">Sep 10, 2026</td>
+                    <td class="text-muted">G. Panganiban</td>
+                    <td class="text-center pe-4">
+                        <span class="status-badge-progress">In progress</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ps-4 fw-semibold text-secondary text-nowrap">IV-0729</td>
+                    <td class="fw-semibold text-dark text-nowrap">CM-2026-0247</td>
+                    <td class="fw-semibold text-dark">Reyes, Maricel S.</td>
+                    <td>
+                        <span class="badge-type">Financial Assistance Facilitation</span>
+                    </td>
+                    <td class="text-muted text-nowrap">Sep 08, 2026</td>
+                    <td class="text-muted">E. Rodelas</td>
+                    <td class="text-center pe-4">
+                        <span class="status-badge-referred">Referred out</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ps-4 fw-semibold text-secondary text-nowrap">IV-0728</td>
+                    <td class="fw-semibold text-dark text-nowrap">CM-2026-0245</td>
+                    <td class="fw-semibold text-dark">Santos, Paolo R.</td>
+                    <td>
+                        <span class="badge-type">Family Consultation</span>
+                    </td>
+                    <td class="text-muted text-nowrap">Aug 30, 2026</td>
+                    <td class="text-muted">E. Rodelas</td>
+                    <td class="text-center pe-4">
+                        <span class="status-badge-effective">Effective</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ps-4 fw-semibold text-secondary text-nowrap">IV-0727</td>
+                    <td class="fw-semibold text-dark text-nowrap">CM-2026-0244</td>
+                    <td class="fw-semibold text-dark">Ramos, Bea J.</td>
+                    <td>
+                        <span class="badge-type">Behavioral Contract</span>
+                    </td>
+                    <td class="text-muted text-nowrap">Aug 27, 2026</td>
+                    <td class="text-muted">G. Panganiban</td>
+                    <td class="text-center pe-4">
+                        <span class="status-badge-effective">Effective</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination & Summary Footer -->
+    <div class="d-flex justify-content-between align-items-center text-muted small px-1 mb-4">
+        <span>Showing 5 of 73 intervention records</span>
+        <span>Page 1 of 15</span>
+    </div>
+
+    <!-- Intervention Protocol Notice Banner -->
+    <div class="card border-0 bg-light rounded-3 p-4 shadow-sm">
+        <div class="d-flex align-items-start gap-3.5">
+            <div class="p-2 bg-white rounded-circle shadow-sm icon-shrink-0">
+                <i class="bi bi-shield-check marsu-maroon-text fs-3"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold text-dark mb-1.5">Intervention Case Logging Guidelines</h6>
+                <p class="text-muted small mb-0 lh-base" style="max-width: 950px;">
+                    All intervention logs must contain factual descriptions, designated staff accountability, specific dates, and evaluated progress outcomes. Documented interventions form part of confidential student case records accessible only to authorized OSAS personnel and guidance officers under data privacy policies.
                 </p>
-              </div>
-              <button class="btn btn-maroon" onclick="openModal('modalIntervention')"><i class="fa-solid fa-plus"></i>
-                Log Intervention</button>
             </div>
-            <div class="section-card">
-              <div class="section-toolbar">
-                <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="searchInterventions"
-                    oninput="filterTable('searchInterventions','tblInterventions')"
-                    placeholder="Search student or case no..."></div>
-              </div>
-              <div class="table-wrap">
-                <table id="tblInterventions">
-                  <thead>
-                    <tr>
-                      <th>Intervention No.</th>
-                      <th>Case No.</th>
-                      <th>Student</th>
-                      <th>Type</th>
-                      <th>Date</th>
-                      <th>Provided By</th>
-                      <th>Outcome</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>IV-0731</td>
-                      <td>CM-2026-0246</td>
-                      <td class="cell-name">Villanueva, Kim D.</td>
-                      <td>Crisis Intervention</td>
-                      <td>Sep 12, 2026</td>
-                      <td>J. Marasigan</td>
-                      <td><span class="badge ongoing">Monitoring</span></td>
-                    </tr>
-                    <tr>
-                      <td>IV-0730</td>
-                      <td>CM-2026-0248</td>
-                      <td class="cell-name">Dela Cruz, Angelo M.</td>
-                      <td>Academic Coaching</td>
-                      <td>Sep 10, 2026</td>
-                      <td>G. Panganiban</td>
-                      <td><span class="badge ongoing">In progress</span></td>
-                    </tr>
-                    <tr>
-                      <td>IV-0729</td>
-                      <td>CM-2026-0247</td>
-                      <td class="cell-name">Reyes, Maricel S.</td>
-                      <td>Financial Assistance Facilitation</td>
-                      <td>Sep 08, 2026</td>
-                      <td>E. Rodelas</td>
-                      <td><span class="badge referred">Referred out</span></td>
-                    </tr>
-                    <tr>
-                      <td>IV-0728</td>
-                      <td>CM-2026-0245</td>
-                      <td class="cell-name">Santos, Paolo R.</td>
-                      <td>Family Consultation</td>
-                      <td>Aug 30, 2026</td>
-                      <td>E. Rodelas</td>
-                      <td><span class="badge resolved">Effective</span></td>
-                    </tr>
-                    <tr>
-                      <td>IV-0727</td>
-                      <td>CM-2026-0244</td>
-                      <td class="cell-name">Ramos, Bea J.</td>
-                      <td>Behavioral Contract</td>
-                      <td>Aug 27, 2026</td>
-                      <td>G. Panganiban</td>
-                      <td><span class="badge resolved">Effective</span></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="table-foot"><span>Showing 5 of 73 interventions</span><span>Page 1 of 15</span></div>
-            </div>
-          </section>
+        </div>
+    </div>
+
+</div>

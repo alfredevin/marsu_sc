@@ -1,5 +1,5 @@
 {
-    "name": "Student Health Profile",
+    "name": "Smart Student Health Monitoring And Clinic Management System",
     "slug": "health",
     "version": "1.0.0",
     "description": "Student health records, clinic consultations, medical checkups, and wellness monitoring strictly protected under the Data Privacy Act of 2012 (RA 10173).",
@@ -10,6 +10,11 @@
         "icon": "bi-heart-pulse-fill",
         "items": [
             {
+                "label": "Student Health Profile",
+                "icon": "bi-clipboard2-pulse",
+                "permission": "health.view",
+                "children": [
+                    {
                 "label": "Patient Registration (HSSO)",
                 "icon": "bi-file-earmark-person",
                 "route": "health",
@@ -26,7 +31,10 @@
                 "icon": "bi-bar-chart",
                 "route": "health/health-statistics",
                 "permission": "health.view"
+            }
+                ]
             },
+            
             {
                 "label": "Consultation Mgmt",
                 "icon": "bi-clipboard2-pulse",

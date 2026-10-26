@@ -385,8 +385,8 @@ class HomeController {
                         'college' => 'CIT',
                         'academic_rank' => 'Associate',
                         'research_domain' => 'AI',
-                        'badge_label' => 'Lead PI',
-                        'badge_color' => 'warning',
+                        'badge_label' => null,
+                        'badge_color' => null,
                         'orcid' => '0000-0002-1825',
                         'email' => 'mhica.rodelas@msu.edu.ph',
                         'specializations' => 'Artificial Intelligence, IoT & Sensors, Water Resources',
@@ -404,8 +404,8 @@ class HomeController {
                         'college' => 'COA',
                         'academic_rank' => 'Assistant',
                         'research_domain' => 'Agriculture',
-                        'badge_label' => 'DOST Grantee',
-                        'badge_color' => 'success',
+                        'badge_label' => null,
+                        'badge_color' => null,
                         'orcid' => '0000-0001-9231',
                         'email' => 'gabriel.ramos@msu.edu.ph',
                         'specializations' => 'Smart Agriculture, Precision Drones, Machine Learning',
@@ -423,8 +423,8 @@ class HomeController {
                         'college' => 'CSM',
                         'academic_rank' => 'Professor',
                         'research_domain' => 'Environment',
-                        'badge_label' => 'Senior Fellow',
-                        'badge_color' => 'info',
+                        'badge_label' => null,
+                        'badge_color' => null,
                         'orcid' => '0000-0003-8812',
                         'email' => 'elena.cruz@msu.edu.ph',
                         'specializations' => 'Coastal Ecology, Mangrove Systems, Climate Resilience',
@@ -442,8 +442,8 @@ class HomeController {
                         'college' => 'COE',
                         'academic_rank' => 'Associate',
                         'research_domain' => 'Energy',
-                        'badge_label' => 'Patent Holder',
-                        'badge_color' => 'warning',
+                        'badge_label' => null,
+                        'badge_color' => null,
                         'orcid' => '0000-0002-5561',
                         'email' => 'ramon.valenzuela@msu.edu.ph',
                         'specializations' => 'Renewable Energy, Nanomaterials, Photovoltaics',
@@ -461,8 +461,8 @@ class HomeController {
                         'college' => 'CIT',
                         'academic_rank' => 'Professor',
                         'research_domain' => 'AI',
-                        'badge_label' => 'Dept Chair',
-                        'badge_color' => 'secondary',
+                        'badge_label' => null,
+                        'badge_color' => null,
                         'orcid' => '0000-0001-4432',
                         'email' => 'arthur.pendelton@msu.edu.ph',
                         'specializations' => 'Cybersecurity, Cloud Computing, Distributed Systems',
@@ -480,8 +480,8 @@ class HomeController {
                         'college' => 'CHS',
                         'academic_rank' => 'Professor',
                         'research_domain' => 'Health',
-                        'badge_label' => 'URC Chairman',
-                        'badge_color' => 'gold',
+                        'badge_label' => null,
+                        'badge_color' => null,
                         'orcid' => '0000-0002-7718',
                         'email' => 'vicente.tan@msu.edu.ph',
                         'specializations' => 'Public Health, Epidemiology, Biostatistics',
@@ -783,7 +783,7 @@ class HomeController {
         ];
 
         foreach ($researchers as $r) {
-            if (!empty($r['badge_label']) && (str_contains(strtolower($r['badge_label']), 'pi') || str_contains(strtolower($r['badge_label']), 'chair') || str_contains(strtolower($r['badge_label']), 'grantee') || str_contains(strtolower($r['badge_label']), 'fellow'))) {
+            if (!empty($r['active_projects']) && (int)$r['active_projects'] > 0) {
                 $stats['active_pis']++;
             }
             $stats['total_publications'] += (int)($r['publications_count'] ?? 0);
@@ -791,7 +791,7 @@ class HomeController {
         }
 
         View::render('irimkms/Views/researchprofiles', [
-            'title'       => 'Research Profiles',
+            'title'       => 'Researcher Profile',
             'moduleName'  => 'Research Management (IRIMKMS)',
             'slug'        => 'irimkms',
             'user'        => $user,
@@ -800,7 +800,7 @@ class HomeController {
             'crumbs'      => [
                 'Research Management (IRIMKMS)' => url('irimkms'),
                 'Research Management' => '',
-                'Research Profiles' => ''
+                'Researcher Profile' => ''
             ]
         ]);
     }
@@ -819,8 +819,8 @@ class HomeController {
         $college = trim($_POST['college'] ?? 'CIT');
         $academicRank = trim($_POST['academic_rank'] ?? 'Associate');
         $researchDomain = trim($_POST['research_domain'] ?? 'AI');
-        $badgeLabel = trim($_POST['badge_label'] ?? 'Lead PI');
-        $badgeColor = trim($_POST['badge_color'] ?? 'warning');
+        $badgeLabel = trim($_POST['badge_label'] ?? '') ?: null;
+        $badgeColor = trim($_POST['badge_color'] ?? '') ?: null;
         $orcid = trim($_POST['orcid'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $specializations = trim($_POST['specializations'] ?? '');
@@ -912,7 +912,9 @@ class HomeController {
 
         $code = trim($_POST['project_code'] ?? '');
         if (!$code) {
-            $code = 'PRJ-2026-' . sprintf('%03d', rand(10, 999));
+            $lastRow = Database::fetchOne("SELECT MAX(id) as max_id FROM kmp_projects");
+            $nextNum = ((int)($lastRow['max_id'] ?? 0)) + 1;
+            $code = 'PRJ-' . date('Y') . '-' . sprintf('%03d', $nextNum);
         }
 
         $college = trim($_POST['college'] ?? 'CIT');
@@ -1317,12 +1319,20 @@ class HomeController {
 
 
     public function researchstorage(): void {
+        self::ensureTablesExist();
         $user = Auth::user();
+        $projects = [];
+        try {
+            $projects = Database::fetchAll("SELECT * FROM `kmp_projects` WHERE deleted_at IS NULL ORDER BY id DESC");
+        } catch (\Exception $e) {
+            $projects = [];
+        }
         View::render('irimkms/Views/researchstorage', [
             'title'       => 'Digital Research Storage',
             'moduleName'  => 'Research Management (IRIMKMS)',
             'slug'        => 'irimkms',
             'user'        => $user,
+            'projects'    => $projects,
             'crumbs'      => [
                 'Research Management (IRIMKMS)' => url('irimkms'),
                 'Repository & Knowledge Management (IRIMKMS)' => '',

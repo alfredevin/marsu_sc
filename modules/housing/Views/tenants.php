@@ -1,4 +1,5 @@
 <!-- Tenant Profiles & Directory View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -33,25 +34,25 @@
 <?php endif; ?>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/tenants') ?>">
-                <i class="bi bi-person-lines-fill me-1 text-gold"></i>Active Tenants
+            <a class="nav-link active" href="<?= url('housing/tenants') ?>">
+                <i class="bi bi-person-lines-fill me-1"></i>Active Tenants
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/residencyhistory') ?>">
+            <a class="nav-link" href="<?= url('housing/residencyhistory') ?>">
                 <i class="bi bi-clock-history me-1"></i>Residency History
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/bedallocation') ?>">
+            <a class="nav-link" href="<?= url('housing/bedallocation') ?>">
                 <i class="bi bi-grid-3x3-gap me-1"></i>Bed Allocation
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/roomassignment') ?>">
+            <a class="nav-link" href="<?= url('housing/roomassignment') ?>">
                 <i class="bi bi-door-closed me-1"></i>Room Assignments
             </a>
         </li>
@@ -77,9 +78,9 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
+        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
             <div class="text-muted small text-uppercase fw-bold">CICS Residents</div>
-            <div class="h3 font-weight-bold mb-0 text-primary">
+            <div class="h3 font-weight-bold mb-0 text-gold">
                 <?= count(array_filter($tenants ?? [], fn($t) => ($t['college'] ?? '') === 'CICS' || strpos($t['program'] ?? '', 'IT') !== false || strpos($t['program'] ?? '', 'Computer') !== false)) ?>
             </div>
             <div class="small text-muted mt-1">IT, CS & IS student majors</div>

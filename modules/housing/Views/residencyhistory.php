@@ -1,4 +1,5 @@
 <!-- Residency History View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -17,20 +18,20 @@
 </div>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/tenants') ?>">
+            <a class="nav-link" href="<?= url('housing/tenants') ?>">
                 <i class="bi bi-people-fill me-1"></i>Current Tenants
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/residencyhistory') ?>">
-                <i class="bi bi-clock-history me-1 text-gold"></i>Residency History
+            <a class="nav-link active" href="<?= url('housing/residencyhistory') ?>">
+                <i class="bi bi-clock-history me-1"></i>Residency History
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/roomandinventory') ?>">
+            <a class="nav-link" href="<?= url('housing/roomandinventory') ?>">
                 <i class="bi bi-door-open me-1"></i>Room & Inventory
             </a>
         </li>

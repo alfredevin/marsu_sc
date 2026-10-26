@@ -1,4 +1,5 @@
 <!-- Balance Monitoring View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -17,25 +18,25 @@
 </div>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/boardingfees') ?>">
+            <a class="nav-link" href="<?= url('housing/boardingfees') ?>">
                 <i class="bi bi-cash-coin me-1"></i>Fee Schedule
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/paymentrecords') ?>">
+            <a class="nav-link" href="<?= url('housing/paymentrecords') ?>">
                 <i class="bi bi-wallet2 me-1"></i>Payment Records
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/balancemonitoring') ?>">
-                <i class="bi bi-exclamation-diamond me-1 text-gold"></i>Balance Monitoring
+            <a class="nav-link active" href="<?= url('housing/balancemonitoring') ?>">
+                <i class="bi bi-exclamation-diamond me-1"></i>Balance Monitoring
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/receiptgeneration') ?>">
+            <a class="nav-link" href="<?= url('housing/receiptgeneration') ?>">
                 <i class="bi bi-printer me-1"></i>Receipt Generation
             </a>
         </li>
@@ -108,7 +109,7 @@
                         <td><span class="badge bg-warning text-dark">12 Days</span></td>
                         <td><span class="badge bg-warning-subtle text-warning border">SMS Reminder Sent</span></td>
                         <td class="text-end pe-3">
-                            <button class="btn btn-sm btn-outline-primary" title="Post Payment"><i class="bi bi-credit-card"></i> Pay</button>
+                            <a href="<?= url('housing/paymentrecords') ?>" class="btn btn-sm btn-accent" title="Post Payment"><i class="bi bi-credit-card me-1"></i> Pay</a>
                         </td>
                     </tr>
                     <tr>
@@ -122,7 +123,7 @@
                         <td><span class="badge bg-danger">34 Days</span></td>
                         <td><span class="badge bg-danger-subtle text-danger border">Parent Contacted</span></td>
                         <td class="text-end pe-3">
-                            <button class="btn btn-sm btn-outline-primary" title="Post Payment"><i class="bi bi-credit-card"></i> Pay</button>
+                            <a href="<?= url('housing/paymentrecords') ?>" class="btn btn-sm btn-accent" title="Post Payment"><i class="bi bi-credit-card me-1"></i> Pay</a>
                         </td>
                     </tr>
                 </tbody>

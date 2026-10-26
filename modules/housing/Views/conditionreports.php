@@ -1,4 +1,5 @@
 <!-- Condition Reports View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -14,6 +15,32 @@
             <i class="bi bi-plus-lg me-1"></i>New Inspection Checklist
         </button>
     </div>
+</div>
+
+<!-- Sub-navigation Pills -->
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/maintenancerequest') ?>">
+                <i class="bi bi-tools me-1"></i>Requests
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/repairmonitoring') ?>">
+                <i class="bi bi-speedometer2 me-1"></i>Repair Monitoring
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?= url('housing/conditionreports') ?>">
+                <i class="bi bi-clipboard2-check me-1"></i>Condition Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/servicehistory') ?>">
+                <i class="bi bi-clock-history me-1"></i>Service History
+            </a>
+        </li>
+    </ul>
 </div>
 
 <!-- Inspections Table Card -->
@@ -44,7 +71,7 @@
                     <tr>
                         <td class="ps-3 fw-bold text-dark">AUD-2026-081</td>
                         <td>Villa Marinduque Dorm (Rm 102)</td>
-                        <td><span class="badge bg-primary">Pre-Move-in Intake</span></td>
+                        <td><span class="badge badge-gold">Pre-Move-in Intake</span></td>
                         <td>Engr. R. Santos (Landlord)</td>
                         <td><span class="badge bg-success-subtle text-success border border-success">98% Pristine</span></td>
                         <td>Aug 15, 2026</td>

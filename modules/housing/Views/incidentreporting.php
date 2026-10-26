@@ -1,4 +1,5 @@
 <!-- Incident Reporting View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -30,26 +31,26 @@
 <?php endif; ?>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/announcements') ?>">
+            <a class="nav-link" href="<?= url('housing/announcements') ?>">
                 <i class="bi bi-megaphone me-1"></i>Announcements
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/residentsnotifications') ?>">
+            <a class="nav-link" href="<?= url('housing/residentsnotifications') ?>">
                 <i class="bi bi-bell me-1"></i>Notifications
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/rulesandpolicies') ?>">
+            <a class="nav-link" href="<?= url('housing/rulesandpolicies') ?>">
                 <i class="bi bi-shield-check me-1"></i>Rules & Policies
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/incidentreporting') ?>">
-                <i class="bi bi-exclamation-triangle me-1 text-gold"></i>Incident Reporting
+            <a class="nav-link active" href="<?= url('housing/incidentreporting') ?>">
+                <i class="bi bi-exclamation-triangle me-1"></i>Incident Reporting
             </a>
         </li>
     </ul>
@@ -125,7 +126,7 @@
                                     <?php if ($inc['status'] === 'Resolved'): ?>
                                         <span class="badge bg-success-subtle text-success border border-success"><i class="bi bi-check-circle me-1"></i>Resolved</span>
                                     <?php elseif ($inc['status'] === 'Referred to OSAS'): ?>
-                                        <span class="badge bg-primary-subtle text-primary border border-primary"><i class="bi bi-box-arrow-up-right me-1"></i>OSAS Case</span>
+                                        <span class="badge badge-gold"><i class="bi bi-box-arrow-up-right me-1"></i>OSAS Case</span>
                                     <?php else: ?>
                                         <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-hourglass me-1"></i><?= e($inc['status']) ?></span>
                                     <?php endif; ?>

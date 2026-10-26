@@ -1,4 +1,5 @@
 <!-- Housing Reports & Analytics View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -17,26 +18,26 @@
 </div>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing') ?>">
+            <a class="nav-link" href="<?= url('housing') ?>">
                 <i class="bi bi-building me-1"></i>Boarding Houses
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/rooms') ?>">
+            <a class="nav-link" href="<?= url('housing/rooms') ?>">
                 <i class="bi bi-door-open me-1"></i>Room Inventory
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/tenants') ?>">
+            <a class="nav-link" href="<?= url('housing/tenants') ?>">
                 <i class="bi bi-people me-1"></i>Tenant Profiles
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/reports') ?>">
-                <i class="bi bi-file-earmark-bar-graph me-1 text-gold"></i>Reports & Stats
+            <a class="nav-link active" href="<?= url('housing/reports') ?>">
+                <i class="bi bi-file-earmark-bar-graph me-1"></i>Reports & Stats
             </a>
         </li>
     </ul>

@@ -10,6 +10,92 @@
         "icon": "bi-graph-up-arrow",
         "items": [
             {
+                "label": "My Academic Record",
+                "icon": "bi-mortarboard",
+                "permission": "retention.student.portal",
+                "children": [
+                    {
+                        "label": "Snapshot",
+                        "icon": "bi-speedometer2",
+                        "route": "retention/my",
+                        "permission": "retention.student.portal"
+                    },
+                    {
+                        "label": "Profile",
+                        "icon": "bi-person-badge",
+                        "route": "retention/my/profile",
+                        "permission": "retention.student.portal"
+                    },
+                    {
+                        "label": "Grades",
+                        "icon": "bi-award",
+                        "route": "retention/my/grades",
+                        "permission": "retention.student.portal"
+                    },
+                    {
+                        "label": "Attendance",
+                        "icon": "bi-calendar-check",
+                        "route": "retention/my/attendance",
+                        "permission": "retention.student.portal"
+                    },
+                    {
+                        "label": "Deficiencies",
+                        "icon": "bi-exclamation-octagon",
+                        "route": "retention/my/deficiencies",
+                        "permission": "retention.student.portal"
+                    },
+                    {
+                        "label": "Progress",
+                        "icon": "bi-graph-up",
+                        "route": "retention/my/progress",
+                        "permission": "retention.student.portal"
+                    },
+                    {
+                        "label": "Conduct Notices",
+                        "icon": "bi-shield-exclamation",
+                        "route": "retention/my/conduct",
+                        "permission": "retention.student.portal"
+                    }
+                ]
+            },
+            {
+                "label": "Faculty Workspace",
+                "icon": "bi-person-workspace",
+                "permission": "retention.faculty.classes",
+                "children": [
+                    {
+                        "label": "Dashboard",
+                        "icon": "bi-speedometer",
+                        "route": "retention/faculty",
+                        "permission": "retention.faculty.classes"
+                    },
+                    {
+                        "label": "My Classes",
+                        "icon": "bi-collection",
+                        "route": "retention/faculty/classes",
+                        "permission": "retention.faculty.classes"
+                    },
+                    {
+                        "label": "Roll-Call",
+                        "icon": "bi-calendar-check",
+                        "route": "retention/faculty/attendance",
+                        "permission": "retention.faculty.attendance"
+                    },
+                    {
+                        "label": "My Students",
+                        "icon": "bi-people",
+                        "route": "retention/faculty/students",
+                        "permission": "retention.faculty.classes"
+                    },
+                    {
+                        "label": "Conduct Reports",
+                        "icon": "bi-flag",
+                        "route": "retention/faculty/conduct",
+                        "permission": "retention.faculty.behavior"
+                    }
+                ]
+            },
+            {
                 "label": "Student Information Management",
                 "icon": "bi-people",
                 "permission": "retention.view",
@@ -28,7 +114,7 @@
                 "permission": "retention.view",
                 "children": [
                     {
-                        "label": "Grades Tracking (Class Record)",
+                        "label": "Class Records (Read-only)",
                         "icon": "bi-pencil-square",
                         "route": "retention/gradestracking",
                         "permission": "retention.view"
@@ -83,6 +169,43 @@
                         "permission": "retention.view"
                     }
                 ]
+            },
+            {
+                "label": "Retention Administration",
+                "icon": "bi-sliders",
+                "permission": "retention.view",
+                "children": [
+                    {
+                        "label": "Class Offerings",
+                        "icon": "bi-mortarboard",
+                        "route": "retention/admin/classes",
+                        "permission": "retention.admin.classes"
+                    },
+                    {
+                        "label": "Correction Requests",
+                        "icon": "bi-check2-circle",
+                        "route": "retention/admin/corrections",
+                        "permission": "retention.admin.grades"
+                    },
+                    {
+                        "label": "Policy Settings",
+                        "icon": "bi-gear",
+                        "route": "retention/admin/settings",
+                        "permission": "retention.admin.settings"
+                    },
+                    {
+                        "label": "Grading Templates",
+                        "icon": "bi-file-earmark-ruled",
+                        "route": "retention/admin/templates",
+                        "permission": "retention.admin.settings"
+                    },
+                    {
+                        "label": "Change Log",
+                        "icon": "bi-clock-history",
+                        "route": "retention/admin/change-log",
+                        "permission": "retention.view"
+                    }
+                ]
             }
         ]
     },
@@ -90,6 +213,16 @@
         "retention.view": "View Academic Risk Dashboards & Cohort Trends",
         "retention.analyze": "Run Risk Identification Models",
         "retention.intervene": "Log Academic Remediation & Counseling Referrals",
-        "retention.export": "Export CHED Cohort Survival Analytics"
+        "retention.export": "Export CHED Cohort Survival Analytics",
+        "retention.student.portal": "Access Student Self-Service Academic Portal",
+        "retention.faculty.classes": "Manage Faculty Classes, Rosters & Class Records",
+        "retention.faculty.attendance": "Take Roll-Call Attendance for Faculty Classes",
+        "retention.faculty.behavior": "Report Conduct Incidents for Class Students",
+        "retention.admin.settings": "Manage Retention Policies & Grading Templates",
+        "retention.admin.classes": "Manage Class Offerings & Faculty Teaching Assignments",
+        "retention.admin.grades": "Review Grade Correction Requests & INC Extensions",
+        "retention.admin.attendance": "Void Erroneous Retention Attendance Records",
+        "retention.admin.conduct": "Manage Conduct Case Progression & Severity",
+        "retention.admin.profiles": "Manage Student Supplementary Retention Profiles"
     }
 }

@@ -13,6 +13,23 @@ class HomeController
 {
     public function index(): void
     {
+        // Role-Based Smart Router: Redirect student and faculty personas to their dedicated workspaces
+        if (!can('retention.view')) {
+            if (can('retention.faculty.classes')) {
+                redirect(url('retention/faculty'));
+                return;
+            }
+            if (can('retention.student.portal')) {
+                redirect(url('retention/my'));
+                return;
+            }
+            View::render('errors/403', [
+                'title'         => 'Access Forbidden (403)',
+                'permissionKey' => 'retention.view',
+            ]);
+            return;
+        }
+
         $user = Auth::user();
 
         // 1. Fetch live records from ret_records
@@ -237,7 +254,13 @@ class HomeController
     {
         $type = trim($_POST['type'] ?? 'record');
         $user = Auth::user();
-        $userId = Auth::id() ?: 1;
+        $userId = Auth::id();
+        if (!$userId) {
+            Session::flash('error', 'Authentication required.');
+            redirect(url('retention'));
+            return;
+        }
+        $userId = (int) $userId;
 
         try {
             if ($type === 'attendance') {
@@ -781,7 +804,7 @@ class HomeController
     public function gradestracking(): void
     {
         $user = Auth::user();
-        $facultyId = $user->id ?? 1;
+        $facultyId = $user['id'] ?? (int) Auth::id();
         $selectedClassId = trim($_GET['class_id'] ?? '');
 
         $facultyClasses = [];
@@ -1282,8 +1305,64 @@ class HomeController
                 $params[] = $department;
             }
 
-            $sql .= " ORDER BY s.id ASC";
-            $rawStudents = Database::fetchAll($sql, $params);
+            // 1. Fetch Real Incomplete & Failing Grades from ret_class_grades
+            $realGrades = Database::fetchAll("
+                SELECT g.id AS grade_id, g.remarks, g.inc_deadline, g.final_grade,
+                       st.student_number, CONCAT(st.last_name, ', ', st.first_name) AS full_name,
+                       COALESCE(p.code, 'N/A') AS department, st.year_level, COALESCE(sec.name, 'A') AS section,
+                       COALESCE(c.subject_code, 'SUBJ') AS course_code, 
+                       COALESCE(c.subject_title, 'Course Title') AS course_title,
+                       COALESCE(c.units, 3.0) AS units, 
+                       CONCAT(u.first_name, ' ', u.last_name) AS instructor,
+                       sem.name AS semester_name, ay.label AS academic_year_label
+                FROM `ret_class_grades` g
+                JOIN `students` st ON g.student_id = st.id
+                LEFT JOIN `programs` p ON st.program_id = p.id
+                LEFT JOIN `sections` sec ON st.section_id = sec.id
+                JOIN `ret_classes` c ON g.class_id = c.id
+                LEFT JOIN `users` u ON c.faculty_user_id = u.id
+                LEFT JOIN `semesters` sem ON c.semester_id = sem.id
+                LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
+                WHERE g.remarks IN ('INC', 'FAILED', 'DRP')
+                ORDER BY g.id DESC
+            ");
+
+            foreach ($realGrades as $rg) {
+                $rem = strtoupper($rg['remarks']);
+                $type = ($rem === 'INC') ? 'Incomplete (INC)' : (($rem === 'FAILED') ? 'Failed (5.00)' : 'Dropped (DRP)');
+                $gradeVal = ($rem === 'INC') ? 'INC' : (($rem === 'FAILED') ? '5.00' : 'DRP');
+                $resStatus = ($rem === 'INC') ? 'Pending Requirements' : (($rem === 'FAILED') ? 'Mandatory Retake' : 'Requires Re-enrollment');
+                $deadline = !empty($rg['inc_deadline']) ? date('F d, Y', strtotime($rg['inc_deadline'])) : 'Not Specified';
+
+                if (!empty($deficiencyType) && $type !== $deficiencyType) continue;
+                if (!empty($department) && $rg['department'] !== $department) continue;
+                if (!empty($courseFilter) && $rg['course_code'] !== $courseFilter) continue;
+                if (!empty($search)) {
+                    $q = strtolower($search);
+                    $m = (strpos(strtolower($rg['student_number']), $q) !== false)
+                      || (strpos(strtolower($rg['full_name']), $q) !== false)
+                      || (strpos(strtolower($rg['course_code']), $q) !== false);
+                    if (!$m) continue;
+                }
+
+                $deficienciesList[] = [
+                    'grade_id'          => (int) $rg['grade_id'],
+                    'student_id'        => $rg['student_number'],
+                    'full_name'         => $rg['full_name'],
+                    'department'        => $rg['department'],
+                    'year_level'        => $rg['year_level'] ?? 1,
+                    'section'           => $rg['section'],
+                    'course_code'       => $rg['course_code'],
+                    'course_title'      => $rg['course_title'],
+                    'units'             => (float) $rg['units'],
+                    'instructor'        => $rg['instructor'] ?: 'Faculty Instructor',
+                    'grade'             => $gradeVal,
+                    'deficiency_type'   => $type,
+                    'term_recorded'     => ($rg['semester_name'] ?? '1st Semester') . ' • ' . ($rg['academic_year_label'] ?? '2026-2027'),
+                    'resolution_status' => $resStatus,
+                    'removal_deadline'  => $deadline,
+                ];
+            }
 
             foreach ($rawStudents as $std) {
                 $stdIdNum = (int) $std['id'];
@@ -1564,6 +1643,26 @@ class HomeController
         $pagination = $this->buildPagination($totalStudents, $perPage, $page, $_GET);
         $paginatedAttendance = array_slice($attendanceList, $pagination['offset'], $perPage);
 
+        $recentSessions = [];
+        try {
+            $recentSessions = Database::fetchAll("
+                SELECT att.*, 
+                       st.first_name, st.last_name, st.student_number,
+                       COALESCE(c.subject_code, att.subject_code) AS display_subject_code,
+                       COALESCE(c.section_name, '-') AS section_name,
+                       CONCAT(u.first_name, ' ', u.last_name) AS recorded_by_name
+                FROM `ret_attendance_records` att
+                LEFT JOIN `students` st ON (att.student_id = st.student_number OR att.student_id = st.id)
+                LEFT JOIN `ret_classes` c ON att.class_id = c.id
+                LEFT JOIN `users` u ON att.logged_by = u.id
+                WHERE att.deleted_at IS NULL
+                ORDER BY att.session_date DESC, att.id DESC
+                LIMIT 50
+            ");
+        } catch (\Throwable $e) {
+            $recentSessions = [];
+        }
+
         View::render('retention/Views/attendancerecords', [
             'title' => 'Student Attendance Records & Roll-Call Monitoring',
             'moduleName' => 'Retention (ISREMS)',
@@ -1575,6 +1674,7 @@ class HomeController
                 'Attendance Records' => ''
             ],
             'attendanceList' => $paginatedAttendance,
+            'recentSessions' => $recentSessions,
             'pagination' => $pagination,
             'departments' => $departments,
             'sections' => $sections,

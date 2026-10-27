@@ -23,17 +23,15 @@ class SampleCrudController
     {
         $title = trim($_POST['title'] ?? '');
         $category = trim($_POST['category'] ?? '');
-        $location = trim($_POST['location'] ?? '');
-        $gender = trim($_POST['gender'] ?? '');
+        $location    = trim($_POST['location'] ?? '');
 
 
 
         // Database::insert() helper
         Database::insert('sample_items', [
             'title'      => $title,
-            'category'   => $category, 
-            'location'  => $location,
-            'gender' => $gender,
+            'category'   => $category,
+            'location'   => $location,
             'created_at' => date('Y-m-d H:i:s')
         ]);
         Session::flash('success', "Tagumpay na na-insert ang item: \"{$title}\"!");

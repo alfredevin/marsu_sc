@@ -2,7 +2,7 @@
     "name": "Student Retention & Academic Risk Early Warning System",
     "slug": "retention",
     "version": "1.0.0",
-    "description": "Predictive analytics tracking attendance drops, failing prelim grades, prerequisite bottlenecks, and timely guidance interventions.",
+    "description": "Student demographics profiling, academic performance tracking, and attendance & engagement monitoring.",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
     "section": "Academic Analytics",
@@ -10,7 +10,7 @@
         "icon": "bi-graph-up-arrow",
         "items": [
             {
-                "label": "Student Information Managements",
+                "label": "Student Information Management",
                 "icon": "bi-people",
                 "permission": "retention.view",
                 "children": [
@@ -18,24 +18,6 @@
                         "label": "Student Profiles",
                         "icon": "bi-person-circle",
                         "route": "retention/profile",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Academic History",
-                        "icon": "bi-clock-history",
-                        "route": "retention/academichistory",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Program and Enrollment Records",
-                        "icon": "bi-file-earmark-medical",
-                        "route": "retention/enrollmentrecords",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Demographic Information",
-                        "icon": "bi-pie-chart",
-                        "route": "retention/demographicinfo",
                         "permission": "retention.view"
                     }
                 ]
@@ -98,99 +80,6 @@
                         "label": "Behavior Records",
                         "icon": "bi-clipboard-check",
                         "route": "retention/behaviorrecords",
-                        "permission": "retention.view"
-                    }
-                ]
-            },
-            {
-                "label": "Early Warning System",
-                "icon": "bi-shield-check",
-                "permission": "retention.view",
-                "children": [
-                    {
-                        "label": "At-Risk Students",
-                        "icon": "bi-search",
-                        "route": "retention/atriskstudents",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Risk Level Classification",
-                        "icon": "bi-layers",
-                        "route": "retention/risklevelclassification",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "System Alerts",
-                        "icon": "bi-bell",
-                        "route": "retention/systemalerts",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Risk Overview",
-                        "icon": "bi-speedometer2",
-                        "route": "retention/riskoverview",
-                        "permission": "retention.view"
-                    }
-                ]
-            },
-            {
-                "label": "Intervention Management",
-                "icon": "bi-people-fill",
-                "permission": "retention.view",
-                "children": [
-                    {
-                        "label": "Advising Records",
-                        "icon": "bi-person-badge",
-                        "route": "retention/advisingrecords",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Guidance Referrals",
-                        "icon": "bi-heart-fill",
-                        "route": "retention/guidancereferrals",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Academic Support Programs",
-                        "icon": "bi-mortarboard-fill",
-                        "route": "retention/academicsupportprograms",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Intervention Results",
-                        "icon": "bi-graph-up-arrow",
-                        "route": "retention/interventionresults",
-                        "permission": "retention.view"
-                    }
-                ]
-            },
-            {
-                "label": "Reports and Analytics",
-                "icon": "bi-file-earmark-text",
-                "permission": "retention.view",
-                "children": [
-                    {
-                        "label": "Retention Rate Reports",
-                        "icon": "bi-percent",
-                        "route": "retention/retentionratereports",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "At-Risk Student Reports",
-                        "icon": "bi-person-x",
-                        "route": "retention/atriskstudentreports",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Student Success Reports",
-                        "icon": "bi-award",
-                        "route": "retention/studentsuccessreports",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Trends Over Time",
-                        "icon": "bi-graph-up",
-                        "route": "retention/trendsovertime",
                         "permission": "retention.view"
                     }
                 ]

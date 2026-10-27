@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 1 - Student Information Management
+ * View: Demographic & Socio-Economic Profile (demographicinfo.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -36,11 +47,11 @@
                 vulnerability, and guardian outreach.</small>
         </div>
 
-        <form method="GET" action="" class="d-flex gap-2 align-items-center flex-wrap ms-auto">
-            <!-- Search Input -->
-            <div class="input-group input-group-sm" style="width: 200px;">
-                <input type="search" name="q" class="form-control" placeholder="Search ID / Barangay..."
-                    value="<?= htmlspecialchars($search ?? '') ?>" autocomplete="off">
+        <form method="GET" action="" id="demoSearchForm" class="d-flex gap-2 align-items-center flex-wrap ms-auto">
+            <div class="input-group input-group-sm" style="width: 220px;">
+                <input type="search" id="demoSearchInput" name="q" class="form-control"
+                    placeholder="Search ID / Name / Brgy..." value="<?= htmlspecialchars($search ?? '') ?>"
+                    autocomplete="off">
                 <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
             </div>
 
@@ -49,11 +60,14 @@
             <select name="department" class="form-select form-select-sm" style="width: auto;"
                 onchange="this.form.submit()">
                 <option value="">All Programs</option>
-                <?php foreach ($departments as $dept): ?>
-                    <option value="<?= htmlspecialchars($dept) ?>" <?= (isset($department) && $department === $dept) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($dept) ?>
-                    </option>
-                <?php endforeach; ?>
+                <?php if (!empty($departments)): ?>
+                    <?php foreach ($departments as $dItem): ?>
+                        <?php $dCode = is_array($dItem) ? ($dItem['code'] ?? '') : $dItem; ?>
+                        <option value="<?= htmlspecialchars($dCode) ?>" <?= ($department === $dCode) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($dCode) ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </select>
 
             <!-- Year Level Filter -->
@@ -61,10 +75,25 @@
             <select name="year_level" class="form-select form-select-sm" style="width: auto;"
                 onchange="this.form.submit()">
                 <option value="">All Years</option>
-                <option value="1" <?= (isset($yearLevel) && $yearLevel === '1') ? 'selected' : '' ?>>1st Year</option>
-                <option value="2" <?= (isset($yearLevel) && $yearLevel === '2') ? 'selected' : '' ?>>2nd Year</option>
-                <option value="3" <?= (isset($yearLevel) && $yearLevel === '3') ? 'selected' : '' ?>>3rd Year</option>
-                <option value="4" <?= (isset($yearLevel) && $yearLevel === '4') ? 'selected' : '' ?>>4th Year</option>
+                <option value="1" <?= ($yearLevel === '1') ? 'selected' : '' ?>>1st Year</option>
+                <option value="2" <?= ($yearLevel === '2') ? 'selected' : '' ?>>2nd Year</option>
+                <option value="3" <?= ($yearLevel === '3') ? 'selected' : '' ?>>3rd Year</option>
+                <option value="4" <?= ($yearLevel === '4') ? 'selected' : '' ?>>4th Year</option>
+            </select>
+
+            <!-- Section Filter from Database -->
+            <label class="small fw-semibold text-muted mb-0 text-nowrap ms-1">SECTION:</label>
+            <select name="section" class="form-select form-select-sm" style="width: auto;"
+                onchange="this.form.submit()">
+                <option value="">All Sections</option>
+                <?php if (!empty($sections)): ?>
+                    <?php foreach ($sections as $sItem): ?>
+                        <?php $sName = is_array($sItem) ? ($sItem['name'] ?? '') : $sItem; ?>
+                        <option value="<?= htmlspecialchars($sName) ?>" <?= ($section === $sName) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($sName) ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </select>
 
             <!-- Municipality Filter -->
@@ -72,14 +101,16 @@
             <select name="municipality" class="form-select form-select-sm" style="width: auto;"
                 onchange="this.form.submit()">
                 <option value="">All Municipalities</option>
-                <?php foreach ($municipalities as $mun): ?>
-                    <option value="<?= htmlspecialchars($mun) ?>" <?= (isset($municipality) && $municipality === $mun) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($mun) ?>
-                    </option>
-                <?php endforeach; ?>
+                <?php if (!empty($municipalities)): ?>
+                    <?php foreach ($municipalities as $mun): ?>
+                        <option value="<?= htmlspecialchars($mun) ?>" <?= ($municipality === $mun) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($mun) ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </select>
 
-            <?php if (!empty($department) || !empty($yearLevel) || !empty($municipality) || !empty($search)): ?>
+            <?php if (!empty($department) || !empty($yearLevel) || !empty($section) || !empty($municipality) || !empty($search)): ?>
                 <a href="demographicinfo" class="btn btn-sm btn-outline-danger" title="Clear Filters">
                     <i class="bi bi-x-circle"></i>
                 </a>
@@ -87,56 +118,10 @@
         </form>
     </div>
 
-    <!-- STRATEGIC DEMOGRAPHIC KPI CARDS -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Relocated / Boarding</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= $boardingCount ?></h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">Housing Vulnerability</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Students living away from family in rental spaces</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">Distant Commuters</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= $distantCount ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Commuting Risk</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Residents of Torrijos, Buenavista, or Sta. Cruz</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">Local Residents</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= $localCount ?></h3>
-                    <span class="badge bg-success-subtle text-success border border-success">Family Support</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Students residing with family near campus</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">Evaluated Cohort</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= $totalStudents ?></h3>
-                    <span class="badge bg-light text-secondary border">Synchronized</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Total student demographic profiles analyzed</small>
-            </div>
-        </div>
-    </div>
 
     <!-- DEMOGRAPHIC VULNERABILITY & GUARDIAN REACHABILITY LEDGER -->
     <div class="table-responsive bg-white rounded border shadow-sm">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle mb-0" id="demoTable">
             <thead class="table-light text-uppercase small text-muted">
                 <tr>
                     <th class="ps-3 py-3">Student ID</th>
@@ -160,7 +145,7 @@
                             $riskBadge = 'bg-warning-subtle text-dark border border-warning-subtle';
                         }
                         ?>
-                        <tr>
+                        <tr class="demo-student-row">
                             <td class="ps-3 fw-semibold text-secondary">
                                 <?= htmlspecialchars($row['student_number']) ?>
                             </td>
@@ -194,7 +179,7 @@
                                         class="bi bi-telephone me-1"></i><?= htmlspecialchars($row['guardian_contact'] ?? 'No Contact') ?></span>
                             </td>
                             <td class="text-end pe-3">
-                                <!-- Tumalon papunta sa 360 profile dossier -->
+                                <!-- Tumalon papunta sa Student Profile Dossier -->
                                 <a href="profile?student_id=<?= urlencode($row['student_number']) ?>"
                                     class="btn btn-sm btn-outline-primary" title="View Full 360 Profile">
                                     View Dossier
@@ -214,5 +199,7 @@
             </tbody>
         </table>
     </div>
+    <!-- Server-Side Table Pagination -->
+    <?= $pagination['html'] ?? '' ?>
 
 </div>

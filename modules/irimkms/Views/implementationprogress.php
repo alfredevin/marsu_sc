@@ -330,20 +330,6 @@
         </div>
     </div>
 
-    <!-- Quick Portal Nav Pills -->
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="<?= url('/irimkms/proposalsandapprovals') ?>" class="main-nav-pill"><i class="bi bi-file-earmark-check text-maroon me-1"></i> Proposals & Approvals</a>
-        <a href="<?= url('/irimkms/researchprojects') ?>" class="main-nav-pill"><i class="bi bi-journal-code text-maroon me-1"></i> Research Projects</a>
-        <a href="<?= url('/irimkms/projectmilestone') ?>" class="main-nav-pill"><i class="bi bi-flag text-maroon me-1"></i> Milestones</a>
-        <a href="<?= url('/irimkms/implementationprogress') ?>" class="main-nav-pill active"><i class="bi bi-hourglass-split text-white me-1"></i> Implementation Progress</a>
-        <a href="<?= url('/irimkms/fundingandresources') ?>" class="main-nav-pill"><i class="bi bi-cash-coin text-maroon me-1"></i> Grants & Funding</a>
-        <a href="<?= url('/irimkms/knowledgemanagement') ?>" class="main-nav-pill"><i class="bi bi-book-half text-maroon me-1"></i> Publications</a>
-        <a href="<?= url('/irimkms/searchableresearch') ?>" class="main-nav-pill"><i class="bi bi-search text-maroon me-1"></i> Discovery Engine</a>
-        <a href="<?= url('/irimkms/evaluationforms') ?>" class="main-nav-pill"><i class="bi bi-clipboard-data text-maroon me-1"></i> Evaluation Tools</a>
-        <a href="<?= url('/irimkms/completionreporting') ?>" class="main-nav-pill"><i class="bi bi-award text-maroon me-1"></i> Completion Reports</a>
-        <a href="<?= url('/irimkms/performanceindicators') ?>" class="main-nav-pill"><i class="bi bi-graph-up-arrow text-maroon me-1"></i> Performance Analytics</a>
-    </div>
-
     <!-- KPI Summary Row -->
     <div class="row g-3 mb-4">
         <div class="col-xl-3 col-md-6">
@@ -581,7 +567,6 @@
                     <!-- Header Badges -->
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-maroon text-white font-weight-bold px-2 py-1" style="font-size: 0.75rem;"><?= e($pj['project_code']) ?></span>
                             <span class="badge bg-light text-dark border font-weight-bold" style="font-size: 0.75rem;"><?= e($pj['college']) ?></span>
                             <span class="badge bg-secondary-subtle text-secondary border" style="font-size: 0.72rem;"><?= e($pj['funding_source']) ?></span>
                         </div>
@@ -660,7 +645,7 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-maroon text-white">
                         <tr>
-                            <th class="py-3 px-3">Code & College</th>
+                            <th class="py-3 px-3">College & Funding</th>
                             <th class="py-3">Project Title & Lead PI</th>
                             <th class="py-3">Current Phase</th>
                             <th class="py-3">Physical Progress</th>
@@ -678,8 +663,8 @@
                         ?>
                         <tr>
                             <td class="px-3">
-                                <span class="fw-bold text-maroon"><?= e($pj['project_code']) ?></span>
-                                <div class="small text-muted"><?= e($pj['college']) ?> • <?= e($pj['funding_source']) ?></div>
+                                <div class="fw-bold text-dark"><?= e($pj['college']) ?></div>
+                                <div class="small text-muted"><?= e($pj['funding_source']) ?></div>
                             </td>
                             <td>
                                 <div class="fw-bold text-dark"><?= e($pj['title']) ?></div>
@@ -773,7 +758,7 @@
                             <select id="modalProjectSelect" class="form-select" required>
                                 <option value="">-- Choose Project --</option>
                                 <?php foreach ($displayProjects as $pj): ?>
-                                    <option value="<?= e($pj['project_code']) ?>"><?= e($pj['project_code']) ?> - <?= e($pj['title']) ?></option>
+                                    <option value="<?= e($pj['project_code']) ?>"><?= e($pj['title']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -852,7 +837,7 @@
                             <select class="form-select" required>
                                 <option value="">-- Choose Project --</option>
                                 <?php foreach ($displayProjects as $pj): ?>
-                                    <option value="<?= e($pj['project_code']) ?>"><?= e($pj['project_code']) ?> - <?= e($pj['title']) ?></option>
+                                    <option value="<?= e($pj['project_code']) ?>"><?= e($pj['title']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

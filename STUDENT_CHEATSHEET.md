@@ -63,6 +63,7 @@ git config --global user.email "juandelacruz@gmail.com"
    /c/xampp/php/php.exe scripts/migrate.php
    /c/xampp/php/php.exe scripts/seed.php
    ```
+   
    *(Note: Awtomatikong ipapasok ng `seed.php` ang 866 MarSU student records, faculty, at subjects. Kung sakaling nag-seed ka na dati at 0 pa rin ang students, i-run lang ang `/c/xampp/php/php.exe scripts/import_real_data.php`).*
    *(Tip: Kung `php: command not found` kapag nag-type ka ng `php`, gamitin ang buong path `/c/xampp/php/php.exe` tulad ng nasa itaas. O kaya i-run muna ang `export PATH=$PATH:/c/xampp/php` sa Git Bash para gumana ang shortcut na `php`).*
 
@@ -91,7 +92,7 @@ code .
 Inside `/c/xampp/htdocs/marsu_sc`, run:
 ```bash
 git checkout -b feature/group-name
-```
+```SSOFMS-LMR
 *Example for Housing group (ISHAMIS):*
 ```bash
 git checkout -b feature/housing-ishamis
@@ -113,6 +114,7 @@ Sundin lang ang **2 simpleng hakbang** na ito sa Git Bash:
 ```bash
 git add .
 git commit -m "Save my progress"
+git push -u origin feature
 ```
 
 ### Step 2: I-pull ang pinakabagong update mula sa `master`:

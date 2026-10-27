@@ -47,9 +47,11 @@
             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
                 <i class="bi bi-printer me-1"></i> Print Roster
             </button>
+            <?php if (can('retention.faculty.attendance')): ?>
             <button type="button" class="btn btn-sm marsu-maroon-bg text-white fw-semibold" data-bs-toggle="modal" data-bs-target="#recordAttendanceModal">
                 <i class="bi bi-plus-lg me-1"></i> Log Session Attendance
             </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -313,8 +315,92 @@
         <!-- Server-Side Table Pagination -->
         <?= $pagination['html'] ?? '' ?>
     </div>
+
+    <!-- Recent Attendance Sessions Ledger (Admin Voiding Oversight - Part E7) -->
+    <div class="card border rounded-3 shadow-sm bg-white mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h6 class="m-0 fw-bold marsu-maroon-text">
+                    <i class="bi bi-clock-history me-1"></i> Recent Class Roll-Call Sessions
+                </h6>
+                <small class="text-muted">
+                    Session-level attendance telemetry. Authorized module administrators can void erroneous logs with formal audit justification.
+                </small>
+            </div>
+            <span class="badge bg-light text-secondary border">Recent 50 Sessions</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+                <thead class="table-light text-uppercase small text-muted">
+                    <tr>
+                        <th class="ps-3 py-2" style="width: 80px;">Log #</th>
+                        <th class="py-2">Date</th>
+                        <th class="py-2">Student</th>
+                        <th class="py-2">Course & Section</th>
+                        <th class="py-2 text-center">Status</th>
+                        <th class="py-2">Remarks</th>
+                        <th class="py-2">Recorded By</th>
+                        <th class="py-2 text-end pe-3" style="width: 110px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($recentSessions)): ?>
+                        <?php foreach ($recentSessions as $sess): ?>
+                            <?php
+                            $sBadge = 'bg-success';
+                            if ($sess['status'] === 'Absent') $sBadge = 'bg-danger text-white';
+                            elseif ($sess['status'] === 'Excused') $sBadge = 'bg-info text-dark';
+                            elseif ($sess['status'] === 'Late') $sBadge = 'bg-warning text-dark';
+                            ?>
+                            <tr>
+                                <td class="ps-3 fw-bold text-secondary">#<?= (int) $sess['id'] ?></td>
+                                <td class="text-nowrap"><?= date('M d, Y', strtotime($sess['session_date'])) ?></td>
+                                <td>
+                                    <div class="fw-semibold text-dark"><?= e(($sess['first_name'] ?? '') . ' ' . ($sess['last_name'] ?? '')) ?></div>
+                                    <small class="text-muted font-monospace"><?= e($sess['student_id']) ?></small>
+                                </td>
+                                <td>
+                                    <span class="fw-semibold text-dark"><?= e($sess['display_subject_code']) ?></span>
+                                    <small class="text-muted d-block"><?= e($sess['section_name'] ?? '-') ?></small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge <?= $sBadge ?> px-2 py-1"><?= e($sess['status']) ?></span>
+                                </td>
+                                <td>
+                                    <small class="text-muted text-truncate d-block" style="max-width: 200px;" title="<?= e($sess['remarks'] ?? '') ?>">
+                                        <?= e($sess['remarks'] ?: 'None') ?>
+                                    </small>
+                                </td>
+                                <td>
+                                    <small class="text-dark"><?= e($sess['recorded_by_name'] ?? 'Faculty') ?></small>
+                                </td>
+                                <td class="text-end pe-3">
+                                    <?php if (can('retention.admin.attendance')): ?>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-danger py-0 px-2" 
+                                                onclick="openVoidModal(<?= (int) $sess['id'] ?>, '<?= e(addslashes(($sess['first_name'] ?? '') . ' ' . ($sess['last_name'] ?? ''))) ?>', '<?= e(addslashes($sess['display_subject_code'])) ?>', '<?= e($sess['session_date']) ?>')">
+                                            <i class="bi bi-trash3 me-1"></i> Void
+                                        </button>
+                                    <?php else: ?>
+                                        <span class="text-muted small">Read-Only</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <small>No individual session records found.</small>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
+<?php if (can('retention.faculty.attendance')): ?>
 <!-- Modal: Log Roll-Call Attendance Session -->
 <div class="modal fade" id="recordAttendanceModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -389,6 +475,10 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
+
+<!-- Include Reason Modal Partial for Administrative Voiding -->
+<?php include __DIR__ . '/partials/reason_modal.php'; ?>
 
 <script>
     // Quick Client-Side Table Filter
@@ -406,4 +496,13 @@
             });
         });
     });
+
+    window.openVoidModal = function(id, studentName, subject, date) {
+        document.getElementById('reasonModalLabel').innerHTML = '<i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Void Attendance Record #' + id;
+        document.getElementById('reasonModalDescription').innerHTML = 'You are about to void the <strong>' + subject + '</strong> session on <strong>' + date + '</strong> for <strong>' + studentName + '</strong>. This will soft-delete the record and remove its impact on attendance metrics.';
+        document.getElementById('reasonModalForm').action = '<?= url('retention/admin/attendance') ?>/' + id + '/void';
+        document.getElementById('reasonModalSubmitBtn').className = 'btn btn-danger btn-sm';
+        document.getElementById('reasonModalSubmitBtn').innerHTML = '<i class="bi bi-trash3 me-1"></i>Confirm Void Record';
+        new bootstrap.Modal(document.getElementById('reasonModal')).show();
+    };
 </script>

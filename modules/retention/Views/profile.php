@@ -219,9 +219,18 @@
                             class="bi bi-geo-alt-fill text-danger me-1"></i><?= htmlspecialchars($demographics['address'] ?? 'Marinduque') ?>
                     </span>
                     <span class="badge badge-burgundy px-3 py-2 rounded-pill shadow-sm">
-                        <i
-                            class="bi bi-mortarboard-fill text-gold me-1"></i><?= htmlspecialchars($selectedStudent['program_code'] ?? 'N/A') ?>
+                        <i class="bi bi-mortarboard-fill text-gold me-1"></i><?= htmlspecialchars($selectedStudent['program_code'] ?? 'N/A') ?>
                     </span>
+                    <?php if (can('retention.admin.profiles')): ?>
+                        <a href="<?= url('retention/admin/profiles/' . (int) $selectedStudent['id']) ?>" class="btn btn-sm btn-outline-marsu rounded-pill shadow-sm">
+                            <i class="bi bi-pencil-square me-1"></i> Supplementary Profile
+                        </a>
+                    <?php endif; ?>
+                    <?php if (can('retention.view')): ?>
+                        <a href="<?= url('retention/admin/preview-student/' . (int) $selectedStudent['id']) ?>" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill shadow-sm">
+                            <i class="bi bi-eye me-1"></i> Preview as Student
+                        </a>
+                    <?php endif; ?>
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
                         <i class="bi bi-printer me-1"></i> Print Record
                     </button>
@@ -370,6 +379,12 @@
                                         class="btn btn-outline-secondary btn-sm rounded-pill w-100 fw-semibold text-start px-3">
                                         <i class="bi bi-journal-check me-2 text-primary"></i>Log Faculty Advising Session
                                     </a>
+                                    <?php if (can('retention.admin.profiles')): ?>
+                                        <a href="<?= url('retention/admin/profiles/' . (int) $selectedStudent['id']) ?>"
+                                            class="btn btn-outline-dark btn-sm rounded-pill w-100 fw-semibold text-start px-3">
+                                            <i class="bi bi-person-lines-fill me-2 text-gold"></i>Edit Supplementary Profile
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

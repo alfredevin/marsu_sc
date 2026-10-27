@@ -40,9 +40,11 @@
                 </select>
             </form>
 
+            <?php if (can('retention.faculty.behavior')): ?>
             <button type="button" class="btn btn-sm btn-warning fw-semibold text-dark" data-bs-toggle="modal" data-bs-target="#newIncidentModal">
                 <i class="bi bi-exclamation-octagon me-1"></i> Log Behavior Incident
             </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -103,9 +105,21 @@
                                     <span class="badge <?= $stBadge ?>"><?= htmlspecialchars($st) ?></span>
                                 </td>
                                 <td class="text-end pe-3">
-                                    <a href="profile?student_id=<?= urlencode($row['student_id'] ?? '') ?>" class="btn btn-sm btn-outline-primary">
-                                        Profile
-                                    </a>
+                                    <div class="d-flex justify-content-end align-items-center gap-1">
+                                        <a href="profile?student_id=<?= urlencode($row['student_id'] ?? '') ?>" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11.5px;">
+                                            Profile
+                                        </a>
+                                        <?php if (can('retention.admin.conduct')): ?>
+                                            <button type="button" class="btn btn-sm btn-outline-dark py-0 px-2" style="font-size: 11.5px;" 
+                                                    onclick="openConductStatusModal(<?= (int) $row['id'] ?>, '<?= e(addslashes($row['full_name'] ?? 'Student')) ?>', '<?= e($row['status'] ?? 'Reported') ?>')">
+                                                Status
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-warning py-0 px-2 text-dark" style="font-size: 11.5px;" 
+                                                    onclick="openConductSeverityModal(<?= (int) $row['id'] ?>, '<?= e(addslashes($row['full_name'] ?? 'Student')) ?>', '<?= e($row['severity'] ?? 'Minor') ?>')">
+                                                Severity
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -126,6 +140,7 @@
     </div>
 </div>
 
+<?php if (can('retention.faculty.behavior')): ?>
 <!-- Modal: New Incident Log -->
 <div class="modal fade" id="newIncidentModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -177,4 +192,98 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
+
+<!-- Modal: Update Conduct Case Status (Part E9) -->
+<div class="modal fade" id="conductStatusModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form id="conductStatusForm" method="POST" action="">
+                <?= csrf_field() ?>
+                <div class="modal-header bg-dark text-white">
+                    <h6 class="modal-title fw-bold mb-0">
+                        <i class="bi bi-arrow-repeat me-1"></i> Update Case Status
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <p class="small text-secondary mb-3">
+                        Updating status for student incident: <strong class="text-dark" id="statusStudentName"></strong>
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Case Status <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" name="status" id="conductStatusSelect" required>
+                            <option value="Reported">Reported</option>
+                            <option value="Under Investigation">Under Investigation</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Dismissed">Dismissed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Resolution / Investigation Notes</label>
+                        <textarea class="form-control form-control-sm" name="resolution_notes" rows="3" placeholder="Document counseling outcome, disciplinary action, or dismissal grounds..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-dark px-3">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Reclassify Incident Severity (Part E9) -->
+<div class="modal fade" id="conductSeverityModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form id="conductSeverityForm" method="POST" action="">
+                <?= csrf_field() ?>
+                <div class="modal-header bg-warning text-dark">
+                    <h6 class="modal-title fw-bold mb-0">
+                        <i class="bi bi-shield-exclamation me-1"></i> Reclassify Incident Severity
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <p class="small text-secondary mb-3">
+                        Reclassifying incident severity for student: <strong class="text-dark" id="severityStudentName"></strong>
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">New Severity Level <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" name="severity" id="conductSeveritySelect" required>
+                            <option value="Minor">Minor (First Warning)</option>
+                            <option value="Moderate">Moderate (Repeated Disruption)</option>
+                            <option value="Severe">Severe (Major Misconduct)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Administrative Justification <span class="text-danger">*</span></label>
+                        <textarea class="form-control form-control-sm" name="reason" rows="3" required minlength="10" placeholder="Provide institutional basis for reclassifying severity (min 10 characters)..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-warning text-dark px-3 fw-semibold">Confirm Reclassification</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+window.openConductStatusModal = function(id, studentName, currentStatus) {
+    document.getElementById('statusStudentName').textContent = studentName;
+    document.getElementById('conductStatusSelect').value = currentStatus;
+    document.getElementById('conductStatusForm').action = '<?= url('retention/admin/conduct') ?>/' + id + '/status';
+    new bootstrap.Modal(document.getElementById('conductStatusModal')).show();
+};
+
+window.openConductSeverityModal = function(id, studentName, currentSeverity) {
+    document.getElementById('severityStudentName').textContent = studentName;
+    document.getElementById('conductSeveritySelect').value = currentSeverity;
+    document.getElementById('conductSeverityForm').action = '<?= url('retention/admin/conduct') ?>/' + id + '/severity';
+    new bootstrap.Modal(document.getElementById('conductSeverityModal')).show();
+};
+</script>
 

@@ -208,6 +208,17 @@
                                                     <i class="bi bi-person-exclamation me-2"></i> Refer to Guidance
                                                 </a>
                                             </li>
+                                            <?php if ($isInc && can('retention.admin.grades') && !empty($row['grade_id'])): ?>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="dropdown-item small text-warning"
+                                                        onclick="openExtendIncModal(<?= (int) $row['grade_id'] ?>, '<?= e(addslashes($row['full_name'])) ?>', '<?= e(addslashes($row['course_code'])) ?>', '<?= e($row['removal_deadline'] ?? '') ?>')">
+                                                        <i class="bi bi-calendar-plus me-2 text-warning"></i> Extend INC Deadline
+                                                    </button>
+                                                </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </div>
                                 </td>
@@ -229,3 +240,53 @@
     </div>
 
 </div>
+
+<!-- Modal: Extend INC Deadline (Part E6) -->
+<div class="modal fade" id="extendIncModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form id="extendIncForm" method="POST" action="">
+                <?= csrf_field() ?>
+                <div class="modal-header bg-warning text-dark">
+                    <h6 class="modal-title fw-bold mb-0">
+                        <i class="bi bi-calendar-plus me-1"></i> Extend Incomplete (INC) Deadline
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <div class="mb-3">
+                        <span class="text-muted d-block small" style="font-size: 11px;">STUDENT & SUBJECT</span>
+                        <div class="fw-bold text-dark" id="incStudentSubjectLabel"></div>
+                        <small class="text-secondary">Current Deadline: <span class="fw-semibold text-danger" id="incCurrentDeadlineLabel"></span></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="incNewDeadline" class="form-label small fw-bold text-dark">New Extension Deadline <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control form-control-sm" id="incNewDeadline" name="new_deadline" required min="<?= date('Y-m-d') ?>">
+                        <small class="text-muted" style="font-size: 11px;">New removal completion deadline granted by academic administration.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="incReason" class="form-label small fw-bold text-dark">Administrative Justification <span class="text-danger">*</span></label>
+                        <textarea class="form-control form-control-sm" id="incReason" name="reason" rows="3" required minlength="10" placeholder="State official basis for extension (e.g., medical hospitalization certificate, thesis laboratory extension)..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-warning text-dark px-3 fw-semibold">
+                        <i class="bi bi-calendar-check me-1"></i> Save Extension
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+window.openExtendIncModal = function(gradeId, studentName, courseCode, currentDeadline) {
+    document.getElementById('incStudentSubjectLabel').textContent = studentName + ' (' + courseCode + ')';
+    document.getElementById('incCurrentDeadlineLabel').textContent = currentDeadline || 'Not Set';
+    document.getElementById('extendIncForm').action = '<?= url('retention/admin/grades') ?>/' + gradeId + '/extend-inc';
+    new bootstrap.Modal(document.getElementById('extendIncModal')).show();
+};
+</script>

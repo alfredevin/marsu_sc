@@ -79,7 +79,7 @@
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
-        <a href="<?= url('retention/atriskstudents') ?>" class="btn btn-outline-danger btn-sm">
+        <a href="#" class="btn btn-outline-secondary btn-sm disabled" tabindex="-1" aria-disabled="true" data-bs-toggle="tooltip" data-bs-title="Provided by partner team (Modules 4–6)">
             <i class="bi bi-exclamation-triangle-fill me-1"></i>At-Risk Roster (<?= $highRiskCount ?? 18 ?>)
         </a>
         <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
@@ -259,7 +259,7 @@
                     <small class="text-muted">Distribution of Low, Moderate, and High Risk cohorts across academic
                         degree programs</small>
                 </div>
-                <a href="<?= url('retention/riskoverview') ?>" class="btn btn-sm btn-outline-dark py-1 px-2"
+                <a href="#" class="btn btn-sm btn-outline-secondary py-1 px-2 disabled" tabindex="-1" aria-disabled="true" data-bs-toggle="tooltip" data-bs-title="Provided by partner team (Modules 4–6)"
                     style="font-size: 11px;">
                     <i class="bi bi-layers me-1"></i>Risk Overview &rarr;
                 </a>
@@ -370,16 +370,16 @@
                     <p class="text-muted" style="font-size: 11px; min-height: 32px;">At-risk student classifications,
                         automated early alerts, and risk level matrix.</p>
                     <div class="d-flex flex-column gap-1 mt-auto">
-                        <a href="<?= url('retention/atriskstudents') ?>"
-                            class="btn btn-sm btn-outline-danger py-1 text-start" style="font-size: 11px;">
+                        <a href="#"
+                            class="btn btn-sm btn-outline-secondary py-1 text-start disabled" tabindex="-1" aria-disabled="true" data-bs-toggle="tooltip" data-bs-title="Provided by partner team (Modules 4–6)" style="font-size: 11px;">
                             <i class="bi bi-search me-1"></i>At-Risk Students
                         </a>
-                        <a href="<?= url('retention/risklevelclassification') ?>"
-                            class="btn btn-sm btn-outline-dark py-1 text-start" style="font-size: 11px;">
+                        <a href="#"
+                            class="btn btn-sm btn-outline-secondary py-1 text-start disabled" tabindex="-1" aria-disabled="true" data-bs-toggle="tooltip" data-bs-title="Provided by partner team (Modules 4–6)" style="font-size: 11px;">
                             <i class="bi bi-layers me-1"></i>Risk Classification
                         </a>
-                        <a href="<?= url('retention/systemalerts') ?>"
-                            class="btn btn-sm btn-outline-dark py-1 text-start" style="font-size: 11px;">
+                        <a href="#"
+                            class="btn btn-sm btn-outline-secondary py-1 text-start disabled" tabindex="-1" aria-disabled="true" data-bs-toggle="tooltip" data-bs-title="Provided by partner team (Modules 4–6)" style="font-size: 11px;">
                             <i class="bi bi-bell me-1"></i>System Alerts
                         </a>
                     </div>
@@ -398,16 +398,16 @@
                     <p class="text-muted" style="font-size: 11px; min-height: 32px;">Advising records, guidance
                         referrals, and peer mentoring clinics.</p>
                     <div class="d-flex flex-column gap-1 mt-auto">
-                        <a href="<?= url('retention/advisingrecords') ?>"
-                            class="btn btn-sm btn-outline-dark py-1 text-start" style="font-size: 11px;">
+                        <a href="#"
+                            class="btn btn-sm btn-outline-secondary py-1 text-start disabled" tabindex="-1" aria-disabled="true" data-bs-toggle="tooltip" data-bs-title="Provided by partner team (Modules 4–6)" style="font-size: 11px;">
                             <i class="bi bi-chat-square-text me-1"></i>Advising Records
                         </a>
-                        <a href="<?= url('retention/guidancereferrals') ?>"
-                            class="btn btn-sm btn-outline-dark py-1 text-start" style="font-size: 11px;">
+                        <a href="#"
+                            class="btn btn-sm btn-outline-secondary py-1 text-start disabled" tabindex="-1" aria-disabled="true" data-bs-toggle="tooltip" data-bs-title="Provided by partner team (Modules 4–6)" style="font-size: 11px;">
                             <i class="bi bi-send-check me-1"></i>Guidance Referrals
                         </a>
-                        <a href="<?= url('retention/academicsupportprograms') ?>"
-                            class="btn btn-sm btn-outline-dark py-1 text-start" style="font-size: 11px;">
+                        <a href="#"
+                            class="btn btn-sm btn-outline-secondary py-1 text-start disabled" tabindex="-1" aria-disabled="true" data-bs-toggle="tooltip" data-bs-title="Provided by partner team (Modules 4–6)" style="font-size: 11px;">
                             <i class="bi bi-mortarboard me-1"></i>Academic Support
                         </a>
                     </div>
@@ -517,6 +517,10 @@
 <!-- 6. DASHBOARD CHART INITIALIZATION SCRIPT -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Bootstrap Tooltips
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
         // 1. Table Quick Filter
         const filterInput = document.getElementById('tableFilterInput');
         const table = document.getElementById('moduleDataTable');

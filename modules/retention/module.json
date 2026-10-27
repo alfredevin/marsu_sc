@@ -135,7 +135,7 @@
             },
             {
                 "label": "Intervention Management",
-                "icon": "bi-handshake",
+                "icon": "bi-people-fill",
                 "permission": "retention.view",
                 "children": [
                     {

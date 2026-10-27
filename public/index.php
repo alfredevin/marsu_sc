@@ -62,6 +62,11 @@ $router->post('/profile/password', [\App\Controllers\AuthController::class, 'cha
 // Executive Dashboard
 $router->get('/dashboard', [\App\Controllers\DashboardController::class, 'index'], ['auth', 'permission:core.dashboard.view']);
 
+// Standalone Public Student Portal & Services Website (Accessible Outside Admin ERP)
+$router->get('/portal', [\App\Controllers\PortalController::class, 'index']);
+$router->get('/student', [\App\Controllers\PortalController::class, 'index']);
+$router->get('/student-portal', [\App\Controllers\PortalController::class, 'index']);
+
 // Roles & RBAC Matrix
 $router->get('/roles', [\App\Controllers\RoleController::class, 'index'], ['auth', 'permission:core.roles.view']);
 $router->get('/roles/matrix', [\App\Controllers\RoleController::class, 'matrix'], ['auth', 'permission:core.roles.view']);
@@ -149,6 +154,12 @@ $router->post('/modules/toggle', [\App\Controllers\ModuleManagerController::clas
 
 // UI Kit Styleguide
 $router->get('/ui-kit', [\App\Controllers\UiKitController::class, 'index'], ['auth']);
+
+// Sample 2-Field CRUD Demo (Student Reference)
+$router->get('/sample-crud', [\App\Controllers\SampleCrudController::class, 'index'], ['auth']);
+$router->post('/sample-crud/create', [\App\Controllers\SampleCrudController::class, 'store'], ['auth', 'csrf']);
+$router->post('/sample-crud/update', [\App\Controllers\SampleCrudController::class, 'update'], ['auth', 'csrf']);
+$router->post('/sample-crud/delete', [\App\Controllers\SampleCrudController::class, 'delete'], ['auth', 'csrf']);
 
 // ============================================================================
 // DYNAMIC STUDENT GROUP MODULE REGISTRATIONS

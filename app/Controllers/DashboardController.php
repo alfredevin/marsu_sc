@@ -16,8 +16,13 @@ class DashboardController {
     public function index(): void {
         $user = Auth::user();
 
-        // If logged-in user is a Module Lead, render their isolated Module Workspace Dashboard
+        // If logged-in user is a Student, redirect out to the Standalone Student Portal
         $roleSlug = $user['role_slug'] ?? $user['role'] ?? '';
+        if ($roleSlug === 'student' || ($user['role'] ?? '') === 'student') {
+            redirect(url('portal'));
+        }
+
+        // If logged-in user is a Module Lead, render their isolated Module Workspace Dashboard
         if (str_starts_with($roleSlug, 'lead_')) {
             $moduleSlug = str_replace('lead_', '', $roleSlug);
             $enabledModules = ModuleLoader::getEnabledModules();

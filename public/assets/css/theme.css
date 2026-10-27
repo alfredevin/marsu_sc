@@ -865,21 +865,21 @@ body.sidebar-toggled #app-main {
 }
 
 .auth-hero-logo-badge {
-  width: 58px;
-  height: 58px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
-  background-color: #ffffff;
+  background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  padding: 5px;
+  box-shadow: none;
+  padding: 0;
   flex-shrink: 0;
 }
 
 .auth-hero-logo-img {
-  width: 44px;
-  height: 44px;
+  width: 88px;
+  height: 88px;
   object-fit: contain;
 }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use Core\View;
@@ -8,8 +9,10 @@ use Core\Logger;
 use App\Models\Program;
 use App\Models\Department;
 
-class ProgramController {
-    public function index(): void {
+class ProgramController
+{
+    public function index(): void
+    {
         $programs = Program::all();
         $departments = Department::all();
         View::render('programs/index', [
@@ -20,18 +23,9 @@ class ProgramController {
         ]);
     }
 
-    public function store(): void {
-        $validator = Validator::make($_POST, [
-            'code'          => 'required|max:32|unique:programs,code',
-            'name'          => 'required|max:191',
-            'department_id' => 'required|integer',
-            'years'         => 'required|integer'
-        ]);
+    public function store(): void
+    {
 
-        if ($validator->fails()) {
-            Session::flash('error', $validator->firstError());
-            redirect(url('programs'));
-        }
 
         $id = Program::create([
             'department_id' => (int)$_POST['department_id'],
@@ -47,7 +41,8 @@ class ProgramController {
         redirect(url('programs'));
     }
 
-    public function update(): void {
+    public function update(): void
+    {
         $id = (int)($_POST['id'] ?? 0);
         $validator = Validator::make($_POST, [
             'code'          => "required|max:32|unique:programs,code,{$id}",
@@ -75,7 +70,8 @@ class ProgramController {
         redirect(url('programs'));
     }
 
-    public function delete(): void {
+    public function delete(): void
+    {
         $id = (int)($_POST['id'] ?? 0);
         Program::softDelete($id);
         Logger::audit('program.delete', 'programs', $id, []);

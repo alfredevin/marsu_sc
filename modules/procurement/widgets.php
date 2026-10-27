@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Executive Dashboard Widget Contract for module: Procurement Management Information System
  * Returns array of widget definitions (kpi, list, chart, table)

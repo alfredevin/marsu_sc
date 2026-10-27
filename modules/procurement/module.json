@@ -10,9 +10,114 @@
         "icon": "bi-cart-check-fill",
         "items": [
             {
-                "label": "Overview & Recordsss",
+                "label": "Purchase Requests & Requiaitions (PR & RIS)",
                 "route": "procurement",
-                "permission": "procurement.view"
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "PR Filling",
+                        "route": "procurement/pr-filling",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Requisition and Issue Slip",
+                        "route": "procurement/resquisition-and-issue-slip",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Approval Workflow",
+                        "route": "procurement/approval-worlkflow",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Requisition Status",
+                        "route": "procurement/requisition-status",
+                        "permission": "procurement.view"
+                    }
+                ]
+            },
+            {
+                "label": "Annual Procurement Planning & Budgeting",
+                "route": "procurement",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "Project Procurement Management Plan",
+                        "route": "procurement/project-procurement-management-plan",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Consolidated APP",
+                        "route": "procurement/consolidated-app",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Fund Source Verification",
+                        "route": "procurement/fund-source-verification",
+                        "permission": "procurement.view"
+                    }
+                ]
+            },
+            {
+                "label": "Purchase Orders",
+                "route": "procurement",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "PO Generation",
+                        "route": "procurement/po-generation",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Delivery Tracker",
+                        "route": "procurement/delivery-tracker",
+                        "permission": "procurement.view"
+                    }
+                ]
+            },
+            {
+                "label": "Inspection, Acceptance & Turn-over",
+                "route": "procurement",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "IAR Processing",
+                        "route": "procurement/iar-processing",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Discrepancy Management",
+                        "route": "procurement/discrepancy-management",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Property Turn-Over",
+                        "route": "procurement/property-turn-over",
+                        "permission": "procurement.view"
+                    }
+                ]
+            },
+            {
+                "label": "Compliance, Auditing & Reports",
+                "route": "procurement",
+                "permission": "procurement.view",
+                "children": [
+                    {
+                        "label": "APCPI Tracker",
+                        "route": "procurement/apcpi-tracker",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "Periodic Summaries",
+                        "route": "procurement/periodic-summaries",
+                        "permission": "procurement.view"
+                    },
+                    {
+                        "label": "COA Audit Trail",
+                        "route": "procurement/coa-audit-trail",
+                        "permission": "procurement.view"
+                    }
+                ]
             }
         ]
     },

@@ -1,607 +1,455 @@
 <?php
-// ====================================================================
-//   GUIDANCE & COUNSELING SYSTEM: SESSION CALENDAR
-//   MINIMALISTIC SINGLE MONTHLY CALENDAR VIEW • COUNSELOR MEETING DATES
-//   DIV-BASED LAYOUT ONLY • NO STYLE/SCRIPT TAGS • 15PX FONT SIZE
-//   DYNAMIC PREV/NEXT MONTH & DATE NAVIGATION VIA PHP
-// ====================================================================
-
-// Retrieve requested Year and Month from URL parameters, defaulting to October 2026
-$year = isset($_GET['year']) ? (int)$_GET['year'] : 2026;
-$month = isset($_GET['month']) ? (int)$_GET['month'] : 10;
-
-// Bounds checking
-if ($month < 1) {
-    $month = 12;
-    $year--;
-} elseif ($month > 12) {
-    $month = 1;
-    $year++;
-}
-
-// Calculate Previous Month & Year
-$prevMonth = $month - 1;
-$prevYear = $year;
-if ($prevMonth < 1) {
-    $prevMonth = 12;
-    $prevYear--;
-}
-
-// Calculate Next Month & Year
-$nextMonth = $month + 1;
-$nextYear = $year;
-if ($nextMonth > 12) {
-    $nextMonth = 1;
-    $nextYear++;
-}
-
-// Month metadata
-$firstDayTimestamp = mktime(0, 0, 0, $month, 1, $year);
-$monthName = date('F', $firstDayTimestamp);
-$daysInMonth = (int)date('t', $firstDayTimestamp);
-$firstDayOfWeek = (int)date('w', $firstDayTimestamp); // 0 (Sun) to 6 (Sat)
-
-// Previous month metadata for padding
-$prevMonthTimestamp = mktime(0, 0, 0, $prevMonth, 1, $prevYear);
-$daysInPrevMonth = (int)date('t', $prevMonthTimestamp);
-
-// Current Reference Date (Today: October 23, 2026)
-$todayStr = '2026-10-23';
-
-// Counselor Meetings Database (by YYYY-MM-DD)
-$meetings = [
-    // October 2026
-    '2026-10-02' => [
-        [
-            'time' => '02:00 PM - 03:00 PM',
-            'student' => 'SANTOS, MARIA C.',
-            'student_id' => '2024-00102',
-            'program' => 'BEED - 2A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Initial Counseling Interview & Well-being Checkpoint'
-        ]
-    ],
-    '2026-10-05' => [
-        [
-            'time' => '09:30 AM - 10:30 AM',
-            'student' => 'DELA CRUZ, JUAN L.',
-            'student_id' => '2024-00101',
-            'program' => 'BSIS - 3A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Academic Coaching & Subject Retention'
-        ]
-    ],
-    '2026-10-07' => [
-        [
-            'time' => '01:30 PM - 02:30 PM',
-            'student' => 'MENDOZA, BEA R.',
-            'student_id' => '2024-00103',
-            'program' => 'BSTM - 1C',
-            'counselor' => 'Prof. Mark Bautista, RPm',
-            'venue' => 'Guidance Room 2',
-            'concern' => 'Career Guidance & Program Orientation'
-        ]
-    ],
-    '2026-10-09' => [
-        [
-            'time' => '10:00 AM - 11:00 AM',
-            'student' => 'REYES, CARLO D.',
-            'student_id' => '2024-00104',
-            'program' => 'BSIS - 2A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Behavioral Guidance & Attendance Review'
-        ]
-    ],
-    '2026-10-14' => [
-        [
-            'time' => '02:00 PM - 03:00 PM',
-            'student' => 'RAMOS, CARLOS M.',
-            'student_id' => '2024-00129',
-            'program' => 'BSIS - 3A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Study Strategy & Exam Preparation'
-        ]
-    ],
-    '2026-10-16' => [
-        [
-            'time' => '10:30 AM - 11:30 AM',
-            'student' => 'AQUINO, JOSHUA E.',
-            'student_id' => '2024-00105',
-            'program' => 'BSTM - 2B',
-            'counselor' => 'Prof. Mark Bautista, RPm',
-            'venue' => 'Guidance Room 2',
-            'concern' => 'Academic Coaching & Peer Interaction'
-        ]
-    ],
-    '2026-10-20' => [
-        [
-            'time' => '09:00 AM - 10:00 AM',
-            'student' => 'GOMEZ, PATRICIA S.',
-            'student_id' => '2024-00106',
-            'program' => 'BaPOS - 2A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Course Adjustment & Academic Guidance'
-        ]
-    ],
-    '2026-10-21' => [
-        [
-            'time' => '01:30 PM - 02:30 PM',
-            'student' => 'BAUTISTA, MARK L.',
-            'student_id' => '2024-00107',
-            'program' => 'BSIS - 1A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Personal Stress Alleviation & Organization'
-        ]
-    ],
-    '2026-10-23' => [
-        [
-            'time' => '10:00 AM - 11:00 AM',
-            'student' => 'RAMOS, CARLOS M.',
-            'student_id' => '2024-00129',
-            'program' => 'BSIS - 3A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Academic Follow-up & Midterm Review'
-        ],
-        [
-            'time' => '02:00 PM - 03:00 PM',
-            'student' => 'DELA CRUZ, CARLOS P.',
-            'student_id' => '2024-00130',
-            'program' => 'BSTM - 2B',
-            'counselor' => 'Prof. Mark Bautista, RPm',
-            'venue' => 'Guidance Room 2',
-            'concern' => 'Academic Evaluation & Study Habits'
-        ]
-    ],
-    '2026-10-26' => [
-        [
-            'time' => '01:00 PM - 02:00 PM',
-            'student' => 'FLORES, ANGELA T.',
-            'student_id' => '2024-00108',
-            'program' => 'BEED - 3B',
-            'counselor' => 'Prof. Mark Bautista, RPm',
-            'venue' => 'Guidance Room 2',
-            'concern' => 'Peer Consultation & Org Involvement'
-        ]
-    ],
-    '2026-10-28' => [
-        [
-            'time' => '10:00 AM - 11:00 AM',
-            'student' => 'CASTRO, DANIEL M.',
-            'student_id' => '2024-00109',
-            'program' => 'BSIS - 4A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Career Exploration & Internship Prep'
-        ]
-    ],
-    '2026-10-30' => [
-        [
-            'time' => '02:30 PM - 03:30 PM',
-            'student' => 'CRUZ, PATRICIA V.',
-            'student_id' => '2024-00110',
-            'program' => 'BSTM - 3A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Follow-up Checkpoint & Academic Feedback'
-        ]
-    ],
-    // September 2026
-    '2026-09-18' => [
-        [
-            'time' => '10:00 AM - 11:00 AM',
-            'student' => 'ALVAREZ, JANE M.',
-            'student_id' => '2024-00088',
-            'program' => 'BEED - 1A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Freshman Adjustment Interview'
-        ]
-    ],
-    '2026-09-25' => [
-        [
-            'time' => '01:30 PM - 02:30 PM',
-            'student' => 'CRUZ, BENEDICT O.',
-            'student_id' => '2024-00092',
-            'program' => 'BSIS - 2A',
-            'counselor' => 'Prof. Mark Bautista, RPm',
-            'venue' => 'Guidance Room 2',
-            'concern' => 'Career Consultation & Goals'
-        ]
-    ],
-    // November 2026
-    '2026-11-06' => [
-        [
-            'time' => '10:00 AM - 11:00 AM',
-            'student' => 'VILLANUEVA, LORNA E.',
-            'student_id' => '2024-00115',
-            'program' => 'BSIS - 2B',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Midterm Grade Evaluation'
-        ]
-    ],
-    '2026-11-13' => [
-        [
-            'time' => '01:30 PM - 02:30 PM',
-            'student' => 'NAVARRO, KEVIN S.',
-            'student_id' => '2024-00118',
-            'program' => 'BSTM - 3A',
-            'counselor' => 'Prof. Mark Bautista, RPm',
-            'venue' => 'Guidance Room 2',
-            'concern' => 'Internship Readiness Coaching'
-        ]
-    ],
-    '2026-11-20' => [
-        [
-            'time' => '09:30 AM - 10:30 AM',
-            'student' => 'GUTIERREZ, RONA P.',
-            'student_id' => '2024-00122',
-            'program' => 'BEED - 4A',
-            'counselor' => 'Dr. Elena Santos, RGC',
-            'venue' => 'Guidance Room 1',
-            'concern' => 'Pre-Graduation Assessment'
-        ]
-    ]
-];
-
-// University Holidays
-$holidays = [
-    '2026-09-21' => 'Peace Day',
-    '2026-10-12' => 'IP Day (Holiday)',
-    '2026-11-01' => 'All Saints\' Day',
-    '2026-11-02' => 'All Souls\' Day',
-    '2026-11-30' => 'Bonifacio Day',
-    '2026-12-25' => 'Christmas Day',
-    '2026-12-30' => 'Rizal Day'
-];
-
-// Count meetings in the currently viewed month
-$monthMeetingsCount = 0;
-foreach ($meetings as $mDate => $mList) {
-    $mY = (int)substr($mDate, 0, 4);
-    $mM = (int)substr($mDate, 5, 2);
-    if ($mY === $year && $mM === $month) {
-        $monthMeetingsCount += count($mList);
-    }
-}
-
-// Calculate total calendar grid cells
-$totalCells = (int)(ceil(($firstDayOfWeek + $daysInMonth) / 7) * 7);
+$currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
 ?>
+<!-- ==================================================================== -->
+<!--   MARSU GUIDANCE & COUNSELING SYSTEM: SESSION CALENDAR               -->
+<!-- ==================================================================== -->
 
-<!-- BREADCRUMB & PAGE HEADER -->
+<!-- 1. BREADCRUMB & PAGE HEADER -->
 <div class="mb-4">
     <!-- Breadcrumb Trail -->
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb mb-0" style="font-size: 15px;">
+    <nav aria-label="breadcrumb" class="mb-2">
+        <ol class="breadcrumb mb-0" style="font-size: 14.5px; background: transparent; padding: 0; line-height: 2.0;">
             <li class="breadcrumb-item">
-                <a href="<?= url('guidance') ?>" class="text-decoration-none fw-semibold" style="color: #800020; font-size: 15px;">
+                <a href="<?= url('guidance') ?>" style="color: #800020; text-decoration: none; font-weight: 600;">
                     <i class="bi bi-house-door-fill me-1"></i>Home
                 </a>
             </li>
             <li class="breadcrumb-item">
-                <a href="<?= url('guidance') ?>" class="text-decoration-none text-muted" style="font-size: 15px;">
-                    Guidance
+                <a href="<?= url('guidance/appointment_lists') ?>"
+                    style="color: #800020; text-decoration: none; font-weight: 500;">
+                    Appointments
                 </a>
             </li>
-            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page" style="font-size: 15px;">
+            <li class="breadcrumb-item active text-muted" aria-current="page">
                 Session Calendar
             </li>
         </ol>
     </nav>
 
-    <!-- Page Title & Header Actions -->
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <!-- Header Title & Action Row -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 pt-1">
         <div>
-            <h4 class="fw-bold mb-1 text-dark" style="font-size: 22px; letter-spacing: -0.2px;">
-                <i class="bi bi-calendar3 me-2" style="color: #800020;"></i>Counseling Session Calendar
+            <h4 class="fw-bold mb-1" style="color: #1A202C; font-size: 22px; letter-spacing: -0.2px;">
+                Counseling Session Calendar
             </h4>
-            <p class="text-muted mb-0" style="font-size: 15px;">
-                Monthly calendar showing counselor meeting dates and scheduled student appointments.
+            <p class="text-muted mb-0" style="font-size: 14.5px; line-height: 2.0;">
+                Monthly consultation calendar showing scheduled student sessions, venues, and student schedules.
             </p>
         </div>
         <div>
+            <!-- Schedule Button: Opens Schedule Modal -->
             <button type="button" class="btn text-white shadow-none d-inline-flex align-items-center gap-2"
                 data-bs-toggle="modal" data-bs-target="#modal-schedule-session"
-                style="background-color: #800020; border: none; font-size: 15px; font-weight: 500; height: 42px; border-radius: 6px; padding: 0 18px;">
-                <i class="bi bi-calendar-plus" style="font-size: 16px;"></i>
+                style="background-color: #800020; border: 1px solid #800020; font-size: 14px; font-weight: 500; height: 40px; border-radius: 8px; padding: 0 18px;">
+                <i class="bi bi-calendar-plus" style="font-size: 15px;"></i>
                 <span>Schedule New Session</span>
             </button>
         </div>
     </div>
 </div>
 
-<!-- CALENDAR TOOLBAR: DYNAMIC PREV/NEXT MONTH & MEETING SUMMARY -->
-<div class="card shadow-sm border-0 mb-4" style="border: 1px solid #E2E8F0 !important; border-radius: 8px; background-color: #ffffff; overflow: hidden;">
+<!-- 2. CALENDAR NAVIGATION TOOLBAR (CLEAN, MINIMALISTIC & FILTER BY YEAR) -->
+<div class="card shadow-sm border-0 mb-4 bg-white" style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
     <div class="card-body p-3">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <!-- Left: Previous, Today, Next Buttons + Month & Year -->
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <div class="btn-group" role="group">
-                    <a href="<?= url('guidance/session_calendar') ?>?month=<?= $prevMonth ?>&year=<?= $prevYear ?>"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        title="Previous Month"
-                        style="height: 38px; width: 44px; font-size: 15px; border-radius: 6px 0 0 6px;">
-                        <i class="bi bi-chevron-left" style="font-size: 15px;"></i>
-                    </a>
-                    <a href="<?= url('guidance/session_calendar') ?>?month=10&year=2026"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        style="height: 38px; padding: 0 16px; font-size: 15px; font-weight: 500;">
-                        Today
-                    </a>
-                    <a href="<?= url('guidance/session_calendar') ?>?month=<?= $nextMonth ?>&year=<?= $nextYear ?>"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        title="Next Month"
-                        style="height: 38px; width: 44px; font-size: 15px; border-radius: 0 6px 6px 0;">
-                        <i class="bi bi-chevron-right" style="font-size: 15px;"></i>
-                    </a>
-                </div>
-                <div class="ms-2">
-                    <h5 class="fw-bold m-0" style="color: #800020; font-size: 20px;">
-                        <i class="bi bi-calendar-event me-2" style="color: #800020;"></i><?= e($monthName . ' ' . $year) ?>
-                    </h5>
-                </div>
+            <!-- Left: Month Navigation Controls -->
+            <div class="btn-group" role="group">
+                <a href="<?= url('guidance/session_calendar') ?>?month=9&year=<?= $currentYear ?>"
+                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
+                    title="Previous Month"
+                    style="height: 38px; width: 44px; font-size: 14px; border-radius: 6px 0 0 6px;">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+                <a href="<?= url('guidance/session_calendar') ?>?month=10&year=2026"
+                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center px-3"
+                    style="height: 38px; font-size: 14px; font-weight: 500;">
+                    Today
+                </a>
+                <a href="<?= url('guidance/session_calendar') ?>?month=11&year=<?= $currentYear ?>"
+                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
+                    title="Next Month" style="height: 38px; width: 44px; font-size: 14px; border-radius: 0 6px 6px 0;">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
             </div>
 
-            <!-- Right: Meeting Legend & Monthly Count Badge -->
-            <div class="d-flex align-items-center gap-3 flex-wrap" style="font-size: 15px;">
-                <div class="d-flex align-items-center gap-2">
-                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #800020;"></span>
-                    <span style="font-size: 15px;">Meeting Date</span>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #D4AF37;"></span>
-                    <span style="font-size: 15px;">Today</span>
-                </div>
-                <span class="badge text-white px-3 py-2" style="background-color: #800020; font-size: 15px; font-weight: 600; border-radius: 50rem;">
-                    <?= $monthMeetingsCount ?> <?= $monthMeetingsCount === 1 ? 'Session' : 'Sessions' ?> Scheduled
-                </span>
+            <!-- Center: Current Month & Year Display -->
+            <div>
+                <h5 class="fw-bold mb-0" style="color: #800020; font-size: 20px; letter-spacing: -0.2px;">
+                    October <?= $currentYear ?>
+                </h5>
+            </div>
+
+            <!-- Right: Filter by Year Dropdown -->
+            <div class="d-flex align-items-center gap-2">
+                <label class="text-muted fw-semibold mb-0" style="font-size: 13.5px; white-space: nowrap;">
+                    <i class="bi bi-funnel me-1"></i>Filter by Year:
+                </label>
+                <select class="form-select form-select-sm shadow-none bg-white"
+                    onchange="window.location.href='<?= url('guidance/session_calendar') ?>?year=' + this.value + '&month=10';"
+                    style="width: 110px; height: 38px; border-color: #CBD5E1; font-size: 14px; font-weight: 500; border-radius: 6px; cursor: pointer;">
+                    <option value="2024" <?= ($currentYear === 2024) ? 'selected' : '' ?>>2024</option>
+                    <option value="2025" <?= ($currentYear === 2025) ? 'selected' : '' ?>>2025</option>
+                    <option value="2026" <?= ($currentYear === 2026) ? 'selected' : '' ?>>2026</option>
+                    <option value="2027" <?= ($currentYear === 2027) ? 'selected' : '' ?>>2027</option>
+                    <option value="2028" <?= ($currentYear === 2028) ? 'selected' : '' ?>>2028</option>
+                </select>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ==================================================================== -->
-<!--   SINGLE MAIN CALENDAR: DIV-BASED MONTHLY GRID ONLY                 -->
-<!-- ==================================================================== -->
-<div class="card shadow-sm border-0 mb-4" style="border: 1px solid #E2E8F0 !important; border-radius: 8px; overflow: hidden; background-color: #ffffff;">
-    <div class="overflow-auto">
-        <div style="min-width: 860px;">
-            <!-- Weekday Header Row (SUN - SAT) -->
-            <div class="row g-0 text-center fw-bold border-bottom" style="font-size: 15px; background-color: #F8FAFC;">
-                <div class="col py-2.5 text-danger border-end" style="font-size: 15px; padding: 12px 0;">SUN</div>
-                <div class="col py-2.5 text-secondary border-end" style="font-size: 15px; padding: 12px 0;">MON</div>
-                <div class="col py-2.5 text-secondary border-end" style="font-size: 15px; padding: 12px 0;">TUE</div>
-                <div class="col py-2.5 text-secondary border-end" style="font-size: 15px; padding: 12px 0;">WED</div>
-                <div class="col py-2.5 text-secondary border-end" style="font-size: 15px; padding: 12px 0;">THU</div>
-                <div class="col py-2.5 text-secondary border-end" style="font-size: 15px; padding: 12px 0;">FRI</div>
-                <div class="col py-2.5 text-secondary" style="font-size: 15px; padding: 12px 0;">SAT</div>
-            </div>
-
-            <!-- Dynamic Weeks & Days Grid -->
-            <?php for ($i = 0; $i < $totalCells; $i++): ?>
-                <?php if ($i % 7 === 0): ?>
-                    <div class="row g-0 border-bottom">
-                <?php endif; ?>
-
-                <?php if ($i < $firstDayOfWeek): ?>
-                    <!-- Previous Month Day Padding -->
-                    <?php $prevDayNum = $daysInPrevMonth - $firstDayOfWeek + $i + 1; ?>
-                    <div class="col p-2.5 border-end bg-light opacity-50" style="min-height: 125px; font-size: 15px;">
-                        <span class="text-muted fw-semibold" style="font-size: 15px;"><?= $prevDayNum ?></span>
-                    </div>
-
-                <?php elseif ($i < $firstDayOfWeek + $daysInMonth): ?>
-                    <!-- Current Month Day -->
-                    <?php
-                    $dayNum = $i - $firstDayOfWeek + 1;
-                    $dateKey = sprintf('%04d-%02d-%02d', $year, $month, $dayNum);
-                    $isToday = ($dateKey === $todayStr);
-                    $dayMeetings = $meetings[$dateKey] ?? [];
-                    $holiday = $holidays[$dateKey] ?? null;
-                    ?>
-                    <div class="col p-2.5 border-end <?= $isToday ? '' : 'bg-white' ?>"
-                        style="min-height: 125px; font-size: 15px; <?= $isToday ? 'background-color: #FFFDF5; border: 2px solid #D4AF37 !important;' : '' ?>">
-                        
-                        <div class="d-flex justify-content-between align-items-center mb-1.5">
-                            <?php if ($isToday): ?>
-                                <div class="d-flex align-items-center gap-1.5">
-                                    <span style="width: 28px; height: 28px; border-radius: 50%; background-color: #800020; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700;">
-                                        <?= $dayNum ?>
-                                    </span>
-                                    <span class="badge" style="background-color: #D4AF37; color: #1A202C; font-size: 13px; font-weight: 700;">
-                                        TODAY
-                                    </span>
-                                </div>
-                            <?php else: ?>
-                                <span class="fw-bold <?= $holiday ? 'text-secondary' : 'text-dark' ?>" style="font-size: 15px;">
-                                    <?= $dayNum ?>
-                                </span>
-                            <?php endif; ?>
-
-                            <?php if (!empty($dayMeetings)): ?>
-                                <span class="badge" style="background-color: #FDF2F4; color: #800020; font-size: 13px; font-weight: 600;">
-                                    <?= count($dayMeetings) ?> <?= count($dayMeetings) === 1 ? 'Meeting' : 'Meetings' ?>
-                                </span>
-                            <?php elseif ($holiday): ?>
-                                <span class="badge bg-secondary text-white" style="font-size: 13px;">Holiday</span>
-                            <?php endif; ?>
+<!-- 3. MAIN BALANCED CALENDAR (PANTAY-PANTAY GRID • SPACING 2.0 • MINIMALISTIC) -->
+<div class="card shadow-sm border-0 mb-4 bg-white"
+    style="border: 1px solid #E2E8F0 !important; border-radius: 12px; overflow: hidden;">
+    <div class="table-responsive m-0">
+        <table class="table table-bordered mb-0" style="table-layout: fixed; width: 100%; border-color: #E2E8F0;">
+            <!-- Equal-width Header Row -->
+            <thead>
+                <tr class="text-center" style="background-color: #F8FAFC;">
+                    <th class="py-3 text-secondary fw-bold"
+                        style="width: 14.2857%; font-size: 13.5px; letter-spacing: 0.5px;">SUN</th>
+                    <th class="py-3 text-secondary fw-bold"
+                        style="width: 14.2857%; font-size: 13.5px; letter-spacing: 0.5px;">MON</th>
+                    <th class="py-3 text-secondary fw-bold"
+                        style="width: 14.2857%; font-size: 13.5px; letter-spacing: 0.5px;">TUE</th>
+                    <th class="py-3 text-secondary fw-bold"
+                        style="width: 14.2857%; font-size: 13.5px; letter-spacing: 0.5px;">WED</th>
+                    <th class="py-3 text-secondary fw-bold"
+                        style="width: 14.2857%; font-size: 13.5px; letter-spacing: 0.5px;">THU</th>
+                    <th class="py-3 text-secondary fw-bold"
+                        style="width: 14.2857%; font-size: 13.5px; letter-spacing: 0.5px;">FRI</th>
+                    <th class="py-3 text-secondary fw-bold"
+                        style="width: 14.2857%; font-size: 13.5px; letter-spacing: 0.5px;">SAT</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Row 1: Sept 27 - Oct 3 -->
+                <tr>
+                    <td class="p-2 align-top" style="width: 14.2857%; height: 115px; background-color: #F8FAFC;">
+                        <div class="text-muted fw-semibold" style="font-size: 13px; opacity: 0.45; line-height: 2.0;">27
                         </div>
+                    </td>
+                    <td class="p-2 align-top" style="width: 14.2857%; height: 115px; background-color: #F8FAFC;">
+                        <div class="text-muted fw-semibold" style="font-size: 13px; opacity: 0.45; line-height: 2.0;">28
+                        </div>
+                    </td>
+                    <td class="p-2 align-top" style="width: 14.2857%; height: 115px; background-color: #F8FAFC;">
+                        <div class="text-muted fw-semibold" style="font-size: 13px; opacity: 0.45; line-height: 2.0;">29
+                        </div>
+                    </td>
+                    <td class="p-2 align-top" style="width: 14.2857%; height: 115px; background-color: #F8FAFC;">
+                        <div class="text-muted fw-semibold" style="font-size: 13px; opacity: 0.45; line-height: 2.0;">30
+                        </div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">1</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">2</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">3</div>
+                    </td>
+                </tr>
 
-                        <?php if ($holiday): ?>
-                            <div class="p-2 rounded text-muted mb-1" style="background-color: #EEF2F6; font-size: 14px; border-left: 4px solid #718096;">
-                                <i class="bi bi-flag-fill me-1 text-secondary"></i><?= e($holiday) ?>
-                            </div>
-                        <?php endif; ?>
+                <!-- Row 2: Oct 4 - Oct 10 -->
+                <tr>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">4</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">5</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">6</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">7</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">8</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">9</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">10</div>
+                    </td>
+                </tr>
 
-                        <?php foreach ($dayMeetings as $idx => $sess): ?>
-                            <?php
-                            $shortName = explode(',', $sess['student'])[0];
-                            $shortTime = explode(' - ', $sess['time'])[0];
-                            ?>
-                            <div class="p-2 mb-1.5 rounded d-flex align-items-center gap-1.5 text-truncate <?= $isToday ? 'shadow-sm' : '' ?>"
-                                data-bs-toggle="modal" data-bs-target="#modal-session-<?= e($dateKey) ?>-<?= $idx ?>"
-                                style="background-color: <?= $isToday ? '#ffffff' : '#FDF2F4' ?>; border-left: 4px solid #800020; color: #800020; font-size: 15px; font-weight: 600; cursor: pointer;"
-                                title="Click to view details: <?= e($sess['student']) ?>">
-                                <i class="bi bi-clock-fill" style="font-size: 13px; color: #800020;"></i>
-                                <span class="text-truncate"><?= e($shortTime) ?> &bull; <?= e($shortName) ?></span>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
+                <!-- Row 3: Oct 11 - Oct 17 -->
+                <tr>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">11</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">12</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">13</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">14</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">15</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">16</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">17</div>
+                    </td>
+                </tr>
 
-                <?php else: ?>
-                    <!-- Next Month Day Padding -->
-                    <?php $nextDayNum = $i - ($firstDayOfWeek + $daysInMonth) + 1; ?>
-                    <div class="col p-2.5 border-end bg-light opacity-50" style="min-height: 125px; font-size: 15px;">
-                        <span class="text-muted fw-semibold" style="font-size: 15px;"><?= $nextDayNum ?></span>
-                    </div>
-                <?php endif; ?>
+                <!-- Row 4: Oct 18 - Oct 24 -->
+                <tr>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">18</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">19</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">20</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">21</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">22</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">23</div>
+                    </td>
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">24</div>
+                    </td>
+                </tr>
 
-                <?php if ($i % 7 === 6): ?>
-                    </div>
-                <?php endif; ?>
-            <?php endfor; ?>
-        </div>
-    </div>
-</div>
+                <!-- Row 5: Oct 25 - Oct 31 -->
+                <tr>
+                    <!-- Sun Oct 25 -->
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">25</div>
+                    </td>
 
-<!-- ==================================================================== -->
-<!--   MODALS: MEETING DETAILS (FOR CURRENT MONTH SESSIONS ONLY)          -->
-<!-- ==================================================================== -->
-<?php foreach ($meetings as $mDate => $mList): ?>
-    <?php
-    $mY = (int)substr($mDate, 0, 4);
-    $mM = (int)substr($mDate, 5, 2);
-    if ($mY !== $year || $mM !== $month) continue;
-    ?>
-    <?php foreach ($mList as $idx => $sess): ?>
-        <div class="modal fade" id="modal-session-<?= e($mDate) ?>-<?= $idx ?>" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-md modal-dialog-centered">
-                <div class="modal-content shadow border-0" style="border-radius: 8px; overflow: hidden; font-size: 15px;">
-                    <div class="modal-header text-white px-3 py-2.5" style="background-color: #800020;">
-                        <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                            <i class="bi bi-calendar-check me-2" style="color: #D4AF37;"></i>Meeting Details
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body p-3 bg-light" style="font-size: 15px;">
-                        <div class="card p-3 mb-2 bg-white border shadow-none" style="border-radius: 6px;">
-                            <div class="fw-bold text-dark" style="font-size: 16px;"><?= e($sess['student']) ?></div>
-                            <div class="text-muted mt-1" style="font-size: 15px;">
-                                Student ID: <strong><?= e($sess['student_id']) ?></strong> &bull; Program: <strong><?= e($sess['program']) ?></strong>
+                    <!-- Mon Oct 26 -->
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="d-flex flex-column justify-content-between" style="height: 100%;">
+                            <span class="fw-bold text-dark" style="font-size: 14px;">26</span>
+                            <div class="mt-auto">
+                                <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
+                                    style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
+                                    View Schedule &rarr;
+                                </a>
                             </div>
                         </div>
-                        <div class="card p-3 bg-white border shadow-none" style="border-radius: 6px; font-size: 15px;">
-                            <div class="mb-1.5">
-                                <strong>Date &amp; Time:</strong> <?= date('l, M j, Y', strtotime($mDate)) ?> &bull; <?= e($sess['time']) ?>
+                    </td>
+
+                    <!-- Tue Oct 27 -->
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="d-flex flex-column justify-content-between" style="height: 100%;">
+                            <span class="fw-bold text-dark" style="font-size: 14px;">27</span>
+                            <div class="mt-auto">
+                                <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
+                                    style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
+                                    View Schedule &rarr;
+                                </a>
                             </div>
-                            <div class="mb-1.5">
-                                <strong>Counselor:</strong> <?= e($sess['counselor']) ?>
+                        </div>
+                    </td>
+
+                    <!-- Wed Oct 28 -->
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="d-flex flex-column justify-content-between" style="height: 100%;">
+                            <span class="fw-bold text-dark" style="font-size: 14px;">28</span>
+                            <div class="mt-auto">
+                                <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
+                                    style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
+                                    View Schedule &rarr;
+                                </a>
                             </div>
-                            <div class="mb-1.5">
-                                <strong>Venue:</strong> <?= e($sess['venue']) ?>
-                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Thu Oct 29: TODAY (Active Session) -->
+                    <td class="p-2 align-top bg-light"
+                        style="width: 14.2857%; height: 115px; line-height: 2.0; border: 2px solid #800020 !important;">
+                        <div class="d-flex flex-column justify-content-between" style="height: 100%;">
                             <div>
-                                <strong>Concern:</strong> <?= e($sess['concern']) ?>
+                                <span
+                                    style="width: 26px; height: 26px; border-radius: 50%; background-color: #800020; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">
+                                    29
+                                </span>
+                            </div>
+                            <div class="mt-auto">
+                                <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
+                                    style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
+                                    View Schedule &rarr;
+                                </a>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer px-3 py-2 bg-white border-top">
-                        <button type="button" class="btn btn-secondary btn-sm px-3 shadow-none" data-bs-dismiss="modal"
-                            style="font-size: 15px; height: 36px; border-radius: 4px;">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endforeach; ?>
-<?php endforeach; ?>
+                    </td>
 
-<!-- ==================================================================== -->
-<!--   MODAL: SCHEDULE NEW SESSION                                        -->
-<!-- ==================================================================== -->
+                    <!-- Fri Oct 30 -->
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">30</div>
+                    </td>
+
+                    <!-- Sat Oct 31 -->
+                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                        <div class="fw-bold text-dark" style="font-size: 14px;">31</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 5. MODAL: SCHEDULE NEW SESSION (MINIMALISTIC & ACCESSIBLE) -->
 <div class="modal fade" id="modal-schedule-session" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content shadow border-0" style="border-radius: 8px; overflow: hidden; font-size: 15px;">
+        <div class="modal-content shadow border-0" style="border-radius: 12px; overflow: hidden; font-size: 14.5px;">
             <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                    <i class="bi bi-calendar-plus me-2" style="color: #D4AF37;"></i>Schedule New Counseling Session
-                </h5>
+                <div>
+                    <h5 class="modal-title m-0 fw-bold" style="font-size: 18px; letter-spacing: -0.2px;">
+                        Schedule New Counseling Session
+                    </h5>
+                    <div style="font-size: 13px; color: #FDF2F4; line-height: 1.6;">
+                        Guidance and intake consultation scheduling dossier
+                    </div>
+                </div>
                 <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
             </div>
             <form action="" method="POST" onsubmit="event.preventDefault();">
-                <div class="modal-body p-4 bg-light" style="font-size: 15px;">
-                    <div class="row g-3">
+                <?= csrf_field() ?>
+                <div class="modal-body p-4 bg-white" style="font-size: 14.5px;">
+
+                    <!-- Designated Counselor Info Banner -->
+                    <div class="p-3 mb-4 rounded"
+                        style="background-color: #FDF2F4; border: 1px solid #f8d7da; line-height: 2.0;">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                            <div>
+                                <span class="text-muted" style="font-size: 13.5px;">Designated Guidance
+                                    Counselor:</span>
+                                <strong class="ms-2" style="color: #800020; font-size: 15px; font-weight: 700;">
+                                    Dr. Elena Santos, RGC
+                                </strong>
+                            </div>
+                            <span class="badge"
+                                style="background-color: #800020; color: #ffffff; font-size: 11px; padding: 4px 10px;">
+                                Registered Guidance Counselor
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row g-4" style="line-height: 2.0;">
                         <div class="col-md-6 col-12">
-                            <label class="form-label text-muted fw-semibold mb-1" style="font-size: 15px;">Student Full Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control shadow-none" placeholder="e.g. DELA CRUZ, JUAN L." required
-                                style="font-size: 15px; border-color: #ced4da; border-radius: 6px; height: 40px;">
+                            <label class="form-label text-muted fw-semibold mb-2"
+                                style="font-size: 13px; letter-spacing: 0.3px;">Student Full Name <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control shadow-none bg-white"
+                                placeholder="e.g. RAMOS, CARLOS M." required
+                                style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
                         </div>
                         <div class="col-md-6 col-12">
-                            <label class="form-label text-muted fw-semibold mb-1" style="font-size: 15px;">Student ID <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control shadow-none" placeholder="e.g. 2024-00101" required
-                                style="font-size: 15px; border-color: #ced4da; border-radius: 6px; height: 40px;">
+                            <label class="form-label text-muted fw-semibold mb-2"
+                                style="font-size: 13px; letter-spacing: 0.3px;">Student ID <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control shadow-none bg-white" placeholder="e.g. 2023-01089"
+                                required
+                                style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
                         </div>
                         <div class="col-md-6 col-12">
-                            <label class="form-label text-muted fw-semibold mb-1" style="font-size: 15px;">Academic Program <span class="text-danger">*</span></label>
-                            <select class="form-select shadow-none" required
-                                style="font-size: 15px; border-color: #ced4da; border-radius: 6px; height: 40px;">
+                            <label class="form-label text-muted fw-semibold mb-2"
+                                style="font-size: 13px; letter-spacing: 0.3px;">Academic Program <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select shadow-none bg-white" required
+                                style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
                                 <option value="" selected disabled>Select program...</option>
                                 <option value="BSIS - 3A">BSIS (Information Systems)</option>
                                 <option value="BaPOS - 2A">BaPOS (Political Science)</option>
                                 <option value="BSTM - 2B">BSTM (Tourism Management)</option>
                                 <option value="BEED - 2A">BEED (Elementary Education)</option>
+                                <option value="BSIT - 3B">BSIT (Information Technology)</option>
+                                <option value="BSED - 4A">BSED (Secondary Education)</option>
+                                <option value="BSN - 1A">BSN (Nursing)</option>
                             </select>
                         </div>
                         <div class="col-md-6 col-12">
-                            <label class="form-label text-muted fw-semibold mb-1" style="font-size: 15px;">Assigned Counselor <span class="text-danger">*</span></label>
-                            <select class="form-select shadow-none" required
-                                style="font-size: 15px; border-color: #ced4da; border-radius: 6px; height: 40px;">
-                                <option value="Dr. Elena Santos, RGC" selected>Dr. Elena Santos, RGC</option>
-                                <option value="Prof. Mark Bautista, RPm">Prof. Mark Bautista, RPm</option>
-                                <option value="Ms. Clarisse Ramos">Ms. Clarisse Ramos</option>
-                            </select>
+                            <label class="form-label text-muted fw-semibold mb-2"
+                                style="font-size: 13px; letter-spacing: 0.3px;">Assigned Guidance Counselor</label>
+                            <input type="text" class="form-control bg-light text-dark shadow-none fw-semibold"
+                                value="Dr. Elena Santos, RGC" readonly
+                                style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
                         </div>
-                        <div class="col-md-6 col-12">
-                            <label class="form-label text-muted fw-semibold mb-1" style="font-size: 15px;">Session Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control shadow-none" value="<?= sprintf('%04d-%02d-01', $year, $month) ?>" required
-                                style="font-size: 15px; border-color: #ced4da; border-radius: 6px; height: 40px;">
+                        <div class="col-md-4 col-12">
+                            <label class="form-label text-muted fw-semibold mb-2"
+                                style="font-size: 13px; letter-spacing: 0.3px;">Session Date <span
+                                    class="text-danger">*</span></label>
+                            <input type="date" class="form-control shadow-none bg-white"
+                                value="<?= sprintf('%04d-10-29', $currentYear) ?>" required
+                                style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
                         </div>
-                        <div class="col-md-6 col-12">
-                            <label class="form-label text-muted fw-semibold mb-1" style="font-size: 15px;">Time Slot <span class="text-danger">*</span></label>
-                            <select class="form-select shadow-none" required
-                                style="font-size: 15px; border-color: #ced4da; border-radius: 6px; height: 40px;">
-                                <option value="09:00 AM - 10:00 AM">09:00 AM &ndash; 10:00 AM</option>
-                                <option value="10:00 AM - 11:00 AM" selected>10:00 AM &ndash; 11:00 AM</option>
-                                <option value="01:00 PM - 02:00 PM">01:00 PM &ndash; 02:00 PM</option>
+                        <div class="col-md-4 col-12">
+                            <label class="form-label text-muted fw-semibold mb-2"
+                                style="font-size: 13px; letter-spacing: 0.3px;">Time Slot <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select shadow-none bg-white" required
+                                style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
+                                <option value="08:30 AM - 09:30 AM">08:30 AM &ndash; 09:30 AM</option>
+                                <option value="09:30 AM - 10:30 AM" selected>09:30 AM &ndash; 10:30 AM</option>
+                                <option value="11:00 AM - 12:00 PM">11:00 AM &ndash; 12:00 PM</option>
+                                <option value="01:30 PM - 02:30 PM">01:30 PM &ndash; 02:30 PM</option>
                                 <option value="02:00 PM - 03:00 PM">02:00 PM &ndash; 03:00 PM</option>
+                                <option value="03:00 PM - 04:00 PM">03:00 PM &ndash; 04:00 PM</option>
+                                <option value="03:30 PM - 04:30 PM">03:30 PM &ndash; 04:30 PM</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <label class="form-label text-muted fw-semibold mb-2"
+                                style="font-size: 13px; letter-spacing: 0.3px;">Consultation Venue <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select shadow-none bg-white" required
+                                style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
+                                <option value="Room 101" selected>Room 101 (Guidance Office)</option>
+                                <option value="Room 102">Room 102 (Guidance Office)</option>
+                                <option value="Room 103">Room 103 (Counseling Room)</option>
+                                <option value="Room 104">Room 104 (Interview Room)</option>
+                                <option value="Room 105">Room 105 (Consultation Office)</option>
                             </select>
                         </div>
                         <div class="col-12">
-                            <label class="form-label text-muted fw-semibold mb-1" style="font-size: 15px;">Consultation Concern <span class="text-danger">*</span></label>
-                            <select class="form-select shadow-none" required
-                                style="font-size: 15px; border-color: #ced4da; border-radius: 6px; height: 40px;">
-                                <option value="Academic Coaching">Academic Coaching &amp; Study Strategy</option>
-                                <option value="Career Guidance">Career Guidance &amp; Exploration</option>
-                                <option value="Emotional Well-being">Emotional &amp; Stress Management</option>
-                                <option value="Peer Consultation">Peer Consultation &amp; Adjustment</option>
+                            <label class="form-label text-muted fw-semibold mb-2"
+                                style="font-size: 13px; letter-spacing: 0.3px;">Consultation Concern Focus <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select shadow-none bg-white" required
+                                style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
+                                <option value="Study habits and time management" selected>Study habits and time
+                                    management</option>
+                                <option value="Anxiety or excessive worry">Anxiety or excessive worry</option>
+                                <option value="Course or program selection & career planning">Course or program
+                                    selection &amp; career planning</option>
+                                <option value="Sudden withdrawal from social interactions">Sudden withdrawal from social
+                                    interactions</option>
+                                <option value="Test anxiety & academic probation review">Test anxiety &amp; academic
+                                    probation review</option>
+                                <option value="Stress management and coping strategies">Stress management and coping
+                                    strategies</option>
+                                <option value="Personal adjustment and grief recovery">Personal adjustment and grief
+                                    recovery</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer px-4 py-3 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-secondary btn-sm px-3 shadow-none" data-bs-dismiss="modal"
-                        style="font-size: 15px; height: 38px; border-radius: 4px;">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3 shadow-none"
+                        data-bs-dismiss="modal"
+                        style="font-size: 14px; height: 38px; border-radius: 6px;">Cancel</button>
                     <button type="button" class="btn text-white btn-sm px-4 shadow-none" data-bs-dismiss="modal"
-                        style="background-color: #800020; border: none; font-size: 15px; font-weight: 500; height: 38px; border-radius: 4px;">
+                        style="background-color: #800020; border: 1px solid #800020; font-size: 14px; font-weight: 500; height: 38px; border-radius: 6px;">
                         <i class="bi bi-calendar-check me-1.5"></i>Confirm Session
                     </button>
                 </div>

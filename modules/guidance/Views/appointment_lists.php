@@ -1,669 +1,976 @@
 <!-- ==================================================================== -->
-<!--   MARSU GUIDANCE & COUNSELING SYSTEM: APPOINTMENT REQUESTS           -->
-<!--   Module: Guidance & Counseling Services                             -->
-<!--   File: modules/guidance/Views/appointment_requests.php              -->
-<!--   STANDARDIZED BOOTSTRAP 5 TABLE STRUCTURE / RESPONSIVE MASTER TABLE  -->
-<!--   MASTERLIST OF APPOINTMENTS (CLEAR AND MINIMALIST)                  -->
+<!--   MARSU GUIDANCE & COUNSELING SYSTEM: APPOINTMENT LISTS              -->
 <!-- ==================================================================== -->
 
-<!-- BREADCRUMB & PAGE HEADER -->
-<div class="mb-4">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb mb-0" style="font-size: 15px; background: transparent; padding: 0; line-height: 1.5;">
-            <li class="breadcrumb-item">
-                <a href="<?= url('guidance') ?>" style="color: #800020; text-decoration: none; font-weight: 600;">
-                    <i class="bi bi-house-door-fill me-1"></i>Home
-                </a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="<?= url('guidance') ?>" style="color: #800020; text-decoration: none; font-weight: 500;">
-                    Guidance &amp; Counseling Services
-                </a>
-            </li>
-            <li class="breadcrumb-item active text-muted" aria-current="page">
-                Masterlist of Appointments
-            </li>
-        </ol>
-    </nav>
+<!-- 1. PAGE BREADCRUMB & HEADER -->
+<div class="card shadow-sm border-0 mb-4 bg-white" style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
+    <div class="card-body p-4">
+        <!-- Breadcrumb Trail -->
+        <nav aria-label="breadcrumb" class="mb-2">
+            <ol class="breadcrumb mb-0"
+                style="font-size: 14.5px; background: transparent; padding: 0; line-height: 1.5;">
+                <li class="breadcrumb-item">
+                    <a href="<?= url('guidance') ?>" style="color: #800020; text-decoration: none; font-weight: 600;">
+                        <i class="bi bi-house-door-fill me-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="<?= url('guidance/appointment_lists') ?>"
+                        style="color: #800020; text-decoration: none; font-weight: 500;">
+                        Appointments
+                    </a>
+                </li>
+                <li class="breadcrumb-item active text-muted" aria-current="page">
+                    Appointment Lists
+                </li>
+            </ol>
+        </nav>
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-1">
-        <div>
-            <h4 class="fw-bold mb-1" style="color: #1A202C; font-size: 22px; letter-spacing: -0.2px;">
-                Masterlist of Appointments
-            </h4>
-            <p class="text-muted mb-0" style="font-size: 15px; line-height: 1.5;">
-                Centralized appointment intake queue, schedule management, and consultation status tracking.
-            </p>
-        </div>
-        <div class="d-flex align-items-center gap-2 flex-wrap">
-            <button type="button"
-                class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                onclick="window.print()"
-                style="font-size: 15px; font-weight: 500; height: 38px; border-radius: 6px; padding: 0 16px; background-color: #fff; border: 1px solid #ced4da;">
-                <i class="bi bi-printer me-2"></i>Print Registry
-            </button>
-            <button type="button"
-                class="btn text-white shadow-none d-inline-flex align-items-center justify-content-center"
-                data-bs-toggle="modal" data-bs-target="#modal-request-appointment"
-                style="background-color: #800020; border: 1px solid #800020; font-size: 15px; font-weight: 500; border-radius: 6px; height: 38px; padding: 0 16px;">
-                <i class="bi bi-calendar-plus me-2"></i>Request Appointment
-            </button>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-1">
+            <div>
+                <h4 class="fw-bold mb-1" style="color: #1A202C; font-size: 22px; letter-spacing: -0.2px;">
+                    Counseling Appointment Management
+                </h4>
+                <p class="text-muted mb-0" style="font-size: 15px; line-height: 1.5;">
+                    Manage student appointments, intake consultations, scheduling requests, and session status tracking.
+                </p>
+            </div>
+            <div>
+                <!-- Request Appointment Button: Opens Modal Form with Responsive Color Feedback -->
+                <button type="button"
+                    class="btn text-white shadow-none d-inline-flex align-items-center btn-request-appointment"
+                    data-bs-toggle="modal" data-bs-target="#requestAppointmentModal"
+                    onmouseenter="this.style.backgroundColor='#9B1130'; this.style.borderColor='#9B1130'; this.style.boxShadow='0 4px 12px rgba(128, 0, 32, 0.25)';"
+                    onmouseleave="this.style.backgroundColor='#800020'; this.style.borderColor='#800020'; this.style.boxShadow='none'; this.style.transform='none';"
+                    onmousedown="this.style.backgroundColor='#4A0012'; this.style.borderColor='#33000C'; this.style.transform='scale(0.96)';"
+                    onmouseup="this.style.backgroundColor='#9B1130'; this.style.borderColor='#9B1130'; this.style.transform='none';"
+                    style="background-color: #800020; border: 1px solid #800020; font-size: 14.5px; height: 38px; border-radius: 6px; padding: 0 16px; font-weight: 500; transition: all 0.18s ease-in-out; cursor: pointer; user-select: none;">
+                    <i class="bi bi-calendar-plus" style="margin-right: 10px; font-size: 15.5px;"></i>Request
+                    Appointment
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- 4 KPI SUMMARY CARDS -->
+<style>
+    .kpi-filter-card {
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 8px !important;
+        min-height: 105px;
+        cursor: pointer;
+        transition: transform 0.18s ease-in-out, box-shadow 0.18s ease-in-out, border-color 0.18s ease-in-out;
+        user-select: none;
+    }
+
+    .kpi-filter-card:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .kpi-filter-card:active {
+        transform: scale(0.98) !important;
+    }
+
+    .kpi-filter-card[data-status="all"] {
+        border-left: 4px solid #800020 !important;
+    }
+
+    .kpi-filter-card[data-status="Approved"] {
+        border-left: 4px solid #28a745 !important;
+    }
+
+    .kpi-filter-card[data-status="Pending"] {
+        border-left: 4px solid #d97706 !important;
+    }
+
+    .kpi-filter-card[data-status="Completed"] {
+        border-left: 4px solid #0d9488 !important;
+    }
+
+    .kpi-filter-card[data-status="Rescheduling"] {
+        border-left: 4px solid #6f42c1 !important;
+    }
+
+    .kpi-filter-card.active[data-status="all"] {
+        border: 1px solid #800020 !important;
+        border-left: 4px solid #800020 !important;
+        box-shadow: 0 0 0 2px rgba(128, 0, 32, 0.22), 0 4px 12px rgba(128, 0, 32, 0.10) !important;
+    }
+
+    .kpi-filter-card.active[data-status="Approved"] {
+        border: 1px solid #28a745 !important;
+        border-left: 4px solid #28a745 !important;
+        box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.25), 0 4px 12px rgba(40, 167, 69, 0.10) !important;
+    }
+
+    .kpi-filter-card.active[data-status="Pending"] {
+        border: 1px solid #d97706 !important;
+        border-left: 4px solid #d97706 !important;
+        box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.25), 0 4px 12px rgba(217, 119, 6, 0.10) !important;
+    }
+
+    .kpi-filter-card.active[data-status="Completed"] {
+        border: 1px solid #0d9488 !important;
+        border-left: 4px solid #0d9488 !important;
+        box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25), 0 4px 12px rgba(13, 148, 136, 0.10) !important;
+    }
+
+    .kpi-filter-card.active[data-status="Rescheduling"] {
+        border: 1px solid #6f42c1 !important;
+        border-left: 4px solid #6f42c1 !important;
+        box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.25), 0 4px 12px rgba(111, 66, 193, 0.10) !important;
+    }
+</style>
+
+<!-- 2. CLICKABLE KPI CARDS (INTERACTIVE STATUS FILTERING AT THE TOP) -->
 <div class="row g-3 mb-4">
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #E2E8F0; border-left: 4px solid #800020 !important; border-radius: 8px; background-color: #ffffff; min-height: 110px;">
+    <!-- Card 1: Total Appointments -->
+    <div class="col-xl col-lg-4 col-md-6 col-12">
+        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between bg-white kpi-filter-card active"
+            id="kpi-card-all" data-status="all" onclick="applyStatusFilter('all', this)" role="button" tabindex="0"
+            title="Click to view all appointments">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <div
                         style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
                         TOTAL APPOINTMENTS
                     </div>
-                    <div class="mt-1" style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">8
+                    <div class="mt-1" id="count-all"
+                        style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
+                        12
                     </div>
                 </div>
                 <div
-                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #FDF2F4; color: #800020;">
-                    <i class="bi bi-calendar-check-fill"></i>
+                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #FDF2F4; color: #800020; border: 1px solid #f8d7da;">
+                    <i class="bi bi-calendar2-range-fill"></i>
                 </div>
             </div>
-            <div class="mt-2 text-muted" style="font-size: 13.5px;">All recorded appointment requests</div>
+            <div class="mt-2 text-muted d-flex align-items-center justify-content-between" style="font-size: 13px;">
+                <span>All intake records</span>
+                <span class="badge kpi-indicator"
+                    style="background-color: #800020; color: #fff; font-size: 11px; font-weight: 500;">Active</span>
+            </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #E2E8F0; border-left: 4px solid #d4a017 !important; border-radius: 8px; background-color: #ffffff; min-height: 110px;">
+    <!-- Card 2: Approved -->
+    <div class="col-xl col-lg-4 col-md-6 col-12">
+        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between bg-white kpi-filter-card"
+            id="kpi-card-approved" data-status="Approved" onclick="applyStatusFilter('Approved', this)" role="button"
+            tabindex="0" title="Click to filter approved appointments">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <div
                         style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        PENDING &amp; APPROVED
+                        APPROVED
                     </div>
-                    <div class="mt-1" style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">2
-                    </div>
-                </div>
-                <div
-                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #FEFCF0; color: #B7791F; border: 1px solid #F6E05E;">
-                    <i class="bi bi-clock-history"></i>
-                </div>
-            </div>
-            <div class="mt-2 text-muted" style="font-size: 13.5px;">Pending triage &amp; approved slots</div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #E2E8F0; border-left: 4px solid #28a745 !important; border-radius: 8px; background-color: #ffffff; min-height: 110px;">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div
-                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        CONFIRMED &amp; COMPLETED
-                    </div>
-                    <div class="mt-1" style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">2
+                    <div class="mt-1" id="count-approved"
+                        style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
+                        4
                     </div>
                 </div>
                 <div
                     style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #f4fbf6; color: #28a745; border: 1px solid #c8e6c9;">
-                    <i class="bi bi-patch-check-fill"></i>
+                    <i class="bi bi-calendar-check-fill"></i>
                 </div>
             </div>
-            <div class="mt-2 text-muted" style="font-size: 13.5px;">Confirmed sessions &amp; completed</div>
+            <div class="mt-2 text-muted d-flex align-items-center justify-content-between" style="font-size: 13px;">
+                <span>Confirmed sessions</span>
+                <span class="badge kpi-indicator d-none"
+                    style="background-color: #28a745; color: #fff; font-size: 11px; font-weight: 500;">Active</span>
+            </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #E2E8F0; border-left: 4px solid #6c757d !important; border-radius: 8px; background-color: #ffffff; min-height: 110px;">
+    <!-- Card 3: Pending -->
+    <div class="col-xl col-lg-4 col-md-6 col-12">
+        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between bg-white kpi-filter-card"
+            id="kpi-card-pending" data-status="Pending" onclick="applyStatusFilter('Pending', this)" role="button"
+            tabindex="0" title="Click to filter pending appointments">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <div
                         style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        OTHER OUTCOMES
+                        PENDING
                     </div>
-                    <div class="mt-1" style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">4
+                    <div class="mt-1" id="count-pending"
+                        style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
+                        3
                     </div>
                 </div>
                 <div
-                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #f8f9fa; color: #495057; border: 1px solid #e2e8f0;">
+                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #fffbeb; color: #d97706; border: 1px solid #fde68a;">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+            </div>
+            <div class="mt-2 text-muted d-flex align-items-center justify-content-between" style="font-size: 13px;">
+                <span>Awaiting confirmation</span>
+                <span class="badge kpi-indicator d-none"
+                    style="background-color: #d97706; color: #fff; font-size: 11px; font-weight: 500;">Active</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4: Completed -->
+    <div class="col-xl col-lg-6 col-md-6 col-12">
+        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between bg-white kpi-filter-card"
+            id="kpi-card-completed" data-status="Completed" onclick="applyStatusFilter('Completed', this)" role="button"
+            tabindex="0" title="Click to filter completed appointments">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div
+                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
+                        COMPLETED
+                    </div>
+                    <div class="mt-1" id="count-completed"
+                        style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
+                        3
+                    </div>
+                </div>
+                <div
+                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #f0fdfa; color: #0d9488; border: 1px solid #ccfbf1;">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+            </div>
+            <div class="mt-2 text-muted d-flex align-items-center justify-content-between" style="font-size: 13px;">
+                <span>Concluded sessions</span>
+                <span class="badge kpi-indicator d-none"
+                    style="background-color: #0d9488; color: #fff; font-size: 11px; font-weight: 500;">Active</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 5: Rescheduling -->
+    <div class="col-xl col-lg-6 col-md-12 col-12">
+        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between bg-white kpi-filter-card"
+            id="kpi-card-rescheduling" data-status="Rescheduling" onclick="applyStatusFilter('Rescheduling', this)"
+            role="button" tabindex="0" title="Click to filter rescheduling appointments">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div
+                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
+                        RESCHEDULING
+                    </div>
+                    <div class="mt-1" id="count-rescheduling"
+                        style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
+                        2
+                    </div>
+                </div>
+                <div
+                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #f3e8ff; color: #6f42c1; border: 1px solid #e9d5ff;">
                     <i class="bi bi-arrow-repeat"></i>
                 </div>
             </div>
-            <div class="mt-2 text-muted" style="font-size: 13.5px;">Rescheduled, cancelled, rejected, no-show</div>
+            <div class="mt-2 text-muted d-flex align-items-center justify-content-between" style="font-size: 13px;">
+                <span>Schedule adjustments</span>
+                <span class="badge kpi-indicator d-none"
+                    style="background-color: #6f42c1; color: #fff; font-size: 11px; font-weight: 500;">Active</span>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- SEARCH & FILTER TOOLBAR -->
-<div class="card shadow-sm border-0 mb-4"
-    style="border: 1px solid #E2E8F0 !important; border-radius: 8px; background-color: #ffffff; overflow: hidden;">
-    <div class="card-body p-3">
-        <div class="row g-2 align-items-center">
-            <!-- Search Field -->
-            <div class="col-xl-8 col-lg-8 col-md-7 col-12">
-                <label class="form-label small text-muted fw-semibold mb-1">Search Requests</label>
+<!-- 3. SEARCH & ACTIVE FILTER TOOLBAR -->
+<div class="card shadow-sm border-0 mb-4 bg-white" style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
+    <div class="card-body p-4">
+        <div class="row g-3 align-items-center">
+            <!-- Search Bar -->
+            <div class="col-xl-8 col-lg-8 col-md-12 col-12">
                 <div class="input-group">
-                    <span class="input-group-text border-end-0 text-muted bg-white"
-                        style="border-color: #ced4da; font-size: 15px;">
+                    <span class="input-group-text border-end-0 text-muted bg-white ps-3"
+                        style="border-color: #ced4da; font-size: 15px; height: 42px; border-radius: 8px 0 0 8px;">
                         <i class="bi bi-search"></i>
                     </span>
-                    <input type="text" id="appointmentSearchInput" class="form-control border-start-0 shadow-none"
-                        placeholder="Search by student ID, full name, or counselor..."
-                        style="font-size: 14.5px; height: 40px; border-color: #ced4da;">
+                    <input type="text" id="appointmentSearchInput"
+                        class="form-control border-start-0 shadow-none ps-2 bg-white"
+                        placeholder="Search by Student ID, Student Name, Concern, Category, or Room..."
+                        oninput="handleSearchInput(this.value);"
+                        style="border-color: #ced4da; font-size: 14.5px; height: 42px; border-radius: 0 8px 8px 0;">
                 </div>
             </div>
 
-            <!-- Appointment Type Filter -->
-            <div class="col-xl-4 col-lg-4 col-md-5 col-12">
-                <label class="form-label small text-muted fw-semibold mb-1">Appointment Type</label>
-                <select id="filterAppointmentType" class="form-select shadow-none" style="font-size: 14px; height: 40px; border-color: #ced4da;">
-                    <option value="" selected>All Appointment Types</option>
-                    <option value="Walk-in">Walk-in</option>
-                    <option value="Online Appointment">Online Appointment</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Footer Summary & Reset Button -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-2 border-top">
-            <div class="d-flex align-items-center gap-2 text-muted" style="font-size: 13.5px;">
-                <span class="fw-semibold text-dark" id="toolbarSummaryCount">Showing 8 appointment records</span>
-                <span class="badge bg-light text-dark border px-2.5 py-1.5"
-                    style="font-size: 12.5px; font-weight: 500;">
-                    Official Appointment Queue
+            <!-- Active Filter Status Indicator -->
+            <div class="col-xl-4 col-lg-4 col-md-12 col-12 d-flex justify-content-xl-end align-items-center gap-2">
+                <span class="text-muted" style="font-size: 14px;">Filtered by:</span>
+                <span id="activeFilterBadge"
+                    class="badge text-dark bg-light border d-inline-flex align-items-center py-2 px-3"
+                    style="font-size: 13.5px; border-radius: 6px; font-weight: 600;">
+                    All Appointments
                 </span>
+                <button type="button" id="resetFilterBtn" class="btn btn-sm btn-outline-secondary shadow-none d-none"
+                    onclick="resetAllFilters()"
+                    style="font-size: 13px; height: 34px; border-radius: 6px; padding: 0 12px;">
+                    <i class="bi bi-x-circle me-1"></i>Reset Filter
+                </button>
             </div>
-            <button type="button" id="btnResetAppointmentFilters"
-                class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                style="height: 32px; font-size: 13px; border-color: #ced4da; background-color: #fff; border-radius: 4px; padding: 0 12px;">
-                <i class="bi bi-x-circle me-1.5"></i>Reset Filters
-            </button>
         </div>
     </div>
 </div>
 
-<!-- STUDENT PROFILE DIRECTORY MASTER TABLE STYLE FOR MASTERLIST OF APPOINTMENTS -->
-<div class="card shadow-sm border-0 mb-4" style="border: 1px solid #E2E8F0 !important; border-radius: 8px;">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 px-4"
-        style="border-bottom: 1px solid #E2E8F0;">
-        <h6 class="m-0 fw-bold" style="font-size: 16px; color: #800020;">
-            <i class="bi bi-calendar-event me-2" style="color: #D4AF37;"></i>Masterlist of Appointments
-        </h6>
-        <span class="badge text-dark bg-light border px-2.5 py-1.5" style="font-size: 13.5px; font-weight: 500;" id="tableBadgeCount">
-            Showing 8 Records &bull; Official Directory
-        </span>
-    </div>
-
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="appointmentsMasterTable">
-                <thead style="background-color: #f8f9fa;">
-                    <tr>
-                        <th class="ps-4"
-                            style="font-size: 14px; font-weight: 600; padding: 14px 16px; min-width: 120px; color: #2D3748; vertical-align: middle;">
+<!-- 4. APPOINTMENTS LIST TABLE -->
+<div class="card shadow-sm border-0 mb-4 bg-white" style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
+    <div class="card-body p-0 bg-white">
+        <div class="table-responsive bg-white">
+            <table class="table table-hover align-middle mb-0 bg-white">
+                <thead class="bg-white" style="border-bottom: 1px solid #E2E8F0 !important;">
+                    <tr class="bg-white">
+                        <th class="ps-4 text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
                             Student ID
                         </th>
-                        <th
-                            style="font-size: 14px; font-weight: 600; padding: 14px 16px; min-width: 190px; color: #2D3748; vertical-align: middle;">
-                            Full Name
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Student Name
                         </th>
-                        <th
-                            style="font-size: 14px; font-weight: 600; padding: 14px 16px; min-width: 130px; color: #2D3748; vertical-align: middle;">
-                            Request Date
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Category Concern
                         </th>
-                        <th
-                            style="font-size: 14px; font-weight: 600; padding: 14px 16px; min-width: 145px; color: #2D3748; vertical-align: middle;">
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Counseling Concern
+                        </th>
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
                             Appointment Date
                         </th>
-                        <th
-                            style="font-size: 14px; font-weight: 600; padding: 14px 16px; min-width: 130px; color: #2D3748; vertical-align: middle;">
-                            Time Slot
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Appointment Time
                         </th>
-                        <th
-                            style="font-size: 14px; font-weight: 600; padding: 14px 16px; min-width: 185px; color: #2D3748; vertical-align: middle;">
-                            Counselor
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Session Type
                         </th>
-                        <th class="text-center"
-                            style="font-size: 14px; font-weight: 600; padding: 14px 16px; min-width: 140px; color: #2D3748; vertical-align: middle;">
-                            Appointment Type
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Location
                         </th>
-                        <th
-                            style="font-size: 14px; font-weight: 600; padding: 14px 16px; min-width: 200px; color: #2D3748; vertical-align: middle;">
-                            Next Scheduled Action
+                        <th class="text-center text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Status
                         </th>
-                        <th class="text-center pe-4"
-                            style="font-size: 14px; font-weight: 600; padding: 14px 16px; min-width: 210px; color: #2D3748; vertical-align: middle;">
-                            Actions
+                        <th class="text-center pe-4 text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; width: 90px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Action
                         </th>
                     </tr>
                 </thead>
-                <tbody style="font-size: 15px;" id="appointmentsTableBody">
-                    <!-- Record 1: RAMOS, CARLOS M. -->
-                    <tr class="appointment-row" data-student-id="2022-00812" data-name="RAMOS, CARLOS M."
-                        data-type="Walk-in" data-counselor="Prof. Mark Bautista, RPm">
-                        <td class="ps-4 fw-semibold"
-                            style="padding: 15px 18px; color: #800020; vertical-align: middle;">
-                            2022-00812
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="fw-bold text-dark" style="font-size: 15px;">RAMOS, CARLOS M.</div>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-semibold" style="font-size: 14px;">2026-10-20</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-bold" style="font-size: 14px;">2026-10-25</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-muted fw-semibold" style="font-size: 13.5px;">10:00 AM</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;" class="fw-semibold text-dark">
-                            Prof. Mark Bautista, RPm
-                        </td>
-                        <td class="text-center" style="padding: 15px 18px; vertical-align: middle;">
-                            <span
-                                style="border: 1px solid #dee2e6; background-color: #fff; color: #495057; border-radius: 4px; width: 100px; min-width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">Walk-in</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-medium" style="font-size: 13.5px;">Counselor Slot &amp; Intake Review</span>
-                        </td>
-                        <td class="text-center pe-4"
-                            style="padding: 15px 18px; vertical-align: middle; min-width: 210px;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-apt-1"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-review-apt-1"
-                                    style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="Review Appointment">
-                                    <i class="bi bi-pencil-square me-1"></i>Review
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                <tbody style="font-size: 14.5px;">
 
-                    <!-- Record 2: SANTOS, MARIA C. -->
-                    <tr class="appointment-row" data-student-id="2023-01042" data-name="SANTOS, MARIA C."
-                        data-type="Online Appointment" data-counselor="Dr. Elena Santos, RGC">
-                        <td class="ps-4 fw-semibold"
-                            style="padding: 15px 18px; color: #800020; vertical-align: middle;">
-                            2023-01042
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="fw-bold text-dark" style="font-size: 15px;">SANTOS, MARIA C.</div>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-semibold" style="font-size: 14px;">2026-10-21</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-bold" style="font-size: 14px;">2026-10-26</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-muted fw-semibold" style="font-size: 13.5px;">01:30 PM</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;" class="fw-semibold text-dark">
-                            Dr. Elena Santos, RGC
-                        </td>
-                        <td class="text-center" style="padding: 15px 18px; vertical-align: middle;">
-                            <span
-                                style="border: 1px solid #c7d2fe; background-color: #eef2ff; color: #3730a3; border-radius: 4px; width: 100px; min-width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;"><i class="bi bi-camera-video me-1"></i>Online</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-medium" style="font-size: 13.5px;">Student Confirmation Notice</span>
-                        </td>
-                        <td class="text-center pe-4"
-                            style="padding: 15px 18px; vertical-align: middle; min-width: 210px;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-apt-2"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-review-apt-2"
-                                    style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="Review Appointment">
-                                    <i class="bi bi-pencil-square me-1"></i>Review
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Record 3: DELA CRUZ, JUAN L. -->
-                    <tr class="appointment-row" data-student-id="2023-01089" data-name="DELA CRUZ, JUAN L."
-                        data-type="Walk-in" data-counselor="Dr. Elena Santos, RGC">
-                        <td class="ps-4 fw-semibold"
-                            style="padding: 15px 18px; color: #800020; vertical-align: middle;">
+                    <!-- Row 1: Approved -->
+                    <tr class="appointment-row align-middle" data-status="Approved">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
                             2023-01089
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="fw-bold text-dark" style="font-size: 15px;">DELA CRUZ, JUAN L.</div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">RAMOS, CARLOS M.</span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-semibold" style="font-size: 14px;">2026-10-22</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-bold" style="font-size: 14px;">2026-10-27</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-muted fw-semibold" style="font-size: 13.5px;">09:00 AM</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;" class="fw-semibold text-dark">
-                            Dr. Elena Santos, RGC
-                        </td>
-                        <td class="text-center" style="padding: 15px 18px; vertical-align: middle;">
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
                             <span
-                                style="border: 1px solid #dee2e6; background-color: #fff; color: #495057; border-radius: 4px; width: 100px; min-width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">Walk-in</span>
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Academic Concern
+                            </span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-medium" style="font-size: 13.5px;">Conduct Consultation Session</span>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Study habits and time management</span>
                         </td>
-                        <td class="text-center pe-4"
-                            style="padding: 15px 18px; vertical-align: middle; min-width: 210px;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-apt-3"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-review-apt-3"
-                                    style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="Review Appointment">
-                                    <i class="bi bi-pencil-square me-1"></i>Review
-                                </button>
-                            </div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 29, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">09:30 AM - 10:30 AM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 101</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Approved
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-001"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
                         </td>
                     </tr>
 
-                    <!-- Record 4: REYES, BEA ANGELA D. -->
-                    <tr class="appointment-row" data-student-id="2024-00155" data-name="REYES, BEA ANGELA D."
-                        data-type="Online Appointment" data-counselor="Ms. Clarisse Ramos">
-                        <td class="ps-4 fw-semibold"
-                            style="padding: 15px 18px; color: #800020; vertical-align: middle;">
-                            2024-00155
+                    <!-- Row 2: Pending -->
+                    <tr class="appointment-row align-middle" data-status="Pending">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2023-01042
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="fw-bold text-dark" style="font-size: 15px;">REYES, BEA ANGELA D.</div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">SANTOS, MARIA C.</span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-semibold" style="font-size: 14px;">2026-10-18</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-bold" style="font-size: 14px;">2026-10-22</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-muted fw-semibold" style="font-size: 13.5px;">11:00 AM</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;" class="fw-semibold text-dark">
-                            Ms. Clarisse Ramos
-                        </td>
-                        <td class="text-center" style="padding: 15px 18px; vertical-align: middle;">
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
                             <span
-                                style="border: 1px solid #c7d2fe; background-color: #eef2ff; color: #3730a3; border-radius: 4px; width: 100px; min-width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;"><i class="bi bi-camera-video me-1"></i>Online</span>
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Emotional / Psychological
+                            </span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-medium" style="font-size: 13.5px;">Case Concluded / Filed in Registry</span>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Anxiety or excessive worry</span>
                         </td>
-                        <td class="text-center pe-4"
-                            style="padding: 15px 18px; vertical-align: middle; min-width: 210px;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-apt-4"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-review-apt-4"
-                                    style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="Review Appointment">
-                                    <i class="bi bi-pencil-square me-1"></i>Review
-                                </button>
-                            </div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 29, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">01:30 PM - 02:30 PM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 102</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Pending
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-002"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
                         </td>
                     </tr>
 
-                    <!-- Record 5: TAN, JOSHUA DAVID K. -->
-                    <tr class="appointment-row" data-student-id="2021-00341" data-name="TAN, JOSHUA DAVID K."
-                        data-type="Walk-in" data-counselor="Prof. Mark Bautista, RPm">
-                        <td class="ps-4 fw-semibold"
-                            style="padding: 15px 18px; color: #800020; vertical-align: middle;">
-                            2021-00341
+                    <!-- Row 3: Completed -->
+                    <tr class="appointment-row align-middle" data-status="Completed">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2022-00512
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="fw-bold text-dark" style="font-size: 15px;">TAN, JOSHUA DAVID K.</div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">MENDOZA, JUAN B.</span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-semibold" style="font-size: 14px;">2026-10-16</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-bold" style="font-size: 14px;">2026-10-28</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-muted fw-semibold" style="font-size: 13.5px;">02:00 PM</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;" class="fw-semibold text-dark">
-                            Prof. Mark Bautista, RPm
-                        </td>
-                        <td class="text-center" style="padding: 15px 18px; vertical-align: middle;">
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
                             <span
-                                style="border: 1px solid #dee2e6; background-color: #fff; color: #495057; border-radius: 4px; width: 100px; min-width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">Walk-in</span>
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Career Concern
+                            </span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-medium" style="font-size: 13.5px;">Attend Rescheduled Session</span>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Course or program selection & career planning</span>
                         </td>
-                        <td class="text-center pe-4"
-                            style="padding: 15px 18px; vertical-align: middle; min-width: 210px;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-apt-5"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-review-apt-5"
-                                    style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="Review Appointment">
-                                    <i class="bi bi-pencil-square me-1"></i>Review
-                                </button>
-                            </div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 28, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">11:00 AM - 12:00 PM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 101</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #0d9488; background-color: #f0fdfa; color: #0f766e; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Completed
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-003"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
                         </td>
                     </tr>
 
-                    <!-- Record 6: LIM, PATRICIA ANNE S. -->
-                    <tr class="appointment-row" data-student-id="2023-00492" data-name="LIM, PATRICIA ANNE S."
-                        data-type="Online Appointment" data-counselor="Dr. Elena Santos, RGC">
-                        <td class="ps-4 fw-semibold"
-                            style="padding: 15px 18px; color: #800020; vertical-align: middle;">
-                            2023-00492
+                    <!-- Row 4: Rescheduling -->
+                    <tr class="appointment-row align-middle" data-status="Rescheduling">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2024-03115
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="fw-bold text-dark" style="font-size: 15px;">LIM, PATRICIA ANNE S.</div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">DELA CRUZ, BEA L.</span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-semibold" style="font-size: 14px;">2026-10-15</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-bold" style="font-size: 14px;">2026-10-24</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-muted fw-semibold" style="font-size: 13.5px;">10:30 AM</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;" class="fw-semibold text-dark">
-                            Dr. Elena Santos, RGC
-                        </td>
-                        <td class="text-center" style="padding: 15px 18px; vertical-align: middle;">
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
                             <span
-                                style="border: 1px solid #c7d2fe; background-color: #eef2ff; color: #3730a3; border-radius: 4px; width: 100px; min-width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;"><i class="bi bi-camera-video me-1"></i>Online</span>
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Behavioral Concern
+                            </span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-medium" style="font-size: 13.5px;">Follow-up with Student Welfare Office</span>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Sudden withdrawal from social interactions</span>
                         </td>
-                        <td class="text-center pe-4"
-                            style="padding: 15px 18px; vertical-align: middle; min-width: 210px;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-apt-6"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-review-apt-6"
-                                    style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="Review Appointment">
-                                    <i class="bi bi-pencil-square me-1"></i>Review
-                                </button>
-                            </div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 30, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">03:00 PM - 04:00 PM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 103</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #6f42c1; background-color: #f3e8ff; color: #581c87; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Rescheduling
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-004"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
                         </td>
                     </tr>
 
-                    <!-- Record 7: GARCIA, MIGUEL R. -->
-                    <tr class="appointment-row" data-student-id="2022-00419" data-name="GARCIA, MIGUEL R."
-                        data-type="Walk-in" data-counselor="Prof. Mark Bautista, RPm">
-                        <td class="ps-4 fw-semibold"
-                            style="padding: 15px 18px; color: #800020; vertical-align: middle;">
-                            2022-00419
+                    <!-- Row 5: Approved -->
+                    <tr class="appointment-row align-middle" data-status="Approved">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2023-02194
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="fw-bold text-dark" style="font-size: 15px;">GARCIA, MIGUEL R.</div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">REYES, MARK ANTHONY</span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-semibold" style="font-size: 14px;">2026-10-14</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-bold" style="font-size: 14px;">2026-10-16</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-muted fw-semibold" style="font-size: 13.5px;">08:30 AM</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;" class="fw-semibold text-dark">
-                            Prof. Mark Bautista, RPm
-                        </td>
-                        <td class="text-center" style="padding: 15px 18px; vertical-align: middle;">
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
                             <span
-                                style="border: 1px solid #dee2e6; background-color: #fff; color: #495057; border-radius: 4px; width: 100px; min-width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">Walk-in</span>
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Academic Concern
+                            </span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-medium" style="font-size: 13.5px;">Advised to Re-file for Weekday Office Hours</span>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Test anxiety & academic probation review</span>
                         </td>
-                        <td class="text-center pe-4"
-                            style="padding: 15px 18px; vertical-align: middle; min-width: 210px;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-apt-7"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-review-apt-7"
-                                    style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="Review Appointment">
-                                    <i class="bi bi-pencil-square me-1"></i>Review
-                                </button>
-                            </div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 31, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">10:00 AM - 11:00 AM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 101</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Approved
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-005"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
                         </td>
                     </tr>
 
-                    <!-- Record 8: VILLANUEVA, CHLOE T. -->
-                    <tr class="appointment-row" data-student-id="2024-00210" data-name="VILLANUEVA, CHLOE T."
-                        data-type="Online Appointment" data-counselor="Ms. Clarisse Ramos">
-                        <td class="ps-4 fw-semibold"
-                            style="padding: 15px 18px; color: #800020; vertical-align: middle;">
-                            2024-00210
+                    <!-- Row 6: Pending -->
+                    <tr class="appointment-row align-middle" data-status="Pending">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2024-01582
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="fw-bold text-dark" style="font-size: 15px;">VILLANUEVA, CHLOE T.</div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">GONZALES, ALYSSA P.</span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-semibold" style="font-size: 14px;">2026-10-12</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-bold" style="font-size: 14px;">2026-10-15</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-muted fw-semibold" style="font-size: 13.5px;">03:00 PM</span>
-                        </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;" class="fw-semibold text-dark">
-                            Ms. Clarisse Ramos
-                        </td>
-                        <td class="text-center" style="padding: 15px 18px; vertical-align: middle;">
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
                             <span
-                                style="border: 1px solid #c7d2fe; background-color: #eef2ff; color: #3730a3; border-radius: 4px; width: 100px; min-width: 100px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;"><i class="bi bi-camera-video me-1"></i>Online</span>
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Emotional / Psychological
+                            </span>
                         </td>
-                        <td style="padding: 15px 18px; vertical-align: middle;">
-                            <span class="text-secondary fw-medium" style="font-size: 13.5px;">Send Reschedule Invitation Notice</span>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Stress management and coping strategies</span>
                         </td>
-                        <td class="text-center pe-4"
-                            style="padding: 15px 18px; vertical-align: middle; min-width: 210px;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-apt-8"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-review-apt-8"
-                                    style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="Review Appointment">
-                                    <i class="bi bi-pencil-square me-1"></i>Review
-                                </button>
-                            </div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 03, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">08:30 AM - 09:30 AM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 102</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Pending
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-006"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
                         </td>
                     </tr>
+
+                    <!-- Row 7: Completed -->
+                    <tr class="appointment-row align-middle" data-status="Completed">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2022-04421
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">BAUTISTA, JOHN KEVIN</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Career Concern
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Employment readiness and interview coaching</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 27, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">02:00 PM - 03:00 PM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 104</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #0d9488; background-color: #f0fdfa; color: #0f766e; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Completed
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-007"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 8: Approved -->
+                    <tr class="appointment-row align-middle" data-status="Approved">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2023-03719
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">VILLANUEVA, CHLOE ANNE</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Behavioral Concern
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Conflict resolution with classmates</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 04, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">01:00 PM - 02:00 PM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 103</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Approved
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-008"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 9: Pending -->
+                    <tr class="appointment-row align-middle" data-status="Pending">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2024-02844
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">AQUINO, JOSHUA D.</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Academic Concern
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Difficulty adjusting to college curriculum</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 05, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">09:00 AM - 10:00 AM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 101</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Pending
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-009"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 10: Completed -->
+                    <tr class="appointment-row align-middle" data-status="Completed">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2021-00983
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">CASTILLO, ELAINE JOY</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Emotional / Psychological
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Personal adjustment and grief recovery</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 26, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">03:30 PM - 04:30 PM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 105</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #0d9488; background-color: #f0fdfa; color: #0f766e; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Completed
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-010"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 11: Approved -->
+                    <tr class="appointment-row align-middle" data-status="Approved">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2023-01827
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">CORTEZ, RAFAEL G.</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Career Concern
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Resume review and internship placement guidance</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 06, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">10:30 AM - 11:30 AM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 104</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Approved
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-011"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 12: Rescheduling -->
+                    <tr class="appointment-row align-middle" data-status="Rescheduling">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2022-03190
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">NAVARRO, PATRICIA MAE</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Emotional / Psychological
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 2.0; min-width: 240px;">
+                            <span class="text-dark">Emotional regulation and peer relationships</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 06, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">02:00 PM - 03:00 PM</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Face-to-Face</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Room 102</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #6f42c1; background-color: #f3e8ff; color: #581c87; border-radius: 50rem; min-width: 90px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 14px;">
+                                Rescheduling
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/appointment_view') ?>?id=APT-2026-012"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Appointment" aria-label="View Appointment"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Empty State Row (Hidden by default) -->
+                    <tr id="noResultsRow" style="display: none;">
+                        <td colspan="10" class="text-center py-5">
+                            <div class="text-muted mb-2" style="font-size: 15px; line-height: 2.0;">
+                                <i class="bi bi-search me-1 text-secondary" style="font-size: 18px;"></i>
+                                No appointments found matching the selected filter or search term.
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none"
+                                onclick="resetAllFilters()"
+                                style="font-size: 13px; height: 32px; border-radius: 6px; padding: 0 12px;">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Reset All Filters
+                            </button>
+                        </td>
+                    </tr>
+
                 </tbody>
             </table>
         </div>
 
-        <!-- PAGINATION CONTROLS -->
-        <div class="card-footer bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3 px-4 border-top"
-            style="border-top: 1px solid #E2E8F0 !important; background-color: #ffffff;">
-            <div class="text-muted" style="font-size: 13.5px;" id="tableFooterCount">
-                Showing <strong class="text-dark">1</strong> to <strong class="text-dark">8</strong> of <strong
-                    class="text-dark">8</strong> records &bull; Page 1 of 1
+        <!-- Pagination Footer -->
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3 px-4"
+            style="border-top: 1px solid #E2E8F0 !important;">
+            <div class="text-muted" id="showingCountText" style="font-size: 14px;">
+                Showing 12 of 12 appointments
             </div>
-            <nav aria-label="Appointment requests pagination">
-                <ul class="pagination pagination-sm mb-0 gap-1" id="appointmentPaginationControls">
+            <nav aria-label="Appointment list pagination">
+                <ul class="pagination pagination-sm mb-0 gap-1">
                     <li class="page-item disabled">
-                        <button class="page-link shadow-none" aria-label="Previous">&laquo;</button>
+                        <span class="page-link shadow-none" style="border-radius: 4px;">&laquo;</span>
                     </li>
-                    <li class="page-item active" aria-current="page">
-                        <button class="page-link shadow-none"
-                            style="background-color: #800020; border-color: #800020; color: #fff;">1</button>
+                    <li class="page-item active">
+                        <span class="page-link shadow-none"
+                            style="background-color: #800020; border-color: #800020; border-radius: 4px;">1</span>
                     </li>
                     <li class="page-item disabled">
-                        <button class="page-link shadow-none" aria-label="Next">&raquo;</button>
+                        <span class="page-link shadow-none" style="border-radius: 4px;">&raquo;</span>
                     </li>
                 </ul>
             </nav>
@@ -672,2012 +979,815 @@
 </div>
 
 <!-- ==================================================================== -->
-<!--   STATIC HTML DIV MODALS: VIEW APPOINTMENT (PURE DIVS, NO PHP LOOP)  -->
+<!--   5. REQUEST APPOINTMENT MODAL (ONLY VISIBLE ON BUTTON CLICK)        -->
 <!-- ==================================================================== -->
-
-<!-- Modal View 1: Carlos Ramos -->
-<div class="modal fade" id="modal-view-apt-1" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+<div class="modal fade" id="requestAppointmentModal" tabindex="-1" aria-labelledby="requestAppointmentModalLabel"
+    aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar2-check-fill text-warning fs-5"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                            Appointment Record &bull; RAMOS, CARLOS M.
-                        </h5>
-                        <span class="text-white-50" style="font-size: 13px;">Guidance Consultation Details</span>
+
+            <!-- Modal Header -->
+            <div class="modal-header px-4 py-3 bg-white" style="border-bottom: 1px solid #E2E8F0 !important;">
+                <div>
+                    <h5 class="modal-title fw-bold text-dark mb-0" id="requestAppointmentModalLabel"
+                        style="font-size: 18px; letter-spacing: -0.2px;">
+                        Request Appointment
+                    </h5>
+                    <div class="text-muted" style="font-size: 13.5px;">
+                        Guidance and Counseling Intake &amp; Referral Information
                     </div>
                 </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4" style="background-color: #f8f9fa;">
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 10px; background-color: #ffffff;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <h4 class="fw-bold text-dark mb-1" style="font-size: 20px;">RAMOS, CARLOS M.</h4>
-                                <div class="text-muted" style="font-size: 13.5px;">
-                                    <span class="me-3"><strong>Student ID:</strong> 2022-00812</span>
-                                    <span class="me-3"><strong>College:</strong> College of Education</span>
-                                    <span><strong>Program:</strong> BEED (3rd Year)</span>
+
+            <!-- Modal Body (Comprehensive Intake Form) -->
+            <div class="modal-body p-4 bg-white" style="font-size: 14.5px;">
+                <form id="requestAppointmentFormElement"
+                    onsubmit="event.preventDefault(); alert('Appointment request submitted successfully!'); const m = bootstrap.Modal.getInstance(document.getElementById('requestAppointmentModal')); if(m) m.hide();">
+
+                    <!-- STUDENT INFORMATION -->
+                    <div class="p-3 mb-4 rounded" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
+                        <div class="fw-bold text-uppercase mb-3"
+                            style="color: #800020; font-size: 14px; letter-spacing: 0.5px;">
+                            Student Information
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6 col-12">
+                                <label class="form-label fw-semibold text-dark mb-1"
+                                    style="font-size: 13.5px;">Student’s Name:</label>
+                                <input type="text" class="form-control form-control-sm bg-white shadow-none" required
+                                    placeholder="Enter Student's Full Name"
+                                    style="height: 40px; border-color: #CBD5E1; font-size: 14px;">
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-12">
+                                <label class="form-label fw-semibold text-dark mb-1" style="font-size: 13.5px;">Student
+                                    ID Number:</label>
+                                <input type="text" class="form-control form-control-sm bg-white shadow-none" required
+                                    placeholder="e.g. 2023-01089"
+                                    style="height: 40px; border-color: #CBD5E1; font-size: 14px;">
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-12">
+                                <label class="form-label fw-semibold text-dark mb-1" style="font-size: 13.5px;">Year
+                                    Level and Program:</label>
+                                <input type="text" class="form-control form-control-sm bg-white shadow-none" required
+                                    placeholder="e.g. 3rd Year - BSIS"
+                                    style="height: 40px; border-color: #CBD5E1; font-size: 14px;">
+                            </div>
+                            <div class="col-md-4 col-sm-6 col-12">
+                                <label class="form-label fw-semibold text-dark mb-1" style="font-size: 13.5px;">Date of
+                                    Birth:</label>
+                                <input type="date" class="form-control form-control-sm bg-white shadow-none"
+                                    style="height: 40px; border-color: #CBD5E1; font-size: 14px;">
+                            </div>
+                            <div class="col-md-4 col-sm-6 col-12">
+                                <label class="form-label fw-semibold text-dark mb-1" style="font-size: 13.5px;">Contact
+                                    Number:</label>
+                                <input type="text" class="form-control form-control-sm bg-white shadow-none"
+                                    placeholder="e.g. 0912 345 6789"
+                                    style="height: 40px; border-color: #CBD5E1; font-size: 14px;">
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <label class="form-label fw-semibold text-dark mb-1" style="font-size: 13.5px;">Source
+                                    of Referral:</label>
+                                <select class="form-select form-select-sm bg-white shadow-none"
+                                    style="height: 40px; border-color: #CBD5E1; font-size: 14px;">
+                                    <option value="Self-Referral" selected>Self-Referral</option>
+                                    <option value="Teacher/Faculty">Teacher / Faculty Member</option>
+                                    <option value="Department Head / Dean">Department Head / Dean</option>
+                                    <option value="Parent/Guardian">Parent / Guardian</option>
+                                    <option value="Peer/Classmate">Peer / Classmate</option>
+                                    <option value="Guidance Counselor">Guidance Counselor Outreach</option>
+                                    <option value="Other">Other Referral Source</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ACADEMIC PROBLEM/CONCERN -->
+                    <div class="mb-4">
+                        <div class="fw-bold text-dark mb-2 pb-1 border-bottom"
+                            style="font-size: 14.5px; color: #1E293B;">
+                            ACADEMIC PROBLEM/CONCERN:
+                        </div>
+                        <div class="row g-2 pt-1">
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="acad_poor_perf">
+                                    <label class="form-check-label text-dark" for="acad_poor_perf"
+                                        style="font-size: 14px;">Poor academic performance</label>
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <span class="badge mb-1"
-                                    style="border: 1.5px solid #d4a017; background-color: #fdfbe8; color: #856404; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">
-                                    Pending
-                                </span>
-                                <div class="text-muted small">Type: <strong>Walk-in</strong></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Appointment Parameters &amp;
-                            Scheduling</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <div class="row g-2">
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Request Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-20 &bull; 02:15 PM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Appointment Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-25 &bull; 10:00 AM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Consultation Mode</span>
-                                <strong class="text-dark">Face-to-face (GCO Room 1)</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Assigned Counselor</span>
-                                <strong class="text-dark">Prof. Mark Bautista, RPm</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Next Scheduled Action</span>
-                                <strong class="text-dark">Counselor Slot &amp; Intake Review</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Reason for Consultation</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <p class="text-dark mb-2" style="line-height: 1.6;">
-                            Student scheduled career counseling appointment regarding teacher licensure readiness and
-                            career alternative exploration.
-                        </p>
-                        <div class="text-muted small">
-                            <strong>Accommodations:</strong> Standard consultation room &bull; No special accommodations
-                            needed.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-0"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-body p-3" style="font-size: 13px;">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-shield-lock-fill text-danger"></i>
-                            <span class="fw-bold text-dark">Republic Act No. 10173 &amp; RA 9258 Statutory
-                                Confidentiality</span>
-                        </div>
-                        <p class="text-muted small mb-0" style="line-height: 1.5;">
-                            All consultation records, intake statements, and appointment parameters are protected under
-                            the Data Privacy Act of 2012. Unauthorized access, alteration, or disclosure is strictly
-                            punishable by law.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button"
-                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                    data-bs-dismiss="modal"
-                    style="height: 34px; width: 88px; min-width: 88px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 12px;">
-                    Close
-                </button>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        onclick="window.print()"
-                        style="height: 34px; min-width: 130px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 14px;">
-                        <i class="bi bi-printer me-1.5"></i>Print Slip
-                    </button>
-                    <button type="button"
-                        class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-toggle="modal" data-bs-target="#modal-review-apt-1"
-                        style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;">
-                        <i class="bi bi-pencil-square me-1.5"></i>Review
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal View 2: Maria Santos -->
-<div class="modal fade" id="modal-view-apt-2" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar2-check-fill text-warning fs-5"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                            Appointment Record &bull; SANTOS, MARIA C.
-                        </h5>
-                        <span class="text-white-50" style="font-size: 13px;">Guidance Consultation Details</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4" style="background-color: #f8f9fa;">
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 10px; background-color: #ffffff;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <h4 class="fw-bold text-dark mb-1" style="font-size: 20px;">SANTOS, MARIA C.</h4>
-                                <div class="text-muted" style="font-size: 13.5px;">
-                                    <span class="me-3"><strong>Student ID:</strong> 2023-01042</span>
-                                    <span class="me-3"><strong>College:</strong> College of Arts and Sciences</span>
-                                    <span><strong>Program:</strong> BaPOS (2nd Year)</span>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="acad_study_habits">
+                                    <label class="form-check-label text-dark" for="acad_study_habits"
+                                        style="font-size: 14px;">Study habits and time management</label>
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <span class="badge mb-1"
-                                    style="border: 1.5px solid #3182ce; background-color: #ebf8ff; color: #2b6cb0; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">
-                                    Approved
-                                </span>
-                                <div class="text-muted small">Type: <strong>Online Appointment</strong></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Appointment Parameters &amp;
-                            Scheduling</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <div class="row g-2">
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Request Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-21 &bull; 10:00 AM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Appointment Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-26 &bull; 01:30 PM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Consultation Mode</span>
-                                <strong class="text-dark">Online Virtual Consultation</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Assigned Counselor</span>
-                                <strong class="text-dark">Dr. Elena Santos, RGC</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Next Scheduled Action</span>
-                                <strong class="text-dark">Student Confirmation Notice</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Reason for Consultation</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <p class="text-dark mb-2" style="line-height: 1.6;">
-                            Follow-up consultation regarding academic anxiety management and stress reduction
-                            techniques.
-                        </p>
-                        <div class="text-muted small">
-                            <strong>Accommodations:</strong> Ground floor quiet room requested.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-0"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-body p-3" style="font-size: 13px;">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-shield-lock-fill text-danger"></i>
-                            <span class="fw-bold text-dark">Republic Act No. 10173 &amp; RA 9258 Statutory
-                                Confidentiality</span>
-                        </div>
-                        <p class="text-muted small mb-0" style="line-height: 1.5;">
-                            All consultation records, intake statements, and appointment parameters are protected under
-                            the Data Privacy Act of 2012. Unauthorized access, alteration, or disclosure is strictly
-                            punishable by law.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button"
-                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                    data-bs-dismiss="modal"
-                    style="height: 34px; width: 88px; min-width: 88px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 12px;">
-                    Close
-                </button>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        onclick="window.print()"
-                        style="height: 34px; min-width: 130px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 14px;">
-                        <i class="bi bi-printer me-1.5"></i>Print Slip
-                    </button>
-                    <button type="button"
-                        class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-toggle="modal" data-bs-target="#modal-review-apt-2"
-                        style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;">
-                        <i class="bi bi-pencil-square me-1.5"></i>Review
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal View 3: Juan Dela Cruz -->
-<div class="modal fade" id="modal-view-apt-3" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar2-check-fill text-warning fs-5"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                            Appointment Record &bull; DELA CRUZ, JUAN L.
-                        </h5>
-                        <span class="text-white-50" style="font-size: 13px;">Guidance Consultation Details</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4" style="background-color: #f8f9fa;">
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 10px; background-color: #ffffff;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <h4 class="fw-bold text-dark mb-1" style="font-size: 20px;">DELA CRUZ, JUAN L.</h4>
-                                <div class="text-muted" style="font-size: 13.5px;">
-                                    <span class="me-3"><strong>Student ID:</strong> 2023-01089</span>
-                                    <span class="me-3"><strong>College:</strong> College of Information and Computing
-                                        Sciences</span>
-                                    <span><strong>Program:</strong> BSIS (2nd Year)</span>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="acad_test_anxiety">
+                                    <label class="form-check-label text-dark" for="acad_test_anxiety"
+                                        style="font-size: 14px;">Test anxiety</label>
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <span class="badge mb-1"
-                                    style="border: 1.5px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">
-                                    Confirmed
-                                </span>
-                                <div class="text-muted small">Type: <strong>Walk-in</strong></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Appointment Parameters &amp;
-                            Scheduling</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <div class="row g-2">
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Request Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-22 &bull; 08:30 AM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Appointment Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-27 &bull; 09:00 AM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Consultation Mode</span>
-                                <strong class="text-dark">Face-to-face (GCO Room 1)</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Assigned Counselor</span>
-                                <strong class="text-dark">Dr. Elena Santos, RGC</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Next Scheduled Action</span>
-                                <strong class="text-dark">Conduct Consultation Session</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Reason for Consultation</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <p class="text-dark mb-2" style="line-height: 1.6;">
-                            Student seeking assistance regarding major laboratory programming load and study habits
-                            scheduling.
-                        </p>
-                        <div class="text-muted small">
-                            <strong>Accommodations:</strong> Standard consultation room.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-0"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-body p-3" style="font-size: 13px;">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-shield-lock-fill text-danger"></i>
-                            <span class="fw-bold text-dark">Republic Act No. 10173 &amp; RA 9258 Statutory
-                                Confidentiality</span>
-                        </div>
-                        <p class="text-muted small mb-0" style="line-height: 1.5;">
-                            All consultation records, intake statements, and appointment parameters are protected under
-                            the Data Privacy Act of 2012. Unauthorized access, alteration, or disclosure is strictly
-                            punishable by law.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button"
-                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                    data-bs-dismiss="modal"
-                    style="height: 34px; width: 88px; min-width: 88px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 12px;">
-                    Close
-                </button>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        onclick="window.print()"
-                        style="height: 34px; min-width: 130px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 14px;">
-                        <i class="bi bi-printer me-1.5"></i>Print Slip
-                    </button>
-                    <button type="button"
-                        class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-toggle="modal" data-bs-target="#modal-review-apt-3"
-                        style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;">
-                        <i class="bi bi-pencil-square me-1.5"></i>Review
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal View 4: Bea Angela Reyes -->
-<div class="modal fade" id="modal-view-apt-4" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar2-check-fill text-warning fs-5"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                            Appointment Record &bull; REYES, BEA ANGELA D.
-                        </h5>
-                        <span class="text-white-50" style="font-size: 13px;">Guidance Consultation Details</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4" style="background-color: #f8f9fa;">
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 10px; background-color: #ffffff;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <h4 class="fw-bold text-dark mb-1" style="font-size: 20px;">REYES, BEA ANGELA D.</h4>
-                                <div class="text-muted" style="font-size: 13.5px;">
-                                    <span class="me-3"><strong>Student ID:</strong> 2024-00155</span>
-                                    <span class="me-3"><strong>College:</strong> College of Business and
-                                        Accountancy</span>
-                                    <span><strong>Program:</strong> BSTM (1st Year)</span>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="acad_diff_adjust">
+                                    <label class="form-check-label text-dark" for="acad_diff_adjust"
+                                        style="font-size: 14px;">Difficulty adjusting to academic demands</label>
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <span class="badge mb-1"
-                                    style="border: 1.5px solid #4a5568; background-color: #edf2f7; color: #2d3748; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">
-                                    Completed
-                                </span>
-                                <div class="text-muted small">Type: <strong>Online Appointment</strong></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Appointment Parameters &amp;
-                            Scheduling</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <div class="row g-2">
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Request Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-18 &bull; 09:00 AM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Appointment Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-22 &bull; 11:00 AM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Consultation Mode</span>
-                                <strong class="text-dark">Online Virtual Consultation</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Assigned Counselor</span>
-                                <strong class="text-dark">Ms. Clarisse Ramos</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Next Scheduled Action</span>
-                                <strong class="text-dark">Case Concluded / Filed in Registry</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Reason for Consultation</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <p class="text-dark mb-2" style="line-height: 1.6;">
-                            Freshman orientation adjustment follow-up regarding homesickness and peer networking
-                            support.
-                        </p>
-                        <div class="text-muted small">
-                            <strong>Accommodations:</strong> Standard room.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-0"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-body p-3" style="font-size: 13px;">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-shield-lock-fill text-danger"></i>
-                            <span class="fw-bold text-dark">Republic Act No. 10173 &amp; RA 9258 Statutory
-                                Confidentiality</span>
-                        </div>
-                        <p class="text-muted small mb-0" style="line-height: 1.5;">
-                            All consultation records, intake statements, and appointment parameters are protected under
-                            the Data Privacy Act of 2012. Unauthorized access, alteration, or disclosure is strictly
-                            punishable by law.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button"
-                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                    data-bs-dismiss="modal"
-                    style="height: 34px; width: 88px; min-width: 88px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 12px;">
-                    Close
-                </button>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        onclick="window.print()"
-                        style="height: 34px; min-width: 130px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 14px;">
-                        <i class="bi bi-printer me-1.5"></i>Print Slip
-                    </button>
-                    <button type="button"
-                        class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-toggle="modal" data-bs-target="#modal-review-apt-4"
-                        style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;">
-                        <i class="bi bi-pencil-square me-1.5"></i>Review
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal View 5: Joshua David Tan -->
-<div class="modal fade" id="modal-view-apt-5" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar2-check-fill text-warning fs-5"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                            Appointment Record &bull; TAN, JOSHUA DAVID K.
-                        </h5>
-                        <span class="text-white-50" style="font-size: 13px;">Guidance Consultation Details</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4" style="background-color: #f8f9fa;">
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 10px; background-color: #ffffff;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <h4 class="fw-bold text-dark mb-1" style="font-size: 20px;">TAN, JOSHUA DAVID K.</h4>
-                                <div class="text-muted" style="font-size: 13.5px;">
-                                    <span class="me-3"><strong>Student ID:</strong> 2021-00341</span>
-                                    <span class="me-3"><strong>College:</strong> College of Engineering</span>
-                                    <span><strong>Program:</strong> BSCE (4th Year)</span>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="acad_learning_diff">
+                                    <label class="form-check-label text-dark" for="acad_learning_diff"
+                                        style="font-size: 14px;">Learning difficulties</label>
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <span class="badge mb-1"
-                                    style="border: 1.5px solid #6c757d; background-color: #f8f9fa; color: #495057; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">
-                                    Rescheduled
-                                </span>
-                                <div class="text-muted small">Type: <strong>Walk-in</strong></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Appointment Parameters &amp;
-                            Scheduling</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <div class="row g-2">
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Request Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-16 &bull; 01:30 PM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Appointment Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-28 &bull; 02:00 PM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Consultation Mode</span>
-                                <strong class="text-dark">Face-to-face (GCO Room 1)</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Assigned Counselor</span>
-                                <strong class="text-dark">Prof. Mark Bautista, RPm</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Next Scheduled Action</span>
-                                <strong class="text-dark">Attend Rescheduled Session</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Reason for Consultation</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <p class="text-dark mb-2" style="line-height: 1.6;">
-                            Attendance recovery discussion following dean referral for missed capstone lecture hours.
-                        </p>
-                        <div class="text-muted small">
-                            <strong>Accommodations:</strong> Standard consultation room.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-0"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-body p-3" style="font-size: 13px;">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-shield-lock-fill text-danger"></i>
-                            <span class="fw-bold text-dark">Republic Act No. 10173 &amp; RA 9258 Statutory
-                                Confidentiality</span>
-                        </div>
-                        <p class="text-muted small mb-0" style="line-height: 1.5;">
-                            All consultation records, intake statements, and appointment parameters are protected under
-                            the Data Privacy Act of 2012. Unauthorized access, alteration, or disclosure is strictly
-                            punishable by law.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button"
-                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                    data-bs-dismiss="modal"
-                    style="height: 34px; width: 88px; min-width: 88px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 12px;">
-                    Close
-                </button>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        onclick="window.print()"
-                        style="height: 34px; min-width: 130px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 14px;">
-                        <i class="bi bi-printer me-1.5"></i>Print Slip
-                    </button>
-                    <button type="button"
-                        class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-toggle="modal" data-bs-target="#modal-review-apt-5"
-                        style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;">
-                        <i class="bi bi-pencil-square me-1.5"></i>Review
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal View 6: Patricia Anne Lim -->
-<div class="modal fade" id="modal-view-apt-6" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar2-check-fill text-warning fs-5"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                            Appointment Record &bull; LIM, PATRICIA ANNE S.
-                        </h5>
-                        <span class="text-white-50" style="font-size: 13px;">Guidance Consultation Details</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4" style="background-color: #f8f9fa;">
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 10px; background-color: #ffffff;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <h4 class="fw-bold text-dark mb-1" style="font-size: 20px;">LIM, PATRICIA ANNE S.</h4>
-                                <div class="text-muted" style="font-size: 13.5px;">
-                                    <span class="me-3"><strong>Student ID:</strong> 2023-00492</span>
-                                    <span class="me-3"><strong>College:</strong> College of Agriculture</span>
-                                    <span><strong>Program:</strong> BSA (2nd Year)</span>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="acad_class_attend">
+                                    <label class="form-check-label text-dark" for="acad_class_attend"
+                                        style="font-size: 14px;">Class attendance or motivation</label>
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <span class="badge mb-1"
-                                    style="border: 1.5px solid #e53e3e; background-color: #fff5f5; color: #c53030; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">
-                                    Cancelled
-                                </span>
-                                <div class="text-muted small">Type: <strong>Online Appointment</strong></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Appointment Parameters &amp;
-                            Scheduling</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <div class="row g-2">
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Request Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-15 &bull; 11:30 AM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Appointment Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-24 &bull; 10:30 AM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Consultation Mode</span>
-                                <strong class="text-dark">Online Google Meet</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Assigned Counselor</span>
-                                <strong class="text-dark">Dr. Elena Santos, RGC</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Next Scheduled Action</span>
-                                <strong class="text-dark">Follow-up with Student Welfare Office</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Reason for Consultation</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <p class="text-dark mb-2" style="line-height: 1.6;">
-                            Student requested emergency transportation subsidy and campus food program coordination.
-                            Handled directly via MarSU Scholarship Office.
-                        </p>
-                        <div class="text-muted small">
-                            <strong>Accommodations:</strong> Virtual session via Google Meet.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-0"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-body p-3" style="font-size: 13px;">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-shield-lock-fill text-danger"></i>
-                            <span class="fw-bold text-dark">Republic Act No. 10173 &amp; RA 9258 Statutory
-                                Confidentiality</span>
-                        </div>
-                        <p class="text-muted small mb-0" style="line-height: 1.5;">
-                            All consultation records, intake statements, and appointment parameters are protected under
-                            the Data Privacy Act of 2012. Unauthorized access, alteration, or disclosure is strictly
-                            punishable by law.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button"
-                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                    data-bs-dismiss="modal"
-                    style="height: 34px; width: 88px; min-width: 88px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 12px;">
-                    Close
-                </button>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        onclick="window.print()"
-                        style="height: 34px; min-width: 130px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 14px;">
-                        <i class="bi bi-printer me-1.5"></i>Print Slip
-                    </button>
-                    <button type="button"
-                        class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-toggle="modal" data-bs-target="#modal-review-apt-6"
-                        style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;">
-                        <i class="bi bi-pencil-square me-1.5"></i>Review
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal View 7: Miguel Garcia -->
-<div class="modal fade" id="modal-view-apt-7" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar2-check-fill text-warning fs-5"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                            Appointment Record &bull; GARCIA, MIGUEL R.
-                        </h5>
-                        <span class="text-white-50" style="font-size: 13px;">Guidance Consultation Details</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4" style="background-color: #f8f9fa;">
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 10px; background-color: #ffffff;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <h4 class="fw-bold text-dark mb-1" style="font-size: 20px;">GARCIA, MIGUEL R.</h4>
-                                <div class="text-muted" style="font-size: 13.5px;">
-                                    <span class="me-3"><strong>Student ID:</strong> 2022-00419</span>
-                                    <span class="me-3"><strong>College:</strong> College of Engineering</span>
-                                    <span><strong>Program:</strong> BSCE (3rd Year)</span>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="acad_probation">
+                                    <label class="form-check-label text-dark" for="acad_probation"
+                                        style="font-size: 14px;">Academic probation or retention concerns</label>
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <span class="badge mb-1"
-                                    style="border: 1.5px solid #dc3545; background-color: #fdf2f2; color: #721c24; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">
-                                    Rejected
-                                </span>
-                                <div class="text-muted small">Type: <strong>Walk-in</strong></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Appointment Parameters &amp;
-                            Scheduling</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <div class="row g-2">
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Request Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-14 &bull; 04:45 PM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Appointment Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-16 &bull; 08:30 AM</strong>
-                            </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Consultation Mode</span>
-                                <strong class="text-dark">Face-to-face (GCO Room 1)</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Assigned Counselor</span>
-                                <strong class="text-dark">Prof. Mark Bautista, RPm</strong>
-                            </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Next Scheduled Action</span>
-                                <strong class="text-dark">Advised to Re-file for Weekday Office Hours</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Reason for Consultation</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <p class="text-dark mb-2" style="line-height: 1.6;">
-                            Requested consultation regarding academic overload waiver signature. Requested slot fell on
-                            an institutional academic holiday.
-                        </p>
-                        <div class="text-muted small">
-                            <strong>Accommodations:</strong> Standard consultation room.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border shadow-sm mb-0"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-body p-3" style="font-size: 13px;">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-shield-lock-fill text-danger"></i>
-                            <span class="fw-bold text-dark">Republic Act No. 10173 &amp; RA 9258 Statutory
-                                Confidentiality</span>
-                        </div>
-                        <p class="text-muted small mb-0" style="line-height: 1.5;">
-                            All consultation records, intake statements, and appointment parameters are protected under
-                            the Data Privacy Act of 2012. Unauthorized access, alteration, or disclosure is strictly
-                            punishable by law.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button"
-                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                    data-bs-dismiss="modal"
-                    style="height: 34px; width: 88px; min-width: 88px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 12px;">
-                    Close
-                </button>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        onclick="window.print()"
-                        style="height: 34px; min-width: 130px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 14px;">
-                        <i class="bi bi-printer me-1.5"></i>Print Slip
-                    </button>
-                    <button type="button"
-                        class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-toggle="modal" data-bs-target="#modal-review-apt-7"
-                        style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;">
-                        <i class="bi bi-pencil-square me-1.5"></i>Review
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal View 8: Chloe Villanueva -->
-<div class="modal fade" id="modal-view-apt-8" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar2-check-fill text-warning fs-5"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                            Appointment Record &bull; VILLANUEVA, CHLOE T.
-                        </h5>
-                        <span class="text-white-50" style="font-size: 13px;">Guidance Consultation Details</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4" style="background-color: #f8f9fa;">
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 10px; background-color: #ffffff;">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <h4 class="fw-bold text-dark mb-1" style="font-size: 20px;">VILLANUEVA, CHLOE T.</h4>
-                                <div class="text-muted" style="font-size: 13.5px;">
-                                    <span class="me-3"><strong>Student ID:</strong> 2024-00210</span>
-                                    <span class="me-3"><strong>College:</strong> College of Arts and Sciences</span>
-                                    <span><strong>Program:</strong> BaPOS (1st Year)</span>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox"
+                                        id="acad_program_concern">
+                                    <label class="form-check-label text-dark" for="acad_program_concern"
+                                        style="font-size: 14px;">Course or program-related concerns</label>
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <span class="badge mb-1"
-                                    style="border: 1.5px solid #4a5568; background-color: #f7fafc; color: #1a202c; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">
-                                    No-Show
-                                </span>
-                                <div class="text-muted small">Type: <strong>Online Appointment</strong></div>
+                            <div class="col-12 mt-2">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <div class="form-check mb-0">
+                                        <input class="form-check-input shadow-none" type="checkbox"
+                                            id="acad_other_check">
+                                        <label class="form-check-label text-dark fw-semibold" for="acad_other_check"
+                                            style="font-size: 14px;">Other:</label>
+                                    </div>
+                                    <input type="text"
+                                        class="form-control form-control-sm bg-white shadow-none flex-grow-1"
+                                        placeholder="Specify other academic concerns..."
+                                        style="min-width: 220px; height: 36px; border-color: #CBD5E1; font-size: 14px;">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Appointment Parameters &amp;
-                            Scheduling</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <div class="row g-2">
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Request Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-12 &bull; 01:15 PM</strong>
+                    <!-- CAREER RELATED CONCERNS -->
+                    <div class="mb-4">
+                        <div class="fw-bold text-dark mb-2 pb-1 border-bottom"
+                            style="font-size: 14.5px; color: #1E293B;">
+                            CAREER RELATED CONCERNS:
+                        </div>
+                        <div class="row g-2 pt-1">
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="career_explor">
+                                    <label class="form-check-label text-dark" for="career_explor"
+                                        style="font-size: 14px;">Career exploration</label>
+                                </div>
                             </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Appointment Date &amp; Time</span>
-                                <strong class="text-dark">2026-10-15 &bull; 03:00 PM</strong>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="career_decision">
+                                    <label class="form-check-label text-dark" for="career_decision"
+                                        style="font-size: 14px;">Career decision-making</label>
+                                </div>
                             </div>
-                            <div class="col-sm-4 col-12">
-                                <span class="text-muted d-block small">Consultation Mode</span>
-                                <strong class="text-dark">Online Virtual Consultation</strong>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="career_prog_select">
+                                    <label class="form-check-label text-dark" for="career_prog_select"
+                                        style="font-size: 14px;">Course or program selection</label>
+                                </div>
                             </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Assigned Counselor</span>
-                                <strong class="text-dark">Ms. Clarisse Ramos</strong>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="career_trans">
+                                    <label class="form-check-label text-dark" for="career_trans"
+                                        style="font-size: 14px;">Career change or transition</label>
+                                </div>
                             </div>
-                            <div class="col-sm-6 col-12 pt-2 border-top">
-                                <span class="text-muted d-block small">Next Scheduled Action</span>
-                                <strong class="text-dark">Send Reschedule Invitation Notice</strong>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="career_readiness">
+                                    <label class="form-check-label text-dark" for="career_readiness"
+                                        style="font-size: 14px;">Employment readiness</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="career_resume">
+                                    <label class="form-check-label text-dark" for="career_resume"
+                                        style="font-size: 14px;">Resume or curriculum vitae (CV) review</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="career_interview">
+                                    <label class="form-check-label text-dark" for="career_interview"
+                                        style="font-size: 14px;">Interview preparation</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="career_grad_plan">
+                                    <label class="form-check-label text-dark" for="career_grad_plan"
+                                        style="font-size: 14px;">Graduate studies planning</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <div class="form-check mb-0">
+                                        <input class="form-check-input shadow-none" type="checkbox"
+                                            id="career_other_check">
+                                        <label class="form-check-label text-dark fw-semibold" for="career_other_check"
+                                            style="font-size: 14px;">Other career-related concerns:</label>
+                                    </div>
+                                    <input type="text"
+                                        class="form-control form-control-sm bg-white shadow-none flex-grow-1"
+                                        placeholder="Specify other career-related concerns..."
+                                        style="min-width: 220px; height: 36px; border-color: #CBD5E1; font-size: 14px;">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card border shadow-sm mb-3"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill" style="color: #800020;"></i>
-                        <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Reason for Consultation</span>
-                    </div>
-                    <div class="card-body p-3" style="font-size: 13.5px;">
-                        <p class="text-dark mb-2" style="line-height: 1.6;">
-                            Requested consultation on student club participation and peer adaptation. Marked as No-Show
-                            after 30-minute grace period without notice.
-                        </p>
-                        <div class="text-muted small">
-                            <strong>Accommodations:</strong> Standard room.
+                    <!-- EMOTIONAL OR PSYCHOLOGICAL CONCERNS * -->
+                    <div class="mb-4">
+                        <div class="fw-bold text-dark mb-2 pb-1 border-bottom"
+                            style="font-size: 14.5px; color: #1E293B;">
+                            EMOTIONAL OR PSYCHOLOGICAL CONCERNS <span class="text-danger">*</span>
+                        </div>
+                        <div class="row g-2 pt-1">
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_stress">
+                                    <label class="form-check-label text-dark" for="emot_stress"
+                                        style="font-size: 14px;">Stress Management</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_anxiety">
+                                    <label class="form-check-label text-dark" for="emot_anxiety"
+                                        style="font-size: 14px;">Anxiety or excessive worry</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_sadness">
+                                    <label class="form-check-label text-dark" for="emot_sadness"
+                                        style="font-size: 14px;">Sadness or depressive feelings</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_reg">
+                                    <label class="form-check-label text-dark" for="emot_reg"
+                                        style="font-size: 14px;">Emotional regulation</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_self_esteem">
+                                    <label class="form-check-label text-dark" for="emot_self_esteem"
+                                        style="font-size: 14px;">Self-esteem or self-confidence</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_relationship">
+                                    <label class="form-check-label text-dark" for="emot_relationship"
+                                        style="font-size: 14px;">Relationship concerns (family, peers, romantic)</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_grief">
+                                    <label class="form-check-label text-dark" for="emot_grief"
+                                        style="font-size: 14px;">Grief and loss</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_anger">
+                                    <label class="form-check-label text-dark" for="emot_anger"
+                                        style="font-size: 14px;">Anger management</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_loneliness">
+                                    <label class="form-check-label text-dark" for="emot_loneliness"
+                                        style="font-size: 14px;">Loneliness or social isolation</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_adjust">
+                                    <label class="form-check-label text-dark" for="emot_adjust"
+                                        style="font-size: 14px;">Personal adjustment issues</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input shadow-none" type="checkbox" id="emot_crisis">
+                                    <label class="form-check-label text-dark" for="emot_crisis"
+                                        style="font-size: 14px;">Crisis or urgent emotional concerns</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <div class="form-check mb-0">
+                                        <input class="form-check-input shadow-none" type="checkbox"
+                                            id="emot_other_check">
+                                        <label class="form-check-label text-dark fw-semibold" for="emot_other_check"
+                                            style="font-size: 14px;">Other:</label>
+                                    </div>
+                                    <input type="text"
+                                        class="form-control form-control-sm bg-white shadow-none flex-grow-1"
+                                        placeholder="Specify other emotional or psychological concerns..."
+                                        style="min-width: 220px; height: 36px; border-color: #CBD5E1; font-size: 14px;">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card border shadow-sm mb-0"
-                    style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                    <div class="card-body p-3" style="font-size: 13px;">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <i class="bi bi-shield-lock-fill text-danger"></i>
-                            <span class="fw-bold text-dark">Republic Act No. 10173 &amp; RA 9258 Statutory
-                                Confidentiality</span>
+                    <!-- SOURCE OF REFERRAL & OBSERVATIONS -->
+                    <div class="p-3 mb-4 rounded" style="background-color: #F8FAFC; border: 1px solid #E2E8F0;">
+                        <!-- Behavioral Changes -->
+                        <div class="mb-3">
+                            <div class="fw-bold text-dark mb-2" style="font-size: 14px;">Behavioral Changes:</div>
+                            <div class="row g-2">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="beh_withdrawal">
+                                        <label class="form-check-label text-dark" for="beh_withdrawal"
+                                            style="font-size: 14px;">Sudden withdrawal from social interactions</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="beh_drop_perf">
+                                        <label class="form-check-label text-dark" for="beh_drop_perf"
+                                            style="font-size: 14px;">Noticeable drop in academic performance</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox"
+                                            id="beh_irritability">
+                                        <label class="form-check-label text-dark" for="beh_irritability"
+                                            style="font-size: 14px;">Increased irritability or mood swings</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="beh_focus">
+                                        <label class="form-check-label text-dark" for="beh_focus"
+                                            style="font-size: 14px;">Lack of focus or attention during classes</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="beh_absences">
+                                        <label class="form-check-label text-dark" for="beh_absences"
+                                            style="font-size: 14px;">Frequent absences or tardiness</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="beh_hygiene">
+                                        <label class="form-check-label text-dark" for="beh_hygiene"
+                                            style="font-size: 14px;">Decline in personal hygiene or appearance</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="beh_weight">
+                                        <label class="form-check-label text-dark" for="beh_weight"
+                                            style="font-size: 14px;">Significant weight gain/loss without
+                                            explanation</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-muted small mb-0" style="line-height: 1.5;">
-                            All consultation records, intake statements, and appointment parameters are protected under
-                            the Data Privacy Act of 2012. Unauthorized access, alteration, or disclosure is strictly
-                            punishable by law.
-                        </p>
+
+                        <!-- Emotional Distress -->
+                        <div class="mb-3">
+                            <div class="fw-bold text-dark mb-2" style="font-size: 14px;">Emotional Distress:</div>
+                            <div class="row g-2">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="dist_sadness">
+                                        <label class="form-check-label text-dark" for="dist_sadness"
+                                            style="font-size: 14px;">Excessive sadness or tearfulness</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox"
+                                            id="dist_hopelessness">
+                                        <label class="form-check-label text-dark" for="dist_hopelessness"
+                                            style="font-size: 14px;">Expressions of hopelessness or
+                                            worthlessness</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="dist_worry">
+                                        <label class="form-check-label text-dark" for="dist_worry"
+                                            style="font-size: 14px;">Excessive worry or anxiety</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="dist_interest">
+                                        <label class="form-check-label text-dark" for="dist_interest"
+                                            style="font-size: 14px;">Loss of interest in activities they once
+                                            enjoyed</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="dist_outbursts">
+                                        <label class="form-check-label text-dark" for="dist_outbursts"
+                                            style="font-size: 14px;">Frequent emotional outbursts (anger,
+                                            frustration)</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="dist_harm">
+                                        <label class="form-check-label text-dark" for="dist_harm"
+                                            style="font-size: 14px;">Expressions of self-harm or suicide (verbal or
+                                            written)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Physical Symptoms -->
+                        <div class="mb-3">
+                            <div class="fw-bold text-dark mb-2" style="font-size: 14px;">Physical Symptoms:</div>
+                            <div class="row g-2">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="phys_headaches">
+                                        <label class="form-check-label text-dark" for="phys_headaches"
+                                            style="font-size: 14px;">Frequent headaches or complaints of physical pain
+                                            without medical explanation</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="phys_harm">
+                                        <label class="form-check-label text-dark" for="phys_harm"
+                                            style="font-size: 14px;">Visible signs of self-harm (cuts, bruises)</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="phys_fatigue">
+                                        <label class="form-check-label text-dark" for="phys_fatigue"
+                                            style="font-size: 14px;">Extreme fatigue or lethargy</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="phys_sleep">
+                                        <label class="form-check-label text-dark" for="phys_sleep"
+                                            style="font-size: 14px;">Trouble sleeping or excessive sleeping</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social and Relationship Issues -->
+                        <div class="mb-3">
+                            <div class="fw-bold text-dark mb-2" style="font-size: 14px;">Social and Relationship Issues:
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="soc_conflicts">
+                                        <label class="form-check-label text-dark" for="soc_conflicts"
+                                            style="font-size: 14px;">Conflicts with peers or faculty members</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="soc_bullying">
+                                        <label class="form-check-label text-dark" for="soc_bullying"
+                                            style="font-size: 14px;">Bullying or being bullied</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="soc_isolation">
+                                        <label class="form-check-label text-dark" for="soc_isolation"
+                                            style="font-size: 14px;">Isolation from friends or classmates</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox"
+                                            id="soc_relationships">
+                                        <label class="form-check-label text-dark" for="soc_relationships"
+                                            style="font-size: 14px;">Difficulty in forming or maintaining
+                                            relationships</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Substance Use -->
+                        <div class="mb-3">
+                            <div class="fw-bold text-dark mb-2" style="font-size: 14px;">Substance Use:</div>
+                            <div class="form-check">
+                                <input class="form-check-input shadow-none" type="checkbox" id="sub_abuse">
+                                <label class="form-check-label text-dark" for="sub_abuse"
+                                    style="font-size: 14px;">Suspected or confirmed substance abuse (alcohol,
+                                    drugs)</label>
+                            </div>
+                        </div>
+
+                        <!-- Other Observations -->
+                        <div class="mb-3">
+                            <div class="fw-bold text-dark mb-1" style="font-size: 14px;">Other Observations:</div>
+                            <label class="form-label text-muted mb-1" style="font-size: 13.5px;">Please specify if there
+                                are any other concerns not listed above:</label>
+                            <input type="text" class="form-control form-control-sm bg-white shadow-none"
+                                placeholder="Specify any additional observed behaviors or situational context..."
+                                style="height: 40px; border-color: #CBD5E1; font-size: 14px;">
+                        </div>
+
+                        <!-- Actions Taken (if any) -->
+                        <div class="mb-3">
+                            <div class="fw-bold text-dark mb-2" style="font-size: 14px;">Actions Taken (if any):</div>
+                            <div class="row g-2">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="act_student">
+                                        <label class="form-check-label text-dark" for="act_student"
+                                            style="font-size: 14px;">Discussion with student</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="act_parents">
+                                        <label class="form-check-label text-dark" for="act_parents"
+                                            style="font-size: 14px;">Discussion with parents/guardian</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input shadow-none" type="checkbox" id="act_guidance">
+                                        <label class="form-check-label text-dark" for="act_guidance"
+                                            style="font-size: 14px;">Suggested the student seek help from the Guidance
+                                            Office</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <div class="form-check mb-0">
+                                            <input class="form-check-input shadow-none" type="checkbox"
+                                                id="act_other_check">
+                                            <label class="form-check-label text-dark fw-semibold" for="act_other_check"
+                                                style="font-size: 14px;">Other (Please specify):</label>
+                                        </div>
+                                        <input type="text"
+                                            class="form-control form-control-sm bg-white shadow-none flex-grow-1"
+                                            placeholder="Specify actions taken..."
+                                            style="min-width: 220px; height: 36px; border-color: #CBD5E1; font-size: 14px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Comments or Concerns -->
+                        <div>
+                            <div class="fw-bold text-dark mb-1" style="font-size: 14px;">Additional Comments or
+                                Concerns:</div>
+                            <textarea class="form-control form-control-sm bg-white shadow-none" rows="3"
+                                placeholder="Provide any additional comments, referral context, or counseling concerns..."
+                                style="border-color: #CBD5E1; font-size: 14px;"></textarea>
+                        </div>
+
                     </div>
-                </div>
+
+                    <!-- Modal Actions -->
+                    <div class="d-flex justify-content-end align-items-center gap-2 pt-2 border-top">
+                        <button type="button" class="btn btn-outline-secondary shadow-none px-3" data-bs-dismiss="modal"
+                            style="font-size: 14px; height: 38px; border-radius: 6px;">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn text-white shadow-none px-4"
+                            onmouseenter="this.style.backgroundColor='#9B1130'; this.style.borderColor='#9B1130'; this.style.boxShadow='0 4px 12px rgba(128, 0, 32, 0.25)';"
+                            onmouseleave="this.style.backgroundColor='#800020'; this.style.borderColor='#800020'; this.style.boxShadow='none'; this.style.transform='none';"
+                            onmousedown="this.style.backgroundColor='#4A0012'; this.style.borderColor='#33000C'; this.style.transform='scale(0.96)';"
+                            onmouseup="this.style.backgroundColor='#9B1130'; this.style.borderColor='#9B1130'; this.style.transform='none';"
+                            style="background-color: #800020; border: 1px solid #800020; font-size: 14px; height: 38px; border-radius: 6px; font-weight: 500; transition: all 0.18s ease-in-out; cursor: pointer; user-select: none;">
+                            <i class="bi bi-check2-circle" style="margin-right: 8px; font-size: 15px;"></i>Submit
+                            Appointment Request
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="modal-footer px-4 py-3 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button"
-                    class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                    data-bs-dismiss="modal"
-                    style="height: 34px; width: 88px; min-width: 88px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 12px;">
-                    Close
-                </button>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        onclick="window.print()"
-                        style="height: 34px; min-width: 130px; font-size: 13.5px; font-weight: 500; border-radius: 4px; padding: 0 14px;">
-                        <i class="bi bi-printer me-1.5"></i>Print Slip
-                    </button>
-                    <button type="button"
-                        class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-toggle="modal" data-bs-target="#modal-review-apt-8"
-                        style="border: 1px solid #d4a017; color: #856404; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;">
-                        <i class="bi bi-pencil-square me-1.5"></i>Review
-                    </button>
-                </div>
-            </div>
+
         </div>
     </div>
 </div>
 
 <!-- ==================================================================== -->
-<!--   STATIC HTML DIV MODALS: REVIEW & STATUS (PURE DIVS, NO PHP LOOP)   -->
+<!--   6. CLIENT-SIDE FILTERING & SEARCH CONTROLLER                       -->
 <!-- ==================================================================== -->
-
-<!-- Review Modal 1: Carlos Ramos -->
-<div class="modal fade" id="modal-review-apt-1" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 10px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-2.5" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-pencil-square text-warning fs-5"></i>
-                    <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                        Review Appointment &bull; RAMOS, CARLOS M.
-                    </h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="" method="POST">
-                <div class="modal-body p-4" style="background-color: #fcfcfc;">
-                    <div class="alert alert-light border p-2.5 mb-3 d-flex align-items-center gap-2"
-                        style="font-size: 13px;">
-                        <i class="bi bi-info-circle-fill text-primary"></i>
-                        <span>Processing request for <strong>RAMOS, CARLOS M.</strong> (2022-00812)</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Current Status</label>
-                        <div>
-                            <span class="badge"
-                                style="border: 1.5px solid #d4a017; background-color: #fdfbe8; color: #856404; border-radius: 50rem; min-width: 105px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px;">
-                                Pending
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Select New Status <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required
-                            style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Pending" selected>Pending</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Rescheduled">Rescheduled</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="No-Show">No-Show</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Assigned Counselor</label>
-                        <select class="form-select shadow-none" style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Prof. Mark Bautista, RPm" selected>Prof. Mark Bautista, RPm (Psychometrician)
-                            </option>
-                            <option value="Dr. Elena Santos, RGC">Dr. Elena Santos, RGC (Head Counselor)</option>
-                            <option value="Ms. Clarisse Ramos">Ms. Clarisse Ramos (Academic Counselor)</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Date</label>
-                            <input type="date" class="form-control shadow-none" value="2026-10-25"
-                                style="font-size: 13px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Time</label>
-                            <input type="text" class="form-control shadow-none" value="10:00 AM"
-                                style="font-size: 13px;">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Next Scheduled Action</label>
-                        <input type="text" class="form-control shadow-none" value="Counselor Slot &amp; Intake Review"
-                            style="font-size: 13px;">
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label text-muted fw-semibold small mb-1">Counselor Remarks / Decision Notes
-                            <span class="text-danger">*</span></label>
-                        <textarea class="form-control shadow-none" rows="3" required
-                            placeholder="Enter intake decision remarks, room assignment, or reasons for status change..."
-                            style="font-size: 13px; border-color: #ced4da;">Student scheduled career counseling appointment regarding teacher licensure readiness and career alternative exploration.</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 shadow-none"
-                        data-bs-dismiss="modal"
-                        style="height: 34px; width: 88px; min-width: 88px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-sm text-white px-3 shadow-none" data-bs-dismiss="modal"
-                        style="background-color: #800020; border: 1px solid #800020; height: 34px; min-width: 140px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Save Decision
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Review Modal 2: Maria Santos -->
-<div class="modal fade" id="modal-review-apt-2" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 10px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-2.5" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-pencil-square text-warning fs-5"></i>
-                    <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                        Review Appointment &bull; SANTOS, MARIA C.
-                    </h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="" method="POST">
-                <div class="modal-body p-4" style="background-color: #fcfcfc;">
-                    <div class="alert alert-light border p-2.5 mb-3 d-flex align-items-center gap-2"
-                        style="font-size: 13px;">
-                        <i class="bi bi-info-circle-fill text-primary"></i>
-                        <span>Processing request for <strong>SANTOS, MARIA C.</strong> (2023-01042)</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Current Status</label>
-                        <div>
-                            <span class="badge"
-                                style="border: 1.5px solid #3182ce; background-color: #ebf8ff; color: #2b6cb0; border-radius: 50rem; min-width: 105px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px;">
-                                Approved
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Select New Status <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required
-                            style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Pending">Pending</option>
-                            <option value="Approved" selected>Approved</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Rescheduled">Rescheduled</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="No-Show">No-Show</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Assigned Counselor</label>
-                        <select class="form-select shadow-none" style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Dr. Elena Santos, RGC" selected>Dr. Elena Santos, RGC (Head Counselor)
-                            </option>
-                            <option value="Prof. Mark Bautista, RPm">Prof. Mark Bautista, RPm (Psychometrician)</option>
-                            <option value="Ms. Clarisse Ramos">Ms. Clarisse Ramos (Academic Counselor)</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Date</label>
-                            <input type="date" class="form-control shadow-none" value="2026-10-26"
-                                style="font-size: 13px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Time</label>
-                            <input type="text" class="form-control shadow-none" value="01:30 PM"
-                                style="font-size: 13px;">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Next Scheduled Action</label>
-                        <input type="text" class="form-control shadow-none" value="Student Confirmation Notice"
-                            style="font-size: 13px;">
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label text-muted fw-semibold small mb-1">Counselor Remarks / Decision Notes
-                            <span class="text-danger">*</span></label>
-                        <textarea class="form-control shadow-none" rows="3" required
-                            placeholder="Enter intake decision remarks, room assignment, or reasons for status change..."
-                            style="font-size: 13px; border-color: #ced4da;">Follow-up consultation regarding academic anxiety management and stress reduction techniques.</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 shadow-none"
-                        data-bs-dismiss="modal"
-                        style="height: 34px; width: 88px; min-width: 88px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-sm text-white px-3 shadow-none" data-bs-dismiss="modal"
-                        style="background-color: #800020; border: 1px solid #800020; height: 34px; min-width: 140px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Save Decision
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Review Modal 3: Juan Dela Cruz -->
-<div class="modal fade" id="modal-review-apt-3" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 10px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-2.5" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-pencil-square text-warning fs-5"></i>
-                    <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                        Review Appointment &bull; DELA CRUZ, JUAN L.
-                    </h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="" method="POST">
-                <div class="modal-body p-4" style="background-color: #fcfcfc;">
-                    <div class="alert alert-light border p-2.5 mb-3 d-flex align-items-center gap-2"
-                        style="font-size: 13px;">
-                        <i class="bi bi-info-circle-fill text-primary"></i>
-                        <span>Processing request for <strong>DELA CRUZ, JUAN L.</strong> (2023-01089)</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Current Status</label>
-                        <div>
-                            <span class="badge"
-                                style="border: 1.5px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 105px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px;">
-                                Confirmed
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Select New Status <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required
-                            style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Pending">Pending</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Confirmed" selected>Confirmed</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Rescheduled">Rescheduled</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="No-Show">No-Show</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Assigned Counselor</label>
-                        <select class="form-select shadow-none" style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Dr. Elena Santos, RGC" selected>Dr. Elena Santos, RGC (Head Counselor)
-                            </option>
-                            <option value="Prof. Mark Bautista, RPm">Prof. Mark Bautista, RPm (Psychometrician)</option>
-                            <option value="Ms. Clarisse Ramos">Ms. Clarisse Ramos (Academic Counselor)</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Date</label>
-                            <input type="date" class="form-control shadow-none" value="2026-10-27"
-                                style="font-size: 13px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Time</label>
-                            <input type="text" class="form-control shadow-none" value="09:00 AM"
-                                style="font-size: 13px;">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Next Scheduled Action</label>
-                        <input type="text" class="form-control shadow-none" value="Conduct Consultation Session"
-                            style="font-size: 13px;">
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label text-muted fw-semibold small mb-1">Counselor Remarks / Decision Notes
-                            <span class="text-danger">*</span></label>
-                        <textarea class="form-control shadow-none" rows="3" required
-                            placeholder="Enter intake decision remarks, room assignment, or reasons for status change..."
-                            style="font-size: 13px; border-color: #ced4da;">Student seeking assistance regarding major laboratory programming load and study habits scheduling.</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 shadow-none"
-                        data-bs-dismiss="modal"
-                        style="height: 34px; width: 88px; min-width: 88px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-sm text-white px-3 shadow-none" data-bs-dismiss="modal"
-                        style="background-color: #800020; border: 1px solid #800020; height: 34px; min-width: 140px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Save Decision
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Review Modal 4: Bea Angela Reyes -->
-<div class="modal fade" id="modal-review-apt-4" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 10px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-2.5" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-pencil-square text-warning fs-5"></i>
-                    <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                        Review Appointment &bull; REYES, BEA ANGELA D.
-                    </h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="" method="POST">
-                <div class="modal-body p-4" style="background-color: #fcfcfc;">
-                    <div class="alert alert-light border p-2.5 mb-3 d-flex align-items-center gap-2"
-                        style="font-size: 13px;">
-                        <i class="bi bi-info-circle-fill text-primary"></i>
-                        <span>Processing request for <strong>REYES, BEA ANGELA D.</strong> (2024-00155)</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Current Status</label>
-                        <div>
-                            <span class="badge"
-                                style="border: 1.5px solid #4a5568; background-color: #edf2f7; color: #2d3748; border-radius: 50rem; min-width: 105px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px;">
-                                Completed
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Select New Status <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required
-                            style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Pending">Pending</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Completed" selected>Completed</option>
-                            <option value="Rescheduled">Rescheduled</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="No-Show">No-Show</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Assigned Counselor</label>
-                        <select class="form-select shadow-none" style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Ms. Clarisse Ramos" selected>Ms. Clarisse Ramos (Academic Counselor)</option>
-                            <option value="Dr. Elena Santos, RGC">Dr. Elena Santos, RGC (Head Counselor)</option>
-                            <option value="Prof. Mark Bautista, RPm">Prof. Mark Bautista, RPm (Psychometrician)</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Date</label>
-                            <input type="date" class="form-control shadow-none" value="2026-10-22"
-                                style="font-size: 13px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Time</label>
-                            <input type="text" class="form-control shadow-none" value="11:00 AM"
-                                style="font-size: 13px;">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Next Scheduled Action</label>
-                        <input type="text" class="form-control shadow-none" value="Case Concluded / Filed in Registry"
-                            style="font-size: 13px;">
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label text-muted fw-semibold small mb-1">Counselor Remarks / Decision Notes
-                            <span class="text-danger">*</span></label>
-                        <textarea class="form-control shadow-none" rows="3" required
-                            placeholder="Enter intake decision remarks, room assignment, or reasons for status change..."
-                            style="font-size: 13px; border-color: #ced4da;">Freshman orientation adjustment follow-up regarding homesickness and peer networking support. Session concluded successfully.</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 shadow-none"
-                        data-bs-dismiss="modal"
-                        style="height: 34px; width: 88px; min-width: 88px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-sm text-white px-3 shadow-none" data-bs-dismiss="modal"
-                        style="background-color: #800020; border: 1px solid #800020; height: 34px; min-width: 140px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Save Decision
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Review Modal 5: Joshua David Tan -->
-<div class="modal fade" id="modal-review-apt-5" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 10px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-2.5" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-pencil-square text-warning fs-5"></i>
-                    <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                        Review Appointment &bull; TAN, JOSHUA DAVID K.
-                    </h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="" method="POST">
-                <div class="modal-body p-4" style="background-color: #fcfcfc;">
-                    <div class="alert alert-light border p-2.5 mb-3 d-flex align-items-center gap-2"
-                        style="font-size: 13px;">
-                        <i class="bi bi-info-circle-fill text-primary"></i>
-                        <span>Processing request for <strong>TAN, JOSHUA DAVID K.</strong> (2021-00341)</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Current Status</label>
-                        <div>
-                            <span class="badge"
-                                style="border: 1.5px solid #6c757d; background-color: #f8f9fa; color: #495057; border-radius: 50rem; min-width: 105px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px;">
-                                Rescheduled
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Select New Status <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required
-                            style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Pending">Pending</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Rescheduled" selected>Rescheduled</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="No-Show">No-Show</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Assigned Counselor</label>
-                        <select class="form-select shadow-none" style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Prof. Mark Bautista, RPm" selected>Prof. Mark Bautista, RPm (Psychometrician)
-                            </option>
-                            <option value="Dr. Elena Santos, RGC">Dr. Elena Santos, RGC (Head Counselor)</option>
-                            <option value="Ms. Clarisse Ramos">Ms. Clarisse Ramos (Academic Counselor)</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Date</label>
-                            <input type="date" class="form-control shadow-none" value="2026-10-28"
-                                style="font-size: 13px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Time</label>
-                            <input type="text" class="form-control shadow-none" value="02:00 PM"
-                                style="font-size: 13px;">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Next Scheduled Action</label>
-                        <input type="text" class="form-control shadow-none" value="Attend Rescheduled Session"
-                            style="font-size: 13px;">
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label text-muted fw-semibold small mb-1">Counselor Remarks / Decision Notes
-                            <span class="text-danger">*</span></label>
-                        <textarea class="form-control shadow-none" rows="3" required
-                            placeholder="Enter intake decision remarks, room assignment, or reasons for status change..."
-                            style="font-size: 13px; border-color: #ced4da;">Rescheduled on Oct 19, 2026 to Oct 28, 2026 (02:00 PM) due to conflict with student laboratory exam.</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 shadow-none"
-                        data-bs-dismiss="modal"
-                        style="height: 34px; width: 88px; min-width: 88px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-sm text-white px-3 shadow-none" data-bs-dismiss="modal"
-                        style="background-color: #800020; border: 1px solid #800020; height: 34px; min-width: 140px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Save Decision
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Review Modal 6: Patricia Anne Lim -->
-<div class="modal fade" id="modal-review-apt-6" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 10px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-2.5" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-pencil-square text-warning fs-5"></i>
-                    <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                        Review Appointment &bull; LIM, PATRICIA ANNE S.
-                    </h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="" method="POST">
-                <div class="modal-body p-4" style="background-color: #fcfcfc;">
-                    <div class="alert alert-light border p-2.5 mb-3 d-flex align-items-center gap-2"
-                        style="font-size: 13px;">
-                        <i class="bi bi-info-circle-fill text-primary"></i>
-                        <span>Processing request for <strong>LIM, PATRICIA ANNE S.</strong> (2023-00492)</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Current Status</label>
-                        <div>
-                            <span class="badge"
-                                style="border: 1.5px solid #e53e3e; background-color: #fff5f5; color: #c53030; border-radius: 50rem; min-width: 105px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px;">
-                                Cancelled
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Select New Status <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required
-                            style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Pending">Pending</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Rescheduled">Rescheduled</option>
-                            <option value="Cancelled" selected>Cancelled</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="No-Show">No-Show</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Assigned Counselor</label>
-                        <select class="form-select shadow-none" style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Dr. Elena Santos, RGC" selected>Dr. Elena Santos, RGC (Head Counselor)
-                            </option>
-                            <option value="Prof. Mark Bautista, RPm">Prof. Mark Bautista, RPm (Psychometrician)</option>
-                            <option value="Ms. Clarisse Ramos">Ms. Clarisse Ramos (Academic Counselor)</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Date</label>
-                            <input type="date" class="form-control shadow-none" value="2026-10-24"
-                                style="font-size: 13px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Time</label>
-                            <input type="text" class="form-control shadow-none" value="10:30 AM"
-                                style="font-size: 13px;">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Next Scheduled Action</label>
-                        <input type="text" class="form-control shadow-none"
-                            value="Follow-up with Student Welfare Office" style="font-size: 13px;">
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label text-muted fw-semibold small mb-1">Counselor Remarks / Decision Notes
-                            <span class="text-danger">*</span></label>
-                        <textarea class="form-control shadow-none" rows="3" required
-                            placeholder="Enter intake decision remarks, room assignment, or reasons for status change..."
-                            style="font-size: 13px; border-color: #ced4da;">Cancelled: Emergency assistance request was expedited directly through the MarSU Scholarship Office.</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 shadow-none"
-                        data-bs-dismiss="modal"
-                        style="height: 34px; width: 88px; min-width: 88px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-sm text-white px-3 shadow-none" data-bs-dismiss="modal"
-                        style="background-color: #800020; border: 1px solid #800020; height: 34px; min-width: 140px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Save Decision
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Review Modal 7: Miguel Garcia -->
-<div class="modal fade" id="modal-review-apt-7" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 10px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-2.5" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-pencil-square text-warning fs-5"></i>
-                    <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                        Review Appointment &bull; GARCIA, MIGUEL R.
-                    </h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="" method="POST">
-                <div class="modal-body p-4" style="background-color: #fcfcfc;">
-                    <div class="alert alert-light border p-2.5 mb-3 d-flex align-items-center gap-2"
-                        style="font-size: 13px;">
-                        <i class="bi bi-info-circle-fill text-primary"></i>
-                        <span>Processing request for <strong>GARCIA, MIGUEL R.</strong> (2022-00419)</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Current Status</label>
-                        <div>
-                            <span class="badge"
-                                style="border: 1.5px solid #dc3545; background-color: #fdf2f2; color: #721c24; border-radius: 50rem; min-width: 105px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px;">
-                                Rejected
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Select New Status <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required
-                            style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Pending">Pending</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Rescheduled">Rescheduled</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Rejected" selected>Rejected</option>
-                            <option value="No-Show">No-Show</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Assigned Counselor</label>
-                        <select class="form-select shadow-none" style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Prof. Mark Bautista, RPm" selected>Prof. Mark Bautista, RPm (Psychometrician)
-                            </option>
-                            <option value="Dr. Elena Santos, RGC">Dr. Elena Santos, RGC (Head Counselor)</option>
-                            <option value="Ms. Clarisse Ramos">Ms. Clarisse Ramos (Academic Counselor)</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Date</label>
-                            <input type="date" class="form-control shadow-none" value="2026-10-16"
-                                style="font-size: 13px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Time</label>
-                            <input type="text" class="form-control shadow-none" value="08:30 AM"
-                                style="font-size: 13px;">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Next Scheduled Action</label>
-                        <input type="text" class="form-control shadow-none"
-                            value="Advised to Re-file for Weekday Office Hours" style="font-size: 13px;">
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label text-muted fw-semibold small mb-1">Counselor Remarks / Decision Notes
-                            <span class="text-danger">*</span></label>
-                        <textarea class="form-control shadow-none" rows="3" required
-                            placeholder="Enter intake decision remarks, room assignment, or reasons for status change..."
-                            style="font-size: 13px; border-color: #ced4da;">Rejected: Requested date falls on a declared institutional academic holiday. Advised to re-file for normal office hours.</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 shadow-none"
-                        data-bs-dismiss="modal"
-                        style="height: 34px; width: 88px; min-width: 88px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-sm text-white px-3 shadow-none" data-bs-dismiss="modal"
-                        style="background-color: #800020; border: 1px solid #800020; height: 34px; min-width: 140px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Save Decision
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Review Modal 8: Chloe Villanueva -->
-<div class="modal fade" id="modal-review-apt-8" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 10px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-2.5" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-pencil-square text-warning fs-5"></i>
-                    <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">
-                        Review Appointment &bull; VILLANUEVA, CHLOE T.
-                    </h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="" method="POST">
-                <div class="modal-body p-4" style="background-color: #fcfcfc;">
-                    <div class="alert alert-light border p-2.5 mb-3 d-flex align-items-center gap-2"
-                        style="font-size: 13px;">
-                        <i class="bi bi-info-circle-fill text-primary"></i>
-                        <span>Processing request for <strong>VILLANUEVA, CHLOE T.</strong> (2024-00210)</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Current Status</label>
-                        <div>
-                            <span class="badge"
-                                style="border: 1.5px solid #4a5568; background-color: #f7fafc; color: #1a202c; border-radius: 50rem; min-width: 105px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px;">
-                                No-Show
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Select New Status <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required
-                            style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Pending">Pending</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Rescheduled">Rescheduled</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="No-Show" selected>No-Show</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Assigned Counselor</label>
-                        <select class="form-select shadow-none" style="font-size: 13.5px; border-color: #ced4da;">
-                            <option value="Ms. Clarisse Ramos" selected>Ms. Clarisse Ramos (Academic Counselor)</option>
-                            <option value="Dr. Elena Santos, RGC">Dr. Elena Santos, RGC (Head Counselor)</option>
-                            <option value="Prof. Mark Bautista, RPm">Prof. Mark Bautista, RPm (Psychometrician)</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Date</label>
-                            <input type="date" class="form-control shadow-none" value="2026-10-15"
-                                style="font-size: 13px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-muted fw-semibold small mb-1">Appointment Time</label>
-                            <input type="text" class="form-control shadow-none" value="03:00 PM"
-                                style="font-size: 13px;">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-semibold small mb-1">Next Scheduled Action</label>
-                        <input type="text" class="form-control shadow-none" value="Send Reschedule Invitation Notice"
-                            style="font-size: 13px;">
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label text-muted fw-semibold small mb-1">Counselor Remarks / Decision Notes
-                            <span class="text-danger">*</span></label>
-                        <textarea class="form-control shadow-none" rows="3" required
-                            placeholder="Enter intake decision remarks, room assignment, or reasons for status change..."
-                            style="font-size: 13px; border-color: #ced4da;">Student did not attend scheduled consultation slot; reschedule invitation queued.</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 shadow-none"
-                        data-bs-dismiss="modal"
-                        style="height: 34px; width: 88px; min-width: 88px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-sm text-white px-3 shadow-none" data-bs-dismiss="modal"
-                        style="background-color: #800020; border: 1px solid #800020; height: 34px; min-width: 140px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Save Decision
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- ==================================================================== -->
-<!--   QUICK REQUEST APPOINTMENT MODAL (PURE DIV, NO SCRIPT/STYLE)        -->
-<!-- ==================================================================== -->
-<div class="modal fade" id="modal-request-appointment" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow" style="border-radius: 10px; overflow: hidden;">
-            <div class="modal-header text-white" style="background-color: #800020;">
-                <h5 class="modal-title fs-6 fw-bold">
-                    <i class="bi bi-calendar-plus me-2"></i>Quick File Guidance Appointment
-                </h5>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <form action="" method="POST">
-                <div class="modal-body p-4" style="font-size: 14.5px;">
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-muted mb-1">Student Selector <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required style="font-size: 13.5px;">
-                            <option value="2022-00812" selected>RAMOS, CARLOS M. (2022-00812 - BEED)</option>
-                            <option value="2023-01042">SANTOS, MARIA C. (2023-01042 - BaPOS)</option>
-                            <option value="2023-01089">DELA CRUZ, JUAN L. (2023-01089 - BSIS)</option>
-                            <option value="2024-00155">REYES, BEA ANGELA D. (2024-00155 - BSTM)</option>
-                            <option value="2021-00341">TAN, JOSHUA DAVID K. (2021-00341 - BSCE)</option>
-                            <option value="2023-00492">LIM, PATRICIA ANNE S. (2023-00492 - BSA)</option>
-                        </select>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold text-muted mb-1">Preferred Date <span
-                                    class="text-danger">*</span></label>
-                            <input type="date" class="form-control shadow-none" value="2026-11-04" required
-                                style="font-size: 13px;">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold text-muted mb-1">Time Slot <span
-                                    class="text-danger">*</span></label>
-                            <select class="form-select shadow-none" required style="font-size: 13px;">
-                                <option value="08:30 AM - 09:30 AM">08:30 AM - 09:30 AM</option>
-                                <option value="10:00 AM - 11:00 AM" selected>10:00 AM - 11:00 AM</option>
-                                <option value="01:30 PM - 02:30 PM">01:30 PM - 02:30 PM</option>
-                                <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-muted mb-1">Appointment Type <span
-                                class="text-danger">*</span></label>
-                        <select class="form-select shadow-none" required style="font-size: 13.5px;">
-                            <option value="Walk-in" selected>Walk-in (Guidance Office Consultation Room)</option>
-                            <option value="Online Appointment">Online Appointment (Secure Virtual Session)</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label small fw-semibold text-muted mb-1">Reason for Consultation <span
-                                class="text-danger">*</span></label>
-                        <textarea class="form-control shadow-none" rows="3" required style="font-size: 13px;"
-                            placeholder="State purpose for consultation..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-end gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-dismiss="modal"
-                        style="height: 34px; width: 88px; min-width: 88px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                        class="btn text-white shadow-none d-inline-flex align-items-center justify-content-center"
-                        data-bs-dismiss="modal"
-                        style="background-color: #800020; border: 1px solid #800020; height: 34px; min-width: 140px; font-size: 13px; font-weight: 500; border-radius: 4px;">
-                        Submit Request
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- CLIENT-SIDE APPOINTMENT SEARCH & FILTER SCRIPT -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var searchInput = document.getElementById('appointmentSearchInput');
-        var typeFilter = document.getElementById('filterAppointmentType');
-        var resetBtn = document.getElementById('btnResetAppointmentFilters');
-        var rows = document.querySelectorAll('#appointmentsTableBody .appointment-row');
-        var badgeCount = document.getElementById('tableBadgeCount');
-        var summaryCount = document.getElementById('toolbarSummaryCount');
-        var footerCount = document.getElementById('tableFooterCount');
+    window.currentStatusFilter = 'all';
+    window.currentSearchText = '';
 
-        function filterAppointments() {
-            var query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-            var selectedType = typeFilter ? typeFilter.value.trim() : '';
-            var matchCount = 0;
+    window.applyStatusFilter = function (status, cardEl) {
+        if (!status) status = 'all';
+        window.currentStatusFilter = status;
 
-            rows.forEach(function (row) {
-                var studentId = (row.getAttribute('data-student-id') || '').toLowerCase();
-                var name = (row.getAttribute('data-name') || '').toLowerCase();
-                var counselor = (row.getAttribute('data-counselor') || '').toLowerCase();
-                var type = row.getAttribute('data-type') || '';
+        // Toggle active classes on all KPI cards
+        const cards = document.querySelectorAll('.kpi-filter-card');
+        cards.forEach(card => {
+            const cardStatus = card.getAttribute('data-status');
+            const ind = card.querySelector('.kpi-indicator');
+            if (cardStatus === status) {
+                card.classList.add('active');
+                if (ind) ind.classList.remove('d-none');
+            } else {
+                card.classList.remove('active');
+                if (ind) ind.classList.add('d-none');
+            }
+        });
 
-                var matchesText = !query || studentId.indexOf(query) !== -1 || name.indexOf(query) !== -1 || counselor.indexOf(query) !== -1;
-                var matchesType = !selectedType || type === selectedType;
+        // Update the toolbar status pill indicator with theme colors
+        const badge = document.getElementById('activeFilterBadge');
+        const resetBtn = document.getElementById('resetFilterBtn');
+        if (badge) {
+            if (status === 'all') {
+                badge.textContent = 'All Appointments';
+                badge.className = 'badge text-dark bg-light border d-inline-flex align-items-center py-2 px-3';
+                badge.style.borderColor = '#E2E8F0';
+                badge.style.backgroundColor = '';
+                badge.style.color = '';
+            } else if (status === 'Approved') {
+                badge.textContent = 'Approved';
+                badge.className = 'badge d-inline-flex align-items-center py-2 px-3';
+                badge.style.backgroundColor = '#f4fbf6';
+                badge.style.color = '#155724';
+                badge.style.border = '1px solid #28a745';
+            } else if (status === 'Pending') {
+                badge.textContent = 'Pending';
+                badge.className = 'badge d-inline-flex align-items-center py-2 px-3';
+                badge.style.backgroundColor = '#fffbeb';
+                badge.style.color = '#92400e';
+                badge.style.border = '1px solid #d97706';
+            } else if (status === 'Completed') {
+                badge.textContent = 'Completed';
+                badge.className = 'badge d-inline-flex align-items-center py-2 px-3';
+                badge.style.backgroundColor = '#f0fdfa';
+                badge.style.color = '#0f766e';
+                badge.style.border = '1px solid #0d9488';
+            } else if (status === 'Rescheduling') {
+                badge.textContent = 'Rescheduling';
+                badge.className = 'badge d-inline-flex align-items-center py-2 px-3';
+                badge.style.backgroundColor = '#f3e8ff';
+                badge.style.color = '#581c87';
+                badge.style.border = '1px solid #6f42c1';
+            }
+        }
 
-                if (matchesText && matchesType) {
-                    row.style.display = '';
-                    matchCount++;
-                } else {
-                    row.style.display = 'none';
+        if (resetBtn) {
+            if (status === 'all' && !window.currentSearchText) {
+                resetBtn.classList.add('d-none');
+            } else {
+                resetBtn.classList.remove('d-none');
+            }
+        }
+
+        window.filterTable();
+    };
+
+    window.handleSearchInput = function (val) {
+        window.currentSearchText = (val || '').trim().toLowerCase();
+        const resetBtn = document.getElementById('resetFilterBtn');
+        if (resetBtn) {
+            if (window.currentStatusFilter === 'all' && !window.currentSearchText) {
+                resetBtn.classList.add('d-none');
+            } else {
+                resetBtn.classList.remove('d-none');
+            }
+        }
+        window.filterTable();
+    };
+
+    window.resetAllFilters = function () {
+        const searchInput = document.getElementById('appointmentSearchInput');
+        if (searchInput) searchInput.value = '';
+        window.currentSearchText = '';
+        window.applyStatusFilter('all');
+    };
+
+    window.filterTable = function () {
+        const rows = document.querySelectorAll('.appointment-row');
+        let visible = 0;
+
+        rows.forEach(row => {
+            const rowStatus = (row.getAttribute('data-status') || '').trim();
+            const rowText = (row.textContent || '').toLowerCase();
+
+            const matchesStatus = (window.currentStatusFilter === 'all' || rowStatus.toLowerCase() === window.currentStatusFilter.toLowerCase());
+            const matchesSearch = (!window.currentSearchText || rowText.includes(window.currentSearchText));
+
+            if (matchesStatus && matchesSearch) {
+                row.style.setProperty('display', '', '');
+                visible++;
+            } else {
+                row.style.setProperty('display', 'none', 'important');
+            }
+        });
+
+        const noResults = document.getElementById('noResultsRow');
+        if (noResults) {
+            noResults.style.display = (visible === 0) ? '' : 'none';
+        }
+
+        const countText = document.getElementById('showingCountText');
+        if (countText) {
+            const filterSuffix = (window.currentStatusFilter !== 'all') ? ' (Filtered by ' + window.currentStatusFilter + ')' : '';
+            countText.textContent = 'Showing ' + visible + ' of ' + rows.length + ' appointments' + filterSuffix;
+        }
+    };
+
+    function initKPIFiltering() {
+        const rows = document.querySelectorAll('.appointment-row');
+        let total = rows.length;
+        let approved = 0, pending = 0, completed = 0, rescheduling = 0;
+
+        rows.forEach(r => {
+            const s = (r.getAttribute('data-status') || '').trim();
+            if (s === 'Approved') approved++;
+            else if (s === 'Pending') pending++;
+            else if (s === 'Completed') completed++;
+            else if (s === 'Rescheduling') rescheduling++;
+        });
+
+        const cAll = document.getElementById('count-all');
+        const cApp = document.getElementById('count-approved');
+        const cPen = document.getElementById('count-pending');
+        const cCom = document.getElementById('count-completed');
+        const cRes = document.getElementById('count-rescheduling');
+
+        if (cAll) cAll.textContent = total;
+        if (cApp) cApp.textContent = approved;
+        if (cPen) cPen.textContent = pending;
+        if (cCom) cCom.textContent = completed;
+        if (cRes) cRes.textContent = rescheduling;
+
+        // Attach event listeners to all KPI cards
+        const cards = document.querySelectorAll('.kpi-filter-card');
+        cards.forEach(card => {
+            card.addEventListener('click', function () {
+                const status = this.getAttribute('data-status');
+                window.applyStatusFilter(status, this);
+            });
+            card.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const status = this.getAttribute('data-status');
+                    window.applyStatusFilter(status, this);
                 }
             });
+        });
 
-            if (badgeCount) {
-                badgeCount.innerHTML = 'Showing ' + matchCount + ' Records &bull; Official Directory';
-            }
-            if (summaryCount) {
-                summaryCount.textContent = 'Showing ' + matchCount + ' appointment records';
-            }
-            if (footerCount) {
-                footerCount.innerHTML = 'Showing <strong class="text-dark">' + (matchCount > 0 ? 1 : 0) + '</strong> to <strong class="text-dark">' + matchCount + '</strong> of <strong class="text-dark">' + matchCount + '</strong> records &bull; Page 1 of 1';
-            }
-        }
-
-        if (searchInput) {
-            searchInput.addEventListener('input', filterAppointments);
-        }
-        if (typeFilter) {
-            typeFilter.addEventListener('change', filterAppointments);
-        }
+        // Attach to reset button
+        const resetBtn = document.getElementById('resetFilterBtn');
         if (resetBtn) {
-            resetBtn.addEventListener('click', function () {
-                if (searchInput) searchInput.value = '';
-                if (typeFilter) typeFilter.value = '';
-                filterAppointments();
-            });
+            resetBtn.onclick = function () {
+                window.resetAllFilters();
+            };
         }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initKPIFiltering);
+    } else {
+        initKPIFiltering();
+    }
 </script>

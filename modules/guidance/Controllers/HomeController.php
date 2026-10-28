@@ -127,11 +127,29 @@ class HomeController
         ]);
     }
 
+    public function appointmentview(): void
+    {
+        View::render('guidance/Views/appointment_view', [
+            'title' => 'Appointment Details',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
+
     public function sessioncalendar(): void
     {
         $user = Auth::user();
         View::render('guidance/Views/session_calendar', [
             'title' => 'Session Calendar',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
+
+    public function sessionview(): void
+    {
+        View::render('guidance/Views/session_view', [
+            'title' => 'Counseling Session Details',
             'slug' => 'guidance',
             'user' => Auth::user()
         ]);

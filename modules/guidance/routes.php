@@ -19,9 +19,11 @@ $router->get('/guidance/student_directory', [HomeController::class, 'studentdire
 $router->get('/guidance/student_view', [HomeController::class, 'studentview'], ['auth', 'permission:guidance.view']);
 $router->get('/guidance/student_history', [HomeController::class, 'studenthistory'], ['auth', 'permission:guidance.view']);
 
-// Appointments
+// Appointments & Sessions
 $router->get('/guidance/appointment_lists', [HomeController::class, 'appointmentlists'], ['auth', 'permission:guidance.view']);
+$router->get('/guidance/appointment_view', [HomeController::class, 'appointmentview'], ['auth', 'permission:guidance.view']);
 $router->get('/guidance/session_calendar', [HomeController::class, 'sessioncalendar'], ['auth', 'permission:guidance.view']);
+$router->get('/guidance/session_view', [HomeController::class, 'sessionview'], ['auth', 'permission:guidance.view']);
 
 // Case Management
 $router->get('/guidance/concerns', [HomeController::class, 'concerns'], ['auth', 'permission:guidance.view']);

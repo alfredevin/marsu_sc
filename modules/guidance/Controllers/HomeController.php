@@ -100,6 +100,15 @@ class HomeController
             'user' => Auth::user()
         ]);
     }
+
+    public function studentview(): void
+    {
+        View::render('guidance/Views/student_view', [
+            'title' => 'Student Profile',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
     public function studenthistory(): void
     {
         View::render('guidance/Views/student_history', [

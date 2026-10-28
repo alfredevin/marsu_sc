@@ -16,6 +16,7 @@ $router->get('/guidance/dashboard', [HomeController::class, 'dashboard'], ['auth
 
 // Student Information Management
 $router->get('/guidance/student_directory', [HomeController::class, 'studentdirectory'], ['auth', 'permission:guidance.view']);
+$router->get('/guidance/student_view', [HomeController::class, 'studentview'], ['auth', 'permission:guidance.view']);
 $router->get('/guidance/student_history', [HomeController::class, 'studenthistory'], ['auth', 'permission:guidance.view']);
 
 // Appointments

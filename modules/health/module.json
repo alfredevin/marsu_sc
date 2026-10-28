@@ -5,7 +5,7 @@
     "description": "Student health records, clinic consultations, medical checkups, and wellness monitoring strictly protected under the Data Privacy Act of 2012 (RA 10173).",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Student Health Profile",
+    "section": "Smart Student Health Monitoring And Clinic Management System",
     "menu": {
         "icon": "bi-heart-pulse-fill",
         "items": [
@@ -15,23 +15,23 @@
                 "permission": "health.view",
                 "children": [
                     {
-                "label": "Patient Registration (HSSO)",
-                "icon": "bi-file-earmark-person",
-                "route": "health",
-                "permission": "health.view"
-            },
-            {
-                "label": "Student Info Hub",
-                "icon": "bi-info-circle",
-                "route": "health/student-info-hub",
-                "permission": "health.view"
-            },
-            {
-                "label": "Health Statistics",
-                "icon": "bi-bar-chart",
-                "route": "health/health-statistics",
-                "permission": "health.view"
-            }
+                        "label": "Patient Registration (HSSO)",
+                        "icon": "bi-file-earmark-person",
+                        "route": "health/patient-registration",
+                        "permission": "health.view"
+                            },
+                    {
+                        "label": "Student Info Hub",
+                        "icon": "bi-info-circle",
+                        "route": "health/student-info-hub",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Health Statistics",
+                        "icon": "bi-bar-chart",
+                        "route": "health/health-statistics",
+                        "permission": "health.view"
+                    }
                 ]
             },
             

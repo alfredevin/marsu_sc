@@ -93,24 +93,6 @@
                         "icon": "bi-person-circle",
                         "route": "analytics/profile",
                         "permission": "analytics.view"
-                    },
-                    {
-                        "label": "Academic History",
-                        "icon": "bi-clock-history",
-                        "route": "analytics/academichistory",
-                        "permission": "analytics.view"
-                    },
-                    {
-                        "label": "Enrollment Records",
-                        "icon": "bi-card-list",
-                        "route": "analytics/enrollmentrecords",
-                        "permission": "analytics.view"
-                    },
-                    {
-                        "label": "Demographic Info",
-                        "icon": "bi-pie-chart",
-                        "route": "analytics/demographicinfo",
-                        "permission": "analytics.view"
                     }
                 ]
             },

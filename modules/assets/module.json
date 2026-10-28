@@ -10,7 +10,7 @@
         "icon": "bi-pc-display-horizontal",
         "items": [
             {
-                "label": "Property and Asset Management",
+                "label": "Property and Asset Managements",
                 "icon": "bi-boxes",
                 "permission": "assets.view",
                 "children": [

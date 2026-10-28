@@ -5,22 +5,141 @@
     "description": "Audits student organization membership dues, event registration collections, official disbursements, and bank liquidation reports.",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Organization",
+    "section": "Financial Management System",
     "menu": {
         "icon": "bi-wallet2",
         "items": [
             {
-                "label": "Student Organization Profile",
-                "icon": "bi-journal-bookmark",
+                "label": "Organization",
+                "icon": "bi-people-fill",
                 "route": "orgfinance/org-profile",
                 "permission": "orgfinance.view",
-                "children": []
+                "children": [
+                    {
+                        "label": "Student Organization Profile",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/orgprofile",
+                        "permission": "orgfinance.view"
+                    },
+                    {
+                        "label": "Accreditation Tracking",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/accreditationtracking",
+                        "permission": "orgfinance.view"
+                    }
+                ]
             },
             {
-                "label": "Grades Tracking (Class Record)",
-                "icon": "bi-pencil-square",
-                "route": "orgfinance/gradestracking",
-                "permission": "orgfinance.view"
+                "label": "Loan Management",
+                "icon": "bi-wallet2",
+                "route": "orgfinance/loan-management",
+                "permission": "orgfinance.view",
+                "children": [
+                    {
+                        "label": "Loan Application Submission",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/loanapplication",
+                        "permission": "orgfinance.view"
+                    },
+                    {
+                        "label": "Loan Approval Workflow",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/loanaprovalworkflow",
+                        "permission": "orgfinance.view"
+                    },
+                    {
+                        "label": "Loan Amount and Purpose Tracking",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/loanamountandpurposetracking",
+                        "permission": "orgfinance.view"
+                    },
+                    {
+                        "label": "Loan History",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/loanhistory",
+                        "permission": "orgfinance.view"
+                    }
+                ]
+            },
+            {
+                "label": "Fund Management",
+                "icon": "bi-arrow-down-up",
+                "route": "orgfinance/org-profile",
+                "permission": "orgfinance.view",
+                "children": [
+                    {
+                        "label": "Income and Expense Monitoring",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/incomeandexpensemonitoring",
+                        "permission": "orgfinance.view"
+                    },
+                    {
+                        "label": "Budget Planning",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/budgetplanning",
+                        "permission": "orgfinance.view"
+                    }
+                ]
+            },
+            {
+                "label": "Financial Transaction",
+                "icon": "bi-folder",
+                "route": "orgfinance/finacialtransaction",
+                "permission": "orgfinance.view",
+                "children": [
+                    {
+                        "label": "Receipts and Payment Records",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/recieptsandpaymentrecords",
+                        "permission": "orgfinance.view"
+                    },
+                    {
+                        "label": "Audit Trail",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/audittrail",
+                        "permission": "orgfinance.view"
+                    }
+                ]
+            },
+            {
+                "label": "Reports and Analytics",
+                "icon": "bi-bar-chart-fill",
+                "route": "orgfinance/reportsandanalytics",
+                "permission": "orgfinance.view",
+                "children": [
+                    {
+                        "label": "Organization Financial Report",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/orgfinancialreport",
+                        "permission": "orgfinance.view"
+                    },
+                    {
+                        "label": "Loan Status Report",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/loanstatusreport",
+                        "permission": "orgfinance.view"
+                    }
+                ]
+            },
+            {
+                "label": "User Access",
+                "icon": "bi-person-fill",
+                "route": "orgfinance/org-profile",
+                "permission": "orgfinance.view",
+                "children": [
+                    {
+                        "label": "Student Organization Officers",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/studentorgofficer",
+                        "permission": "orgfinance.view"
+                    },
+                    {
+                        "label": "Student Affairs/Admin",
+                        "icon": "bi-journal-bookmark",
+                        "route": "orgfinance/studentaffairs",
+                        "permission": "orgfinance.view"
+                    }
+                ]
             }
         ]
     },

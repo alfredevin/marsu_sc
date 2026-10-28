@@ -1,13 +1,45 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
-        <h1 class="h3 text-marsu-burgundy mb-1">
+        <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
             <i class="bi bi-door-open me-2 text-gold"></i>Room Assignment
         </h1>
-        <p class="text-muted mb-0">Review room placements and check available accommodation before assigning a student.</p>
+        <p class="text-muted small mb-0">Review room placements and check available accommodation before assigning a student.</p>
     </div>
     <a href="<?= url('housing') ?>" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-arrow-left me-1"></i>Back to Overview
     </a>
+</div>
+
+<!-- Sub-navigation Pills -->
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/roomandinventory') ?>">
+                <i class="bi bi-box-seam me-1"></i>Room & Inventory
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/availabilitytracking') ?>">
+                <i class="bi bi-calendar-check me-1"></i>Availability Tracking
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?= url('housing/roomassignment') ?>">
+                <i class="bi bi-door-open me-1"></i>Room Assignments
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/occupancymonitoring') ?>">
+                <i class="bi bi-pie-chart me-1"></i>Occupancy Monitoring
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/bedallocation') ?>">
+                <i class="bi bi-grid-3x3 me-1"></i>Bed Allocation
+            </a>
+        </li>
+    </ul>
 </div>
 
 <div class="card shadow-sm border-0 mb-4">

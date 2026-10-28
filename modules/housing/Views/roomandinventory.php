@@ -1,4 +1,5 @@
 <!-- Room & Inventory Management View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -33,30 +34,30 @@
 <?php endif; ?>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/roomandinventory') ?>">
-                <i class="bi bi-box-seam me-1 text-gold"></i>Room & Inventory
+            <a class="nav-link active" href="<?= url('housing/roomandinventory') ?>">
+                <i class="bi bi-box-seam me-1"></i>Room & Inventory
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/availabilitytracking') ?>">
+            <a class="nav-link" href="<?= url('housing/availabilitytracking') ?>">
                 <i class="bi bi-calendar-check me-1"></i>Availability Tracking
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/roomassignment') ?>">
+            <a class="nav-link" href="<?= url('housing/roomassignment') ?>">
                 <i class="bi bi-door-open me-1"></i>Room Assignments
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/occupancymonitoring') ?>">
+            <a class="nav-link" href="<?= url('housing/occupancymonitoring') ?>">
                 <i class="bi bi-pie-chart me-1"></i>Occupancy Monitoring
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/bedallocation') ?>">
+            <a class="nav-link" href="<?= url('housing/bedallocation') ?>">
                 <i class="bi bi-grid-3x3 me-1"></i>Bed Allocation
             </a>
         </li>
@@ -82,9 +83,9 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
+        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
             <div class="text-muted small text-uppercase fw-bold">Occupied Beds</div>
-            <div class="h3 font-weight-bold mb-0 text-primary">
+            <div class="h3 font-weight-bold mb-0 text-gold">
                 <?= array_sum(array_column($rooms ?? [], 'occupied_beds')) ?> Beds
             </div>
             <div class="small text-muted mt-1">Currently residing students</div>
@@ -158,7 +159,7 @@
                                     <div class="fw-semibold"><?= (int)$r['occupied_beds'] ?> / <?= (int)$r['capacity'] ?> Beds</div>
                                     <div class="progress mt-1" style="height: 6px; width: 100px;">
                                         <?php $pct = $r['capacity'] > 0 ? round(($r['occupied_beds'] / $r['capacity']) * 100) : 0; ?>
-                                        <div class="progress-bar <?= $pct >= 100 ? 'bg-danger' : 'bg-primary' ?>" style="width: <?= $pct ?>%"></div>
+                                        <div class="progress-bar <?= $pct >= 100 ? 'bg-danger' : 'progress-bar-gold' ?>" style="width: <?= $pct ?>%"></div>
                                     </div>
                                 </td>
                                 <td class="fw-bold text-marsu-burgundy">

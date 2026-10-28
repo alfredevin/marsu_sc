@@ -1,4 +1,5 @@
 <!-- Maintenance Request View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -33,25 +34,25 @@
 <?php endif; ?>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/maintenancerequest') ?>">
-                <i class="bi bi-tools me-1 text-gold"></i>Requests
+            <a class="nav-link active" href="<?= url('housing/maintenancerequest') ?>">
+                <i class="bi bi-tools me-1"></i>Requests
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/repairmonitoring') ?>">
+            <a class="nav-link" href="<?= url('housing/repairmonitoring') ?>">
                 <i class="bi bi-speedometer2 me-1"></i>Repair Monitoring
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/conditionreports') ?>">
+            <a class="nav-link" href="<?= url('housing/conditionreports') ?>">
                 <i class="bi bi-clipboard2-check me-1"></i>Condition Reports
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/servicehistory') ?>">
+            <a class="nav-link" href="<?= url('housing/servicehistory') ?>">
                 <i class="bi bi-clock-history me-1"></i>Service History
             </a>
         </li>
@@ -123,7 +124,7 @@
                                     <?php elseif ($tk['status'] === 'In Progress'): ?>
                                         <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-gear-fill me-1"></i>In Progress</span>
                                     <?php else: ?>
-                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-clock me-1"></i>Open</span>
+                                        <span class="badge badge-gold"><i class="bi bi-clock me-1"></i>Open</span>
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-end pe-3">

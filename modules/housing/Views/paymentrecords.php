@@ -1,4 +1,5 @@
 <!-- Payment Records View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -33,25 +34,25 @@
 <?php endif; ?>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/boardingfees') ?>">
+            <a class="nav-link" href="<?= url('housing/boardingfees') ?>">
                 <i class="bi bi-cash-coin me-1"></i>Fee Schedule
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/paymentrecords') ?>">
-                <i class="bi bi-wallet2 me-1 text-gold"></i>Payment Records
+            <a class="nav-link active" href="<?= url('housing/paymentrecords') ?>">
+                <i class="bi bi-wallet2 me-1"></i>Payment Records
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/balancemonitoring') ?>">
+            <a class="nav-link" href="<?= url('housing/balancemonitoring') ?>">
                 <i class="bi bi-exclamation-diamond me-1"></i>Balance Monitoring
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/receiptgeneration') ?>">
+            <a class="nav-link" href="<?= url('housing/receiptgeneration') ?>">
                 <i class="bi bi-printer me-1"></i>Receipt Generation
             </a>
         </li>
@@ -86,9 +87,9 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
+        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
             <div class="text-muted small text-uppercase fw-bold">Verification Rate</div>
-            <div class="h3 font-weight-bold mb-0 text-primary">100%</div>
+            <div class="h3 font-weight-bold mb-0 text-gold">100%</div>
             <div class="small text-muted mt-1">Cashier/Dorm verified</div>
         </div>
     </div>
@@ -101,7 +102,10 @@
             <i class="bi bi-receipt me-2 text-gold"></i>Payment Transaction Registry
         </h6>
         <div class="d-flex gap-2">
-            <input type="text" id="paySearchInput" class="form-control form-control-sm" placeholder="Search receipt / student..." style="width: 250px;">
+            <div class="input-group input-group-sm" style="width: 280px;">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" id="paySearchInput" class="form-control border-start-0 ps-0" placeholder="Search receipt, student...">
+            </div>
         </div>
     </div>
     <div class="card-body p-0">
@@ -143,7 +147,7 @@
                                     <small class="text-muted d-block"><?= e($p['payment_type']) ?></small>
                                 </td>
                                 <td>
-                                    <span class="badge bg-info-subtle text-info border"><?= e($p['payment_method']) ?></span>
+                                    <span class="badge badge-gold"><?= e($p['payment_method']) ?></span>
                                 </td>
                                 <td>
                                     <span class="fw-bold text-success fs-6">₱<?= number_format((float)$p['amount'], 2) ?></span>

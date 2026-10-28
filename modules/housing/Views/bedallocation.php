@@ -1,4 +1,5 @@
 <!-- Bed Allocation View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -33,26 +34,26 @@
 <?php endif; ?>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/roomandinventory') ?>">
+            <a class="nav-link" href="<?= url('housing/roomandinventory') ?>">
                 <i class="bi bi-box-seam me-1"></i>Room & Inventory
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/availabilitytracking') ?>">
+            <a class="nav-link" href="<?= url('housing/availabilitytracking') ?>">
                 <i class="bi bi-calendar-check me-1"></i>Availability Tracking
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/roomassignment') ?>">
+            <a class="nav-link" href="<?= url('housing/roomassignment') ?>">
                 <i class="bi bi-door-open me-1"></i>Room Assignments
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/bedallocation') ?>">
-                <i class="bi bi-layout-split me-1 text-gold"></i>Bed Allocation
+            <a class="nav-link active" href="<?= url('housing/bedallocation') ?>">
+                <i class="bi bi-layout-split me-1"></i>Bed Allocation
             </a>
         </li>
     </ul>

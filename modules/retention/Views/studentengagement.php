@@ -1,12 +1,41 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 3 - Attendance and Engagement Monitoring
+ * View: Student Engagement & LMS Activity Monitoring (studentengagement.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
-        .marsu-maroon-bg { background-color: #58111a !important; color: #fff !important; }
-        .marsu-maroon-text { color: #58111a !important; }
-        .kpi-border-success { border-left: 4px solid #198754 !important; }
-        .kpi-border-primary { border-left: 4px solid #0d6efd !important; }
-        .kpi-border-danger { border-left: 4px solid #dc3545 !important; }
-        .kpi-border-info { border-left: 4px solid #0dcaf0 !important; }
+        .marsu-maroon-bg {
+            background-color: #58111a !important;
+            color: #fff !important;
+        }
+
+        .marsu-maroon-text {
+            color: #58111a !important;
+        }
+
+        .kpi-border-success {
+            border-left: 4px solid #198754 !important;
+        }
+
+        .kpi-border-primary {
+            border-left: 4px solid #0d6efd !important;
+        }
+
+        .kpi-border-danger {
+            border-left: 4px solid #dc3545 !important;
+        }
+
+        .kpi-border-info {
+            border-left: 4px solid #0dcaf0 !important;
+        }
     </style>
 
     <!-- Header & Action Bar -->
@@ -15,7 +44,8 @@
             <h6 class="fw-bold marsu-maroon-text mb-0 text-nowrap">
                 <i class="bi bi-activity me-1"></i> Coursework Submission Compliance & Engagement Audit
             </h6>
-            <small class="text-muted">Audit of student assignment and lab submissions derived directly from faculty class records and grade sheets.</small>
+            <small class="text-muted">Audit of student assignment and lab submissions derived directly from faculty
+                class records and grade sheets.</small>
         </div>
 
         <div class="d-flex gap-2 align-items-center flex-wrap ms-auto">
@@ -35,7 +65,8 @@
                 <label class="form-label small fw-semibold text-secondary mb-1">SEARCH STUDENT</label>
                 <div class="input-group input-group-sm">
                     <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
-                    <input type="search" name="q" class="form-control" placeholder="Search ID or Name..." value="<?= htmlspecialchars($search ?? '') ?>">
+                    <input type="search" name="q" class="form-control" placeholder="Search ID or Name..."
+                        value="<?= htmlspecialchars($search ?? '') ?>">
                 </div>
             </div>
             <div class="col-md-3">
@@ -71,69 +102,29 @@
                 </select>
             </div>
             <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-sm btn-dark flex-grow-1"><i class="bi bi-funnel me-1"></i> Filter</button>
-                <a href="<?= url('retention/studentengagement') ?>" class="btn btn-sm btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
+                <button type="submit" class="btn btn-sm btn-dark flex-grow-1"><i class="bi bi-funnel me-1"></i>
+                    Filter</button>
+                <a href="<?= url('retention/studentengagement') ?>" class="btn btn-sm btn-outline-secondary"
+                    title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
             </div>
         </form>
     </div>
 
-    <!-- 4 KPI Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">Cohort Submission Compliance</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= htmlspecialchars((string) ($submitRate ?? '88.5')) ?>%</h3>
-                    <span class="badge bg-success-subtle text-success border border-success">Good Standing</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Average coursework turn-in rate</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">100% Complete Submissions</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= htmlspecialchars((string) ($highComplianceCount ?? 0)) ?></h3>
-                    <span class="badge bg-primary-subtle text-primary border border-primary">High Achievers</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Turned in all class record tasks</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">Submission Deficit Flag</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= htmlspecialchars((string) ($deficitCount ?? 0)) ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Risk Breached</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Has multiple unsubmitted tasks</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Monitored Cohort Roster</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-info"><?= htmlspecialchars((string) ($totalStudents ?? count($engagementList ?? []))) ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">Enrolled</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Filtered students matching criteria</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Engagement Ledger Table -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">
-        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <div
+            class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="m-0 fw-bold marsu-maroon-text">
                 <i class="bi bi-check2-circle me-1"></i> Student Coursework Submission Ledger
             </h6>
-            <span class="badge bg-light text-dark border">Showing <?= count($engagementList ?? []) ?> students</span>
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" id="engagementSearchInput" class="form-control form-control-sm"
+                    placeholder="Search ID, Name, or Program..." style="width: 250px;">
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+            <table class="table table-hover align-middle mb-0" id="engagementTable" style="font-size: 13px;">
                 <thead class="table-light text-uppercase small text-muted">
                     <tr>
                         <th class="ps-3 py-3" style="width: 140px;">Student Number</th>
@@ -165,7 +156,7 @@
                                 $barClass = 'bg-warning text-dark';
                             }
                             ?>
-                            <tr>
+                            <tr class="engagement-row">
                                 <td class="ps-3 font-monospace fw-semibold text-secondary">
                                     <?= htmlspecialchars($row['student_number'] ?? '') ?>
                                 </td>
@@ -174,7 +165,8 @@
                                 </td>
                                 <td>
                                     <span class="badge bg-secondary-subtle text-secondary border">
-                                        <?= htmlspecialchars($row['program_code'] ?? 'BSIS') ?> <?= htmlspecialchars((string)($row['year_level'] ?? '1')) ?>-<?= htmlspecialchars($row['section_name'] ?? 'A') ?>
+                                        <?= htmlspecialchars($row['program_code'] ?? 'BSIS') ?>
+                                        <?= htmlspecialchars((string) ($row['year_level'] ?? '1')) ?>-<?= htmlspecialchars($row['section_name'] ?? 'A') ?>
                                     </span>
                                 </td>
                                 <td class="text-center">
@@ -185,7 +177,8 @@
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="progress flex-grow-1" style="height: 6px;">
-                                            <div class="progress-bar <?= $barClass ?>" role="progressbar" style="width: <?= min(100, $score) ?>%;"></div>
+                                            <div class="progress-bar <?= $barClass ?>" role="progressbar"
+                                                style="width: <?= min(100, $score) ?>%;"></div>
                                         </div>
                                         <span class="small font-monospace fw-semibold"><?= number_format($score, 1) ?>%</span>
                                     </div>
@@ -197,7 +190,8 @@
                                     <?= htmlspecialchars($row['last_activity_date'] ?? date('Y-m-d')) ?>
                                 </td>
                                 <td class="text-end pe-3">
-                                    <a href="profile?student_id=<?= urlencode($row['student_number'] ?? $row['id'] ?? '') ?>" class="btn btn-xs btn-outline-primary" title="View Student Profile">
+                                    <a href="profile?student_id=<?= urlencode($row['student_number'] ?? $row['id'] ?? '') ?>"
+                                        class="btn btn-xs btn-outline-primary" title="View Student Profile">
                                         Profile
                                     </a>
                                 </td>
@@ -215,5 +209,7 @@
                 </tbody>
             </table>
         </div>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
     </div>
 </div>

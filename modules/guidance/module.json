@@ -18,6 +18,11 @@
                         "label": "Student Directory",
                         "route": "guidance/student_directory",
                         "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Student History",
+                        "route": "guidance/student_history",
+                        "permission": "guidance.view"
                     }
                 ]
             },

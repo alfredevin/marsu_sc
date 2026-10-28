@@ -91,6 +91,14 @@ class HomeController
             'user' => Auth::user()
         ]);
     }
+    public function studenthistory(): void
+    {
+        View::render('guidance/Views/student_history', [
+            'title' => 'Student History',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
 
     public function appointmentlists(): void
     {

@@ -13,6 +13,7 @@ $router->post('/guidance/create', [HomeController::class, 'store'], ['auth', 'pe
 
 // Student Information Management
 $router->get('/guidance/student_directory', [HomeController::class, 'studentdirectory'], ['auth', 'permission:guidance.view']);
+$router->get('/guidance/student_history', [HomeController::class, 'studenthistory'], ['auth', 'permission:guidance.view']);
 
 // Appointments
 $router->get('/guidance/appointment_lists', [HomeController::class, 'appointmentlists'], ['auth', 'permission:guidance.view']);

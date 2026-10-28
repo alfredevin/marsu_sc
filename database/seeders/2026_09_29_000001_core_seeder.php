@@ -20,6 +20,7 @@ return new class {
             ['name' => 'Module Lead: Org Finance', 'slug' => 'lead_orgfinance', 'description' => 'Lead access exclusively for Student Org Finance'],
             ['name' => 'Module Lead: Org Leadership', 'slug' => 'lead_orgleadership', 'description' => 'Lead access exclusively for Org Leadership'],
             ['name' => 'Module Lead: Student Housing (ISHAMIS)', 'slug' => 'lead_housing', 'description' => 'Lead access exclusively for Student Housing'],
+            ['name' => 'Module Lead: Academic Analytics', 'slug' => 'lead_analytics', 'description' => 'Lead access exclusively for Academic Analytics & Student Monitoring'],
             ['name' => 'Module Lead: Retention Analytics', 'slug' => 'lead_retention', 'description' => 'Lead access exclusively for Retention Analytics'],
             ['name' => 'Module Lead: University Assets', 'slug' => 'lead_assets', 'description' => 'Lead access exclusively for University Assets'],
             ['name' => 'Module Lead: Student Welfare', 'slug' => 'lead_welfare', 'description' => 'Lead access exclusively for Student Welfare'],
@@ -148,6 +149,7 @@ return new class {
             'lead_orgfinance'    => 'orgfinance',
             'lead_orgleadership' => 'orgleadership',
             'lead_housing'       => 'housing',
+            'lead_analytics'     => 'analytics',
             'lead_retention'     => 'retention',
             'lead_assets'        => 'assets',
             'lead_welfare'       => 'welfare',
@@ -277,6 +279,24 @@ return new class {
                 'last_name'  => 'Alcantara',
                 'role'       => 'lead_housing',
                 'role_slug'  => 'lead_housing'
+            ],
+            [
+                'username'   => 'group8a_lead',
+                'email'      => 'group8a.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Bea',
+                'last_name'  => 'Manalo',
+                'role'       => 'lead_analytics',
+                'role_slug'  => 'lead_analytics'
+            ],
+            [
+                'username'   => 'group8b_lead',
+                'email'      => 'group8b.lead@marsu.edu.ph',
+                'password'   => $defaultPassword,
+                'first_name' => 'Bea',
+                'last_name'  => 'Manalo',
+                'role'       => 'lead_retention',
+                'role_slug'  => 'lead_retention'
             ],
             [
                 'username'   => 'group8_lead',

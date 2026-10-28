@@ -11,7 +11,7 @@
         "items": [
             {
                 "label": "Organization",
-                "icon": "bi-journal-bookmark",
+                "icon": "bi-people-fill",
                 "route": "orgfinance/org-profile",
                 "permission": "orgfinance.view",
                 "children": [
@@ -31,7 +31,7 @@
             },
             {
                 "label": "Loan Management",
-                "icon": "bi-journal-bookmark",
+                "icon": "bi-wallet2",
                 "route": "orgfinance/loan-management",
                 "permission": "orgfinance.view",
                 "children": [
@@ -50,7 +50,7 @@
                     {
                         "label": "Loan Amount and Purpose Tracking",
                         "icon": "bi-journal-bookmark",
-                        "route": "orgfinance/loanamounttracking",
+                        "route": "orgfinance/loanamountandpurposetracking",
                         "permission": "orgfinance.view"
                     },
                     {
@@ -63,7 +63,7 @@
             },
             {
                 "label": "Fund Management",
-                "icon": "bi-journal-bookmark",
+                "icon": "bi-arrow-down-up",
                 "route": "orgfinance/org-profile",
                 "permission": "orgfinance.view",
                 "children": [
@@ -76,21 +76,21 @@
                     {
                         "label": "Budget Planning",
                         "icon": "bi-journal-bookmark",
-                        "route": "orgfinance/budgetplaning",
+                        "route": "orgfinance/budgetplanning",
                         "permission": "orgfinance.view"
                     }
                 ]
             },
             {
-                "label": "Finacial Transaction",
-                "icon": "bi-journal-bookmark",
+                "label": "Financial Transaction",
+                "icon": "bi-folder",
                 "route": "orgfinance/finacialtransaction",
                 "permission": "orgfinance.view",
                 "children": [
                     {
                         "label": "Receipts and Payment Records",
                         "icon": "bi-journal-bookmark",
-                        "route": "orgfinance/receiptsandpaymentrecords",
+                        "route": "orgfinance/recieptsandpaymentrecords",
                         "permission": "orgfinance.view"
                     },
                     {
@@ -103,7 +103,7 @@
             },
             {
                 "label": "Reports and Analytics",
-                "icon": "bi-journal-bookmark",
+                "icon": "bi-bar-chart-fill",
                 "route": "orgfinance/reportsandanalytics",
                 "permission": "orgfinance.view",
                 "children": [
@@ -123,7 +123,7 @@
             },
             {
                 "label": "User Access",
-                "icon": "bi-journal-bookmark",
+                "icon": "bi-person-fill",
                 "route": "orgfinance/org-profile",
                 "permission": "orgfinance.view",
                 "children": [

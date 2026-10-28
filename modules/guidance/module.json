@@ -68,14 +68,7 @@
                         "label": "Case Registration",
                         "route": "guidance/case_registration",
                         "permission": "guidance.view"
-                    }
-                ]
-            },
-            {
-                "label": "Intervention Management",
-                "icon": "bi-heart-pulse",
-                "permission": "guidance.view",
-                "children": [
+                    },
                     {
                         "label": "Referrals",
                         "route": "guidance/referrals",

@@ -26,8 +26,6 @@ $router->get('/guidance/session_calendar', [HomeController::class, 'sessioncalen
 $router->get('/guidance/concerns', [HomeController::class, 'concerns'], ['auth', 'permission:guidance.view']);
 $router->get('/guidance/cases', [HomeController::class, 'cases'], ['auth', 'permission:guidance.view']);
 $router->get('/guidance/case_registration', [HomeController::class, 'caseregistration'], ['auth', 'permission:guidance.view']);
-
-// Intervention Management
 $router->get('/guidance/referrals', [HomeController::class, 'referrals'], ['auth', 'permission:guidance.view']);
 
 // Reports & Audits

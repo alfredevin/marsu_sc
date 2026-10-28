@@ -103,9 +103,31 @@ $router->post('/retention/admin/notes', [AdminController::class, 'storeNote'], [
 $router->post('/retention/admin/notes/{id}/archive', [AdminController::class, 'archiveNote'], ['auth', 'permission:retention.admin.settings', 'csrf']);
 
 // ============================================================================
-// 5. Existing Institution-Wide Oversight Pages (Read-Only)
+// 5. Early Warning System, Intervention & Analytics Reports (Group 8B)
 // ============================================================================
 $router->get('/retention/show', [HomeController::class, 'show'], ['auth', 'permission:retention.view']);
+
+// Early Warning System
+$router->get('/retention/atriskstudents', [HomeController::class, 'atriskstudents'], ['auth', 'permission:retention.view']);
+$router->get('/retention/risklevelclassification', [HomeController::class, 'risklevelclassification'], ['auth', 'permission:retention.view']);
+$router->get('/retention/systemalerts', [HomeController::class, 'systemalerts'], ['auth', 'permission:retention.view']);
+$router->get('/retention/riskoverview', [HomeController::class, 'riskoverview'], ['auth', 'permission:retention.view']);
+
+// Intervention Management
+$router->get('/retention/advisingrecords', [HomeController::class, 'advisingrecords'], ['auth', 'permission:retention.view']);
+$router->get('/retention/guidancereferrals', [HomeController::class, 'guidancereferrals'], ['auth', 'permission:retention.view']);
+$router->get('/retention/academicsupportprograms', [HomeController::class, 'academicsupportprograms'], ['auth', 'permission:retention.view']);
+$router->get('/retention/interventionresults', [HomeController::class, 'interventionresults'], ['auth', 'permission:retention.view']);
+
+// Reports and Analytics
+$router->get('/retention/retentionratereports', [HomeController::class, 'retentionratereports'], ['auth', 'permission:retention.view']);
+$router->get('/retention/atriskstudentreports', [HomeController::class, 'atriskstudentreports'], ['auth', 'permission:retention.view']);
+$router->get('/retention/studentsuccessreports', [HomeController::class, 'studentsuccessreports'], ['auth', 'permission:retention.view']);
+$router->get('/retention/trendsovertime', [HomeController::class, 'trendsovertime'], ['auth', 'permission:retention.view']);
+
+// ============================================================================
+// 6. Legacy Redirections to Dedicated Academic Analytics Module (Group 8A)
+// ============================================================================
 $router->get('/retention/profile', [HomeController::class, 'profile'], ['auth', 'permission:retention.view']);
 $router->get('/retention/academichistory', [HomeController::class, 'academichistory'], ['auth', 'permission:retention.view']);
 $router->get('/retention/enrollmentrecords', [HomeController::class, 'enrollmentrecords'], ['auth', 'permission:retention.view']);
@@ -119,5 +141,5 @@ $router->get('/retention/participationtracking', [HomeController::class, 'partic
 $router->get('/retention/studentengagement', [HomeController::class, 'studentengagement'], ['auth', 'permission:retention.view']);
 $router->get('/retention/behaviorrecords', [HomeController::class, 'behaviorrecords'], ['auth', 'permission:retention.view']);
 
-// Legacy POST endpoint for Modules 4-6 activity log creation (fixes undeclared retention.create bug)
+// Legacy POST endpoint for activity log creation
 $router->post('/retention/create', [HomeController::class, 'store'], ['auth', 'permission:retention.admin.settings', 'csrf']);

@@ -1,0 +1,113 @@
+{
+    "name": "Academic Analytics & Student Monitoring System",
+    "slug": "analytics",
+    "version": "1.0.0",
+    "description": "Student information management, continuous academic tracking, attendance, participation, and classroom engagement monitoring.",
+    "author": "MarSU CICS Student Development Group 8A",
+    "default_enabled": true,
+    "section": "Academic Analytics",
+    "menu": {
+        "icon": "bi-graph-up",
+        "items": [
+            {
+                "label": "Student Information Management",
+                "icon": "bi-people",
+                "permission": "analytics.view",
+                "children": [
+                    {
+                        "label": "Student Profiles",
+                        "icon": "bi-person-circle",
+                        "route": "analytics/profile",
+                        "permission": "analytics.view"
+                    },
+                    {
+                        "label": "Academic History",
+                        "icon": "bi-clock-history",
+                        "route": "analytics/academichistory",
+                        "permission": "analytics.view"
+                    },
+                    {
+                        "label": "Enrollment Records",
+                        "icon": "bi-card-list",
+                        "route": "analytics/enrollmentrecords",
+                        "permission": "analytics.view"
+                    },
+                    {
+                        "label": "Demographic Info",
+                        "icon": "bi-pie-chart",
+                        "route": "analytics/demographicinfo",
+                        "permission": "analytics.view"
+                    }
+                ]
+            },
+            {
+                "label": "Academic Monitoring",
+                "icon": "bi-journal-bookmark",
+                "permission": "analytics.view",
+                "children": [
+                    {
+                        "label": "Grades Tracking (Class Record)",
+                        "icon": "bi-pencil-square",
+                        "route": "analytics/gradestracking",
+                        "permission": "analytics.view"
+                    },
+                    {
+                        "label": "Subject Performance",
+                        "icon": "bi-bar-chart-line",
+                        "route": "analytics/subjectperformance",
+                        "permission": "analytics.view"
+                    },
+                    {
+                        "label": "Academic Progress Reports",
+                        "icon": "bi-card-checklist",
+                        "route": "analytics/progressreports",
+                        "permission": "analytics.view"
+                    },
+                    {
+                        "label": "Failed / Incomplete Monitoring",
+                        "icon": "bi-exclamation-triangle",
+                        "route": "analytics/failedincompletemonitoring",
+                        "permission": "analytics.view"
+                    }
+                ]
+            },
+            {
+                "label": "Attendance and Engagement Monitoring",
+                "icon": "bi-calendar-check",
+                "permission": "analytics.view",
+                "children": [
+                    {
+                        "label": "Attendance Records",
+                        "icon": "bi-person-check",
+                        "route": "analytics/attendancerecords",
+                        "permission": "analytics.view"
+                    },
+                    {
+                        "label": "Participation Tracking",
+                        "icon": "bi-chat-dots",
+                        "route": "analytics/participationtracking",
+                        "permission": "analytics.view"
+                    },
+                    {
+                        "label": "Student Engagement",
+                        "icon": "bi-laptop",
+                        "route": "analytics/studentengagement",
+                        "permission": "analytics.view"
+                    },
+                    {
+                        "label": "Behavior Records",
+                        "icon": "bi-clipboard-check",
+                        "route": "analytics/behaviorrecords",
+                        "permission": "analytics.view"
+                    }
+                ]
+            }
+        ]
+    },
+    "permissions": {
+        "analytics.view": "View Academic Analytics & Student Monitoring Records",
+        "analytics.create": "Log Student Academic & Attendance Entries",
+        "analytics.edit": "Modify Academic Monitoring & Grades Data",
+        "analytics.export": "Export Student Monitoring and Engagement Records"
+    }
+}

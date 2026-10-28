@@ -2,8 +2,8 @@
     "name": "Student Retention & Academic Risk Early Warning System",
     "slug": "retention",
     "version": "1.0.0",
-    "description": "Student demographics profiling, academic performance tracking, and attendance & engagement monitoring.",
-    "author": "MarSU CICS Student Development Group",
+    "description": "Predictive analytics tracking attendance drops, failing prelim grades, prerequisite bottlenecks, and timely guidance interventions.",
+    "author": "MarSU CICS Student Development Group 8B",
     "default_enabled": true,
     "section": "Academic Analytics",
     "menu": {
@@ -96,76 +96,94 @@
                 ]
             },
             {
-                "label": "Student Information Management",
-                "icon": "bi-people",
+                "label": "Early Warning System",
+                "icon": "bi-shield-check",
                 "permission": "retention.view",
                 "children": [
                     {
-                        "label": "Student Profiles",
-                        "icon": "bi-person-circle",
-                        "route": "retention/profile",
+                        "label": "At-Risk Students",
+                        "icon": "bi-search",
+                        "route": "retention/atriskstudents",
+                        "permission": "retention.view"
+                    },
+                    {
+                        "label": "Risk Level Classification",
+                        "icon": "bi-layers",
+                        "route": "retention/risklevelclassification",
+                        "permission": "retention.view"
+                    },
+                    {
+                        "label": "System Alerts",
+                        "icon": "bi-bell",
+                        "route": "retention/systemalerts",
+                        "permission": "retention.view"
+                    },
+                    {
+                        "label": "Risk Overview",
+                        "icon": "bi-speedometer2",
+                        "route": "retention/riskoverview",
                         "permission": "retention.view"
                     }
                 ]
             },
             {
-                "label": "Academic Monitoring",
-                "icon": "bi-journal-bookmark",
+                "label": "Intervention Management",
+                "icon": "bi-people-fill",
                 "permission": "retention.view",
                 "children": [
                     {
-                        "label": "Class Records (Read-only)",
-                        "icon": "bi-pencil-square",
-                        "route": "retention/gradestracking",
+                        "label": "Advising Records",
+                        "icon": "bi-person-badge",
+                        "route": "retention/advisingrecords",
                         "permission": "retention.view"
                     },
                     {
-                        "label": "Subject Performance",
-                        "icon": "bi-bar-chart-line",
-                        "route": "retention/subjectperformance",
+                        "label": "Guidance Referrals",
+                        "icon": "bi-heart-fill",
+                        "route": "retention/guidancereferrals",
                         "permission": "retention.view"
                     },
                     {
-                        "label": "Academic Progress Reports",
-                        "icon": "bi-card-checklist",
-                        "route": "retention/progressreports",
+                        "label": "Academic Support Programs",
+                        "icon": "bi-mortarboard-fill",
+                        "route": "retention/academicsupportprograms",
                         "permission": "retention.view"
                     },
                     {
-                        "label": "Failed / Incomplete Monitoring",
-                        "icon": "bi-exclamation-triangle",
-                        "route": "retention/failedincompletemonitoring",
+                        "label": "Intervention Results",
+                        "icon": "bi-graph-up-arrow",
+                        "route": "retention/interventionresults",
                         "permission": "retention.view"
                     }
                 ]
             },
             {
-                "label": "Attendance and Engagement Monitoring",
-                "icon": "bi-calendar-check",
+                "label": "Reports and Analytics",
+                "icon": "bi-file-earmark-text",
                 "permission": "retention.view",
                 "children": [
                     {
-                        "label": "Attendance Records",
-                        "icon": "bi-person-check",
-                        "route": "retention/attendancerecords",
+                        "label": "Retention Rate Reports",
+                        "icon": "bi-percent",
+                        "route": "retention/retentionratereports",
                         "permission": "retention.view"
                     },
                     {
-                        "label": "Participation Tracking",
-                        "icon": "bi-chat-dots",
-                        "route": "retention/participationtracking",
+                        "label": "At-Risk Student Reports",
+                        "icon": "bi-person-x",
+                        "route": "retention/atriskstudentreports",
                         "permission": "retention.view"
                     },
                     {
-                        "label": "Student Engagement",
-                        "icon": "bi-laptop",
-                        "route": "retention/studentengagement",
+                        "label": "Student Success Reports",
+                        "icon": "bi-award",
+                        "route": "retention/studentsuccessreports",
                         "permission": "retention.view"
                     },
                     {
-                        "label": "Behavior Records",
-                        "icon": "bi-clipboard-check",
-                        "route": "retention/behaviorrecords",
+                        "label": "Trends Over Time",
+                        "icon": "bi-graph-up",
+                        "route": "retention/trendsovertime",
                         "permission": "retention.view"
                     }
                 ]

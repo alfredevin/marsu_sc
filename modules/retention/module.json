@@ -10,55 +10,6 @@
         "icon": "bi-graph-up-arrow",
         "items": [
             {
-                "label": "My Academic Record",
-                "icon": "bi-mortarboard",
-                "permission": "retention.student.portal",
-                "children": [
-                    {
-                        "label": "Snapshot",
-                        "icon": "bi-speedometer2",
-                        "route": "retention/my",
-                        "permission": "retention.student.portal"
-                    },
-                    {
-                        "label": "Profile",
-                        "icon": "bi-person-badge",
-                        "route": "retention/my/profile",
-                        "permission": "retention.student.portal"
-                    },
-                    {
-                        "label": "Grades",
-                        "icon": "bi-award",
-                        "route": "retention/my/grades",
-                        "permission": "retention.student.portal"
-                    },
-                    {
-                        "label": "Attendance",
-                        "icon": "bi-calendar-check",
-                        "route": "retention/my/attendance",
-                        "permission": "retention.student.portal"
-                    },
-                    {
-                        "label": "Deficiencies",
-                        "icon": "bi-exclamation-octagon",
-                        "route": "retention/my/deficiencies",
-                        "permission": "retention.student.portal"
-                    },
-                    {
-                        "label": "Progress",
-                        "icon": "bi-graph-up",
-                        "route": "retention/my/progress",
-                        "permission": "retention.student.portal"
-                    },
-                    {
-                        "label": "Conduct Notices",
-                        "icon": "bi-shield-exclamation",
-                        "route": "retention/my/conduct",
-                        "permission": "retention.student.portal"
-                    }
-                ]
-            },
-            {
                 "label": "Faculty Workspace",
                 "icon": "bi-person-workspace",
                 "permission": "retention.faculty.classes",
@@ -214,7 +165,6 @@
         "retention.analyze": "Run Risk Identification Models",
         "retention.intervene": "Log Academic Remediation & Counseling Referrals",
         "retention.export": "Export CHED Cohort Survival Analytics",
-        "retention.student.portal": "Access Student Self-Service Academic Portal",
         "retention.faculty.classes": "Manage Faculty Classes, Rosters & Class Records",
         "retention.faculty.attendance": "Take Roll-Call Attendance for Faculty Classes",
         "retention.faculty.behavior": "Report Conduct Incidents for Class Students",

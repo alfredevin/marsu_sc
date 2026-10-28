@@ -18,9 +18,6 @@ return new class {
 
         // 2. Map role slugs to desired retention permission keys
         $rolePermissionMap = [
-            'student' => [
-                'retention.student.portal',
-            ],
             'faculty' => [
                 'retention.faculty.classes',
                 'retention.faculty.attendance',
@@ -35,7 +32,6 @@ return new class {
                 'retention.export',
             ],
             'lead_retention' => [
-                'retention.student.portal',
                 'retention.faculty.classes',
                 'retention.faculty.attendance',
                 'retention.faculty.behavior',

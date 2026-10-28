@@ -12,7 +12,7 @@
 
 | Sub-Module Group | Designated Scope | Primary Controllers & Workspaces |
 | :--- | :--- | :--- |
-| **Module 1: Student Information & Profiling** | Official master identity, degree curriculum, section enrollment, and supplementary socio-academic profiling. | `StudentPortalController.php`<br>`AdminController.php` (Profiles) |
+| **Module 1: Student Information & Profiling** | Official master identity, degree curriculum, section enrollment, and supplementary socio-academic profiling. | `HomeController.php` (Profiles & History)<br>`AdminController.php` (Supplementary Profiles) |
 | **Module 2: Academic Monitoring & Grading** | Class offerings, activity schemes, live matrix score encoding, GradeCalculator (1.00–5.00), INC resolution, and grade correction workflow. | `FacultyController.php`<br>`AdminController.php` (Grades/Classes)<br>`GradeCalculator.php` |
 | **Module 3: Attendance & Behavioral Tracking** | Class-linked roll-call check-in, CHED 20% cut allowance meter, session voiding, and confidential student conduct notices. | `FacultyController.php` (Attendance/Conduct)<br>`AdminController.php` (Attendance/Conduct) |
 | **Modules 4, 5, 6: External / Future Scope** | Automated ML predictive early warning risk algorithms, guidance counselor referral case tracking, and CHED cohort survival reporting. | Maintained independently by Modules 4–6 development team. |
@@ -22,31 +22,21 @@
 ## 2. Source Code & Class Manifest
 
 ### A. Controllers (`modules/retention/Controllers/`)
-1. [HomeController.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Controllers/HomeController.php): Role-based smart landing router (`/retention`), legacy institutional oversight dossier views, and legacy logbook submission endpoint.
-2. [AdminController.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Controllers/AdminController.php): Academic governance, class creation and faculty staffing, institutional grading templates, grade correction approval, INC extensions, attendance voiding, conduct case management, supplementary profiling, and diagnostic student preview.
+1. [HomeController.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Controllers/HomeController.php): Role-based smart landing router (`/retention`), institutional oversight dossiers, and legacy logbook submission endpoint.
+2. [AdminController.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Controllers/AdminController.php): Academic governance, class creation and faculty staffing, institutional grading templates, grade correction approval, INC extensions, attendance voiding, conduct case management, and supplementary profiling.
 3. [FacultyController.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Controllers/FacultyController.php): Faculty teaching workspace, assigned class offerings, live matrix score persistence, CSV/section roster import, grade posting (1.00–5.00), task exceptions, roll-call attendance, and behavioral incident reports.
-4. [StudentPortalController.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Controllers/StudentPortalController.php): Read-only student self-service portal, academic snapshot, term grades (with draft grade protection), CHED attendance meter, INC deficiency guide, and confidential conduct notices.
 
 ### B. Domain & Support Services (`modules/retention/Support/`)
-1. [RetentionAccess.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Support/RetentionAccess.php): Persona and scoping resolution (`currentStudent()`, `facultyUserId()`, `ownsClass()`, `facultyStudentIds()`, `canSeeStudent()`, `isOversightOnly()`).
+1. [RetentionAccess.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Support/RetentionAccess.php): Persona and scoping resolution (`facultyUserId()`, `ownsClass()`, `facultyStudentIds()`, `canSeeStudent()`, `isOversightOnly()`).
 2. [RetentionSettings.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Support/RetentionSettings.php): Centralized policy configuration resolver (`get()`, `set()`, `passingThreshold()`, `incDays()`).
 3. [GradeCalculator.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Support/GradeCalculator.php): Official MarSU 1.00–5.00 grading scale converter, percentage weighting engine, and INC/DRP remark evaluator.
 4. [ChangeLog.php](file:///c:/xampp/htdocs/marsu_sc/modules/retention/Support/ChangeLog.php): Tamper-evident audit trail service recording administrative and faculty state transitions into `ret_change_logs`.
 
 ---
 
-## 3. View Inventory by Persona
+## 3. View Inventory by Workspace
 
-### A. Student Self-Service Portal (`modules/retention/Views/student/`)
-- `dashboard.php`: Student academic snapshot, active courses, GPA, and supportive advisory.
-- `profile.php`: Official master registration details and supplementary socio-academic attributes.
-- `grades.php`: Official mark sheets (draft marks masked as *"In Progress"*).
-- `attendance.php`: CHED 20% maximum cut allowance meter and session history.
-- `deficiencies.php`: Active INCs with remaining deadline countdown and interactive removal guide.
-- `progress.php`: Completed academic credits and cumulative earned units.
-- `conduct.php`: Disciplinary notices (date, type, severity, status only; zero leak of internal narratives).
-
-### B. Faculty Teaching Workspace (`modules/retention/Views/faculty/`)
+### A. Faculty Teaching Workspace (`modules/retention/Views/faculty/`)
 - `dashboard.php`: Faculty teaching load summary and pending grading actions.
 - `classes.php`: Assigned class offerings ledger with grading status badges.
 - `class_record.php`: Live matrix score sheet with real-time autosave, component weights, and posting modal.

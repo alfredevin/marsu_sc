@@ -7,7 +7,6 @@
 use Modules\Retention\Controllers\HomeController;
 use Modules\Retention\Controllers\AdminController;
 use Modules\Retention\Controllers\FacultyController;
-use Modules\Retention\Controllers\StudentPortalController;
 
 // ============================================================================
 // 1. Landing Route (Role-Based Smart Router)
@@ -15,18 +14,7 @@ use Modules\Retention\Controllers\StudentPortalController;
 $router->get('/retention', [HomeController::class, 'index'], ['auth']);
 
 // ============================================================================
-// 2. Student Self-Service Portal (Read-Only)
-// ============================================================================
-$router->get('/retention/my', [StudentPortalController::class, 'dashboard'], ['auth', 'permission:retention.student.portal']);
-$router->get('/retention/my/profile', [StudentPortalController::class, 'profile'], ['auth', 'permission:retention.student.portal']);
-$router->get('/retention/my/grades', [StudentPortalController::class, 'grades'], ['auth', 'permission:retention.student.portal']);
-$router->get('/retention/my/attendance', [StudentPortalController::class, 'attendance'], ['auth', 'permission:retention.student.portal']);
-$router->get('/retention/my/deficiencies', [StudentPortalController::class, 'deficiencies'], ['auth', 'permission:retention.student.portal']);
-$router->get('/retention/my/progress', [StudentPortalController::class, 'progress'], ['auth', 'permission:retention.student.portal']);
-$router->get('/retention/my/conduct', [StudentPortalController::class, 'conduct'], ['auth', 'permission:retention.student.portal']);
-
-// ============================================================================
-// 3. Faculty Workspace (Assigned Classes, Matrix Encoding & Roll-Call)
+// 2. Faculty Workspace (Assigned Classes, Matrix Encoding & Roll-Call)
 // ============================================================================
 $router->get('/retention/faculty', [FacultyController::class, 'dashboard'], ['auth', 'permission:retention.faculty.classes']);
 $router->get('/retention/faculty/classes', [FacultyController::class, 'classes'], ['auth', 'permission:retention.faculty.classes']);
@@ -54,7 +42,7 @@ $router->get('/retention/faculty/conduct', [FacultyController::class, 'conduct']
 $router->post('/retention/faculty/conduct/store', [FacultyController::class, 'storeConduct'], ['auth', 'permission:retention.faculty.behavior', 'csrf']);
 
 // ============================================================================
-// 4. Admin Governance & Oversight Actions (Part E)
+// 3. Admin Governance & Oversight Actions (Part E)
 // ============================================================================
 // Class Offerings (Static create before generic {id})
 $router->get('/retention/admin/classes/create', [AdminController::class, 'createClass'], ['auth', 'permission:retention.admin.classes']);
@@ -94,8 +82,7 @@ $router->post('/retention/admin/conduct/{id}/severity', [AdminController::class,
 $router->get('/retention/admin/profiles/{studentId}', [AdminController::class, 'editStudentProfile'], ['auth', 'permission:retention.admin.profiles']);
 $router->post('/retention/admin/profiles/{studentId}', [AdminController::class, 'updateStudentProfile'], ['auth', 'permission:retention.admin.profiles', 'csrf']);
 
-// Diagnostic Preview & Audit History
-$router->get('/retention/admin/preview-student/{studentId}', [AdminController::class, 'previewStudent'], ['auth', 'permission:retention.view']);
+// Audit History
 $router->get('/retention/admin/change-log', [AdminController::class, 'changeLog'], ['auth', 'permission:retention.view']);
 
 // Dashboard Manual Notes
@@ -103,7 +90,7 @@ $router->post('/retention/admin/notes', [AdminController::class, 'storeNote'], [
 $router->post('/retention/admin/notes/{id}/archive', [AdminController::class, 'archiveNote'], ['auth', 'permission:retention.admin.settings', 'csrf']);
 
 // ============================================================================
-// 5. Existing Institution-Wide Oversight Pages (Read-Only)
+// 4. Existing Institution-Wide Oversight Pages (Read-Only)
 // ============================================================================
 $router->get('/retention/show', [HomeController::class, 'show'], ['auth', 'permission:retention.view']);
 $router->get('/retention/profile', [HomeController::class, 'profile'], ['auth', 'permission:retention.view']);

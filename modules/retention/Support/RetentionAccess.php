@@ -135,12 +135,6 @@ class RetentionAccess
             return in_array($studentId, $rosterStudentIds, true);
         }
 
-        // 3. Student viewing own record
-        if (can('retention.student.portal')) {
-            $std = self::currentStudent();
-            return $std && (int) $std['id'] === $studentId;
-        }
-
         return false;
     }
 

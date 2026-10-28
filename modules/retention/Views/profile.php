@@ -226,11 +226,6 @@
                             <i class="bi bi-pencil-square me-1"></i> Supplementary Profile
                         </a>
                     <?php endif; ?>
-                    <?php if (can('retention.view')): ?>
-                        <a href="<?= url('retention/admin/preview-student/' . (int) $selectedStudent['id']) ?>" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill shadow-sm">
-                            <i class="bi bi-eye me-1"></i> Preview as Student
-                        </a>
-                    <?php endif; ?>
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
                         <i class="bi bi-printer me-1"></i> Print Record
                     </button>

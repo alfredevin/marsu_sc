@@ -13,14 +13,10 @@ class HomeController
 {
     public function index(): void
     {
-        // Role-Based Smart Router: Redirect student and faculty personas to their dedicated workspaces
+        // Role-Based Smart Router: Redirect faculty persona to faculty workspace
         if (!can('retention.view')) {
             if (can('retention.faculty.classes')) {
                 redirect(url('retention/faculty'));
-                return;
-            }
-            if (can('retention.student.portal')) {
-                redirect(url('retention/my'));
                 return;
             }
             View::render('errors/403', [

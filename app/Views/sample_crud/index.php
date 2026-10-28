@@ -72,8 +72,17 @@
                         </div>
                         <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
                     </div>
-
-
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 2: Location <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="location" class="form-control" placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Lokasyon na gustong mong i-save.</div>
+                    </div>
+                
                     <!-- Field 2: Category -->
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-dark">
@@ -104,7 +113,17 @@
                         </div>
                         <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
                     </div>
-
+2                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            Field 3: Item Gebder <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" name="gender" class="form-control"
+                                placeholder="Halimbawa: Projector Cable" required autocomplete="off">
+                        </div>
+                        <div class="form-text small text-muted">Pangalan o pamagat ng item na gustong i-save.</div>
+                    </div>
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-marsu w-100 py-2 shadow-sm">
                         <i class="bi bi-cloud-arrow-up-fill me-2"></i>Save Item to Database (Insert)
@@ -140,6 +159,7 @@
                             <th>Category (Field 2)</th>
                             <th>Date Added</th>
                             <th class="text-end pe-3" style="width: 130px;">Action</th>
+
                         </tr>
                     </thead>
                     <tbody class="small">

@@ -92,7 +92,7 @@ code .
 Inside `/c/xampp/htdocs/marsu_sc`, run:
 ```bash
 git checkout -b feature/group-name
-```
+```SSOFMS-LMR
 *Example for Housing group (ISHAMIS):*
 ```bash
 git checkout -b feature/housing-ishamis
@@ -114,6 +114,7 @@ Sundin lang ang **2 simpleng hakbang** na ito sa Git Bash:
 ```bash
 git add .
 git commit -m "Save my progress"
+git push -u origin feature
 ```
 
 ### Step 2: I-pull ang pinakabagong update mula sa `master`:

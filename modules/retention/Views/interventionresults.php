@@ -19,62 +19,19 @@
         </div>
     </div>
 
-    <!-- 4 KPI Metrics -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">Successful Resolutions</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= $successCount ?? 28 ?></h3>
-                    <span class="badge bg-success-subtle text-success border border-success">Grade Restored</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Students achieving passing standing</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">Success Rate</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= $successRate ?? 87.5 ?>%</h3>
-                    <span class="badge bg-primary-subtle text-primary border border-primary">Target &ge; 85%</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Intervention effectiveness ratio</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">In-Progress Interventions</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-info"><?= $inProgressCount ?? 6 ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">Active Care</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Currently undergoing mentoring</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">INC Cleared Rate</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= $incClearedRate ?? 91.2 ?>%</h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">Removal Exam</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Incomplete marks converted to passing</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Intervention Results Table -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">
-        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="m-0 fw-bold marsu-maroon-text">
                 <i class="bi bi-journal-check me-1"></i> Completed Intervention Audit Ledger
             </h6>
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" id="interventionSearchInput" class="form-control form-control-sm" placeholder="Search ID, Name, or Type..." style="width: 250px;">
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+            <table class="table table-hover align-middle mb-0" id="interventionResultsTable" style="font-size: 13px;">
                 <thead class="table-light text-uppercase small text-muted">
                     <tr>
                         <th class="ps-3 py-3">Student Details</th>
@@ -93,7 +50,7 @@
                     ];
                     foreach ($resultsList as $row):
                     ?>
-                        <tr>
+                        <tr class="intervention-row">
                             <td class="ps-3 fw-bold text-dark">
                                 <?= htmlspecialchars($row['full_name']) ?>
                                 <small class="text-muted d-block"><?= htmlspecialchars($row['student_id']) ?></small>
@@ -109,5 +66,8 @@
                 </tbody>
             </table>
         </div>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
     </div>
 </div>
+

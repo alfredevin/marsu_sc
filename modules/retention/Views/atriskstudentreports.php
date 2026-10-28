@@ -35,52 +35,6 @@
         </div>
     </div>
 
-    <!-- 4 KPI Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">High-Risk Flagged Students</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= htmlspecialchars((string) ($highRiskTotal ?? '18')) ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Immediate Action</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Score &ge; 75% or 2+ failed subjects</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Academic Grade Deficits</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= htmlspecialchars((string) ($gradeRiskTotal ?? '31')) ?></h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">Grade Declines</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Failing midterm marks or pending INCs</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Attendance & Commute Risk</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-info"><?= htmlspecialchars((string) ($absenceRiskTotal ?? '24')) ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">Tardiness / Absence</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Distanced residence & roll-call flags</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">Total Evaluated Cohort</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= htmlspecialchars((string) ($totalEvaluated ?? '866')) ?></h3>
-                    <span class="badge bg-primary-subtle text-primary border border-primary">Full Enrollment</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Students screened across all departments</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Summary Table -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">

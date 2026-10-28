@@ -1,4 +1,5 @@
 <!-- Rules & Policies View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -11,6 +12,32 @@
             <i class="bi bi-printer me-1"></i>Print Handbook
         </button>
     </div>
+</div>
+
+<!-- Sub-navigation Pills -->
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/announcements') ?>">
+                <i class="bi bi-megaphone me-1"></i>Announcements
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/residentsnotifications') ?>">
+                <i class="bi bi-bell me-1"></i>Notifications
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?= url('housing/rulesandpolicies') ?>">
+                <i class="bi bi-shield-check me-1"></i>Rules & Policies
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/incidentreporting') ?>">
+                <i class="bi bi-exclamation-triangle me-1"></i>Incident Reporting
+            </a>
+        </li>
+    </ul>
 </div>
 
 <!-- Policies Accordion / Cards -->

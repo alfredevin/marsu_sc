@@ -34,47 +34,214 @@ class HomeController {
         ]);
     }
 
-    public function show(): void {
-        $id = (int)($_GET['id'] ?? 0);
-        $record = Database::fetchOne("SELECT * FROM `orf_records` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]);
-        
-        if (!$record) {
-            Session::flash('error', 'Record not found.');
-            redirect(url('orgfinance'));
-        }
 
-        View::render('orgfinance/Views/index', [
-            'title'       => 'View Record #{$id}',
-            'moduleName'  => 'Student Organizations Collection & Financial Management',
+
+     public function accreditationtracking(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/accreditationtracking', [
+            'title'       => 'Accreditation Tracking',
+            'moduleName'  => 'Financial Management System',
             'slug'        => 'orgfinance',
-            'record'      => $record,
-            'records'     => [],
-            'crumbs'      => ['Student Organizations Collection & Financial Management' => url('orgfinance'), 'View' => '']
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Organization'  => '',
+                'AccreditationTracking'  => ''
+            ]
         ]);
     }
 
-    public function store(): void {
-        $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ?? '');
+    public function studentorganizationprofile(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/studentorganizationprofile', [
+            'title'       => 'Student Organization Profile',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Organization'  => '',
+                'Student Organization Profile'  => ''
+            ]
+        ]);
+    }
 
-        if (!$title) {
-            Session::flash('error', 'Title is required.');
-            redirect(url('orgfinance'));
-        }
+    public function loanapplicationsubmission(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/loanapplicationsubmission', [
+            'title'       => 'Loan Application Submission',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Loan Management'  => '',
+                'Loan Application Submission'  => ''
+            ]
+        ]);
+    }
 
-        try {
-            Database::insert('orf_records', [
-                'title'       => $title,
-                'description' => $description,
-                'status'      => 'active',
-                'created_by'  => Auth::id(),
-                'created_at'  => date('Y-m-d H:i:s')
-            ]);
-            Session::flash('success', 'New record added successfully.');
-        } catch (\Exception $e) {
-            Session::flash('error', 'Could not save record: ' . $e->getMessage());
-        }
+    public function loanaprovalworkflow(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/loanaprovalworkflow', [
+            'title'       => 'Loan Approval Workflow',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Loan Management'  => '',
+                'Loan Approval Workflow'  => ''
+            ]
+        ]);
+    }
+    public function loanamountandpurposetracking(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/loanamountandpurposetracking', [
+            'title'       => 'Loan Amount and Purpose Tracking',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Loan Management'  => '',
+                'Loan Amount and Purpose Tracking'  => ''
+            ]
+        ]);
+    }
 
-        redirect(url('orgfinance'));
+    public function loanhistory(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/loanhistory', [
+            'title'       => 'Loan History',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Loan Management'  => '',
+                'Loan History'  => ''
+            ]
+        ]);
+    }
+
+    public function incomeandexpensemonitoring(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/incomeandexpensemonitoring', [
+            'title'       => 'Income and Expense Monitoring',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Fund Management'  => '',
+                'Income and Expense Monitoring'  => ''
+            ]
+        ]);
+    }
+
+    public function budgetplanning(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/budgetplanning', [
+            'title'       => 'Budget Planning',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Fund Management'  => '',
+                'Budget Planning'  => ''
+            ]
+        ]);
+    }
+
+    public function recieptsandpaymentrecords(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/recieptsandpaymentrecords', [
+            'title'       => 'Reciepts and Payment Records',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Financial Transaction'  => '',
+                'Reciepts and Payment Records'  => ''
+            ]
+        ]);
+    }
+
+    public function audittrail(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/audittrail', [
+            'title'       => 'Audit Trail',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Financial Transaction'  => '',
+                'Audit Trail'  => ''
+            ]
+        ]);
+    }
+
+    public function orgfinancialreport(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/orgfinancialreport', [
+            'title'       => 'Organization Financial Report',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Reports and Analytics'  => '',
+                'Organization Financial Report'  => ''
+            ]
+        ]);
+    }
+
+    public function loanstatusreport(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/loanstatusreport', [
+            'title'       => 'Loan Status Report',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'Reports and Analytics'  => '',
+                'Loan Status Report'  => ''
+            ]
+        ]);
+    }
+
+    public function studentorgofficer(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/studentorgofficer', [
+            'title'       => 'Student Organization Officers',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'User Access'  => '',
+                'Student Organization Officers'  => ''
+            ]
+        ]);
+    }
+
+    public function studentaffairs(): void {
+        $user = Auth::user();
+        View::render('orgfinance/Views/studentaffairs', [
+            'title'       => 'Student Affairs / Admin',
+            'moduleName'  => 'Financial Management System',
+            'slug'        => 'orgfinance',
+            'user'        => $user,
+            'crumbs'      => [
+                'Financial Management System' => url('orgfinance'),
+                'User Access'  => '',
+                'Student Affairs / Admin'  => ''
+            ]
+        ]);
     }
 }

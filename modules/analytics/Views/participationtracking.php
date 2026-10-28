@@ -72,7 +72,7 @@
             </div>
             <div class="col-md-2 d-flex gap-2">
                 <button type="submit" class="btn btn-sm btn-dark flex-grow-1"><i class="bi bi-funnel me-1"></i> Filter</button>
-                <a href="<?= url('retention/participationtracking') ?>" class="btn btn-sm btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
+                <a href="<?= url('analytics/participationtracking') ?>" class="btn btn-sm btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
             </div>
         </form>
     </div>
@@ -230,7 +230,7 @@
                 </h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('retention/create') ?>">
+            <form method="POST" action="<?= url('analytics/create') ?>">
                 <?= csrf_field() ?>
                 <input type="hidden" name="type" value="task_exception">
                 <div class="modal-body p-4 bg-light">

@@ -19,6 +19,9 @@
         </div>
 
         <div class="d-flex gap-2 align-items-center flex-wrap ms-auto">
+            <a href="<?= url('analytics/faculty/attendance') ?>" class="btn btn-sm btn-outline-danger fw-semibold">
+                <i class="bi bi-calendar2-check me-1"></i>Faculty Roll-Call
+            </a>
             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
                 <i class="bi bi-printer me-1"></i> Print Roster
             </button>
@@ -229,7 +232,7 @@
                 </h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('retention/create') ?>">
+            <form method="POST" action="<?= url('analytics/create') ?>">
                 <?= csrf_field() ?>
                 <input type="hidden" name="type" value="attendance">
                 <div class="modal-body p-4 bg-light">

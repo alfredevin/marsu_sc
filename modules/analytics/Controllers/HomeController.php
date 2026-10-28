@@ -31,7 +31,7 @@ class HomeController
             'user' => $user,
             'crumbs' => [
                 'Academic Analytics' => '',
-                'Student Retention & Academic Risk Early Warning System' => ''
+                'Academic Analytics & Student Monitoring System' => ''
             ]
         ]);
     }
@@ -52,7 +52,7 @@ class HomeController
             'slug' => 'analytics',
             'record' => $record,
             'records' => [],
-            'crumbs' => ['Student Retention & Academic Risk Early Warning System' => url('analytics'), 'View' => '']
+            'crumbs' => ['Academic Analytics' => url('analytics'), 'View' => '']
         ]);
     }
 
@@ -101,73 +101,6 @@ class HomeController
                 return;
             }
 
-            if ($type === 'advising') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $advisingDate = trim($_POST['advising_date'] ?? date('Y-m-d'));
-                $topic = trim($_POST['topic'] ?? 'General Academic Advising');
-                $notes = trim($_POST['notes'] ?? '');
-                $recommendations = trim($_POST['recommendations'] ?? '');
-                $status = trim($_POST['status'] ?? 'Completed');
-                $followUpDate = !empty($_POST['follow_up_date']) ? $_POST['follow_up_date'] : null;
-
-                Database::insert('ret_advising_records', [
-                    'student_id' => $studentId,
-                    'advisor_id' => $userId,
-                    'advising_date' => $advisingDate,
-                    'topic' => $topic,
-                    'notes' => $notes,
-                    'recommendations' => $recommendations,
-                    'status' => $status,
-                    'follow_up_date' => $followUpDate,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Academic advising session logged successfully.');
-                redirect(url('analytics/advisingrecords'));
-                return;
-            }
-
-            if ($type === 'guidance') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $severity = trim($_POST['severity_level'] ?? 'Medium');
-                $reason = trim($_POST['referral_reason'] ?? '');
-                $notes = trim($_POST['notes'] ?? '');
-
-                Database::insert('ret_guidance_referrals', [
-                    'student_id' => $studentId,
-                    'referred_by' => $userId,
-                    'referral_reason' => $reason,
-                    'severity_level' => $severity,
-                    'status' => 'Pending Intake',
-                    'resolution_notes' => $notes,
-                    'referred_at' => date('Y-m-d H:i:s'),
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Guidance & counseling referral submitted successfully.');
-                redirect(url('analytics/guidancereferrals'));
-                return;
-            }
-
-            if ($type === 'support') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $subjectCode = trim($_POST['subject_code'] ?? '');
-                $programName = trim($_POST['program_name'] ?? 'Peer Mentoring Clinic');
-                $mentorName = trim($_POST['mentor_name'] ?? '');
-                $enrolledAt = trim($_POST['enrolled_at'] ?? date('Y-m-d'));
-
-                Database::insert('ret_academic_support', [
-                    'student_id' => $studentId,
-                    'program_name' => $programName,
-                    'subject_code' => $subjectCode,
-                    'mentor_name' => $mentorName,
-                    'status' => 'Active',
-                    'enrolled_at' => $enrolledAt,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Student successfully enrolled in academic support program.');
-                redirect(url('analytics/academicsupportprograms'));
-                return;
-            }
-
             if ($type === 'behavior') {
                 $studentId = trim($_POST['student_id'] ?? '');
                 $incidentDate = trim($_POST['incident_date'] ?? date('Y-m-d'));
@@ -175,38 +108,28 @@ class HomeController
                 $severity = trim($_POST['severity'] ?? 'Minor');
                 $description = trim($_POST['description'] ?? '');
 
-                Database::insert('ret_behavior_records', [
-                    'student_id' => $studentId,
-                    'reported_by' => $userId,
-                    'incident_date' => $incidentDate,
-                    'incident_type' => $incidentType,
-                    'severity' => $severity,
+                try {
+                    Database::insert('ana_behavior_records', [
+                        'student_id' => $studentId,
+                        'reported_by' => $userId,
+                        'incident_date' => $incidentDate,
+                        'incident_type' => $incidentType,
+                        'severity' => $severity,
+                        'description' => $description,
+                        'status' => 'Reported',
+                        'created_at' => date('Y-m-d H:i:s')
+                    ]);
+                } catch (\Throwable $e) {}
+
+                Database::insert('ana_records', [
+                    'title' => "Behavior Incident: {$incidentType} ({$severity}) for Student {$studentId}",
                     'description' => $description,
-                    'status' => 'Reported',
+                    'status' => 'active',
+                    'created_by' => $userId,
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
                 Session::flash('success', 'Student behavior incident log recorded.');
                 redirect(url('analytics/behaviorrecords'));
-                return;
-            }
-
-            if ($type === 'risk') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $riskLevel = trim($_POST['risk_level'] ?? 'Moderate');
-                $riskFactors = trim($_POST['risk_factors'] ?? '');
-                $riskScore = ($riskLevel === 'High') ? 85.0 : (($riskLevel === 'Moderate') ? 60.0 : 30.0);
-
-                Database::insert('ret_risk_logs', [
-                    'student_id' => $studentId,
-                    'risk_level' => $riskLevel,
-                    'risk_score' => $riskScore,
-                    'risk_factors' => $riskFactors,
-                    'status' => 'Active',
-                    'detected_at' => date('Y-m-d H:i:s'),
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Student successfully flagged as at-risk.');
-                redirect(url('analytics/atriskstudents'));
                 return;
             }
 
@@ -505,11 +428,11 @@ class HomeController
 
         View::render('analytics/Views/profile', [
             'title' => !empty($selectedStudent) ? 'Student Profile: ' . htmlspecialchars($selectedStudent['full_name']) : 'Student Profiles',
-            'moduleName' => 'Retention (ISREMS)',
+            'moduleName' => 'Academic Analytics & Student Monitoring System',
             'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Student Information Management' => '',
                 'Student Profiles' => ''
             ],
@@ -596,11 +519,11 @@ class HomeController
 
         View::render('analytics/Views/gradestracking', [
             'title' => 'Grades Tracking & Class Record',
-            'moduleName' => 'Retention (ISREMS)',
+            'moduleName' => 'Academic Analytics & Student Monitoring System',
             'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Grades Tracking' => ''
             ],
@@ -778,11 +701,11 @@ class HomeController
 
         View::render('analytics/Views/subjectperformance', [
             'title' => 'Course & Subject Performance Analytics',
-            'moduleName' => 'Retention (ISREMS)',
+            'moduleName' => 'Academic Analytics & Student Monitoring System',
             'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Subject Performance' => ''
             ],
@@ -945,11 +868,11 @@ class HomeController
 
         View::render('analytics/Views/progressreports', [
             'title' => 'Academic Progress Reports',
-            'moduleName' => 'Retention (ISREMS)',
+            'moduleName' => 'Academic Analytics & Student Monitoring System',
             'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Progress Reports' => ''
             ],
@@ -1134,11 +1057,11 @@ class HomeController
 
         View::render('analytics/Views/failedincompletemonitoring', [
             'title' => 'Failed & Incomplete Subject Watchlist',
-            'moduleName' => 'Retention (ISREMS)',
+            'moduleName' => 'Academic Analytics & Student Monitoring System',
             'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Failed Incomplete Monitoring' => ''
             ],
@@ -1242,11 +1165,11 @@ class HomeController
 
         View::render('analytics/Views/attendancerecords', [
             'title' => 'Student Attendance Records & Roll-Call Monitoring',
-            'moduleName' => 'Retention (ISREMS)',
+            'moduleName' => 'Academic Analytics & Student Monitoring System',
             'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Attendance Records' => ''
             ],
@@ -1347,11 +1270,11 @@ class HomeController
 
         View::render('analytics/Views/participationtracking', [
             'title' => 'Class Record Participation & Task Submission Tracking',
-            'moduleName' => 'Retention (ISREMS)',
+            'moduleName' => 'Academic Analytics & Student Monitoring System',
             'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Participation Tracking' => ''
             ],
@@ -1450,11 +1373,11 @@ class HomeController
 
         View::render('analytics/Views/studentengagement', [
             'title' => 'Coursework Submission Compliance & Engagement Audit',
-            'moduleName' => 'Retention (ISREMS)',
+            'moduleName' => 'Academic Analytics & Student Monitoring System',
             'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Student Engagement' => ''
             ],
@@ -1549,11 +1472,11 @@ class HomeController
 
         View::render('analytics/Views/behaviorrecords', [
             'title' => 'Student Behavior & Discipline Records',
-            'moduleName' => 'Retention (ISREMS)',
+            'moduleName' => 'Academic Analytics & Student Monitoring System',
             'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Behavioral Records' => ''
             ],

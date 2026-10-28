@@ -98,6 +98,26 @@
     <!-- STATE 1: MY CLASSES WORKSPACE GRID -->
     <div id="viewMyClasses" class="<?= !empty($selectedClassId) ? 'd-none' : '' ?>">
 
+        <div class="alert alert-light border border-burgundy shadow-sm d-flex flex-wrap align-items-center justify-content-between p-3 mb-4 rounded-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle p-2" style="background: rgba(128, 0, 32, 0.1); color: #800020;">
+                    <i class="bi bi-person-workspace fs-4"></i>
+                </div>
+                <div>
+                    <strong class="text-dark d-block">Academic Analytics Faculty Workspace &amp; Class Records</strong>
+                    <small class="text-muted">Encode live assessment scores with autosave, configure weighted grading matrices, and post official grades.</small>
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-2 mt-md-0">
+                <a href="<?= url('analytics/faculty/classes') ?>" class="btn btn-sm btn-marsu fw-semibold">
+                    <i class="bi bi-collection me-1"></i>Open Faculty Workspace
+                </a>
+                <a href="<?= url('analytics/admin/classes') ?>" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-building-gear me-1"></i>Class Offerings
+                </a>
+            </div>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
             <div>
                 <h5 class="fw-bold marsu-maroon-text mb-0">

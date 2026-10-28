@@ -31,12 +31,18 @@
                     </small>
                 </div>
             </div>
-            <div class="d-flex gap-2">
-                <a href="<?= url('analytics/attendancerecords') ?>" class="btn btn-sm btn-light fw-semibold text-marsu-burgundy">
-                    <i class="bi bi-calendar-check-fill me-1 text-gold"></i>Attendance
+            <div class="d-flex flex-wrap gap-2">
+                <a href="<?= url('analytics/faculty') ?>" class="btn btn-sm btn-light fw-bold text-marsu-burgundy shadow-sm">
+                    <i class="bi bi-person-workspace me-1 text-gold"></i>Faculty Workspace
                 </a>
-                <a href="<?= url('analytics/progressreports') ?>" class="btn btn-sm btn-outline-light">
-                    <i class="bi bi-card-checklist me-1"></i>Progress Reports
+                <a href="<?= url('analytics/admin/classes') ?>" class="btn btn-sm btn-outline-light fw-semibold">
+                    <i class="bi bi-shield-shaded me-1"></i>Governance
+                </a>
+                <a href="<?= url('analytics/gradestracking') ?>" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-pencil-square me-1"></i>Grades Tracking
+                </a>
+                <a href="<?= url('analytics/attendancerecords') ?>" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-calendar-check me-1"></i>Attendance
                 </a>
             </div>
         </div>

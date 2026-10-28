@@ -29,6 +29,9 @@
                 </select>
             </form>
 
+            <a href="<?= url('analytics/faculty/conduct') ?>" class="btn btn-sm btn-outline-dark fw-semibold">
+                <i class="bi bi-flag me-1"></i>Faculty Conduct Reports
+            </a>
             <button type="button" class="btn btn-sm btn-warning fw-semibold text-dark" data-bs-toggle="modal" data-bs-target="#newIncidentModal">
                 <i class="bi bi-exclamation-octagon me-1"></i> Log Behavior Incident
             </button>
@@ -166,7 +169,7 @@
                 </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('retention/create') ?>">
+            <form method="POST" action="<?= url('analytics/create') ?>">
                 <?= csrf_field() ?>
                 <input type="hidden" name="type" value="behavior">
                 <div class="modal-body p-4 bg-light">

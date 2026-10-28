@@ -10,6 +10,80 @@
         "icon": "bi-graph-up",
         "items": [
             {
+                "label": "Faculty Workspace",
+                "icon": "bi-person-workspace",
+                "permission": "analytics.faculty.classes",
+                "children": [
+                    {
+                        "label": "Dashboard",
+                        "icon": "bi-speedometer",
+                        "route": "analytics/faculty",
+                        "permission": "analytics.faculty.classes"
+                    },
+                    {
+                        "label": "My Classes",
+                        "icon": "bi-collection",
+                        "route": "analytics/faculty/classes",
+                        "permission": "analytics.faculty.classes"
+                    },
+                    {
+                        "label": "Roll-Call Attendance",
+                        "icon": "bi-calendar-check",
+                        "route": "analytics/faculty/attendance",
+                        "permission": "analytics.faculty.attendance"
+                    },
+                    {
+                        "label": "My Students",
+                        "icon": "bi-people",
+                        "route": "analytics/faculty/students",
+                        "permission": "analytics.faculty.classes"
+                    },
+                    {
+                        "label": "Conduct Reports",
+                        "icon": "bi-flag",
+                        "route": "analytics/faculty/conduct",
+                        "permission": "analytics.faculty.behavior"
+                    }
+                ]
+            },
+            {
+                "label": "Governance & Policies",
+                "icon": "bi-shield-shaded",
+                "permission": "analytics.admin.classes",
+                "children": [
+                    {
+                        "label": "Class Offerings",
+                        "icon": "bi-building-gear",
+                        "route": "analytics/admin/classes",
+                        "permission": "analytics.admin.classes"
+                    },
+                    {
+                        "label": "Policy Settings",
+                        "icon": "bi-sliders",
+                        "route": "analytics/admin/settings",
+                        "permission": "analytics.admin.settings"
+                    },
+                    {
+                        "label": "Grading Templates",
+                        "icon": "bi-file-earmark-spreadsheet",
+                        "route": "analytics/admin/templates",
+                        "permission": "analytics.admin.settings"
+                    },
+                    {
+                        "label": "Correction Requests",
+                        "icon": "bi-arrow-left-right",
+                        "route": "analytics/admin/corrections",
+                        "permission": "analytics.admin.grades"
+                    },
+                    {
+                        "label": "System Audit Log",
+                        "icon": "bi-clock-history",
+                        "route": "analytics/admin/change-log",
+                        "permission": "analytics.view"
+                    }
+                ]
+            },
+            {
                 "label": "Student Information Management",
                 "icon": "bi-people",
                 "permission": "analytics.view",
@@ -72,7 +146,7 @@
                 ]
             },
             {
-                "label": "Attendance and Engagement Monitoring",
+                "label": "Attendance & Engagement Monitoring",
                 "icon": "bi-calendar-check",
                 "permission": "analytics.view",
                 "children": [
@@ -108,6 +182,15 @@
         "analytics.view": "View Academic Analytics & Student Monitoring Records",
         "analytics.create": "Log Student Academic & Attendance Entries",
         "analytics.edit": "Modify Academic Monitoring & Grades Data",
-        "analytics.export": "Export Student Monitoring and Engagement Records"
+        "analytics.export": "Export Student Monitoring and Engagement Records",
+        "analytics.faculty.classes": "Faculty Teaching Classes & Grade Encoding",
+        "analytics.faculty.attendance": "Faculty Class Roll-Call Attendance",
+        "analytics.faculty.behavior": "Faculty Conduct & Incident Reporting",
+        "analytics.admin.classes": "Academic Administration & Class Offerings",
+        "analytics.admin.settings": "System Policy & Grading Scheme Settings",
+        "analytics.admin.grades": "Grade Review & Correction Management",
+        "analytics.admin.attendance": "Institutional Attendance Oversight & Voiding",
+        "analytics.admin.conduct": "Student Conduct Adjudication & Severity Management",
+        "analytics.admin.profiles": "Supplementary Student Profiles Management"
     }
 }

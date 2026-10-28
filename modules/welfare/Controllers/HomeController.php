@@ -364,4 +364,12 @@ class HomeController
             'slug'  => 'welfare'
         ]);
     }
+      public function dashboard(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/dashboard', [
+            'title' => 'Dashboard',
+            'slug'  => 'welfare'
+        ]);
+    }
 }

@@ -327,24 +327,6 @@ $currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
                 <?= csrf_field() ?>
                 <div class="modal-body p-4 bg-white" style="font-size: 14.5px;">
 
-                    <!-- Designated Counselor Info Banner -->
-                    <div class="p-3 mb-4 rounded"
-                        style="background-color: #FDF2F4; border: 1px solid #f8d7da; line-height: 2.0;">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                            <div>
-                                <span class="text-muted" style="font-size: 13.5px;">Designated Guidance
-                                    Counselor:</span>
-                                <strong class="ms-2" style="color: #800020; font-size: 15px; font-weight: 700;">
-                                    Dr. Elena Santos, RGC
-                                </strong>
-                            </div>
-                            <span class="badge"
-                                style="background-color: #800020; color: #ffffff; font-size: 11px; padding: 4px 10px;">
-                                Registered Guidance Counselor
-                            </span>
-                        </div>
-                    </div>
-
                     <div class="row g-4" style="line-height: 2.0;">
                         <div class="col-md-6 col-12">
                             <label class="form-label text-muted fw-semibold mb-2"

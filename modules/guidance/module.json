@@ -15,13 +15,8 @@
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Student Profile",
-                        "route": "guidance/student_profile",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Student History",
-                        "route": "guidance/student_history",
+                        "label": "Student Directory",
+                        "route": "guidance/student_directory",
                         "permission": "guidance.view"
                     }
                 ]
@@ -32,18 +27,13 @@
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Appointment Requests",
-                        "route": "guidance/appointment_requests",
+                        "label": "Appointment Lists",
+                        "route": "guidance/appointment_lists",
                         "permission": "guidance.view"
                     },
                     {
                         "label": "Session Calendar",
                         "route": "guidance/session_calendar",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Appointment Status",
-                        "route": "guidance/appointment_status",
                         "permission": "guidance.view"
                     }
                 ]
@@ -54,40 +44,18 @@
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Student Concerns",
-                        "route": "guidance/student_concerns",
+                        "label": "Concerns",
+                        "route": "guidance/concerns",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Counseling Session",
-                        "route": "guidance/counseling_session",
+                        "label": "Cases",
+                        "route": "guidance/cases",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Case Progress",
-                        "route": "guidance/case_progress",
-                        "permission": "guidance.view"
-                    }
-                ]
-            },
-            {
-                "label": "Assessment & Evaluation",
-                "icon": "bi-clipboard-data",
-                "permission": "guidance.view",
-                "children": [
-                    {
-                        "label": "Guidance Assessment",
-                        "route": "guidance/guidance_assessment",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Career Assessment",
-                        "route": "guidance/career_assessment",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Student Evaluation Records",
-                        "route": "guidance/student_evaluation_records",
+                        "label": "Case Registration",
+                        "route": "guidance/case_registration",
                         "permission": "guidance.view"
                     }
                 ]
@@ -98,40 +66,25 @@
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Counseling Plans",
-                        "route": "guidance/counseling_plans",
-                        "permission": "guidance.view"
-                    },
-                    {
                         "label": "Referrals",
                         "route": "guidance/referrals",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Follow Up",
-                        "route": "guidance/follow_up",
                         "permission": "guidance.view"
                     }
                 ]
             },
             {
-                "label": "Reports",
+                "label": "Reports & Audits",
                 "icon": "bi-bar-chart-line",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Counseling Service Utilization",
-                        "route": "guidance/counseling_service_utilization",
+                        "label": "Analytics Reports",
+                        "route": "guidance/analytics_reports",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Student Concerns Summary",
-                        "route": "guidance/student_concerns_summarry",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Guidance Program Reports",
-                        "route": "guidance/guidance_program_reports",
+                        "label": "Feedbacks",
+                        "route": "guidance/feedbacks",
                         "permission": "guidance.view"
                     }
                 ]
@@ -154,18 +107,8 @@
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "User Account Management",
-                        "route": "guidance/user_account_management",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Role Based Access Control",
-                        "route": "guidance/role_based_access_control",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Activity Logs",
-                        "route": "guidance/activity_logs",
+                        "label": "Audit Security Logs",
+                        "route": "guidance/audit_security_logs",
                         "permission": "guidance.view"
                     }
                 ]
@@ -174,6 +117,7 @@
     },
     "permissions": {
         "guidance.view": "Access Counseling Schedules & Appointment Bookings",
+        "guidance.create": "Create Intake Records & Appointment Bookings",
         "guidance.counsel": "Conduct Intake Interviews & Routine Assessments",
         "guidance.confidential": "Access Restricted Clinical Case Notes (Counselors Only)",
         "guidance.refer": "Endorse Students for Academic/Medical Referrals"

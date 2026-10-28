@@ -47,11 +47,12 @@ class HomeController
         }
 
         View::render('guidance/Views/index', [
-            'title' => 'View Record #{$id}',
+            'title' => "View Record #{$id}",
             'moduleName' => 'Guidance & Counseling Intake Records System',
             'slug' => 'guidance',
             'record' => $record,
             'records' => [],
+            'user' => Auth::user(),
             'crumbs' => ['Guidance & Counseling Intake Records System' => url('guidance'), 'View' => '']
         ]);
     }
@@ -82,32 +83,21 @@ class HomeController
         redirect(url('guidance'));
     }
 
-
-    public function studentprofile(): void
+    public function studentdirectory(): void
     {
-        $user = Auth::user();
-        View::render('guidance/Views/student_profile', [
-            'title' => 'Student Profile',
-            'slug' => 'guidance'
+        View::render('guidance/Views/student_directory', [
+            'title' => 'Student Directory',
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
-
-    public function studenthistory(): void
+    public function appointmentlists(): void
     {
-        $user = Auth::user();
-        View::render('guidance/Views/student_history', [
-            'title' => 'Student History',
-            'slug' => 'guidance'
-        ]);
-    }
-
-    public function appointmentrequests(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/appointment_requests', [
-            'title' => 'Appointment Requests',
-            'slug' => 'guidance'
+        View::render('guidance/Views/appointment_lists', [
+            'title' => 'Appointment Lists',
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
@@ -116,84 +106,37 @@ class HomeController
         $user = Auth::user();
         View::render('guidance/Views/session_calendar', [
             'title' => 'Session Calendar',
-            'slug' => 'guidance'
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
 
-    public function appointmentstatus(): void
+    public function concerns(): void
     {
-        $user = Auth::user();
-        View::render('guidance/Views/appointment_status', [
-            'title' => 'Appointment Status',
-            'slug' => 'guidance'
+        View::render('guidance/Views/concerns', [
+            'title' => 'Concerns',
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
 
-    public function studentconcerns(): void
+    public function cases(): void
     {
-        $user = Auth::user();
-        View::render('guidance/Views/student_concerns', [
-            'title' => 'Student Concerns',
-            'slug' => 'guidance'
+        View::render('guidance/Views/cases', [
+            'title' => 'Cases',
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
-
-    public function counselingsession(): void
+    public function caseregistration(): void
     {
-        $user = Auth::user();
-        View::render('guidance/Views/counseling_session', [
-            'title' => 'Counseling Session',
-            'slug' => 'guidance'
-        ]);
-    }
-
-
-    public function caseprogress(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/case_progress', [
-            'title' => 'Case Progress',
-            'slug' => 'guidance'
-        ]);
-    }
-
-    public function guidanceassessment(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/guidance_assessment', [
-            'title' => 'Guidance Assessment',
-            'slug' => 'guidance'
-        ]);
-    }
-
-    public function careerassessment(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/career_assessment', [
-            'title' => 'Career Assessment',
-            'slug' => 'guidance'
-        ]);
-    }
-
-    public function studentevaluationrecords(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/student_evaluation_records', [
-            'title' => 'Student Evaluation Records',
-            'slug' => 'guidance'
-        ]);
-    }
-
-
-    public function counselingplans(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/counseling_plans', [
-            'title' => 'Counseling Plans',
-            'slug' => 'guidance'
+        View::render('guidance/Views/case_registration', [
+            'title' => 'Case Registration',
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
@@ -203,47 +146,28 @@ class HomeController
         $user = Auth::user();
         View::render('guidance/Views/referrals', [
             'title' => 'Referrals',
-            'slug' => 'guidance'
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
 
-    public function followup(): void
+    public function analyticsreports(): void
     {
-        $user = Auth::user();
-        View::render('guidance/Views/follow_up', [
-            'title' => 'Follow Up',
-            'slug' => 'guidance'
+        View::render('guidance/Views/analytics_reports', [
+            'title' => 'Analytics Reports',
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
 
-    public function counselingserviceutilization(): void
+    public function feedbacks(): void
     {
-        $user = Auth::user();
-        View::render('guidance/Views/counseling_service_utilization', [
-            'title' => 'Counseling Service Utilization',
-            'slug' => 'guidance'
-        ]);
-    }
-
-
-    public function studentconcernssummary(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/student_concerns_summary', [
-            'title' => 'Student Concerns Summary',
-            'slug' => 'guidance'
-        ]);
-    }
-
-
-    public function guidanceprogramreports(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/guidance_program_reports', [
-            'title' => 'Guidance Program Reports',
-            'slug' => 'guidance'
+        View::render('guidance/Views/feedbacks', [
+            'title' => 'Feedbacks',
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
@@ -252,38 +176,18 @@ class HomeController
         $user = Auth::user();
         View::render('guidance/Views/student_concern_types', [
             'title' => 'Student Concern Types',
-            'slug' => 'guidance'
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 
 
-
-    public function useraccountmanagement(): void
+    public function auditsecuritylogs(): void
     {
-        $user = Auth::user();
-        View::render('guidance/Views/user_account_management', [
-            'title' => 'User Account Management',
-            'slug' => 'guidance'
-        ]);
-    }
-
-
-    public function rolebasedaccesscontrol(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/role_based_access_control', [
-            'title' => 'Role Based Access Control',
-            'slug' => 'guidance'
-        ]);
-    }
-
-
-    public function activitylogs(): void
-    {
-        $user = Auth::user();
-        View::render('guidance/Views/activity_logs', [
-            'title' => 'Activity Logs',
-            'slug' => 'guidance'
+        View::render('guidance/Views/audit_security_logs', [
+            'title' => 'Audit Security Logs',
+            'slug' => 'guidance',
+            'user' => Auth::user()
         ]);
     }
 }

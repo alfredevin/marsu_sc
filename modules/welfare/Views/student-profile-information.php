@@ -1,5 +1,4 @@
- <!-- Student Profile Management -->
-
+<!-- Student Profile Management -->
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -31,10 +30,11 @@
 
         .filter-select {
             width: auto !important;
-            min-width: 130px;
-            max-width: 150px;
+            min-width: 120px;
+            max-width: 145px;
+            font-size: 0.85rem !important;
+            padding: 5px 8px !important;
         }
-
 
         .fixed-table {
             table-layout: fixed !important;
@@ -51,18 +51,21 @@
             text-overflow: ellipsis;
         }
 
-       
-        .search-pill-wrapper {
+        /* Shorter Search Pill Input - Single Line Alignment */
+        .search-pill-wrapper-short {
             background-color: #fcfcfd;
             border: 1px solid #ebdede;
             border-radius: 50rem !important;
-            padding: 4px 16px;
+            padding: 5px 14px;
             display: flex;
             align-items: center;
             transition: all 0.2s ease-in-out;
+            width: 210px !important;
+            max-width: 230px !important;
+            flex-shrink: 0;
         }
 
-        .search-pill-wrapper:focus-within {
+        .search-pill-wrapper-short:focus-within {
             border-color: #58111a;
             box-shadow: 0 0 0 0.15rem rgba(88, 17, 26, 0.15);
             background-color: #ffffff;
@@ -73,17 +76,16 @@
             background: transparent !important;
             box-shadow: none !important;
             outline: none !important;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             color: #495057;
             width: 100%;
         }
 
-        
         .program-badge-custom {
-            font-size: 0.85rem !important;
+            font-size: 0.825rem !important;
             font-weight: 600 !important;
-            padding: 5px 0 !important;
-            min-width: 78px !important;
+            padding: 4px 0 !important;
+            min-width: 70px !important;
             text-align: center !important;
             border-radius: 6px !important;
             background-color: #f8f9fa !important;
@@ -93,11 +95,10 @@
             letter-spacing: 0.3px;
         }
 
-       
         .status-badge-enrolled {
-            font-size: 0.85rem !important;
+            font-size: 0.8rem !important;
             font-weight: 600 !important;
-            padding: 5px 14px !important;
+            padding: 4px 12px !important;
             border-radius: 50rem !important;
             background-color: #d4edda !important;
             color: #0f5132 !important;
@@ -106,9 +107,9 @@
         }
 
         .status-badge-graduating {
-            font-size: 0.85rem !important;
+            font-size: 0.8rem !important;
             font-weight: 600 !important;
-            padding: 5px 14px !important;
+            padding: 4px 12px !important;
             border-radius: 50rem !important;
             background-color: #fff3cd !important;
             color: #664d03 !important;
@@ -116,15 +117,14 @@
             display: inline-block !important;
         }
 
-        
         .btn-view-maroon {
             color: #58111a !important;
             border: 1.5px solid #58111a !important;
             background-color: #ffffff !important;
             font-weight: 600;
-            padding: 4px 16px;
+            padding: 4px 14px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.825rem;
             transition: all 0.2s ease-in-out;
         }
 
@@ -133,22 +133,26 @@
             background-color: #58111a !important;
         }
 
-        
         .btn-clear-burgundy {
             background-color: #58111a !important;
             color: #ffffff !important;
             border: 1.5px solid #3b0b11 !important;
             font-weight: 600;
-            font-size: 0.85rem;
-            padding: 4px 14px;
+            font-size: 0.825rem;
+            padding: 4px 12px;
             border-radius: 6px;
             transition: all 0.2s ease-in-out;
+            white-space: nowrap;
         }
 
         .btn-clear-burgundy:hover {
             background-color: #3b0b11 !important;
             color: #ffffff !important;
             border-color: #24060a !important;
+        }
+
+        .icon-shrink-0 {
+            flex-shrink: 0 !important;
         }
     </style>
 
@@ -158,7 +162,6 @@
         $statusVal    = $status ?? '';
         $searchVal    = $search ?? '';
 
-       
         $formatYearLevel = function($yr) {
             $yrStr = (string)$yr;
             if (str_contains($yrStr, '1')) return '1st Year';
@@ -200,7 +203,6 @@
                             <?= strtoupper(substr($selectedStudent['full_name'] ?? ($selectedStudent['first_name'] ?? 'S'), 0, 1)) ?>
                         </div>
                         <div>
-                           
                             <h3 class="fw-bold mb-3 text-dark"><?= htmlspecialchars($selectedStudent['full_name'] ?? '') ?></h3>
                             
                             <div class="d-flex flex-column gap-2 text-dark" style="font-size: 0.95rem;">
@@ -238,7 +240,7 @@
             </div>
         </div>
 
-        <!-- 1. Academic Information -->
+        <!-- Academic Information -->
         <div class="card border rounded-3 shadow-sm bg-white mb-4">
             <div class="card-header bg-white py-3 border-bottom">
                 <h6 class="fw-bold marsu-maroon-text mb-0">1. Academic Information</h6>
@@ -287,143 +289,64 @@
             </div>
         </div>
 
-        <!-- 2. Personal Background -->
-        <div class="card border rounded-3 shadow-sm bg-white mb-4">
-            <div class="card-header bg-white py-3 border-bottom">
-                <h6 class="fw-bold marsu-maroon-text mb-0">2. Personal Background</h6>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-bordered mb-0">
-                        <thead class="table-light small">
-                            <tr>
-                                <th style="width: 30%;">Field</th>
-                                <th>Details</th>
-                            </tr>
-                        </thead>
-                        <tbody class="small">
-                            <tr>
-                                <td class="fw-semibold text-muted">Date of Birth</td>
-                                <td><?= htmlspecialchars($selectedStudent['birthdate'] ?? $selectedStudent['dob'] ?? 'N/A') ?></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold text-muted">Sex / Gender</td>
-                                <td><?= htmlspecialchars($selectedStudent['gender'] ?? $selectedStudent['sex'] ?? 'N/A') ?></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold text-muted">Home Address</td>
-                                <td><?= htmlspecialchars($selectedStudent['address'] ?? $selectedStudent['home_address'] ?? 'N/A') ?></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold text-muted">Parent/Guardian</td>
-                                <td><?= htmlspecialchars($selectedStudent['guardian_name'] ?? 'N/A') ?></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold text-muted">Guardian Contact Number</td>
-                                <td><?= htmlspecialchars($selectedStudent['guardian_contact'] ?? 'N/A') ?></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. Health Information -->
-        <div class="card border rounded-3 shadow-sm bg-white mb-4">
-            <div class="card-header bg-white py-3 border-bottom">
-                <h6 class="fw-bold marsu-maroon-text mb-0">3. Health Information</h6>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-bordered mb-0">
-                        <thead class="table-light small">
-                            <tr>
-                                <th style="width: 30%;">Field</th>
-                                <th>Details</th>
-                            </tr>
-                        </thead>
-                        <tbody class="small">
-                            <tr>
-                                <td class="fw-semibold text-muted">Allergies</td>
-                                <td><?= htmlspecialchars($selectedStudent['allergies'] ?? 'N/A') ?></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold text-muted">Medical Conditions</td>
-                                <td><?= htmlspecialchars($selectedStudent['medical_conditions'] ?? $selectedStudent['health_condition'] ?? 'N/A') ?></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold text-muted">Current Medications</td>
-                                <td><?= htmlspecialchars($selectedStudent['current_medications'] ?? $selectedStudent['medication'] ?? 'N/A') ?></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold text-muted">Special Assistance Needs</td>
-                                <td><?= htmlspecialchars($selectedStudent['special_assistance_needs'] ?? $selectedStudent['support_needs'] ?? 'N/A') ?></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
     <?php else: ?>
         <!-- ===================================================================== -->
         <!-- STATE 1: MASTER DIRECTORY TABLE LIST VIEW                            -->
         <!-- ===================================================================== -->
 
-        <div class="mb-4">
+        <div class="mb-3">
             <h4 class="fw-bold marsu-maroon-text mb-1">Student Profile Management</h4>
             <p class="text-muted small mb-0">Manage student academic directory profiles, search records, and filter by program or year level.</p>
         </div>
 
-        <!-- Filter and Search Toolbar -->
-        <div class="card border-0 bg-light p-3 rounded-3 mb-3">
-            <form method="GET" action="" id="searchForm" class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+        <!-- Filter and Search Toolbar (Single Row Alignment) -->
+        <div class="card border-0 bg-light p-2.5 rounded-3 mb-3">
+            <form method="GET" action="" id="searchForm" class="d-flex flex-nowrap gap-2 align-items-center justify-content-between overflow-x-auto">
                 
-                <!-- Pill Search Bar -->
-                <div class="search-pill-wrapper" style="width: 320px;">
-                    <i class="bi bi-search text-muted me-2"></i>
-                    <input type="search" id="searchInput" name="q" class="search-pill-input" placeholder="Search students, program..." value="<?= htmlspecialchars($searchVal) ?>" autocomplete="off" onchange="this.form.submit()">
+                <!-- 1. Pill Search Bar -->
+                <div class="search-pill-wrapper-short">
+                    <i class="bi bi-search text-muted me-2 icon-shrink-0"></i>
+                    <input type="search" id="searchInput" name="q" class="search-pill-input" placeholder="Search students, program..." value="<?= htmlspecialchars($searchVal) ?>" autocomplete="off" oninput="applyStudentFilters()">
                 </div>
 
-                <!-- Server-Side Dropdown Filters -->
-                <div class="d-flex flex-wrap gap-2 align-items-center ms-auto">
-                    <div class="d-flex align-items-center gap-1">
-                        <label class="small fw-semibold text-muted mb-0 text-nowrap">Program:</label>
-                        <select name="program" class="form-select form-select-sm filter-select" onchange="this.form.submit()">
-                            <option value="">All Programs</option>
-                            <option value="BSTM" <?= ($programVal === 'BSTM') ? 'selected' : '' ?>>BSTM</option>
-                            <option value="BSIS" <?= ($programVal === 'BSIS') ? 'selected' : '' ?>>BSIS</option>
-                            <option value="BEED" <?= ($programVal === 'BEED') ? 'selected' : '' ?>>BEED</option>
-                            <option value="BAPoS" <?= ($programVal === 'BAPoS' || $programVal === 'BAPOS') ? 'selected' : '' ?>>BAPoS</option>
-                        </select>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-1">
-                        <label class="small fw-semibold text-muted mb-0 text-nowrap ms-1">Year Level:</label>
-                        <select name="year_level" class="form-select form-select-sm filter-select" onchange="this.form.submit()">
-                            <option value="">All Year Levels</option>
-                            <option value="1st Year" <?= ($yearLevelVal === '1' || $yearLevelVal === '1st Year') ? 'selected' : '' ?>>1st Year</option>
-                            <option value="2nd Year" <?= ($yearLevelVal === '2' || $yearLevelVal === '2nd Year') ? 'selected' : '' ?>>2nd Year</option>
-                            <option value="3rd Year" <?= ($yearLevelVal === '3' || $yearLevelVal === '3rd Year') ? 'selected' : '' ?>>3rd Year</option>
-                            <option value="4th Year" <?= ($yearLevelVal === '4' || $yearLevelVal === '4th Year' || $yearLevelVal === '4rth Year') ? 'selected' : '' ?>>4th Year</option>
-                        </select>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-1">
-                        <label class="small fw-semibold text-muted mb-0 text-nowrap ms-1">Status:</label>
-                        <select name="status" class="form-select form-select-sm filter-select" onchange="this.form.submit()">
-                            <option value="">All Statuses</option>
-                            <option value="Enrolled" <?= ($statusVal === 'Enrolled') ? 'selected' : '' ?>>Enrolled</option>
-                            <option value="Graduating" <?= ($statusVal === 'Graduating') ? 'selected' : '' ?>>Graduating</option>
-                        </select>
-                    </div>
-
-                    <?php if (!empty($programVal) || !empty($yearLevelVal) || !empty($statusVal) || !empty($searchVal)): ?>
-                        <a href="<?= function_exists('url') ? url('guidance/student-profile') : 'student-profile' ?>" class="btn btn-sm btn-clear-burgundy ms-1" title="Clear Filters & Search">
-                            <i class="bi bi-x-circle me-1"></i> Clear
-                        </a>
-                    <?php endif; ?>
+                <!-- 2. Program Filter -->
+                <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Program:</label>
+                    <select name="program" id="programFilter" class="form-select form-select-sm filter-select" onchange="applyStudentFilters()">
+                        <option value="">All Programs</option>
+                        <option value="BSTM" <?= ($programVal === 'BSTM') ? 'selected' : '' ?>>BSTM</option>
+                        <option value="BSIS" <?= ($programVal === 'BSIS') ? 'selected' : '' ?>>BSIS</option>
+                        <option value="BEED" <?= ($programVal === 'BEED') ? 'selected' : '' ?>>BEED</option>
+                        <option value="BAPoS" <?= ($programVal === 'BAPoS' || $programVal === 'BAPOS') ? 'selected' : '' ?>>BAPoS</option>
+                    </select>
                 </div>
+
+                <!-- 3. Year Level Filter -->
+                <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Year Level:</label>
+                    <select name="year_level" id="yearFilter" class="form-select form-select-sm filter-select" onchange="applyStudentFilters()">
+                        <option value="">All Year Levels</option>
+                        <option value="1st Year" <?= ($yearLevelVal === '1' || $yearLevelVal === '1st Year') ? 'selected' : '' ?>>1st Year</option>
+                        <option value="2nd Year" <?= ($yearLevelVal === '2' || $yearLevelVal === '2nd Year') ? 'selected' : '' ?>>2nd Year</option>
+                        <option value="3rd Year" <?= ($yearLevelVal === '3' || $yearLevelVal === '3rd Year') ? 'selected' : '' ?>>3rd Year</option>
+                        <option value="4th Year" <?= ($yearLevelVal === '4' || $yearLevelVal === '4th Year' || $yearLevelVal === '4rth Year') ? 'selected' : '' ?>>4th Year</option>
+                    </select>
+                </div>
+
+                <!-- 4. Status Filter -->
+                <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                    <label class="small fw-semibold text-muted mb-0 text-nowrap">Status:</label>
+                    <select name="status" id="statusFilter" class="form-select form-select-sm filter-select" onchange="applyStudentFilters()">
+                        <option value="">All Statuses</option>
+                        <option value="Enrolled" <?= ($statusVal === 'Enrolled') ? 'selected' : '' ?>>Enrolled</option>
+                        <option value="Graduating" <?= ($statusVal === 'Graduating') ? 'selected' : '' ?>>Graduating</option>
+                    </select>
+                </div>
+
+                <!-- 5. Clear Button -->
+                <button type="button" id="clearFilterBtn" class="btn btn-sm btn-clear-burgundy flex-shrink-0" onclick="clearAllStudentFilters()" title="Clear Filters & Search">
+                    <i class="bi bi-x-circle me-1"></i> Clear
+                </button>
             </form>
         </div>
 
@@ -441,30 +364,41 @@
                         <th class="py-3 text-center pe-3" style="width: 7%;">Action</th>
                     </tr>
                 </thead>
-                <tbody class="small">
+                <tbody class="small" id="studentTableBody">
                     <?php if (!empty($studentList)): ?>
                         <?php foreach ($studentList as $row): ?>
                             <?php 
                                 $rowStatus = $row['status'] ?? 'N/A';
                                 $formattedStatus = ucwords(strtolower(trim($rowStatus))); 
+                                $sId = $row['student_id'] ?? $row['id'] ?? '';
+                                $sName = $row['full_name'] ?? 'N/A';
+                                $sEmail = $row['email'] ?? 'N/A';
+                                $sProg = $row['program'] ?? 'N/A';
+                                $sYr = $formatYearLevel($row['year_level'] ?? '');
                             ?>
-                            <tr>
+                            <tr class="student-row" 
+                                data-id="<?= htmlspecialchars($sId) ?>"
+                                data-name="<?= htmlspecialchars(strtolower($sName)) ?>"
+                                data-email="<?= htmlspecialchars(strtolower($sEmail)) ?>"
+                                data-program="<?= htmlspecialchars($sProg) ?>"
+                                data-year="<?= htmlspecialchars($sYr) ?>"
+                                data-status="<?= htmlspecialchars($formattedStatus) ?>">
                                 <td class="ps-3 fw-semibold text-secondary">
-                                    <?= htmlspecialchars($row['student_id'] ?? $row['id']) ?>
+                                    <?= htmlspecialchars($sId) ?>
                                 </td>
                                 <td class="fw-semibold text-dark truncate-cell">
-                                    <?= htmlspecialchars($row['full_name'] ?? 'N/A') ?>
+                                    <?= htmlspecialchars($sName) ?>
                                 </td>
                                 <td class="text-muted truncate-cell">
-                                    <?= htmlspecialchars($row['email'] ?? 'N/A') ?>
+                                    <?= htmlspecialchars($sEmail) ?>
                                 </td>
                                 <td>
                                     <span class="program-badge-custom">
-                                        <?= htmlspecialchars($row['program'] ?? 'N/A') ?>
+                                        <?= htmlspecialchars($sProg) ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <?= htmlspecialchars($formatYearLevel($row['year_level'] ?? '')) ?>
+                                    <?= htmlspecialchars($sYr) ?>
                                 </td>
                                 <td>
                                     <span class="<?= (strtolower($formattedStatus) === 'graduating') ? 'status-badge-graduating' : 'status-badge-enrolled' ?>">
@@ -472,21 +406,23 @@
                                     </span>
                                 </td>
                                 <td class="text-center pe-3">
-                                    <a href="<?= function_exists('url') ? url('guidance/student-profile') : 'student-profile' ?>?student_id=<?= urlencode($row['student_id'] ?? $row['id']) ?>" class="btn btn-sm btn-view-maroon">
+                                    <button type="button" class="btn btn-sm btn-view-maroon" 
+                                            onclick="viewStudentProfile('<?= htmlspecialchars($sId, ENT_QUOTES) ?>', '<?= htmlspecialchars($sName, ENT_QUOTES) ?>', '<?= htmlspecialchars($sEmail, ENT_QUOTES) ?>', '<?= htmlspecialchars($sProg, ENT_QUOTES) ?>', '<?= htmlspecialchars($sYr, ENT_QUOTES) ?>', '<?= htmlspecialchars($formattedStatus, ENT_QUOTES) ?>')">
                                         View
-                                    </a>
+                                    </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="7" class="text-center py-5 text-muted">
-                                <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
-                                <p class="mb-0 fw-semibold">No student records found</p>
-                                <small>No database records matched your search query or selected filters.</small>
-                            </td>
-                        </tr>
                     <?php endif; ?>
+
+                    <!-- Fallback row for empty search results -->
+                    <tr id="noRecordsRow" style="<?= empty($studentList) ? '' : 'display: none;' ?>">
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                            <p class="mb-0 fw-semibold">No student records found</p>
+                            <small>No database records matched your search query or selected filters.</small>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -494,4 +430,148 @@
     <?php endif; ?>
 
 </div>
- 
+
+<!-- ===================================================================== -->
+<!-- MODAL: VIEW STUDENT PROFILE DETAILS                                  -->
+<!-- ===================================================================== -->
+<div class="modal fade" id="studentProfileModal" tabindex="-1" aria-labelledby="studentProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header marsu-maroon-bg text-white">
+                <h5 class="modal-title fw-bold fs-6" id="studentProfileModalLabel">
+                    <i class="bi bi-person-vcard me-2"></i> Student Profile View
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4" id="modalProfileContent">
+                <!-- Profile details injected dynamically via JS -->
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
+                    <i class="bi bi-printer me-1"></i> Print Profile
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================================== -->
+<!-- JAVASCRIPT: FILTERING, SEARCH, & MODAL FUNCTIONALITY                 -->
+<!-- ===================================================================== -->
+<script>
+    function applyStudentFilters() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase().trim();
+        const programFilter = document.getElementById('programFilter').value;
+        const yearFilter = document.getElementById('yearFilter').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+
+        const rows = document.querySelectorAll('.student-row');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const id = row.getAttribute('data-id').toLowerCase();
+            const name = row.getAttribute('data-name');
+            const email = row.getAttribute('data-email');
+            const program = row.getAttribute('data-program');
+            const year = row.getAttribute('data-year');
+            const status = row.getAttribute('data-status');
+
+            // Search query matching
+            const matchesSearch = !searchInput || id.includes(searchInput) || name.includes(searchInput) || email.includes(searchInput) || program.toLowerCase().includes(searchInput);
+            
+            // Dropdown filters matching
+            const matchesProgram = !programFilter || program === programFilter;
+            const matchesYear = !yearFilter || year === yearFilter;
+            const matchesStatus = !statusFilter || status.toLowerCase() === statusFilter.toLowerCase();
+
+            if (matchesSearch && matchesProgram && matchesYear && matchesStatus) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Show or hide "No records found" row
+        const noRecordsRow = document.getElementById('noRecordsRow');
+        if (noRecordsRow) {
+            noRecordsRow.style.display = (visibleCount === 0) ? '' : 'none';
+        }
+    }
+
+    function clearAllStudentFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('programFilter').value = '';
+        document.getElementById('yearFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+
+        // Reset visibility
+        applyStudentFilters();
+
+        // If operating in server-side PHP mode, optionally reload page without query parameters
+        if (window.location.search.length > 0) {
+            window.location.href = window.location.pathname;
+        }
+    }
+
+    function viewStudentProfile(id, name, email, program, year, status) {
+        // Build modal content dynamically
+        const isGraduating = status.toLowerCase() === 'graduating';
+        const badgeClass = isGraduating ? 'status-badge-graduating' : 'status-badge-enrolled';
+
+        const contentHtml = `
+            <div class="d-flex align-items-center gap-3 mb-4 p-3 border rounded bg-light">
+                <div class="avatar-circle shadow-sm" style="width: 64px; height: 64px; font-size: 24px;">
+                    ${name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                    <h5 class="fw-bold text-dark mb-1">${name}</h5>
+                    <span class="${badgeClass}">${status}</span>
+                </div>
+            </div>
+
+            <table class="table table-bordered mb-0 small">
+                <tbody>
+                    <tr>
+                        <th class="bg-light text-muted" style="width: 35%;">Student ID</th>
+                        <td class="fw-bold text-dark">${id}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-muted">Institutional Email</th>
+                        <td class="text-primary fw-semibold">${email}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-muted">Program</th>
+                        <td><span class="program-badge-custom">${program}</span></td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-muted">Year Level</th>
+                        <td class="fw-semibold">${year}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-muted">Campus</th>
+                        <td>Santa Cruz Campus</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-muted">Academic Year</th>
+                        <td>2026–2027</td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
+
+        document.getElementById('modalProfileContent').innerHTML = contentHtml;
+
+        // Trigger Bootstrap modal opening if available
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modalElem = document.getElementById('studentProfileModal');
+            const profileModal = new bootstrap.Modal(modalElem);
+            profileModal.show();
+        } else {
+            // Fallback: URL navigation if running purely as PHP page view
+            const baseUrl = '<?= function_exists("url") ? url("guidance/student-profile") : "student-profile" ?>';
+            window.location.href = baseUrl + '?student_id=' + encodeURIComponent(id);
+        }
+    }
+</script>

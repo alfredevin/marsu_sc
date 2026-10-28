@@ -19,7 +19,7 @@
       --bg-color: #f0f4f8;
       --white: #ffffff;
       --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      --radius: 6px;
+      --radius: 8px;
     }
 
     * {
@@ -32,14 +32,17 @@
     body {
       background-color: var(--bg-color);
       color: var(--ink-900);
-      padding: 20px 10px;
+      padding: 30px 20px;
       display: flex;
       justify-content: center;
+      width: 100vw;
+      overflow-x: hidden;
     }
 
+    /* Page Container */
     .page-container {
       width: 100%;
-      max-width: 820px;
+      max-width: 1100px;
     }
 
     /* Action Bar (Screen Only) */
@@ -47,9 +50,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       background-color: var(--white);
-      padding: 14px 20px;
+      padding: 16px 28px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       border-left: 5px solid var(--maroon);
@@ -57,31 +60,31 @@
 
     .eyebrow {
       text-transform: uppercase;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 1px;
       color: var(--maroon);
     }
 
     .action-toolbar h1 {
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       color: var(--ink-900);
       font-weight: 700;
     }
 
     .btn-group {
       display: flex;
-      gap: 8px;
+      gap: 10px;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 14px;
-      font-size: 0.82rem;
+      padding: 8px 16px;
+      font-size: 0.85rem;
       font-weight: 600;
-      border-radius: 4px;
+      border-radius: 6px;
       border: 1px solid transparent;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -109,26 +112,28 @@
     /* Form Sheet Layout */
     .referral-sheet {
       background: var(--white);
-      padding: 30px 35px;
+      padding: 40px 48px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       border: 1px solid #e2e8f0;
     }
 
-    /* Letterhead */
+    /* Balanced Centered Letterhead with Logo */
     .referral-letterhead {
-      display: flex;
+      display: grid;
+      grid-template-columns: 80px 1fr 80px;
       align-items: center;
-      gap: 16px;
       border-bottom: 2px solid var(--maroon);
-      padding-bottom: 10px;
-      margin-bottom: 12px;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
     }
 
     .logo-container {
       width: 75px;
       height: 75px;
-      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .logo-container img {
@@ -137,8 +142,17 @@
       object-fit: contain;
     }
 
+    .logo-placeholder {
+      width: 75px;
+      height: 75px;
+    }
+
+    .lh-text {
+      text-align: center;
+    }
+
     .lh-text h3 {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--ink-700);
       text-transform: uppercase;
@@ -146,80 +160,92 @@
     }
 
     .lh-text h2 {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       color: var(--maroon);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       font-weight: 800;
-      line-height: 1.1;
+      line-height: 1.2;
       margin: 2px 0;
     }
 
     .lh-text p {
-      font-size: 0.82rem;
+      font-size: 0.88rem;
       color: var(--ink-800);
       font-weight: 600;
     }
 
     .lh-text .sub-detail {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       color: var(--ink-500);
+      margin-top: 2px;
     }
 
     /* Form Content Elements */
     .referral-body {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 16px;
     }
 
     .intro-letter {
-      font-size: 0.8rem;
-      line-height: 1.45;
+      font-size: 0.85rem;
+      line-height: 1.6;
       color: var(--ink-800);
       background-color: var(--maroon-light);
-      padding: 10px 14px;
-      border-left: 3px solid var(--maroon);
-      border-radius: 0 4px 4px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--maroon);
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 8px;
     }
 
     .sign-off {
-      margin-top: 6px;
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
     }
 
     .sign-off b {
       color: var(--ink-900);
-      font-size: 0.85rem;
+      font-size: 0.88rem;
+    }
+
+    /* Professional Case Management Card Block */
+    .case-card-block {
+      background-color: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 8px;
     }
 
     /* Section Divider Headers */
     .form-section-title {
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--maroon);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 2px;
-      margin-top: 4px;
+      padding-bottom: 6px;
+      margin-top: 8px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
-    /* Field Grids */
+    /* Field Grids with Proper Spacing */
     .form-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 6px 12px;
+      gap: 12px 20px;
     }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 5px;
     }
 
     .field.full {
@@ -227,7 +253,7 @@
     }
 
     .field label {
-      font-size: 0.7rem;
+      font-size: 0.73rem;
       font-weight: 700;
       color: var(--ink-700);
       text-transform: uppercase;
@@ -236,33 +262,34 @@
     .field input, 
     .field textarea {
       width: 100%;
-      padding: 5px 8px;
-      font-size: 0.82rem;
+      padding: 8px 12px;
+      font-size: 0.85rem;
       color: var(--ink-900);
       border: 1px solid var(--border-color);
-      border-radius: 3px;
-      background-color: #fafafa;
+      border-radius: 5px;
+      background-color: #ffffff;
       outline: none;
+      transition: all 0.2s ease;
     }
 
     .field input:focus, 
     .field textarea:focus {
       border-color: var(--maroon);
-      background-color: var(--white);
+      box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.08);
     }
 
     /* Selection Grids */
     .check-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 4px 12px;
+      gap: 8px 20px;
     }
 
     .check-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
+      gap: 8px;
+      font-size: 0.82rem;
       color: var(--ink-800);
       cursor: pointer;
     }
@@ -270,18 +297,18 @@
     .check-item input[type="checkbox"],
     .check-item input[type="radio"] {
       accent-color: var(--maroon);
-      width: 13px;
-      height: 13px;
+      width: 15px;
+      height: 15px;
     }
 
     .other-inline-input {
       flex: 1;
-      margin-left: 4px;
-      padding: 1px 4px;
+      margin-left: 6px;
+      padding: 3px 6px;
       border: none;
       border-bottom: 1px solid var(--border-color);
       outline: none;
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       background: transparent;
     }
 
@@ -289,14 +316,14 @@
     .sig-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin-top: 8px;
+      gap: 32px;
+      margin-top: 14px;
     }
 
     .sig-line {
       border-top: 1px solid var(--ink-800);
-      padding-top: 3px;
-      font-size: 0.75rem;
+      padding-top: 6px;
+      font-size: 0.78rem;
       color: var(--ink-700);
       font-weight: 600;
       text-align: center;
@@ -304,24 +331,25 @@
 
     /* Footer Notice */
     .confidential-note {
-      margin-top: 6px;
-      padding: 6px 10px;
-      font-size: 0.7rem;
+      margin-top: 12px;
+      padding: 10px 14px;
+      font-size: 0.73rem;
       color: var(--ink-700);
       background-color: #f8fafc;
       border: 1px dashed var(--border-color);
-      border-radius: 3px;
-      line-height: 1.35;
+      border-radius: 5px;
+      line-height: 1.4;
     }
 
     /* ==========================================
-       OPTIMIZED 1-PAGE PRINT STYLESHEET
+       OPTIMIZED PRINT STYLESHEET
        ========================================== */
     @media print {
       body {
         background-color: #fff;
         padding: 0;
         margin: 0;
+        width: 100%;
       }
 
       .no-print {
@@ -329,6 +357,7 @@
       }
 
       .page-container {
+        padding: 0 !important;
         max-width: 100%;
       }
 
@@ -345,12 +374,18 @@
         print-color-adjust: exact;
       }
 
+      .case-card-block {
+        background-color: transparent !important;
+        border: 1px solid #cbd5e0 !important;
+        padding: 12px 16px !important;
+      }
+
       .field input, 
       .field textarea {
         border: none !important;
         border-bottom: 1px solid #000 !important;
         border-radius: 0 !important;
-        padding: 1px 0 !important;
+        padding: 2px 0 !important;
         background: transparent !important;
       }
 
@@ -360,7 +395,7 @@
 
       @page {
         size: A4 portrait;
-        margin: 8mm 12mm 8mm 12mm;
+        margin: 10mm 14mm 10mm 14mm;
       }
 
       .form-section-title, .sig-grid, .confidential-note {
@@ -375,7 +410,7 @@
     <!-- Action Controls -->
     <div class="action-toolbar no-print">
       <div>
-        <div class="eyebrow">Case Management</div>
+        <div class="eyebrow">Case Management System</div>
         <h1>External Referral Form</h1>
       </div>
       <div class="btn-group">
@@ -400,6 +435,7 @@
           <p>Student Welfare and Development Office &middot; Guidance and Counseling Office</p>
           <div class="sub-detail">Boac, Marinduque, Philippines | Email: guidance@marsu.edu.ph</div>
         </div>
+        <div class="logo-placeholder"></div>
       </div>
 
       <div class="referral-body">
@@ -413,10 +449,13 @@
           </div>
         </div>
 
-        <div class="form-section-title"><i class="fa-solid fa-file-invoice"></i> Case Tracking</div>
-        <div class="form-grid">
-          <div class="field"><label>Referral No.</label><input id="refNoField" value="RF-2026-042"></div>
-          <div class="field"><label>Date</label><input type="date" id="refDateField"></div>
+        <!-- Professional Case Management Box Section -->
+        <div class="case-card-block">
+          <div class="form-section-title" style="margin-top: 0;"><i class="fa-solid fa-file-invoice"></i> Case Tracking & Management</div>
+          <div class="form-grid">
+            <div class="field"><label>Referral No.</label><input id="refNoField" value="RF-2026-042"></div>
+            <div class="field"><label>Date</label><input type="date" id="refDateField"></div>
+          </div>
         </div>
 
         <div class="form-section-title"><i class="fa-solid fa-user-graduate"></i> I. Student Information</div>
@@ -469,7 +508,7 @@
         </div>
 
         <div class="form-section-title"><i class="fa-solid fa-signature"></i> VII. Student Consent</div>
-        <p style="font-size:.72rem;color:var(--ink-700);line-height:1.35;">
+        <p style="font-size:.75rem;color:var(--ink-700);line-height:1.4;">
           I consent to this referral and authorize the MarSU Guidance Office to share necessary information with the designated agency, compliant with RA 10173 (Data Privacy Act).
         </p>
         <div class="sig-grid">

@@ -46,31 +46,80 @@
 <!-- Balance Aging Summary Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-warning p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">1 — 15 Days Overdue</div>
-            <div class="h3 font-weight-bold mb-0 text-warning">₱6,000.00</div>
-            <div class="small text-muted mt-1">4 residents (Grace period)</div>
+        <div class="card card-kpi border-warning h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">1 — 15 Days Overdue</div>
+                    <div class="kpi-value text-warning">
+                        ₱6,000
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Grace Period Overdue">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-person-exclamation text-warning"></i>
+                <span>4 residents (Grace period)</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-danger p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">16 — 30 Days Overdue</div>
-            <div class="h3 font-weight-bold mb-0 text-danger">₱5,400.00</div>
-            <div class="small text-muted mt-1">2 residents (First warning)</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">16 — 30 Days Overdue</div>
+                    <div class="kpi-value text-danger">
+                        ₱5,400
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="First Warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-bell-fill text-danger"></i>
+                <span>2 residents (First warning)</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">> 30 Days Critical</div>
-            <div class="h3 font-weight-bold mb-0 text-dark">₱3,400.00</div>
-            <div class="small text-muted mt-1">1 resident (Refer to OSAS)</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">> 30 Days Critical</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        ₱3,400
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Refer to OSAS">
+                    <i class="bi bi-shield-exclamation"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-send-exclamation-fill text-marsu-burgundy"></i>
+                <span>1 resident (Refer to OSAS)</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-success p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Fully Settled</div>
-            <div class="h3 font-weight-bold mb-0 text-success">56 Students</div>
-            <div class="small text-muted mt-1">Zero balance accounts</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Fully Settled</div>
+                    <div class="kpi-value text-success">
+                        56
+                        <span class="kpi-unit">Students</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Fully Settled Accounts">
+                    <i class="bi bi-patch-check-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <span>Zero balance accounts</span>
+            </div>
         </div>
     </div>
 </div>

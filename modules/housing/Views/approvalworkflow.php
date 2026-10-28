@@ -1,4 +1,5 @@
 <!-- Approval Workflow View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -51,8 +52,8 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="p-2 border rounded bg-white shadow-sm">
-                    <span class="badge bg-primary mb-1">Stage 3</span>
+                <div class="p-2 border rounded bg-white shadow-sm border-gold">
+                    <span class="badge badge-gold mb-1">Stage 3</span>
                     <div class="fw-bold small text-dark">OSAS / Housing Unit</div>
                     <div class="text-muted" style="font-size: 11px;">University accreditation</div>
                 </div>

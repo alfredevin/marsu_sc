@@ -8,6 +8,9 @@
         <p class="text-muted small mb-0">Track available room units, bed space vacancies, rates, and amenities across accredited facilities.</p>
     </div>
     <div class="d-flex gap-2">
+        <a href="<?= url('housing/roomandinventory') ?>" class="btn btn-outline-marsu btn-sm">
+            <i class="bi bi-folder2-open me-1"></i>Floor & Room Gallery Folders
+        </a>
         <a href="<?= url('housing') ?>" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i>Back to Directory
         </a>
@@ -46,31 +49,82 @@
 <!-- KPI Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Total Rooms</div>
-            <div class="h3 font-weight-bold mb-0 text-marsu-burgundy">24 Units</div>
-            <div class="small text-muted mt-1">Across 3 boarding houses</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Total Rooms</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        24
+                        <span class="kpi-unit">Units</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Total Rooms">
+                    <i class="bi bi-door-closed-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-buildings text-marsu-burgundy"></i>
+                <span>Across 3 boarding houses</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Available Beds</div>
-            <div class="h3 font-weight-bold mb-0 text-success">8 Vacant</div>
-            <div class="small text-muted mt-1">Ready for occupancy</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Available Beds</div>
+                    <div class="kpi-value text-success">
+                        8
+                        <span class="kpi-unit">Vacant</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Available Beds">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-box-arrow-in-right text-success"></i>
+                <span>Ready for occupancy</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Occupied Beds</div>
-            <div class="h3 font-weight-bold mb-0 text-secondary">32 Beds</div>
-            <div class="small text-muted mt-1">80% occupancy rate</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Occupied Beds</div>
+                    <div class="kpi-value text-gold">
+                        32
+                        <span class="kpi-unit">Beds</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Occupied Beds">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-pie-chart-fill text-gold-dark"></i>
+                <span>80% occupancy rate</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Average Rate</div>
-            <div class="h3 font-weight-bold mb-0 text-dark">₱1,650</div>
-            <div class="small text-muted mt-1">Per head / monthly</div>
+        <div class="card card-kpi border-info h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Average Rate</div>
+                    <div class="kpi-value text-info">
+                        ₱1,650
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-info" title="Average Rate">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-calendar-check text-info"></i>
+                <span>Per head / monthly rate</span>
+            </div>
         </div>
     </div>
 </div>

@@ -1,4 +1,5 @@
 <!-- Occupancy Reports View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -17,25 +18,25 @@
 </div>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/occupancyreports') ?>">
-                <i class="bi bi-bar-chart me-1 text-gold"></i>Occupancy Reports
+            <a class="nav-link active" href="<?= url('housing/occupancyreports') ?>">
+                <i class="bi bi-bar-chart me-1"></i>Occupancy Reports
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/revenuereports') ?>">
+            <a class="nav-link" href="<?= url('housing/revenuereports') ?>">
                 <i class="bi bi-currency-dollar me-1"></i>Revenue Reports
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/residentstatistics') ?>">
+            <a class="nav-link" href="<?= url('housing/residentstatistics') ?>">
                 <i class="bi bi-pie-chart me-1"></i>Resident Demographics
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/facilityutilization') ?>">
+            <a class="nav-link" href="<?= url('housing/facilityutilization') ?>">
                 <i class="bi bi-building-check me-1"></i>Facility Utilization
             </a>
         </li>
@@ -45,31 +46,81 @@
 <!-- Analytical Summary Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Peak Intake Rate</div>
-            <div class="h3 font-weight-bold mb-0 text-marsu-burgundy">91.4%</div>
-            <div class="small text-muted mt-1">Recorded August 2026 (Sem Start)</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Peak Intake Rate</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        91.4%
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Peak Intake Rate">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-calendar2-check text-marsu-burgundy"></i>
+                <span>Recorded Aug 2026 (Sem Start)</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Current Midterm Rate</div>
-            <div class="h3 font-weight-bold mb-0 text-success">78.0%</div>
-            <div class="small text-muted mt-1">Stabilized student tenancy</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Current Midterm Rate</div>
+                    <div class="kpi-value text-success">
+                        78.0%
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Current Midterm Rate">
+                    <i class="bi bi-pie-chart-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check-circle text-success"></i>
+                <span>Stabilized student tenancy</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Bed Turnover Period</div>
-            <div class="h3 font-weight-bold mb-0 text-dark">4.2 Days</div>
-            <div class="small text-muted mt-1">Average vacancy replenishment</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Bed Turnover Period</div>
+                    <div class="kpi-value text-gold">
+                        4.2
+                        <span class="kpi-unit">Days</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Turnover Period">
+                    <i class="bi bi-arrow-repeat"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-clock-history text-gold-dark"></i>
+                <span>Average vacancy replenishment</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Total University Beds</div>
-            <div class="h3 font-weight-bold mb-0 text-primary">82 Beds</div>
-            <div class="small text-muted mt-1">Across 3 accredited facilities</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Total University Beds</div>
+                    <div class="kpi-value text-gold">
+                        82
+                        <span class="kpi-unit">Beds</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Total Beds">
+                    <i class="bi bi-door-closed-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-buildings text-gold-dark"></i>
+                <span>Across 3 accredited facilities</span>
+            </div>
         </div>
     </div>
 </div>

@@ -1,4 +1,5 @@
 <!-- MarSU ERP - Accredited Boarding House Management & Directory (ISHAMIS) Dashboard -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -57,7 +58,7 @@
     </div>
     <div class="col-6 col-md-3 col-xl">
         <a href="<?= url('housing/paymentrecords') ?>" class="card text-decoration-none border-0 shadow-sm p-3 text-center h-100 hover-elevate">
-            <i class="bi bi-wallet2 fs-2 text-primary mb-1"></i>
+            <i class="bi bi-wallet2 fs-2 text-gold mb-1"></i>
             <span class="fw-bold text-dark small">Billing & Receipts</span>
             <span class="text-muted" style="font-size: 11px;">Rent Collections</span>
         </a>
@@ -88,59 +89,83 @@
 <!-- KPI Metrics Overview -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="text-muted small text-uppercase fw-bold">Accredited Houses</div>
-                    <div class="h2 font-weight-bold mb-0 text-marsu-burgundy"><?= $stats['total_houses'] ?? 4 ?></div>
+                    <div class="kpi-label">Accredited Houses</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        <?= $stats['total_houses'] ?? 4 ?>
+                        <span class="kpi-unit">Dorms</span>
+                    </div>
                 </div>
-                <div class="p-3 bg-burgundy-subtle text-marsu-burgundy rounded-circle">
-                    <i class="bi bi-building fs-4"></i>
+                <div class="kpi-icon-badge badge-burgundy" title="Accredited Houses">
+                    <i class="bi bi-buildings-fill"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2"><i class="bi bi-check-circle-fill text-success me-1"></i>Certified Boac off-campus dorms</div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <span>Certified Boac off-campus dorms</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="text-muted small text-uppercase fw-bold">Total Room Units</div>
-                    <div class="h2 font-weight-bold mb-0 text-gold"><?= $stats['total_rooms'] ?? 9 ?></div>
+                    <div class="kpi-label">Total Room Units</div>
+                    <div class="kpi-value text-gold">
+                        <?= $stats['total_rooms'] ?? 9 ?>
+                        <span class="kpi-unit">Rooms</span>
+                    </div>
                 </div>
-                <div class="p-3 bg-warning-subtle text-warning rounded-circle">
-                    <i class="bi bi-door-open fs-4"></i>
+                <div class="kpi-icon-badge badge-gold" title="Total Room Units">
+                    <i class="bi bi-door-closed-fill"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2"><i class="bi bi-grid me-1"></i>Single, double & dormitory spaces</div>
+            <div class="kpi-subtext">
+                <i class="bi bi-grid-3x3-gap-fill text-gold-dark"></i>
+                <span>Single, double & dormitory spaces</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="text-muted small text-uppercase fw-bold">Active Residents</div>
-                    <div class="h2 font-weight-bold mb-0 text-primary"><?= $stats['total_tenants'] ?? 4 ?></div>
+                    <div class="kpi-label">Active Residents</div>
+                    <div class="kpi-value text-gold">
+                        <?= $stats['total_tenants'] ?? 4 ?>
+                        <span class="kpi-unit">Students</span>
+                    </div>
                 </div>
-                <div class="p-3 bg-primary-subtle text-primary rounded-circle">
-                    <i class="bi bi-person-check fs-4"></i>
+                <div class="kpi-icon-badge badge-gold" title="Active Residents">
+                    <i class="bi bi-people-fill"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2"><i class="bi bi-shield-check text-primary me-1"></i>MarSU students on file</div>
+            <div class="kpi-subtext">
+                <i class="bi bi-shield-check text-gold-dark"></i>
+                <span>MarSU students on file</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
+        <div class="card card-kpi border-warning h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="text-muted small text-uppercase fw-bold">Pending Applications</div>
-                    <div class="h2 font-weight-bold mb-0 text-warning"><?= $stats['total_apps'] ?? 1 ?></div>
+                    <div class="kpi-label">Pending Applications</div>
+                    <div class="kpi-value text-warning">
+                        <?= $stats['total_apps'] ?? 1 ?>
+                        <span class="kpi-unit">Requests</span>
+                    </div>
                 </div>
-                <div class="p-3 bg-warning-subtle text-warning-emphasis rounded-circle">
-                    <i class="bi bi-hourglass-split fs-4"></i>
+                <div class="kpi-icon-badge badge-gold" title="Pending Applications">
+                    <i class="bi bi-hourglass-split"></i>
                 </div>
             </div>
-            <div class="small text-muted mt-2"><i class="bi bi-arrow-right-circle text-warning me-1"></i>Awaiting landlord / OSAS review</div>
+            <div class="kpi-subtext">
+                <i class="bi bi-arrow-right-circle text-warning"></i>
+                <span>Awaiting landlord / OSAS review</span>
+            </div>
         </div>
     </div>
 </div>
@@ -299,7 +324,7 @@
                                     <div class="fw-bold text-dark"><?= e($rTick['ticket_number']) ?>: <?= e($rTick['issue_title']) ?></div>
                                     <div class="text-muted"><?= e($rTick['room_number']) ?> • <?= e($rTick['issue_category']) ?></div>
                                 </div>
-                                <span class="badge <?= $rTick['status'] === 'Resolved' ? 'bg-success' : ($rTick['status'] === 'In Progress' ? 'bg-warning text-dark' : 'bg-primary') ?>">
+                                <span class="badge <?= $rTick['status'] === 'Resolved' ? 'bg-success' : ($rTick['status'] === 'In Progress' ? 'bg-warning text-dark' : 'badge-gold') ?>">
                                     <?= e($rTick['status']) ?>
                                 </span>
                             </li>

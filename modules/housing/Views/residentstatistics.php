@@ -1,4 +1,5 @@
 <!-- Resident Statistics View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -11,6 +12,32 @@
             <i class="bi bi-printer me-1"></i>Print Demographics
         </button>
     </div>
+</div>
+
+<!-- Sub-navigation Pills -->
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/occupancyreports') ?>">
+                <i class="bi bi-bar-chart me-1"></i>Occupancy Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/revenuereports') ?>">
+                <i class="bi bi-currency-dollar me-1"></i>Revenue Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?= url('housing/residentstatistics') ?>">
+                <i class="bi bi-pie-chart me-1"></i>Resident Demographics
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/facilityutilization') ?>">
+                <i class="bi bi-building-check me-1"></i>Facility Utilization
+            </a>
+        </li>
+    </ul>
 </div>
 
 <!-- Demographic Distribution Cards -->
@@ -39,7 +66,7 @@
                         <span class="fw-bold">18 Students (28.1%)</span>
                     </div>
                     <div class="progress" style="height: 8px;">
-                        <div class="progress-bar bg-primary" style="width: 28.1%;"></div>
+                        <div class="progress-bar progress-bar-gold" style="width: 28.1%;"></div>
                     </div>
                 </div>
                 <div class="mb-3">

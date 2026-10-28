@@ -46,31 +46,83 @@
 <!-- Availability KPI Summary Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-success p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Vacant Bed Spaces</div>
-            <div class="h3 font-weight-bold mb-0 text-success">18 Available</div>
-            <div class="small text-muted mt-1">Ready for immediate intake</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Vacant Bed Spaces</div>
+                    <div class="kpi-value text-success">
+                        18
+                        <span class="kpi-unit">Available</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Vacant Beds">
+                    <i class="bi bi-door-open-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <span>Ready for immediate intake</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-warning p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Reserved / On-Hold</div>
-            <div class="h3 font-weight-bold mb-0 text-warning">5 Slots</div>
-            <div class="small text-muted mt-1">Pending payment validation</div>
+        <div class="card card-kpi border-warning h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Reserved / On-Hold</div>
+                    <div class="kpi-value text-warning">
+                        5
+                        <span class="kpi-unit">Slots</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Reserved Slots">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-clock-history text-warning"></i>
+                <span>Pending payment validation</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Occupied Beds</div>
-            <div class="h3 font-weight-bold mb-0 text-marsu-burgundy">64 Beds</div>
-            <div class="small text-muted mt-1">73.5% current capacity</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Occupied Beds</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        64
+                        <span class="kpi-unit">Beds</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Occupied Beds">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-pie-chart-fill text-marsu-burgundy"></i>
+                <span>73.5% current capacity</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Upcoming Vacancies</div>
-            <div class="h3 font-weight-bold mb-0 text-gold">7 Beds</div>
-            <div class="small text-muted mt-1">End of month graduating checkout</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Upcoming Vacancies</div>
+                    <div class="kpi-value text-gold">
+                        7
+                        <span class="kpi-unit">Beds</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Upcoming Vacancies">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-box-arrow-right text-gold-dark"></i>
+                <span>End of month graduating checkout</span>
+            </div>
         </div>
     </div>
 </div>

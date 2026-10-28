@@ -1,4 +1,5 @@
 <!-- Revenue Reports View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -16,34 +17,108 @@
     </div>
 </div>
 
+<!-- Sub-navigation Pills -->
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/occupancyreports') ?>">
+                <i class="bi bi-bar-chart me-1"></i>Occupancy Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?= url('housing/revenuereports') ?>">
+                <i class="bi bi-currency-dollar me-1"></i>Revenue Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/residentstatistics') ?>">
+                <i class="bi bi-pie-chart me-1"></i>Resident Demographics
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/facilityutilization') ?>">
+                <i class="bi bi-building-check me-1"></i>Facility Utilization
+            </a>
+        </li>
+    </ul>
+</div>
+
 <!-- Revenue Summary Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-success p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Gross Monthly Rental Value</div>
-            <div class="h3 font-weight-bold mb-0 text-success">₱107,200.00</div>
-            <div class="small text-muted mt-1">Total projected monthly collections</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Gross Monthly Value</div>
+                    <div class="kpi-value text-success">
+                        ₱107,200
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Gross Monthly Value">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-cash-coin text-success"></i>
+                <span>Projected monthly collections</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Actual Collected (MTD)</div>
-            <div class="h3 font-weight-bold mb-0 text-marsu-burgundy">₱92,400.00</div>
-            <div class="small text-muted mt-1">86.2% collection achievement</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Actual Collected (MTD)</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        ₱92,400
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Actual Collected">
+                    <i class="bi bi-wallet-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check2-circle text-marsu-burgundy"></i>
+                <span>86.2% collection achievement</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Average Monthly Rent</div>
-            <div class="h3 font-weight-bold mb-0 text-dark">₱1,675.00</div>
-            <div class="small text-muted mt-1">Per student resident rate</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Average Monthly Rent</div>
+                    <div class="kpi-value text-gold">
+                        ₱1,675
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Average Rent">
+                    <i class="bi bi-tag-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-person text-gold-dark"></i>
+                <span>Per student resident rate</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Semester Economic Circulation</div>
-            <div class="h3 font-weight-bold mb-0 text-primary">₱536,000.00</div>
-            <div class="small text-muted mt-1">Estimated 5-month term total</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Term Circulation</div>
+                    <div class="kpi-value text-gold">
+                        ₱536,000
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Term Economic Circulation">
+                    <i class="bi bi-bank2"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-pie-chart-fill text-gold-dark"></i>
+                <span>Estimated 5-month term total</span>
+            </div>
         </div>
     </div>
 </div>

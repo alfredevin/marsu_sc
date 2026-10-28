@@ -62,35 +62,80 @@
 <!-- KPI Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-success p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Total Collections</div>
-            <div class="h3 font-weight-bold mb-0 text-success">
-                ₱<?= number_format(array_sum(array_column($payments ?? [], 'amount')), 2) ?>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Total Collections</div>
+                    <div class="kpi-value text-success">
+                        ₱<?= number_format(array_sum(array_column($payments ?? [], 'amount')), 2) ?>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Total Collections">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
             </div>
-            <div class="small text-muted mt-1">Verified rent & fee deposits</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Total Transactions</div>
-            <div class="h3 font-weight-bold mb-0 text-marsu-burgundy"><?= count($payments ?? []) ?> Receipts</div>
-            <div class="small text-muted mt-1">Logged in payment ledger</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-kpi border-warning p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Average Transaction</div>
-            <div class="h3 font-weight-bold mb-0 text-gold">
-                ₱<?= count($payments ?? []) > 0 ? number_format(array_sum(array_column($payments, 'amount')) / count($payments), 2) : '0.00' ?>
+            <div class="kpi-subtext">
+                <i class="bi bi-wallet2 text-success"></i>
+                <span>Verified rent & fee deposits</span>
             </div>
-            <div class="small text-muted mt-1">Per official receipt</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Verification Rate</div>
-            <div class="h3 font-weight-bold mb-0 text-gold">100%</div>
-            <div class="small text-muted mt-1">Cashier/Dorm verified</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Total Transactions</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        <?= count($payments ?? []) ?>
+                        <span class="kpi-unit">Receipts</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Total Transactions">
+                    <i class="bi bi-receipt"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-journal-text text-marsu-burgundy"></i>
+                <span>Logged in payment ledger</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Average Transaction</div>
+                    <div class="kpi-value text-gold">
+                        ₱<?= count($payments ?? []) > 0 ? number_format(array_sum(array_column($payments, 'amount')) / count($payments), 2) : '0.00' ?>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Average Transaction">
+                    <i class="bi bi-calculator"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-bar-chart text-gold-dark"></i>
+                <span>Per official receipt</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Verification Rate</div>
+                    <div class="kpi-value text-gold">
+                        100%
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Verification Rate">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-patch-check-fill text-gold-dark"></i>
+                <span>Cashier / Dorm verified</span>
+            </div>
         </div>
     </div>
 </div>
@@ -173,7 +218,7 @@
 <div class="modal fade" id="newPaymentModal" tabindex="-1" aria-labelledby="newPaymentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-white">
+            <div class="modal-header bg-marsu text-primary">
                 <h5 class="modal-title font-weight-bold" id="newPaymentModalLabel">
                     <i class="bi bi-cash-stack me-2 text-gold"></i>Log Student Rent Payment
                 </h5>

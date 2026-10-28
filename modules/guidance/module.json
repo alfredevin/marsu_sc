@@ -10,6 +10,12 @@
         "icon": "bi-person-heart",
         "items": [
             {
+                "label": "Dashboard",
+                "icon": "bi-grid-1x2-fill",
+                "route": "guidance/dashboard",
+                "permission": "guidance.view"
+            },
+            {
                 "label": "Student Information Management",
                 "icon": "bi-person-vcard",
                 "permission": "guidance.view",

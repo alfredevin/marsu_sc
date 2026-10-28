@@ -11,6 +11,9 @@ $router->get('/guidance', [HomeController::class, 'index'], ['auth', 'permission
 $router->get('/guidance/show', [HomeController::class, 'show'], ['auth', 'permission:guidance.view']);
 $router->post('/guidance/create', [HomeController::class, 'store'], ['auth', 'permission:guidance.create', 'csrf']);
 
+// Dashboard Route
+$router->get('/guidance/dashboard', [HomeController::class, 'dashboard'], ['auth', 'permission:guidance.view']);
+
 // Student Information Management
 $router->get('/guidance/student_directory', [HomeController::class, 'studentdirectory'], ['auth', 'permission:guidance.view']);
 $router->get('/guidance/student_history', [HomeController::class, 'studenthistory'], ['auth', 'permission:guidance.view']);

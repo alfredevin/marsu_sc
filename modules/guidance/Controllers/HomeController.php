@@ -83,6 +83,15 @@ class HomeController
         redirect(url('guidance'));
     }
 
+    public function dashboard(): void
+    {
+        View::render('guidance/Views/dashboard', [
+            'title' => 'Guidance Dashboard',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
+
     public function studentdirectory(): void
     {
         View::render('guidance/Views/student_directory', [

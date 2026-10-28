@@ -99,10 +99,10 @@ class FacultyController
              JOIN `ana_classes` c ON a.class_id = c.id
              LEFT JOIN `sections` sec ON c.section_id = sec.id
              LEFT JOIN `students` st ON a.student_id = st.student_number
-             WHERE a.logged_by = :fid AND a.deleted_at IS NULL
+             WHERE (a.recorded_by = :fid1 OR c.faculty_user_id = :fid2)
              ORDER BY a.session_date DESC, a.id DESC
              LIMIT 5",
-            ['fid' => $facultyId]
+            ['fid1' => $facultyId, 'fid2' => $facultyId]
         );
 
         // Pending INC records for quick resolution
@@ -1168,7 +1168,7 @@ class FacultyController
             $records = Database::fetchAll(
                 "SELECT student_id, status, remarks 
                  FROM `ana_attendance_records` 
-                 WHERE class_id = :cid AND session_date = :sdate AND deleted_at IS NULL",
+                 WHERE class_id = :cid AND session_date = :sdate AND (void_reason IS NULL OR void_reason = '')",
                 ['cid' => $selectedClassId, 'sdate' => $sessionDate]
             );
             foreach ($records as $r) {
@@ -1183,7 +1183,7 @@ class FacultyController
                         SUM(CASE WHEN status='Late' THEN 1 ELSE 0 END) AS late_count,
                         SUM(CASE WHEN status='Excused' THEN 1 ELSE 0 END) AS excused_count
                  FROM `ana_attendance_records`
-                 WHERE class_id = :cid AND deleted_at IS NULL
+                 WHERE class_id = :cid AND (void_reason IS NULL OR void_reason = '')
                  GROUP BY session_date
                  ORDER BY session_date DESC
                  LIMIT 15",
@@ -1243,14 +1243,14 @@ class FacultyController
         $pdo = Database::pdo();
         $selectStmt = $pdo->prepare("
             SELECT id FROM `ana_attendance_records` 
-            WHERE class_id = :cid AND student_id = :snum AND session_date = :sdate AND deleted_at IS NULL LIMIT 1
+            WHERE class_id = :cid AND student_id = :snum AND session_date = :sdate LIMIT 1
         ");
 
         $insertStmt = $pdo->prepare("
             INSERT INTO `ana_attendance_records` 
-                (`class_id`, `student_id`, `subject_id`, `subject_code`, `academic_year_id`, `semester_id`, `session_date`, `status`, `remarks`, `logged_by`, `created_at`, `updated_at`)
+                (`class_id`, `student_id`, `subject_code`, `session_date`, `status`, `remarks`, `recorded_by`, `created_at`, `updated_at`)
             VALUES 
-                (:cid, :snum, :sub_id, :code, :ay_id, :sem_id, :sdate, :st, :rem, :uid, NOW(), NOW())
+                (:cid, :snum, :code, :sdate, :st, :rem, :uid, NOW(), NOW())
         ");
 
         $updateStmt = $pdo->prepare("
@@ -1278,10 +1278,7 @@ class FacultyController
                 $insertStmt->execute([
                     'cid'    => $classId,
                     'snum'   => $snum,
-                    'sub_id' => $classInfo['subject_id'],
-                    'code'   => $classInfo['subject_code'],
-                    'ay_id'  => $classInfo['academic_year_id'],
-                    'sem_id' => $classInfo['semester_id'],
+                    'code'   => $classInfo['subject_code'] ?? 'SUBJ',
                     'sdate'  => $sessionDate,
                     'st'     => $st,
                     'rem'    => $rem,

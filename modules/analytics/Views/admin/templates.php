@@ -90,7 +90,7 @@
                                         <div class="d-flex flex-wrap gap-1">
                                             <?php foreach ($groups as $g): ?>
                                                 <span class="badge bg-light text-dark border" style="font-size: 11px;">
-                                                    <?= e($g['title']) ?>: <strong><?= e($g['weight']) ?>%</strong>
+                                                    <?= e($g['title'] ?? $g['name'] ?? 'Component') ?>: <strong><?= e($g['weight'] ?? 0) ?>%</strong>
                                                     <?php if (!empty($g['hasAttendance'])): ?>
                                                         <i class="bi bi-calendar-check text-primary ms-1" title="Includes roll-call attendance"></i>
                                                     <?php endif; ?>

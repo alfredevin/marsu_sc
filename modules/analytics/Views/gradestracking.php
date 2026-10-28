@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 2 - Academic Monitoring
+ * View: Grades Tracking & Class Records (gradestracking.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -97,26 +108,6 @@
 
     <!-- STATE 1: MY CLASSES WORKSPACE GRID -->
     <div id="viewMyClasses" class="<?= !empty($selectedClassId) ? 'd-none' : '' ?>">
-
-        <div class="alert alert-light border border-burgundy shadow-sm d-flex flex-wrap align-items-center justify-content-between p-3 mb-4 rounded-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="rounded-circle p-2" style="background: rgba(128, 0, 32, 0.1); color: #800020;">
-                    <i class="bi bi-person-workspace fs-4"></i>
-                </div>
-                <div>
-                    <strong class="text-dark d-block">Academic Analytics Faculty Workspace &amp; Class Records</strong>
-                    <small class="text-muted">Encode live assessment scores with autosave, configure weighted grading matrices, and post official grades.</small>
-                </div>
-            </div>
-            <div class="d-flex gap-2 mt-2 mt-md-0">
-                <a href="<?= url('analytics/faculty/classes') ?>" class="btn btn-sm btn-marsu fw-semibold">
-                    <i class="bi bi-collection me-1"></i>Open Faculty Workspace
-                </a>
-                <a href="<?= url('analytics/admin/classes') ?>" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-building-gear me-1"></i>Class Offerings
-                </a>
-            </div>
-        </div>
 
         <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
             <div>
@@ -258,7 +249,6 @@
                 <tbody id="matrixTableBody"></tbody>
             </table>
         </div>
-
     </div>
 
 </div>
@@ -800,6 +790,10 @@
             row.innerHTML = html;
             tbody.appendChild(row);
         });
+
+        if (window.matrixPaginator) {
+            window.matrixPaginator.refresh();
+        }
     }
 
     function computeTransmutation(score, maxScore) {
@@ -881,13 +875,19 @@
         alert("Success: All computed grades and criteria for " + activeClass.course_code + " (" + activeClass.section + ") have been securely saved!");
     }
 
+    let matrixStatusFilter = 'all';
+
     document.querySelectorAll('.filter-status-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             document.querySelectorAll('.filter-status-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            const f = this.dataset.filter;
-            document.querySelectorAll('.student-row').forEach(row => {
-                row.style.display = (f === 'all' || row.dataset.status === f) ? '' : 'none';
+            matrixStatusFilter = this.dataset.filter;
+            document.querySelectorAll('#matrixTableBody tr').forEach(row => {
+                if (matrixStatusFilter === 'all' || row.dataset.status === matrixStatusFilter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         });
     });
@@ -895,6 +895,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         initStores();
         renderClassesGrid();
+
         <?php if (!empty($selectedClassId)): ?>
             openClassMatrix("<?= htmlspecialchars($selectedClassId) ?>");
         <?php endif; ?>

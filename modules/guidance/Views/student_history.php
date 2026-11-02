@@ -35,18 +35,6 @@
                     Manage student counseling history, case trajectories, and longitudinal guidance records.
                 </p>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <button type="button" class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center"
-                    onclick="exportStudentHistoryCSV()"
-                    style="height: 38px; border-radius: 6px; font-size: 14px; font-weight: 500; padding: 0 16px;">
-                    <i class="bi bi-file-earmark-spreadsheet me-1.5 text-success"></i>Export CSV
-                </button>
-                <button type="button" class="btn text-white shadow-none d-inline-flex align-items-center"
-                    onclick="window.print()"
-                    style="background-color: #800020; border: 1px solid #800020; font-size: 14px; height: 38px; border-radius: 6px; padding: 0 16px; font-weight: 500;">
-                    <i class="bi bi-printer me-1.5"></i>Print Ledger
-                </button>
-            </div>
         </div>
     </div>
 </div>

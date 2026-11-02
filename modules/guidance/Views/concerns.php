@@ -1,394 +1,899 @@
 <!-- ==================================================================== -->
-<!--   MARSU GUIDANCE & COUNSELING SYSTEM: STUDENT CONCERNS MANAGEMENT    -->
-<!--   Module: Guidance & Counseling Services                             -->
-<!--   File: modules/guidance/Views/student_concerns.php                  -->
-<!--   PURE FRONT-END DIRECT DIV STRUCTURE / NO STYLE OR SCRIPT TAGS     -->
-<!--   Centralized Case Intake & Management / RA 10173 Compliant          -->
+<!--   MARSU GUIDANCE & COUNSELING SYSTEM: STUDENT CONCERNS               -->
 <!-- ==================================================================== -->
 
-<!-- BREADCRUMB & PAGE HEADER -->
-<div class="mb-4">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb mb-0" style="font-size: 15px; background: transparent; padding: 0; line-height: 1.5;">
-            <li class="breadcrumb-item">
-                <a href="<?= url('guidance') ?>" style="color: #800020; text-decoration: none; font-weight: 600;">
-                    <i class="bi bi-house-door-fill me-1"></i>Home
-                </a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="<?= url('guidance') ?>" style="color: #800020; text-decoration: none; font-weight: 500;">
-                    Case Management
-                </a>
-            </li>
-            <li class="breadcrumb-item active text-muted" aria-current="page">
-                Student Concerns
-            </li>
-        </ol>
-    </nav>
+<!-- 1. PAGE BREADCRUMB & HEADER -->
+<div class="card shadow-sm border-0 mb-4 bg-white" style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
+    <div class="card-body p-4">
+        <!-- Breadcrumb Trail -->
+        <nav aria-label="breadcrumb" class="mb-2">
+            <ol class="breadcrumb mb-0"
+                style="font-size: 14.5px; background: transparent; padding: 0; line-height: 1.5;">
+                <li class="breadcrumb-item">
+                    <a href="<?= url('guidance') ?>" style="color: #800020; text-decoration: none; font-weight: 600;">
+                        <i class="bi bi-house-door-fill me-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="<?= url('guidance/concerns') ?>"
+                        style="color: #800020; text-decoration: none; font-weight: 500;">
+                        Case Management
+                    </a>
+                </li>
+                <li class="breadcrumb-item active text-muted" aria-current="page">
+                    Concerns
+                </li>
+            </ol>
+        </nav>
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 pt-1">
-        <div>
-            <h4 class="fw-bold mb-1" style="color: #1A202C; font-size: 22px; letter-spacing: -0.2px;">
-                Student Concerns
-            </h4>
-            <p class="text-muted mb-0" style="font-size: 15px; line-height: 1.5;">
-                Centralized case intake and management interface for student concerns, assignments, tracking, and confidential guidance services.
-            </p>
-        </div>
-        <div class="d-flex align-items-center gap-2.5 flex-wrap">
-            <button type="button"
-                class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                style="font-size: 14px; font-weight: 500; height: 38px; border-radius: 6px; padding: 0 16px; background-color: #fff;"
-                title="Reset demonstration records to original sample state">
-                <i class="bi bi-arrow-clockwise me-1.5"></i>Reset Demo Data
-            </button>
-            <button type="button"
-                class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
-                style="font-size: 14px; font-weight: 500; height: 38px; border-radius: 6px; padding: 0 16px; background-color: #fff;"
-                title="Download currently displayed concerns table as CSV">
-                <i class="bi bi-file-earmark-spreadsheet me-1.5"></i>Export CSV
-            </button>
-            <button type="button"
-                class="btn text-white shadow-none d-inline-flex align-items-center justify-content-center"
-                data-bs-toggle="modal" data-bs-target="#modal-record-concern"
-                style="background-color: #800020; border: 1px solid #800020; font-size: 14px; font-weight: 500; height: 38px; border-radius: 6px; padding: 0 16px;"
-                title="Document a new student guidance concern">
-                <i class="bi bi-plus-circle me-1.5"></i>Record New Concern
-            </button>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-1">
+            <div>
+                <h4 class="fw-bold mb-1" style="color: #1A202C; font-size: 22px; letter-spacing: -0.2px;">
+                    Student Concern Management
+                </h4>
+                <p class="text-muted mb-0" style="font-size: 15px; line-height: 1.5;">
+                    Manage, monitor and review submitted student concerns and statements.
+                </p>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- CLINICAL & ETHICAL SAFEGUARD NOTICE -->
-<div class="alert shadow-sm border-0 mb-4 d-flex align-items-start gap-3 p-3.5"
-    style="background-color: #f0f7f9; border-left: 4px solid #008080 !important; border-radius: 8px;">
-    <i class="bi bi-shield-check fs-4" style="color: #008080; line-height: 1.2;"></i>
-    <div>
-        <div class="fw-bold mb-1" style="color: #1a365d; font-size: 14.5px;">
-            Clinical &amp; Ethical Safeguard (Guidance Professional Standards)
-        </div>
-        <div class="text-secondary" style="font-size: 13.5px; line-height: 1.5;">
-            Do not automatically create a diagnosis, determine a student's clinical risk, or assign a high-risk label
-            based solely on referral checklist selections. All clinical and risk determinations require direct
-            professional evaluation by a registered guidance counselor under Republic Act No. 10173 and PRC Guidance
-            &amp; Counseling Code of Ethics.
-        </div>
-    </div>
-</div>
+<style>
+    .kpi-filter-card {
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 8px !important;
+        min-height: 105px;
+        cursor: pointer;
+        transition: transform 0.18s ease-in-out, box-shadow 0.18s ease-in-out, border-color 0.18s ease-in-out;
+        user-select: none;
+    }
 
-<!-- 4 STUDENT CONCERNS SUMMARY CARDS -->
+    .kpi-filter-card:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .kpi-filter-card:active {
+        transform: scale(0.98) !important;
+    }
+
+    .kpi-filter-card[data-filter="all"] {
+        border-left: 4px solid #800020 !important;
+    }
+
+    .kpi-filter-card[data-filter="Pending Review"] {
+        border-left: 4px solid #d97706 !important;
+    }
+
+    .kpi-filter-card[data-filter="High Priority"] {
+        border-left: 4px solid #dc2626 !important;
+    }
+
+    .kpi-filter-card[data-filter="Active Case"] {
+        border-left: 4px solid #0d9488 !important;
+    }
+
+    .kpi-filter-card.active[data-filter="all"] {
+        border: 1px solid #800020 !important;
+        border-left: 4px solid #800020 !important;
+        box-shadow: 0 0 0 2px rgba(128, 0, 32, 0.22), 0 4px 12px rgba(128, 0, 32, 0.10) !important;
+    }
+
+    .kpi-filter-card.active[data-filter="Pending Review"] {
+        border: 1px solid #d97706 !important;
+        border-left: 4px solid #d97706 !important;
+        box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.25), 0 4px 12px rgba(217, 119, 6, 0.10) !important;
+    }
+
+    .kpi-filter-card.active[data-filter="High Priority"] {
+        border: 1px solid #dc2626 !important;
+        border-left: 4px solid #dc2626 !important;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25), 0 4px 12px rgba(220, 38, 38, 0.10) !important;
+    }
+
+    .kpi-filter-card.active[data-filter="Active Case"] {
+        border: 1px solid #0d9488 !important;
+        border-left: 4px solid #0d9488 !important;
+        box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25), 0 4px 12px rgba(13, 148, 136, 0.10) !important;
+    }
+</style>
+
+<!-- 2. CLICKABLE KPI CARDS (PENDING REVIEW, HIGH PRIORITY, ACTIVE CASES, TOTAL RECORDS) -->
 <div class="row g-3 mb-4">
-    <!-- Card 1: Total Concerns -->
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3.5 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #E2E8F0; border-left: 4px solid #800020 !important; border-radius: 8px; background-color: #ffffff; min-height: 110px;">
+    <!-- Card 1: Total Records -->
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between bg-white kpi-filter-card active"
+            id="kpi-card-all" data-filter="all" onclick="applyStatusFilter('all', this)" role="button" tabindex="0"
+            title="Click to view all concern records">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <div style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        TOTAL CASES
+                    <div
+                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
+                        TOTAL RECORDS
                     </div>
-                    <div class="mt-1" style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
+                    <div class="mt-1" id="count-all"
+                        style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
+                        12
+                    </div>
+                </div>
+                <div
+                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #FDF2F4; color: #800020; border: 1px solid #f8d7da;">
+                    <i class="bi bi-folder2-open"></i>
+                </div>
+            </div>
+            <div class="mt-2 text-muted d-flex align-items-center justify-content-between" style="font-size: 13px;">
+                <span>All submitted concerns</span>
+                <span class="badge kpi-indicator"
+                    style="background-color: #800020; color: #fff; font-size: 11px; font-weight: 500;">Active</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Pending Review -->
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between bg-white kpi-filter-card"
+            id="kpi-card-pending" data-filter="Pending Review" onclick="applyStatusFilter('Pending Review', this)"
+            role="button" tabindex="0" title="Click to filter pending review concerns">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div
+                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
+                        PENDING REVIEW
+                    </div>
+                    <div class="mt-1" id="count-pending"
+                        style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
                         6
                     </div>
                 </div>
-                <div style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #FDF2F4; color: #800020;">
-                    <i class="bi bi-folder-check"></i>
+                <div
+                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #fffbeb; color: #d97706; border: 1px solid #fde68a;">
+                    <i class="bi bi-clock-history"></i>
                 </div>
             </div>
-            <div class="mt-2 text-muted" style="font-size: 13.5px;">All intake case records</div>
+            <div class="mt-2 text-muted d-flex align-items-center justify-content-between" style="font-size: 13px;">
+                <span>Awaiting counselor review</span>
+                <span class="badge kpi-indicator d-none"
+                    style="background-color: #d97706; color: #fff; font-size: 11px; font-weight: 500;">Active</span>
+            </div>
         </div>
     </div>
 
-    <!-- Card 2: Active / In Review -->
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3.5 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #E2E8F0; border-left: 4px solid #3182ce !important; border-radius: 8px; background-color: #ffffff; min-height: 110px;">
+    <!-- Card 3: High Priority -->
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between bg-white kpi-filter-card"
+            id="kpi-card-high" data-filter="High Priority" onclick="applyStatusFilter('High Priority', this)"
+            role="button" tabindex="0" title="Click to filter high priority concerns">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <div style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        ACTIVE &amp; REVIEW
+                    <div
+                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
+                        HIGH PRIORITY
                     </div>
-                    <div class="mt-1" style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
-                        2
+                    <div class="mt-1" id="count-high"
+                        style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
+                        5
                     </div>
                 </div>
-                <div style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8;">
-                    <i class="bi bi-person-lines-fill"></i>
+                <div
+                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
                 </div>
             </div>
-            <div class="mt-2 text-muted" style="font-size: 13.5px;">Active counseling &amp; intake review</div>
+            <div class="mt-2 text-muted d-flex align-items-center justify-content-between" style="font-size: 13px;">
+                <span>Urgent attention required</span>
+                <span class="badge kpi-indicator d-none"
+                    style="background-color: #dc2626; color: #fff; font-size: 11px; font-weight: 500;">Active</span>
+            </div>
         </div>
     </div>
 
-    <!-- Card 3: Pending / On Hold -->
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3.5 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #E2E8F0; border-left: 4px solid #d4a017 !important; border-radius: 8px; background-color: #ffffff; min-height: 110px;">
+    <!-- Card 4: Active Cases -->
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between bg-white kpi-filter-card"
+            id="kpi-card-active" data-filter="Active Case" onclick="applyStatusFilter('Active Case', this)"
+            role="button" tabindex="0" title="Click to filter active cases">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <div style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        ON HOLD / PENDING
+                    <div
+                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
+                        ACTIVE CASES
                     </div>
-                    <div class="mt-1" style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
-                        1
-                    </div>
-                </div>
-                <div style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #fdfbe8; color: #856404; border: 1px solid #f6e05e;">
-                    <i class="bi bi-pause-circle"></i>
-                </div>
-            </div>
-            <div class="mt-2 text-muted" style="font-size: 13.5px;">Awaiting verification documents</div>
-        </div>
-    </div>
-
-    <!-- Card 4: Resolved & Concluded -->
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3.5 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #E2E8F0; border-left: 4px solid #28a745 !important; border-radius: 8px; background-color: #ffffff; min-height: 110px;">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        RESOLVED / CLOSED
-                    </div>
-                    <div class="mt-1" style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
-                        3
+                    <div class="mt-1" id="count-active"
+                        style="font-size: 26px; font-weight: 700; color: #1A202C; line-height: 1.1;">
+                        6
                     </div>
                 </div>
-                <div style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #f4fbf6; color: #155724; border: 1px solid #c8e6c9;">
-                    <i class="bi bi-check2-all"></i>
+                <div
+                    style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; background-color: #f0fdfa; color: #0d9488; border: 1px solid #ccfbf1;">
+                    <i class="bi bi-person-check-fill"></i>
                 </div>
             </div>
-            <div class="mt-2 text-muted" style="font-size: 13.5px;">Resolved, closed, or referred</div>
+            <div class="mt-2 text-muted d-flex align-items-center justify-content-between" style="font-size: 13px;">
+                <span>Ongoing counseling</span>
+                <span class="badge kpi-indicator d-none"
+                    style="background-color: #0d9488; color: #fff; font-size: 11px; font-weight: 500;">Active</span>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- SEARCH AND FILTER TOOLBAR -->
-<div class="card shadow-sm border-0 mb-4" style="border: 1px solid #E2E8F0 !important; border-radius: 8px; background-color: #ffffff; overflow: hidden;">
-    <div class="card-body p-3.5">
+<!-- 3. SEARCH & ACTIVE FILTER TOOLBAR -->
+<div class="card shadow-sm border-0 mb-4 bg-white" style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
+    <div class="card-body p-4">
         <div class="row g-3 align-items-center">
-            <!-- Search Field -->
-            <div class="col-lg-8 col-md-7 col-12">
+            <!-- Search Bar -->
+            <div class="col-xl-8 col-lg-8 col-md-12 col-12">
                 <div class="input-group">
-                    <span class="input-group-text border-end-0 text-muted bg-white"
-                        style="border-color: #ced4da; font-size: 15px;">
+                    <span class="input-group-text border-end-0 text-muted bg-white ps-3"
+                        style="border-color: #ced4da; font-size: 15px; height: 42px; border-radius: 8px 0 0 8px;">
                         <i class="bi bi-search"></i>
                     </span>
-                    <input type="text" class="form-control border-start-0 shadow-none"
-                        placeholder="Search by student name..."
-                        style="font-size: 14.5px; height: 42px; border-color: #ced4da;">
+                    <input type="text" id="concernSearchInput"
+                        class="form-control border-start-0 shadow-none ps-2 bg-white"
+                        placeholder="Search by Student ID, Student Name, Concern Type, Statement, Priority, Status..."
+                        oninput="handleSearchInput(this.value);"
+                        style="border-color: #ced4da; font-size: 14.5px; height: 42px; border-radius: 0 8px 8px 0;">
                 </div>
             </div>
 
-            <!-- Program Filter -->
-            <div class="col-lg-4 col-md-5 col-12">
-                <select class="form-select shadow-none" style="font-size: 14px; height: 42px; border-color: #ced4da;">
-                    <option value="" selected>All Programs / Academic Units</option>
-                    <option value="CICS">CICS &bull; College of Information and Computing Sciences</option>
-                    <option value="CAS">CAS &bull; College of Arts and Sciences</option>
-                    <option value="CBA">CBA &bull; College of Business and Accountancy</option>
-                    <option value="CED">CED &bull; College of Education</option>
-                    <option value="COE">COE &bull; College of Engineering</option>
-                    <option value="CAG">CAG &bull; College of Agriculture and Fisheries</option>
-                    <option value="CCJE">CCJE &bull; College of Criminal Justice Education</option>
-                    <option value="CIT">CIT &bull; College of Industrial Technology</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Toolbar Footer: Active Filter Info & Results Count -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-3 border-top">
-            <div class="d-flex align-items-center gap-2 text-muted" style="font-size: 13.5px;">
-                <span class="fw-semibold text-dark">Showing 6 of 6 cases</span>
-                <span class="badge bg-light text-dark border px-2.5 py-1.5"
-                    style="font-size: 12.5px; font-weight: 500;">
-                    Official Case Registry
+            <!-- Active Filter Status Indicator -->
+            <div class="col-xl-4 col-lg-4 col-md-12 col-12 d-flex justify-content-xl-end align-items-center gap-2">
+                <span class="text-muted" style="font-size: 14px;">Filtered by:</span>
+                <span id="activeFilterBadge"
+                    class="badge text-dark bg-light border d-inline-flex align-items-center py-2 px-3"
+                    style="font-size: 13.5px; border-radius: 6px; font-weight: 600;">
+                    All Records
                 </span>
-            </div>
-            <div class="text-muted small">
-                Case Management &bull; Guidance Intake Protocol
+                <button type="button" id="resetFilterBtn" class="btn btn-sm btn-outline-secondary shadow-none d-none"
+                    onclick="resetAllFilters()"
+                    style="font-size: 13px; height: 34px; border-radius: 6px; padding: 0 12px;">
+                    <i class="bi bi-x-circle me-1"></i>Reset Filter
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MAIN STUDENT CONCERNS & CASE REGISTRY TABLE -->
-<div class="card shadow-sm border-0 mb-4" style="border: 1px solid #E2E8F0 !important; border-radius: 8px; background-color: #ffffff; overflow: hidden;">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 px-4"
-        style="border-bottom: 1px solid #E2E8F0 !important; background-color: #ffffff;">
-        <h6 class="m-0 fw-bold" style="font-size: 16px; color: #800020;">
-            <i class="bi bi-card-checklist me-2" style="color: #D4AF37;"></i>Centralized Case Registry &amp; Management Directory
-        </h6>
-        <div class="d-flex align-items-center gap-2">
-            <span class="badge text-dark bg-light border px-2.5 py-1.5" style="font-size: 13px; font-weight: 500;">
-                Showing 6 Records &bull; Official Directory
-            </span>
-        </div>
-    </div>
-
-    <div class="card-body p-0" style="background-color: #ffffff;">
-        <div class="table-responsive" style="background-color: #ffffff;">
-            <table class="table table-hover align-middle mb-0" style="background-color: #ffffff;">
-                <thead style="background-color: #f8f9fa;">
-                    <tr>
-                        <th class="ps-4"
-                            style="font-size: 14.5px; font-weight: 600; padding: 15px 18px; min-width: 250px; color: #2D3748; vertical-align: middle;">
-                            Full Name
+<!-- 4. STUDENT CONCERNS LIST TABLE (INCLUDES CONCERN STATEMENT) -->
+<div class="card shadow-sm border-0 mb-4 bg-white" style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
+    <div class="card-body p-0 bg-white">
+        <div class="table-responsive bg-white">
+            <table class="table table-hover align-middle mb-0 bg-white">
+                <thead class="bg-white" style="border-bottom: 1px solid #E2E8F0 !important;">
+                    <tr class="bg-white">
+                        <th class="ps-4 text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Student ID
                         </th>
-                        <th
-                            style="font-size: 14.5px; font-weight: 600; padding: 15px 18px; min-width: 260px; color: #2D3748; vertical-align: middle;">
-                            Concern Category
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Student Name
                         </th>
-                        <th
-                            style="font-size: 14.5px; font-weight: 600; padding: 15px 18px; min-width: 170px; color: #2D3748; vertical-align: middle;">
-                            Date Received
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Concern Type
                         </th>
-                        <th class="text-center pe-4"
-                            style="font-size: 14.5px; font-weight: 600; padding: 15px 18px; width: 140px; min-width: 140px; color: #2D3748; vertical-align: middle;">
-                            Actions
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; min-width: 220px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Concern Statement
+                        </th>
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Priority
+                        </th>
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Submission Date
+                        </th>
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Time
+                        </th>
+                        <th class="text-center text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Status
+                        </th>
+                        <th class="text-center pe-4 text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; width: 135px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Action
                         </th>
                     </tr>
                 </thead>
                 <tbody style="font-size: 14.5px;">
-                    <!-- Row 1: DELA CRUZ, JUAN L. -->
-                    <tr class="align-middle">
-                        <td class="ps-4" style="padding: 16px 18px; vertical-align: middle;">
-                            <div class="fw-bold" style="font-size: 14.5px; color: #000000 !important;">DELA CRUZ, JUAN L.</div>
+
+                    <!-- Row 1: RAMOS, CARLOS M. -->
+                    <tr class="concern-row align-middle" data-status="Active Case" data-priority="Medium Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2023-01089
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-medium" style="font-size: 14px;">Academic Difficulties</span>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">RAMOS, CARLOS M.</span>
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle; color: #4A5568; font-size: 13.5px;">
-                            2026-10-22
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Academic Concern
+                            </span>
                         </td>
-                        <td class="text-center pe-4" style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-con-001"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                            </div>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Difficulty adjusting to workload and study habits</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #f59e0b; background-color: #fffbeb; color: #b45309; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-dash-circle-fill"></i>Medium Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 29, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">09:30 AM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #0d9488; background-color: #f0fdfa; color: #0f766e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Active Case
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
                         </td>
                     </tr>
 
                     <!-- Row 2: SANTOS, MARIA C. -->
-                    <tr class="align-middle">
-                        <td class="ps-4" style="padding: 16px 18px; vertical-align: middle;">
-                            <div class="fw-bold" style="font-size: 14.5px; color: #000000 !important;">SANTOS, MARIA C.</div>
+                    <tr class="concern-row align-middle" data-status="Pending Review" data-priority="High Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2023-01042
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-medium" style="font-size: 14px;">Emotional Well-Being</span>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">SANTOS, MARIA C.</span>
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle; color: #4A5568; font-size: 13.5px;">
-                            2026-10-21
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Emotional / Psychological
+                            </span>
                         </td>
-                        <td class="text-center pe-4" style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-con-002"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                            </div>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Severe examination anxiety and restlessness</span>
                         </td>
-                    </tr>
-
-                    <!-- Row 3: RAMOS, CARLOS M. -->
-                    <tr class="align-middle">
-                        <td class="ps-4" style="padding: 16px 18px; vertical-align: middle;">
-                            <div class="fw-bold" style="font-size: 14.5px; color: #000000 !important;">RAMOS, CARLOS M.</div>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #ef4444; background-color: #fef2f2; color: #b91c1c; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-exclamation-circle-fill"></i>High Priority
+                            </span>
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-medium" style="font-size: 14px;">Career Uncertainty</span>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 29, 2026</span>
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle; color: #4A5568; font-size: 13.5px;">
-                            2026-10-19
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">01:30 PM</span>
                         </td>
-                        <td class="text-center pe-4" style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-con-003"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                            </div>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Pending Review
+                            </span>
                         </td>
-                    </tr>
-
-                    <!-- Row 4: REYES, BEA ANGELA D. -->
-                    <tr class="align-middle">
-                        <td class="ps-4" style="padding: 16px 18px; vertical-align: middle;">
-                            <div class="fw-bold" style="font-size: 14.5px; color: #000000 !important;">REYES, BEA ANGELA D.</div>
-                        </td>
-                        <td style="padding: 16px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-medium" style="font-size: 14px;">Personal Adjustment</span>
-                        </td>
-                        <td style="padding: 16px 18px; vertical-align: middle; color: #4A5568; font-size: 13.5px;">
-                            2026-10-18
-                        </td>
-                        <td class="text-center pe-4" style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-con-004"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                            </div>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
                         </td>
                     </tr>
 
-                    <!-- Row 5: TAN, JOSHUA DAVID K. -->
-                    <tr class="align-middle">
-                        <td class="ps-4" style="padding: 16px 18px; vertical-align: middle;">
-                            <div class="fw-bold" style="font-size: 14.5px; color: #000000 !important;">TAN, JOSHUA DAVID K.</div>
+                    <!-- Row 3: MENDOZA, JUAN B. -->
+                    <tr class="concern-row align-middle" data-status="Active Case" data-priority="Low Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2022-00512
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-medium" style="font-size: 14px;">Attendance Concerns</span>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">MENDOZA, JUAN B.</span>
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle; color: #4A5568; font-size: 13.5px;">
-                            2026-10-16
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Career Concern
+                            </span>
                         </td>
-                        <td class="text-center pe-4" style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
-                                <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-con-005"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
-                                </button>
-                            </div>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Career path and teacher licensure uncertainty</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #94a3b8; background-color: #f8fafc; color: #475569; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-arrow-down-circle-fill"></i>Low Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 28, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">11:00 AM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #0d9488; background-color: #f0fdfa; color: #0f766e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Active Case
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
                         </td>
                     </tr>
 
-                    <!-- Row 6: LIM, PATRICIA ANNE S. -->
-                    <tr class="align-middle">
-                        <td class="ps-4" style="padding: 16px 18px; vertical-align: middle;">
-                            <div class="fw-bold" style="font-size: 14.5px; color: #000000 !important;">LIM, PATRICIA ANNE S.</div>
+                    <!-- Row 4: DELA CRUZ, BEA L. -->
+                    <tr class="concern-row align-middle" data-status="Pending Review" data-priority="High Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2024-03115
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle;">
-                            <span class="text-dark fw-medium" style="font-size: 14px;">Financial or Social Welfare Concerns</span>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">DELA CRUZ, BEA L.</span>
                         </td>
-                        <td style="padding: 16px 18px; vertical-align: middle; color: #4A5568; font-size: 13.5px;">
-                            2026-10-15
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Behavioral Concern
+                            </span>
                         </td>
-                        <td class="text-center pe-4" style="padding: 15px 18px; vertical-align: middle;">
-                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Social isolation and peer adjustment</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #ef4444; background-color: #fef2f2; color: #b91c1c; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-exclamation-circle-fill"></i>High Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 30, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">03:00 PM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Pending Review
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 5: REYES, MARK ANTHONY -->
+                    <tr class="concern-row align-middle" data-status="Active Case" data-priority="Medium Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2023-02194
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">REYES, MARK ANTHONY</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Academic Concern
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Academic probation and prerequisite failures</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #f59e0b; background-color: #fffbeb; color: #b45309; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-dash-circle-fill"></i>Medium Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 31, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">10:00 AM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #0d9488; background-color: #f0fdfa; color: #0f766e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Active Case
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 6: GONZALES, ALYSSA P. -->
+                    <tr class="concern-row align-middle" data-status="Pending Review" data-priority="High Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2024-01582
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">GONZALES, ALYSSA P.</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Emotional / Psychological
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Chronic stress and sleep disturbance</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #ef4444; background-color: #fef2f2; color: #b91c1c; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-exclamation-circle-fill"></i>High Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Oct 31, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">02:00 PM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Pending Review
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 7: BAUTISTA, KEVIN R. -->
+                    <tr class="concern-row align-middle" data-status="Active Case" data-priority="High Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2022-03481
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">BAUTISTA, KEVIN R.</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Family / Personal
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Domestic conflict and personal financial hardship</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #ef4444; background-color: #fef2f2; color: #b91c1c; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-exclamation-circle-fill"></i>High Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 01, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">08:30 AM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #0d9488; background-color: #f0fdfa; color: #0f766e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Active Case
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 8: VILLANUEVA, PATRICIA M. -->
+                    <tr class="concern-row align-middle" data-status="Pending Review" data-priority="Low Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2023-04129
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">VILLANUEVA, PATRICIA M.</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Career Concern
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Program shifting evaluation and counseling</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #94a3b8; background-color: #f8fafc; color: #475569; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-arrow-down-circle-fill"></i>Low Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 01, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">11:30 AM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Pending Review
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 9: AQUINO, CHRISTIAN J. -->
+                    <tr class="concern-row align-middle" data-status="Active Case" data-priority="Medium Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2024-00871
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">AQUINO, CHRISTIAN J.</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Academic Concern
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Thesis research pacing and capstone defense</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #f59e0b; background-color: #fffbeb; color: #b45309; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-dash-circle-fill"></i>Medium Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 02, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">01:30 PM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #0d9488; background-color: #f0fdfa; color: #0f766e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Active Case
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 10: CASTRO, DIANA MAE -->
+                    <tr class="concern-row align-middle" data-status="Pending Review" data-priority="High Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2022-01934
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">CASTRO, DIANA MAE</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Emotional / Psychological
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Persistent depressive mood and fatigue</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #ef4444; background-color: #fef2f2; color: #b91c1c; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-exclamation-circle-fill"></i>High Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 02, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">03:30 PM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Pending Review
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 11: FLORES, GABRIEL S. -->
+                    <tr class="concern-row align-middle" data-status="Active Case" data-priority="Medium Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2023-03712
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">FLORES, GABRIEL S.</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Behavioral Concern
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Unexcused absences and peer conflicts</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #f59e0b; background-color: #fffbeb; color: #b45309; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-dash-circle-fill"></i>Medium Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 03, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">09:00 AM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #0d9488; background-color: #f0fdfa; color: #0f766e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Active Case
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 12: TAN, JUSTINE CHLOE -->
+                    <tr class="concern-row align-middle" data-status="Pending Review" data-priority="Low Priority">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle; line-height: 2.0;">
+                            2024-02205
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="fw-bold text-dark">TAN, JUSTINE CHLOE</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; font-weight: 600; font-size: 13px; padding: 3px 10px; display: inline-block; line-height: 1.5;">
+                                Academic Concern
+                            </span>
+                        </td>
+                        <td style="padding: 16px 18px; vertical-align: middle; line-height: 1.5; min-width: 220px;">
+                            <span class="text-dark">Burnout during laboratory practical exams</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #94a3b8; background-color: #f8fafc; color: #475569; border-radius: 50rem; font-weight: 600; font-size: 12.5px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="bi bi-arrow-down-circle-fill"></i>Low Priority
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">Nov 03, 2026</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span class="text-dark">10:30 AM</span>
+                        </td>
+                        <td class="text-center text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 105px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12.5px; padding: 2px 14px;">
+                                Pending Review
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap"
+                            style="padding: 16px 18px; vertical-align: middle; line-height: 2.0;">
+                            <a href="<?= url('guidance/cases') ?>"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="Manage Case" aria-label="Manage Case"
+                                style="height: 32px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap;">
+                                Manage Case
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Empty State / No Match Found Row -->
+                    <tr id="noResultsRow" style="display: none;">
+                        <td colspan="9" class="text-center py-5">
+                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mb-3"
+                                    style="width: 60px; height: 60px; background-color: #F8FAFC; border: 1px solid #CBD5E1; color: #64748B; font-size: 24px;">
+                                    <i class="bi bi-search"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-1">No matching student concerns found</h6>
+                                <p class="text-muted mb-3" style="font-size: 14px;">Try adjusting your keyword search or
+                                    active status filter.</p>
                                 <button type="button"
-                                    class="btn btn-sm shadow-none d-inline-flex align-items-center justify-content-center"
-                                    data-bs-toggle="modal" data-bs-target="#modal-view-con-006"
-                                    style="border: 1px solid #800020; color: #800020; background-color: #fff; border-radius: 4px; font-size: 13.5px; font-weight: 500; height: 34px; width: 88px; min-width: 88px; padding: 0 12px;"
-                                    title="View Full Detailed Profile">
-                                    <i class="bi bi-eye me-1"></i>View
+                                    class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none"
+                                    onclick="resetAllFilters()"
+                                    style="font-size: 13.5px; border-radius: 6px; padding: 6px 16px;">
+                                    Reset Filters
                                 </button>
                             </div>
                         </td>
@@ -397,1105 +902,204 @@
             </table>
         </div>
 
-        <!-- Table Footer / Pagination -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3.5 bg-light border-top"
-            style="font-size: 13.5px;">
-            <div class="text-muted">
-                Showing <span class="fw-semibold text-dark">1</span> to <span class="fw-semibold text-dark">6</span> of
-                <span class="fw-semibold text-dark">6</span> cases recorded
+        <!-- Table Footer: Count & Pagination Info -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 px-4 py-3 bg-white"
+            style="border-top: 1px solid #E2E8F0; font-size: 13.5px; color: #64748B;">
+            <div id="showingCountText">
+                Showing 12 of 12 student concerns
             </div>
-            <nav aria-label="Table Navigation">
-                <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item disabled">
-                        <button class="page-link shadow-none" aria-label="Previous">&laquo;</button>
-                    </li>
-                    <li class="page-item active" aria-current="page">
-                        <span class="page-link"
-                            style="background-color: #800020; border-color: #800020; color: #fff;">1</span>
-                    </li>
-                    <li class="page-item disabled">
-                        <button class="page-link shadow-none" aria-label="Next">&raquo;</button>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-
-<!-- ==================================================================== -->
-<!--   MODAL: RECORD NEW CONCERN / CENTRALIZED CASE INTAKE                -->
-<!--   Generous field spacing with ample breathing room above buttons     -->
-<!-- ==================================================================== -->
-<div class="modal fade" id="modal-record-concern" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div>
-                    <h5 class="modal-title fw-bold m-0" style="font-size: 17px;">
-                        <i class="bi bi-file-earmark-plus me-2 text-warning"></i>Centralized Case Intake &amp; Management Interface
-                    </h5>
-                    <p class="mb-0 text-white-50 small mt-1">
-                        Document the case intake accurately, link appointments or referrals, and establish review protocols.
-                    </p>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4" style="background-color: #f8f9fa;">
-                <div class="alert alert-light border p-3.5 mb-4 d-flex align-items-start gap-2.5"
-                    style="border-color: #bee3f8 !important; background-color: #f0f7f9; border-radius: 8px; font-size: 13px; color: #2d3748;">
-                    <i class="bi bi-shield-check fs-5 me-2" style="color: #008080;"></i>
-                    <div>
-                        <strong class="text-dark d-block mb-1">Ethical Assessment Standard:</strong>
-                        Do not automatically create a diagnosis, determine a student's clinical risk, or assign a high-risk label based solely on referral checklist selections. Factual intake data serves only as preliminary context for counselor review.
-                    </div>
-                </div>
-
-                <form action="#" method="POST">
-                    <!-- SECTION A: STUDENT REFERENCE -->
-                    <div class="card border shadow-sm mb-4" style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                        <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                            <i class="bi bi-person-bounding-box me-1" style="color: #800020;"></i>
-                            <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Section A: Student Reference</span>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="row g-3.5">
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label text-dark small fw-semibold mb-2">Student Selector <span class="text-danger">*</span></label>
-                                    <select class="form-select shadow-none" style="font-size: 13.5px; height: 42px; border-color: #ced4da;">
-                                        <option value="2023-01089" selected>DELA CRUZ, JUAN L. (2023-01089 - BSIS)</option>
-                                        <option value="2023-01042">SANTOS, MARIA C. (2023-01042 - BAPS)</option>
-                                        <option value="2022-00812">RAMOS, CARLOS M. (2022-00812 - BEED)</option>
-                                        <option value="2024-00155">REYES, BEA ANGELA D. (2024-00155 - BSTM)</option>
-                                        <option value="2021-00341">TAN, JOSHUA DAVID K. (2021-00341 - BSCE)</option>
-                                        <option value="2023-00492">LIM, PATRICIA ANNE S. (2023-00492 - BSA)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label text-dark small fw-semibold mb-2">Student Reference ID</label>
-                                    <input type="text" class="form-control bg-light shadow-none" value="2023-01089" readonly style="font-size: 13.5px; height: 42px; border-color: #ced4da;">
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label text-dark small fw-semibold mb-2">Full Student Name</label>
-                                    <input type="text" class="form-control bg-light shadow-none" value="DELA CRUZ, JUAN L." readonly style="font-size: 13.5px; height: 42px; border-color: #ced4da;">
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label text-dark small fw-semibold mb-2">Academic Program</label>
-                                    <input type="text" class="form-control bg-light shadow-none" value="BS Information Systems (CICS)" readonly style="font-size: 13.5px; height: 42px; border-color: #ced4da;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SECTION B: CONCERN CLASSIFICATION & INTAKE -->
-                    <div class="card border shadow-sm mb-4" style="border-color: #E2E8F0 !important; border-radius: 8px; background-color: #ffffff;">
-                        <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                            <i class="bi bi-tags-fill me-1" style="color: #800020;"></i>
-                            <span class="fw-bold" style="font-size: 14px; color: #1A202C;">Section B: Concern Classification</span>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="row g-3.5">
-                                <div class="col-12">
-                                    <label class="form-label text-dark small fw-semibold mb-2">Primary Concern Category <span class="text-danger">*</span></label>
-                                    <select class="form-select shadow-none" style="font-size: 13.5px; height: 42px; border-color: #ced4da;">
-                                        <option value="Academic Difficulties" selected>Academic Difficulties</option>
-                                        <option value="Emotional Well-Being">Emotional Well-Being</option>
-                                        <option value="Career Uncertainty">Career Uncertainty</option>
-                                        <option value="Personal Adjustment">Personal Adjustment</option>
-                                        <option value="Attendance Concerns">Attendance Concerns</option>
-                                        <option value="Financial or Social Welfare">Financial or Social Welfare</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label text-dark small fw-semibold mb-2">Date Received</label>
-                                    <input type="date" class="form-control shadow-none" value="2026-10-26" style="font-size: 13.5px; height: 42px; border-color: #ced4da;">
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label text-dark small fw-semibold mb-2">Scheduled Next Review Date</label>
-                                    <input type="date" class="form-control shadow-none" value="2026-11-10" style="font-size: 13.5px; height: 42px; border-color: #ced4da;">
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label text-dark small fw-semibold mb-2">Presenting Concern Narrative</label>
-                                    <textarea class="form-control shadow-none" rows="3" placeholder="Enter detailed description of the student concern..." style="font-size: 13.5px; border-color: #ced4da; line-height: 1.5;"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- MODAL FOOTER WITH COMFORTABLE SEPARATION FROM FIELDS -->
-                    <div class="modal-footer px-4 py-3.5 bg-white border-top d-flex justify-content-end gap-3 mt-4" style="border-radius: 0 0 12px 12px;">
-                        <button type="button" class="btn btn-secondary px-3.5 shadow-none" data-bs-dismiss="modal" style="font-size: 13.5px; height: 38px; border-radius: 4px;">Cancel</button>
-                        <button type="submit" class="btn text-white px-4 shadow-none" data-bs-dismiss="modal" style="background-color: #800020; border-color: #800020; font-size: 13.5px; height: 38px; border-radius: 4px; font-weight: 500;">Record Intake Concern</button>
-                    </div>
-                </form>
+            <div>
+                <nav aria-label="Concerns pagination">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item disabled"><span class="page-link shadow-none border-0">&laquo;</span></li>
+                        <li class="page-item active"><span class="page-link shadow-none"
+                                style="background-color: #800020; border-color: #800020;">1</span></li>
+                        <li class="page-item disabled"><span class="page-link shadow-none border-0">&raquo;</span></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ==================================================================== -->
-<!--   MODALS: VIEW CASE DETAILS (ORGANIZED, 15PX TEXT SIZE, NO UPDATE)   -->
-<!--   Includes NEXT REVIEW DATE, orderly sequence, and proper spacing    -->
-<!-- ==================================================================== -->
+<script>
+    window.currentStatusFilter = 'all';
+    window.currentSearchText = '';
 
-<!-- Modal View 1: DELA CRUZ, JUAN L. (CON-2026-0001) -->
-<div class="modal fade" id="modal-view-con-001" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2.5">
-                    <i class="bi bi-folder2-open text-warning fs-5 me-1"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-bold" style="font-size: 17px;">Case Record &bull; CON-2026-0001</h5>
-                        <span class="text-white-50" style="font-size: 13px;">Official Guidance &amp; Counseling Case Intake Profile</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 bg-white" style="font-size: 15px;">
-                <!-- 1. Header Profile Banner -->
-                <div class="p-3.5 mb-4 rounded border bg-light d-flex justify-content-between align-items-center flex-wrap gap-3"
-                    style="border-color: #E2E8F0 !important;">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-1.5 flex-wrap">
-                            <span class="badge" style="font-size: 13.5px; font-family: monospace; background-color: #FDF2F4; color: #800020; border: 1px solid #F3C4CC; padding: 4px 10px;">
-                                CON-2026-0001
-                            </span>
-                            <span class="fw-bold text-dark" style="font-size: 18px;">DELA CRUZ, JUAN L.</span>
-                        </div>
-                        <div class="text-muted" style="font-size: 15px; line-height: 1.5;">
-                            Student ID: <strong class="text-dark">2023-01089</strong> &bull; Program: <strong class="text-dark">BS Information Systems</strong> (CICS) &bull; 2nd Year, Sec A
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-2.5">
-                        <span class="badge" style="border: 1px solid #cbd5e0; background-color: #f7fafc; color: #4a5568; border-radius: 6px; padding: 6px 14px; font-size: 13.5px; font-weight: 600;">
-                            Routine
-                        </span>
-                        <span class="badge" style="border: 1.5px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 100px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13.5px;">
-                            Resolved
-                        </span>
-                    </div>
-                </div>
+    window.applyStatusFilter = function (filterKey, element) {
+        window.currentStatusFilter = filterKey || 'all';
 
-                <!-- 2. Case Particulars & Schedule Metrics Grid -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill me-1" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Case Particulars &amp; Timeline</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row g-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-tag text-muted me-2"></i>CONCERN CATEGORY
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Academic Difficulties
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-calendar-check text-muted me-2"></i>DATE RECEIVED
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        2026-10-22
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border h-100" style="border: 1.5px solid #d4a017 !important; background-color: #fffdf5 !important;">
-                                    <div class="mb-1 fw-bold" style="font-size: 13.5px; color: #856404;">
-                                        <i class="bi bi-calendar-event me-2 text-warning"></i>SCHEDULED NEXT REVIEW DATE
-                                    </div>
-                                    <div class="fw-bold" style="font-size: 15.5px; color: #856404; line-height: 1.4;">
-                                        2026-11-10
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-person-check text-muted me-2"></i>ASSIGNED COUNSELOR
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Dr. Elena Santos, RGC
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        // Update active class on KPI cards
+        const cards = document.querySelectorAll('.kpi-filter-card');
+        cards.forEach(card => {
+            const ind = card.querySelector('.kpi-indicator');
+            if (card.getAttribute('data-filter') === filterKey) {
+                card.classList.add('active');
+                if (ind) ind.classList.remove('d-none');
+            } else {
+                card.classList.remove('active');
+                if (ind) ind.classList.add('d-none');
+            }
+        });
 
-                <!-- 3. Presenting Concern Narrative & Origin -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Presenting Concern Narrative &amp; Case Linkage</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="p-3 bg-light rounded border mb-3 text-dark fw-semibold" style="font-size: 15px; border-color: #E2E8F0 !important; line-height: 1.5;">
-                            Student requested assistance regarding difficulty adjusting to object-oriented programming coursework and semester deadlines.
-                        </div>
-                        <p class="text-secondary mb-3" style="font-size: 15px; line-height: 1.65;">
-                            Student self-reported feeling overwhelmed by advanced laboratory exercises in programming and data structures. Expressed apprehension about falling behind in major subjects and requested academic coaching, time management guidance, and linkage to peer tutoring services.
-                        </p>
-                        <div class="d-flex align-items-center gap-2 flex-wrap pt-3 border-top text-muted" style="font-size: 15px;">
-                            <span><strong>Intake Source:</strong> Student Seeking Assistance (Self-walk-in)</span>
-                            <span class="mx-1">&bull;</span>
-                            <span><strong>Linked Records:</strong> Appointment <code class="text-dark" style="font-size: 14.5px;">APT-2026-0004</code>, Session <code class="text-dark" style="font-size: 14.5px;">SES-2026-0004</code></span>
-                        </div>
-                    </div>
-                </div>
+        // Update active filter badge text
+        const badge = document.getElementById('activeFilterBadge');
+        const resetBtn = document.getElementById('resetFilterBtn');
 
-                <!-- 4. Counselor Assessment & Action Targets -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-check2-circle me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Counselor Assessment &amp; Action Plan</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <p class="text-dark mb-3.5" style="font-size: 15px; line-height: 1.65;">
-                            Intake completed via self-walk-in consultation. Student showed high self-awareness and willingness to adopt structured study scheduling. Linked student with CICS peer mentor society and scheduled bi-weekly academic progress reviews.
-                        </p>
-                        <div class="row g-3 mb-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Weekly study schedule established</span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 13.5px;">Completed</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Peer tutoring sessions attended (4x)</span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 13.5px;">Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top text-muted flex-wrap gap-2" style="font-size: 15px;">
-                            <span>Case Resolution: <strong class="text-dark">Resolved with Positive Outcome</strong></span>
-                            <span>Scheduled Next Review: <strong class="text-warning-emphasis fw-bold" style="color: #856404 !important;"><i class="bi bi-calendar-event me-2"></i>2026-11-10</strong></span>
-                        </div>
-                    </div>
-                </div>
+        if (badge) {
+            badge.style.backgroundColor = '';
+            badge.style.color = '';
+            badge.style.borderColor = '';
 
-                <!-- 5. Minimalist Statutory Notice -->
-                <div class="p-3.5 mb-4 rounded border bg-light text-muted d-flex align-items-center gap-2.5" style="border-color: #E2E8F0 !important; font-size: 14px;">
-                    <i class="bi bi-shield-check text-success fs-5 me-2"></i>
-                    <span>Confidential student counseling record protected under Republic Act No. 10173 (Data Privacy Act of 2012).</span>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3.5 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-secondary px-4 shadow-none" data-bs-dismiss="modal" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    Close
-                </button>
-                <button type="button" class="btn btn-outline-secondary px-3.5 shadow-none" onclick="window.print()" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    <i class="bi bi-printer me-2"></i>Print Summary
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+            if (filterKey === 'all') {
+                badge.textContent = 'All Records';
+                badge.className = 'badge text-dark bg-light border d-inline-flex align-items-center py-2 px-3';
+            } else if (filterKey === 'Pending Review') {
+                badge.textContent = 'Pending Review';
+                badge.className = 'badge d-inline-flex align-items-center py-2 px-3';
+                badge.style.backgroundColor = '#fffbeb';
+                badge.style.color = '#92400e';
+                badge.style.border = '1px solid #d97706';
+            } else if (filterKey === 'High Priority') {
+                badge.textContent = 'High Priority';
+                badge.className = 'badge d-inline-flex align-items-center py-2 px-3';
+                badge.style.backgroundColor = '#fef2f2';
+                badge.style.color = '#991b1b';
+                badge.style.border = '1px solid #dc2626';
+            } else if (filterKey === 'Active Case') {
+                badge.textContent = 'Active Cases';
+                badge.className = 'badge d-inline-flex align-items-center py-2 px-3';
+                badge.style.backgroundColor = '#f0fdfa';
+                badge.style.color = '#0f766e';
+                badge.style.border = '1px solid #0d9488';
+            }
+        }
 
-<!-- Modal View 2: SANTOS, MARIA C. (CON-2026-0002) -->
-<div class="modal fade" id="modal-view-con-002" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2.5">
-                    <i class="bi bi-folder2-open text-warning fs-5 me-1"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-bold" style="font-size: 17px;">Case Record &bull; CON-2026-0002</h5>
-                        <span class="text-white-50" style="font-size: 13px;">Official Guidance &amp; Counseling Case Intake Profile</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 bg-white" style="font-size: 15px;">
-                <!-- 1. Header Profile Banner -->
-                <div class="p-3.5 mb-4 rounded border bg-light d-flex justify-content-between align-items-center flex-wrap gap-3"
-                    style="border-color: #E2E8F0 !important;">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-1.5 flex-wrap">
-                            <span class="badge" style="font-size: 13.5px; font-family: monospace; background-color: #FDF2F4; color: #800020; border: 1px solid #F3C4CC; padding: 4px 10px;">
-                                CON-2026-0002
-                            </span>
-                            <span class="fw-bold text-dark" style="font-size: 18px;">SANTOS, MARIA C.</span>
-                        </div>
-                        <div class="text-muted" style="font-size: 15px; line-height: 1.5;">
-                            Student ID: <strong class="text-dark">2023-01042</strong> &bull; Program: <strong class="text-dark">BA Political Science</strong> (CAS) &bull; 2nd Year, Sec B
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-2.5">
-                        <span class="badge" style="border: 1px solid #e53e3e; background-color: #fff5f5; color: #c53030; border-radius: 6px; padding: 6px 14px; font-size: 13.5px; font-weight: 600;">
-                            Urgent Review
-                        </span>
-                        <span class="badge" style="border: 1.5px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 100px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13.5px;">
-                            Active
-                        </span>
-                    </div>
-                </div>
+        if (resetBtn) {
+            if (filterKey === 'all' && !window.currentSearchText) {
+                resetBtn.classList.add('d-none');
+            } else {
+                resetBtn.classList.remove('d-none');
+            }
+        }
 
-                <!-- 2. Case Particulars & Schedule Metrics Grid -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill me-1" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Case Particulars &amp; Timeline</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row g-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-tag text-muted me-2"></i>CONCERN CATEGORY
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Emotional Well-Being
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-calendar-check text-muted me-2"></i>DATE RECEIVED
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        2026-10-21
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border h-100" style="border: 1.5px solid #d4a017 !important; background-color: #fffdf5 !important;">
-                                    <div class="mb-1 fw-bold" style="font-size: 13.5px; color: #856404;">
-                                        <i class="bi bi-calendar-event me-2 text-warning"></i>SCHEDULED NEXT REVIEW DATE
-                                    </div>
-                                    <div class="fw-bold" style="font-size: 15.5px; color: #856404; line-height: 1.4;">
-                                        2026-10-28
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-person-check text-muted me-2"></i>ASSIGNED COUNSELOR
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Dr. Elena Santos, RGC
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        window.filterTable();
+    };
 
-                <!-- 3. Presenting Concern Narrative & Origin -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Presenting Concern Narrative &amp; Case Linkage</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="p-3 bg-light rounded border mb-3 text-dark fw-semibold" style="font-size: 15px; border-color: #E2E8F0 !important; line-height: 1.5;">
-                            Experienced panic symptoms, shortness of breath, and heightened anxiety during comprehensive midterm examinations.
-                        </div>
-                        <p class="text-secondary mb-3" style="font-size: 15px; line-height: 1.65;">
-                            Student presented to the guidance office following an acute exam anxiety episode during midterm week. Counselor conducted clinical intake, administered grounding techniques, and formulated an ongoing stress inoculation and academic coping plan.
-                        </p>
-                        <div class="d-flex align-items-center gap-2 flex-wrap pt-3 border-top text-muted" style="font-size: 15px;">
-                            <span><strong>Intake Source:</strong> Faculty Referral (Department of Social Sciences)</span>
-                            <span class="mx-1">&bull;</span>
-                            <span><strong>Linked Records:</strong> Referral <code class="text-dark" style="font-size: 14.5px;">REF-2026-0002</code>, Appointment <code class="text-dark" style="font-size: 14.5px;">APT-2026-0001</code>, Session <code class="text-dark" style="font-size: 14.5px;">SES-2026-0001</code></span>
-                        </div>
-                    </div>
-                </div>
+    window.handleSearchInput = function (val) {
+        window.currentSearchText = (val || '').trim().toLowerCase();
+        const resetBtn = document.getElementById('resetFilterBtn');
+        if (resetBtn) {
+            if (window.currentStatusFilter === 'all' && !window.currentSearchText) {
+                resetBtn.classList.add('d-none');
+            } else {
+                resetBtn.classList.remove('d-none');
+            }
+        }
+        window.filterTable();
+    };
 
-                <!-- 4. Counselor Assessment & Action Targets -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-check2-circle me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Counselor Assessment &amp; Action Plan</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <p class="text-dark mb-3.5" style="font-size: 15px; line-height: 1.65;">
-                            Conducted clinical intake and breathing grounding exercises. Formulated immediate safety support plan and scheduled weekly counseling check-ins.
-                        </p>
-                        <div class="row g-3 mb-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Anxiety reduction breathing regimen</span>
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 13.5px;">In Progress</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Bi-weekly stress management session</span>
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 13.5px;">In Progress</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top text-muted flex-wrap gap-2" style="font-size: 15px;">
-                            <span>Case Resolution: <strong class="text-dark">Active Monitoring &amp; Stabilization</strong></span>
-                            <span>Scheduled Next Review: <strong class="text-warning-emphasis fw-bold" style="color: #856404 !important;"><i class="bi bi-calendar-event me-2"></i>2026-10-28</strong></span>
-                        </div>
-                    </div>
-                </div>
+    window.resetAllFilters = function () {
+        const searchInput = document.getElementById('concernSearchInput');
+        if (searchInput) searchInput.value = '';
+        window.currentSearchText = '';
+        window.applyStatusFilter('all');
+    };
 
-                <!-- 5. Minimalist Statutory Notice -->
-                <div class="p-3.5 mb-4 rounded border bg-light text-muted d-flex align-items-center gap-2.5" style="border-color: #E2E8F0 !important; font-size: 14px;">
-                    <i class="bi bi-shield-check text-success fs-5 me-2"></i>
-                    <span>Confidential student counseling record protected under Republic Act No. 10173 (Data Privacy Act of 2012).</span>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3.5 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-secondary px-4 shadow-none" data-bs-dismiss="modal" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    Close
-                </button>
-                <button type="button" class="btn btn-outline-secondary px-3.5 shadow-none" onclick="window.print()" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    <i class="bi bi-printer me-2"></i>Print Summary
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+    window.filterTable = function () {
+        const rows = document.querySelectorAll('.concern-row');
+        let visible = 0;
 
-<!-- Modal View 3: RAMOS, CARLOS M. (CON-2026-0003) -->
-<div class="modal fade" id="modal-view-con-003" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2.5">
-                    <i class="bi bi-folder2-open text-warning fs-5 me-1"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-bold" style="font-size: 17px;">Case Record &bull; CON-2026-0003</h5>
-                        <span class="text-white-50" style="font-size: 13px;">Official Guidance &amp; Counseling Case Intake Profile</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 bg-white" style="font-size: 15px;">
-                <!-- 1. Header Profile Banner -->
-                <div class="p-3.5 mb-4 rounded border bg-light d-flex justify-content-between align-items-center flex-wrap gap-3"
-                    style="border-color: #E2E8F0 !important;">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-1.5 flex-wrap">
-                            <span class="badge" style="font-size: 13.5px; font-family: monospace; background-color: #FDF2F4; color: #800020; border: 1px solid #F3C4CC; padding: 4px 10px;">
-                                CON-2026-0003
-                            </span>
-                            <span class="fw-bold text-dark" style="font-size: 18px;">RAMOS, CARLOS M.</span>
-                        </div>
-                        <div class="text-muted" style="font-size: 15px; line-height: 1.5;">
-                            Student ID: <strong class="text-dark">2022-00812</strong> &bull; Program: <strong class="text-dark">Bachelor of Elementary Education</strong> (CED) &bull; 3rd Year, Sec A
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-2.5">
-                        <span class="badge" style="border: 1px solid #cbd5e0; background-color: #f7fafc; color: #4a5568; border-radius: 6px; padding: 6px 14px; font-size: 13.5px; font-weight: 600;">
-                            Routine
-                        </span>
-                        <span class="badge" style="border: 1.5px solid #17a2b8; background-color: #e8f7fa; color: #0c5460; border-radius: 50rem; min-width: 100px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13.5px;">
-                            Under Review
-                        </span>
-                    </div>
-                </div>
+        rows.forEach(row => {
+            const rowStatus = (row.getAttribute('data-status') || '').trim();
+            const rowPriority = (row.getAttribute('data-priority') || '').trim();
+            const rowText = (row.textContent || '').toLowerCase();
 
-                <!-- 2. Case Particulars & Schedule Metrics Grid -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill me-1" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Case Particulars &amp; Timeline</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row g-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-tag text-muted me-2"></i>CONCERN CATEGORY
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Career Uncertainty
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-calendar-check text-muted me-2"></i>DATE RECEIVED
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        2026-10-19
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border h-100" style="border: 1.5px solid #d4a017 !important; background-color: #fffdf5 !important;">
-                                    <div class="mb-1 fw-bold" style="font-size: 13.5px; color: #856404;">
-                                        <i class="bi bi-calendar-event me-2 text-warning"></i>SCHEDULED NEXT REVIEW DATE
-                                    </div>
-                                    <div class="fw-bold" style="font-size: 15.5px; color: #856404; line-height: 1.4;">
-                                        2026-10-30
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-person-check text-muted me-2"></i>ASSIGNED COUNSELOR
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Prof. Mark Bautista, RPm
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            let matchesFilter = false;
+            if (window.currentStatusFilter === 'all') {
+                matchesFilter = true;
+            } else if (window.currentStatusFilter === 'High Priority') {
+                matchesFilter = (rowPriority === 'High Priority');
+            } else {
+                matchesFilter = (rowStatus === window.currentStatusFilter);
+            }
 
-                <!-- 3. Presenting Concern Narrative & Origin -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Presenting Concern Narrative &amp; Case Linkage</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="p-3 bg-light rounded border mb-3 text-dark fw-semibold" style="font-size: 15px; border-color: #E2E8F0 !important; line-height: 1.5;">
-                            Student contemplating shift of specialization or non-teaching career pathways prior to upcoming practicum semester.
-                        </div>
-                        <p class="text-secondary mb-3" style="font-size: 15px; line-height: 1.65;">
-                            Student requested comprehensive career consultation to re-evaluate commitment to teaching profession. Expressed interest in educational technology and corporate human resource training roles.
-                        </p>
-                        <div class="d-flex align-items-center gap-2 flex-wrap pt-3 border-top text-muted" style="font-size: 15px;">
-                            <span><strong>Intake Source:</strong> Student Seeking Assistance (Appointment)</span>
-                            <span class="mx-1">&bull;</span>
-                            <span><strong>Linked Records:</strong> Appointment <code class="text-dark" style="font-size: 14.5px;">APT-2026-0002</code>, Session <code class="text-dark" style="font-size: 14.5px;">SES-2026-0002</code></span>
-                        </div>
-                    </div>
-                </div>
+            const matchesSearch = (!window.currentSearchText || rowText.includes(window.currentSearchText));
 
-                <!-- 4. Counselor Assessment & Action Targets -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-check2-circle me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Counselor Assessment &amp; Action Plan</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <p class="text-dark mb-3.5" style="font-size: 15px; line-height: 1.65;">
-                            Administered RIASEC Career Interest Inventory. Student demonstrated strong Artistic and Social interest profiles. Scheduled vocational interpretation session.
-                        </p>
-                        <div class="row g-3 mb-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>RIASEC interest inventory assessment</span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 13.5px;">Completed</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Practicum mentorship consultation</span>
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 13.5px;">In Progress</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top text-muted flex-wrap gap-2" style="font-size: 15px;">
-                            <span>Case Status: <strong class="text-dark">Case Under Vocational Review</strong></span>
-                            <span>Scheduled Next Review: <strong class="text-warning-emphasis fw-bold" style="color: #856404 !important;"><i class="bi bi-calendar-event me-2"></i>2026-10-30</strong></span>
-                        </div>
-                    </div>
-                </div>
+            if (matchesFilter && matchesSearch) {
+                row.style.setProperty('display', '', '');
+                visible++;
+            } else {
+                row.style.setProperty('display', 'none', 'important');
+            }
+        });
 
-                <!-- 5. Minimalist Statutory Notice -->
-                <div class="p-3.5 mb-4 rounded border bg-light text-muted d-flex align-items-center gap-2.5" style="border-color: #E2E8F0 !important; font-size: 14px;">
-                    <i class="bi bi-shield-check text-success fs-5 me-2"></i>
-                    <span>Confidential student counseling record protected under Republic Act No. 10173 (Data Privacy Act of 2012).</span>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3.5 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-secondary px-4 shadow-none" data-bs-dismiss="modal" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    Close
-                </button>
-                <button type="button" class="btn btn-outline-secondary px-3.5 shadow-none" onclick="window.print()" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    <i class="bi bi-printer me-2"></i>Print Summary
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+        const noResults = document.getElementById('noResultsRow');
+        if (noResults) {
+            noResults.style.display = (visible === 0) ? '' : 'none';
+        }
 
-<!-- Modal View 4: REYES, BEA ANGELA D. (CON-2026-0004) -->
-<div class="modal fade" id="modal-view-con-004" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2.5">
-                    <i class="bi bi-folder2-open text-warning fs-5 me-1"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-bold" style="font-size: 17px;">Case Record &bull; CON-2026-0004</h5>
-                        <span class="text-white-50" style="font-size: 13px;">Official Guidance &amp; Counseling Case Intake Profile</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 bg-white" style="font-size: 15px;">
-                <!-- 1. Header Profile Banner -->
-                <div class="p-3.5 mb-4 rounded border bg-light d-flex justify-content-between align-items-center flex-wrap gap-3"
-                    style="border-color: #E2E8F0 !important;">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-1.5 flex-wrap">
-                            <span class="badge" style="font-size: 13.5px; font-family: monospace; background-color: #FDF2F4; color: #800020; border: 1px solid #F3C4CC; padding: 4px 10px;">
-                                CON-2026-0004
-                            </span>
-                            <span class="fw-bold text-dark" style="font-size: 18px;">REYES, BEA ANGELA D.</span>
-                        </div>
-                        <div class="text-muted" style="font-size: 15px; line-height: 1.5;">
-                            Student ID: <strong class="text-dark">2024-00155</strong> &bull; Program: <strong class="text-dark">BS Tourism Management</strong> (CAS) &bull; 1st Year, Sec C
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-2.5">
-                        <span class="badge" style="border: 1px solid #cbd5e0; background-color: #f7fafc; color: #4a5568; border-radius: 6px; padding: 6px 14px; font-size: 13.5px; font-weight: 600;">
-                            Routine
-                        </span>
-                        <span class="badge" style="border: 1.5px solid #6c757d; background-color: #f8f9fa; color: #495057; border-radius: 50rem; min-width: 100px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13.5px;">
-                            Closed
-                        </span>
-                    </div>
-                </div>
+        const countText = document.getElementById('showingCountText');
+        if (countText) {
+            const filterSuffix = (window.currentStatusFilter !== 'all') ? ' (Filtered by ' + window.currentStatusFilter + ')' : '';
+            countText.textContent = 'Showing ' + visible + ' of ' + rows.length + ' student concerns' + filterSuffix;
+        }
+    };
 
-                <!-- 2. Case Particulars & Schedule Metrics Grid -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill me-1" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Case Particulars &amp; Timeline</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row g-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-tag text-muted me-2"></i>CONCERN CATEGORY
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Personal Adjustment
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-calendar-check text-muted me-2"></i>DATE RECEIVED
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        2026-10-18
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border h-100" style="border: 1.5px solid #28a745 !important; background-color: #f6fcf8 !important;">
-                                    <div class="mb-1 fw-bold" style="font-size: 13.5px; color: #155724;">
-                                        <i class="bi bi-check2-circle me-2 text-success"></i>SCHEDULED NEXT REVIEW DATE
-                                    </div>
-                                    <div class="fw-bold" style="font-size: 15.5px; color: #155724; line-height: 1.4;">
-                                        Concluded
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-person-check text-muted me-2"></i>ASSIGNED COUNSELOR
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Ms. Clarisse Ramos
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    function initKPIFiltering() {
+        const rows = document.querySelectorAll('.concern-row');
+        let total = rows.length;
+        let pending = 0;
+        let highPriority = 0;
+        let activeCases = 0;
 
-                <!-- 3. Presenting Concern Narrative & Origin -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Presenting Concern Narrative &amp; Case Linkage</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="p-3 bg-light rounded border mb-3 text-dark fw-semibold" style="font-size: 15px; border-color: #E2E8F0 !important; line-height: 1.5;">
-                            Freshman student adjusting to boarding house living away from provincial home in Torrijos, Marinduque.
-                        </div>
-                        <p class="text-secondary mb-3" style="font-size: 15px; line-height: 1.65;">
-                            Student experienced homesickness and social isolation during first month on campus. Guidance Peer Facilitators encouraged student to visit the guidance office for freshmen adjustment support.
-                        </p>
-                        <div class="d-flex align-items-center gap-2 flex-wrap pt-3 border-top text-muted" style="font-size: 15px;">
-                            <span><strong>Intake Source:</strong> Peer / Guidance Club Referral</span>
-                            <span class="mx-1">&bull;</span>
-                            <span><strong>Linked Records:</strong> Referral <code class="text-dark" style="font-size: 14.5px;">REF-2026-0001</code>, Appointment <code class="text-dark" style="font-size: 14.5px;">APT-2026-0003</code>, Session <code class="text-dark" style="font-size: 14.5px;">SES-2026-0003</code></span>
-                        </div>
-                    </div>
-                </div>
+        rows.forEach(r => {
+            const status = (r.getAttribute('data-status') || '').trim();
+            const priority = (r.getAttribute('data-priority') || '').trim();
 
-                <!-- 4. Counselor Assessment & Action Targets -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-check2-circle me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Counselor Assessment &amp; Action Plan</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <p class="text-dark mb-3.5" style="font-size: 15px; line-height: 1.65;">
-                            Student participated in two adjustment counseling sessions and was introduced to MarSU campus student clubs and peer facilitators. Adjustment milestones successfully achieved.
-                        </p>
-                        <div class="row g-3 mb-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Campus social integration and club registration</span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 13.5px;">Completed</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Independent living coping mechanisms</span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 13.5px;">Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top text-muted flex-wrap gap-2" style="font-size: 15px;">
-                            <span>Case Resolution: <strong class="text-dark">Closed with Satisfactory Adjustment</strong></span>
-                            <span>Review Status: <strong class="text-dark">Concluded (2026-10-22)</strong></span>
-                        </div>
-                    </div>
-                </div>
+            if (status === 'Pending Review') pending++;
+            if (priority === 'High Priority') highPriority++;
+            if (status === 'Active Case') activeCases++;
+        });
 
-                <!-- 5. Minimalist Statutory Notice -->
-                <div class="p-3.5 mb-4 rounded border bg-light text-muted d-flex align-items-center gap-2.5" style="border-color: #E2E8F0 !important; font-size: 14px;">
-                    <i class="bi bi-shield-check text-success fs-5 me-2"></i>
-                    <span>Confidential student counseling record protected under Republic Act No. 10173 (Data Privacy Act of 2012).</span>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3.5 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-secondary px-4 shadow-none" data-bs-dismiss="modal" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    Close
-                </button>
-                <button type="button" class="btn btn-outline-secondary px-3.5 shadow-none" onclick="window.print()" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    <i class="bi bi-printer me-2"></i>Print Summary
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+        const cAll = document.getElementById('count-all');
+        const cPending = document.getElementById('count-pending');
+        const cHigh = document.getElementById('count-high');
+        const cActive = document.getElementById('count-active');
 
-<!-- Modal View 5: TAN, JOSHUA DAVID K. (CON-2026-0005) -->
-<div class="modal fade" id="modal-view-con-005" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2.5">
-                    <i class="bi bi-folder2-open text-warning fs-5 me-1"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-bold" style="font-size: 17px;">Case Record &bull; CON-2026-0005</h5>
-                        <span class="text-white-50" style="font-size: 13px;">Official Guidance &amp; Counseling Case Intake Profile</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 bg-white" style="font-size: 15px;">
-                <!-- 1. Header Profile Banner -->
-                <div class="p-3.5 mb-4 rounded border bg-light d-flex justify-content-between align-items-center flex-wrap gap-3"
-                    style="border-color: #E2E8F0 !important;">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-1.5 flex-wrap">
-                            <span class="badge" style="font-size: 13.5px; font-family: monospace; background-color: #FDF2F4; color: #800020; border: 1px solid #F3C4CC; padding: 4px 10px;">
-                                CON-2026-0005
-                            </span>
-                            <span class="fw-bold text-dark" style="font-size: 18px;">TAN, JOSHUA DAVID K.</span>
-                        </div>
-                        <div class="text-muted" style="font-size: 15px; line-height: 1.5;">
-                            Student ID: <strong class="text-dark">2021-00341</strong> &bull; Program: <strong class="text-dark">BS Civil Engineering</strong> (COE) &bull; 4th Year, Sec A
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-2.5">
-                        <span class="badge" style="border: 1.5px solid #ffc107; background-color: #fffdf0; color: #856404; border-radius: 50rem; min-width: 100px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13.5px;">
-                            On Hold
-                        </span>
-                    </div>
-                </div>
+        if (cAll) cAll.textContent = total;
+        if (cPending) cPending.textContent = pending;
+        if (cHigh) cHigh.textContent = highPriority;
+        if (cActive) cActive.textContent = activeCases;
 
-                <!-- 2. Case Particulars & Schedule Metrics Grid -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill me-1" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Case Particulars &amp; Timeline</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row g-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-tag text-muted me-2"></i>CONCERN CATEGORY
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Attendance Concerns
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-calendar-check text-muted me-2"></i>DATE RECEIVED
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        2026-10-16
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border h-100" style="border: 1.5px solid #d4a017 !important; background-color: #fffdf5 !important;">
-                                    <div class="mb-1 fw-bold" style="font-size: 13.5px; color: #856404;">
-                                        <i class="bi bi-calendar-event me-2 text-warning"></i>SCHEDULED NEXT REVIEW DATE
-                                    </div>
-                                    <div class="fw-bold" style="font-size: 15.5px; color: #856404; line-height: 1.4;">
-                                        2026-10-27
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-person-check text-muted me-2"></i>ASSIGNED COUNSELOR
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Dr. Elena Santos, RGC
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        // Attach event listeners to all KPI cards
+        const cards = document.querySelectorAll('.kpi-filter-card');
+        cards.forEach(card => {
+            card.addEventListener('click', function () {
+                const filter = this.getAttribute('data-filter');
+                window.applyStatusFilter(filter, this);
+            });
+            card.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const filter = this.getAttribute('data-filter');
+                    window.applyStatusFilter(filter, this);
+                }
+            });
+        });
 
-                <!-- 3. Presenting Concern Narrative & Origin -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Presenting Concern Narrative &amp; Case Linkage</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="p-3 bg-light rounded border mb-3 text-dark fw-semibold" style="font-size: 15px; border-color: #E2E8F0 !important; line-height: 1.5;">
-                            Multiple consecutive absences in core structural analysis and engineering design subjects.
-                        </div>
-                        <p class="text-secondary mb-3" style="font-size: 15px; line-height: 1.65;">
-                            COE College Secretary flagged consecutive unexcused absences exceeding allowable thresholds. Student was issued an official intake notice to ascertain underlying reasons (health, family, or employment conflicts).
-                        </p>
-                        <div class="d-flex align-items-center gap-2 flex-wrap pt-3 border-top text-muted" style="font-size: 15px;">
-                            <span><strong>Intake Source:</strong> College Dean / Attendance Office</span>
-                            <span class="mx-1">&bull;</span>
-                            <span><strong>Linked Records:</strong> Referral <code class="text-dark" style="font-size: 14.5px;">REF-2026-0003</code>, Appointment <code class="text-dark" style="font-size: 14.5px;">APT-2026-0005</code></span>
-                        </div>
-                    </div>
-                </div>
+        // Attach to reset button
+        const resetBtn = document.getElementById('resetFilterBtn');
+        if (resetBtn) {
+            resetBtn.onclick = function () {
+                window.resetAllFilters();
+            };
+        }
+    }
 
-                <!-- 4. Counselor Assessment & Action Targets -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-check2-circle me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Counselor Assessment &amp; Action Plan</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <p class="text-dark mb-3.5" style="font-size: 15px; line-height: 1.65;">
-                            Preliminary interview revealed night shift employment conflicts. Awaiting submission of certificate of employment and academic load adjustment request.
-                        </p>
-                        <div class="row g-3 mb-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Employment proof &amp; schedule coordination</span>
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 13.5px;">In Progress</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>COE load reduction consultation</span>
-                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 13.5px;">Pending</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top text-muted flex-wrap gap-2" style="font-size: 15px;">
-                            <span>Case Status: <strong class="text-dark">Pending Employer Verification</strong></span>
-                            <span>Scheduled Next Review: <strong class="text-warning-emphasis fw-bold" style="color: #856404 !important;"><i class="bi bi-calendar-event me-2"></i>2026-10-27</strong></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. Minimalist Statutory Notice -->
-                <div class="p-3.5 mb-4 rounded border bg-light text-muted d-flex align-items-center gap-2.5" style="border-color: #E2E8F0 !important; font-size: 14px;">
-                    <i class="bi bi-shield-check text-success fs-5 me-2"></i>
-                    <span>Confidential student counseling record protected under Republic Act No. 10173 (Data Privacy Act of 2012).</span>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3.5 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-secondary px-4 shadow-none" data-bs-dismiss="modal" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    Close
-                </button>
-                <button type="button" class="btn btn-outline-secondary px-3.5 shadow-none" onclick="window.print()" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    <i class="bi bi-printer me-2"></i>Print Summary
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal View 6: LIM, PATRICIA ANNE S. (CON-2026-0006) -->
-<div class="modal fade" id="modal-view-con-006" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header text-white px-4 py-3" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2.5">
-                    <i class="bi bi-folder2-open text-warning fs-5 me-1"></i>
-                    <div>
-                        <h5 class="modal-title m-0 fw-bold" style="font-size: 17px;">Case Record &bull; CON-2026-0006</h5>
-                        <span class="text-white-50" style="font-size: 13px;">Official Guidance &amp; Counseling Case Intake Profile</span>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 bg-white" style="font-size: 15px;">
-                <!-- 1. Header Profile Banner -->
-                <div class="p-3.5 mb-4 rounded border bg-light d-flex justify-content-between align-items-center flex-wrap gap-3"
-                    style="border-color: #E2E8F0 !important;">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-1.5 flex-wrap">
-                            <span class="badge" style="font-size: 13.5px; font-family: monospace; background-color: #FDF2F4; color: #800020; border: 1px solid #F3C4CC; padding: 4px 10px;">
-                                CON-2026-0006
-                            </span>
-                            <span class="fw-bold text-dark" style="font-size: 18px;">LIM, PATRICIA ANNE S.</span>
-                        </div>
-                        <div class="text-muted" style="font-size: 15px; line-height: 1.5;">
-                            Student ID: <strong class="text-dark">2023-00492</strong> &bull; Program: <strong class="text-dark">BS Accountancy</strong> (CBA) &bull; 2nd Year, Sec A
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-2.5">
-                        <span class="badge" style="border: 1px solid #cbd5e0; background-color: #f7fafc; color: #4a5568; border-radius: 6px; padding: 6px 14px; font-size: 13.5px; font-weight: 600;">
-                            Routine
-                        </span>
-                        <span class="badge" style="border: 1.5px solid #17a2b8; background-color: #e8f7fa; color: #0c5460; border-radius: 50rem; min-width: 100px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13.5px;">
-                            Referred
-                        </span>
-                    </div>
-                </div>
-
-                <!-- 2. Case Particulars & Schedule Metrics Grid -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill me-1" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Case Particulars &amp; Timeline</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row g-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-tag text-muted me-2"></i>CONCERN CATEGORY
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Financial / Welfare
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-calendar-check text-muted me-2"></i>DATE RECEIVED
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        2026-10-15
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border h-100" style="border: 1.5px solid #d4a017 !important; background-color: #fffdf5 !important;">
-                                    <div class="mb-1 fw-bold" style="font-size: 13.5px; color: #856404;">
-                                        <i class="bi bi-calendar-event me-2 text-warning"></i>SCHEDULED NEXT REVIEW DATE
-                                    </div>
-                                    <div class="fw-bold" style="font-size: 15.5px; color: #856404; line-height: 1.4;">
-                                        2026-10-31
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded border bg-light h-100" style="border-color: #E2E8F0 !important;">
-                                    <div class="text-muted mb-1" style="font-size: 13.5px; font-weight: 600;">
-                                        <i class="bi bi-person-check text-muted me-2"></i>ASSIGNED COUNSELOR
-                                    </div>
-                                    <div class="text-dark fw-bold" style="font-size: 15px; line-height: 1.4;">
-                                        Dr. Elena Santos, RGC
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. Presenting Concern Narrative & Origin -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-left-text-fill me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Presenting Concern Narrative &amp; Case Linkage</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="p-3 bg-light rounded border mb-3 text-dark fw-semibold" style="font-size: 15px; border-color: #E2E8F0 !important; line-height: 1.5;">
-                            Student inquired regarding institutional scholarship options and emergency student welfare food subsidies.
-                        </div>
-                        <p class="text-secondary mb-3" style="font-size: 15px; line-height: 1.65;">
-                            Student experienced sudden financial emergency due to primary breadwinner's medical illness. Inquired about financial assistance programs, textbook lending, and food subsidy grants.
-                        </p>
-                        <div class="d-flex align-items-center gap-2 flex-wrap pt-3 border-top text-muted" style="font-size: 15px;">
-                            <span><strong>Intake Source:</strong> Student Seeking Assistance (Walk-in)</span>
-                            <span class="mx-1">&bull;</span>
-                            <span><strong>Linked Records:</strong> Appointment <code class="text-dark" style="font-size: 14.5px;">APT-2026-0006</code>, Session <code class="text-dark" style="font-size: 14.5px;">SES-2026-0006</code>, Welfare <code class="text-dark" style="font-size: 14.5px;">WLF-2026-0012</code></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. Counselor Assessment & Action Targets -->
-                <div class="card border mb-4 shadow-sm" style="border-color: #E2E8F0 !important; border-radius: 8px;">
-                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex align-items-center gap-2">
-                        <i class="bi bi-check2-circle me-2" style="color: #800020;"></i>
-                        <span class="fw-bold text-dark" style="font-size: 15px;">Counselor Assessment &amp; Action Plan</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <p class="text-dark mb-3.5" style="font-size: 15px; line-height: 1.65;">
-                            Verified student academic standing (GWA 1.35) and financial need. Processed inter-departmental endorsement to MarSU Student Welfare and Scholarship Office.
-                        </p>
-                        <div class="row g-3 mb-3.5">
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Emergency financial subsidy endorsement</span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 13.5px;">Completed</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="p-3 rounded bg-light border d-flex justify-content-between align-items-center" style="font-size: 15px;">
-                                    <span>Alumni book allowance scholarship grant</span>
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 13.5px;">In Progress</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top text-muted flex-wrap gap-2" style="font-size: 15px;">
-                            <span>Case Status: <strong class="text-dark">Endorsed to Student Welfare</strong></span>
-                            <span>Scheduled Next Review: <strong class="text-warning-emphasis fw-bold" style="color: #856404 !important;"><i class="bi bi-calendar-event me-2"></i>2026-10-31</strong></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. Minimalist Statutory Notice -->
-                <div class="p-3.5 mb-4 rounded border bg-light text-muted d-flex align-items-center gap-2.5" style="border-color: #E2E8F0 !important; font-size: 14px;">
-                    <i class="bi bi-shield-check text-success fs-5 me-2"></i>
-                    <span>Confidential student counseling record protected under Republic Act No. 10173 (Data Privacy Act of 2012).</span>
-                </div>
-            </div>
-            <div class="modal-footer px-4 py-3.5 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-secondary px-4 shadow-none" data-bs-dismiss="modal" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    Close
-                </button>
-                <button type="button" class="btn btn-outline-secondary px-3.5 shadow-none" onclick="window.print()" style="font-size: 14.5px; height: 38px; border-radius: 6px;">
-                    <i class="bi bi-printer me-2"></i>Print Summary
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initKPIFiltering);
+    } else {
+        initKPIFiltering();
+    }
+</script>

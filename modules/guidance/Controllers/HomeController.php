@@ -15,23 +15,14 @@ class HomeController
     {
         $user = Auth::user();
 
-        // Fetch demo / module records
-        $records = [];
-        try {
-            $records = Database::fetchAll("SELECT * FROM `gdc_records` WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 50");
-        } catch (\Exception $e) {
-            // Table might be pending migration
-        }
-
-        View::render('guidance/Views/index', [
-            'title' => 'Guidance & Counseling Intake Records System',
+        View::render('guidance/Views/dashboard', [
+            'title' => 'Guidance & Counseling Central Dashboard',
             'moduleName' => 'Guidance & Counseling Intake Records System',
             'slug' => 'guidance',
-            'records' => $records,
             'user' => $user,
             'crumbs' => [
                 'Guidance Center' => '',
-                'Guidance & Counseling Intake Records System' => ''
+                'Dashboard' => ''
             ]
         ]);
     }
@@ -118,6 +109,15 @@ class HomeController
         ]);
     }
 
+    public function studenthistoryview(): void
+    {
+        View::render('guidance/Views/student_history_view', [
+            'title' => 'Student Counseling History View',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
+
     public function appointmentlists(): void
     {
         View::render('guidance/Views/appointment_lists', [
@@ -175,6 +175,15 @@ class HomeController
         ]);
     }
 
+    public function caseview(): void
+    {
+        View::render('guidance/Views/case_view', [
+            'title' => 'Student Case Details',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
+
     public function caseregistration(): void
     {
         View::render('guidance/Views/case_registration', [
@@ -195,6 +204,15 @@ class HomeController
         ]);
     }
 
+    public function referralview(): void
+    {
+        View::render('guidance/Views/referral_view', [
+            'title' => 'Faculty Referral Details',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
+
 
     public function analyticsreports(): void
     {
@@ -209,7 +227,16 @@ class HomeController
     public function feedbacks(): void
     {
         View::render('guidance/Views/feedbacks', [
-            'title' => 'Feedbacks',
+            'title' => 'Student Feedbacks',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
+
+    public function feedbackview(): void
+    {
+        View::render('guidance/Views/feedback_view', [
+            'title' => 'Student Feedback Details',
             'slug' => 'guidance',
             'user' => Auth::user()
         ]);
@@ -234,4 +261,14 @@ class HomeController
             'user' => Auth::user()
         ]);
     }
+
+    public function auditlogview(): void
+    {
+        View::render('guidance/Views/audit_log_view', [
+            'title' => 'Audit Log Details',
+            'slug' => 'guidance',
+            'user' => Auth::user()
+        ]);
+    }
 }
+

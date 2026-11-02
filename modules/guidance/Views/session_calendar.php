@@ -1,5 +1,104 @@
 <?php
-$currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
+// Determine Year and Month from URL or Default to Current Date
+$currentYear = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
+$currentMonth = isset($_GET['month']) ? (int) $_GET['month'] : (int) date('n');
+
+// Clamp Month value between 1 and 12
+if ($currentMonth < 1) {
+    $currentMonth = 1;
+} elseif ($currentMonth > 12) {
+    $currentMonth = 12;
+}
+
+// Previous & Next Month Navigation Math
+$prevMonth = $currentMonth - 1;
+$prevYear = $currentYear;
+if ($prevMonth < 1) {
+    $prevMonth = 12;
+    $prevYear--;
+}
+
+$nextMonth = $currentMonth + 1;
+$nextYear = $currentYear;
+if ($nextMonth > 12) {
+    $nextMonth = 1;
+    $nextYear++;
+}
+
+// Current Month Details
+$firstDayTimestamp = mktime(0, 0, 0, $currentMonth, 1, $currentYear);
+$monthName = date('F', $firstDayTimestamp);
+$daysInMonth = (int) date('t', $firstDayTimestamp);
+$startDayOfWeek = (int) date('w', $firstDayTimestamp); // 0 (Sun) to 6 (Sat)
+
+// Previous Month Days Count
+$prevMonthDaysCount = (int) date('t', mktime(0, 0, 0, $prevMonth, 1, $prevYear));
+
+// Today's Date String for active day highlight
+$todayDateStr = date('Y-m-d');
+
+// Sample Scheduled Sessions in Guidance System
+$scheduledSessions = [
+    '2026-10-26' => true,
+    '2026-10-27' => true,
+    '2026-10-28' => true,
+    '2026-10-29' => true,
+    '2026-10-30' => true,
+    '2026-11-01' => true,
+    '2026-11-03' => true,
+    '2026-11-05' => true,
+    '2026-11-10' => true,
+    '2026-11-12' => true,
+    '2026-11-18' => true,
+    '2026-11-25' => true,
+];
+
+// Build Calendar Grid Cells
+$calendarCells = [];
+
+// 1. Trailing days from previous month
+for ($i = $startDayOfWeek - 1; $i >= 0; $i--) {
+    $prevDayNum = $prevMonthDaysCount - $i;
+    $calendarCells[] = [
+        'day' => $prevDayNum,
+        'isCurrentMonth' => false,
+        'isToday' => false,
+        'hasSession' => false,
+        'date' => sprintf('%04d-%02d-%02d', $prevYear, $prevMonth, $prevDayNum)
+    ];
+}
+
+// 2. Active days of current month
+for ($day = 1; $day <= $daysInMonth; $day++) {
+    $dateStr = sprintf('%04d-%02d-%02d', $currentYear, $currentMonth, $day);
+    $isToday = ($dateStr === $todayDateStr);
+    $hasSession = isset($scheduledSessions[$dateStr]) || $isToday;
+
+    $calendarCells[] = [
+        'day' => $day,
+        'isCurrentMonth' => true,
+        'isToday' => $isToday,
+        'hasSession' => $hasSession,
+        'date' => $dateStr
+    ];
+}
+
+// 3. Leading days of next month to complete the week
+$remainingCells = 7 - (count($calendarCells) % 7);
+if ($remainingCells < 7) {
+    for ($nextDay = 1; $nextDay <= $remainingCells; $nextDay++) {
+        $calendarCells[] = [
+            'day' => $nextDay,
+            'isCurrentMonth' => false,
+            'isToday' => false,
+            'hasSession' => false,
+            'date' => sprintf('%04d-%02d-%02d', $nextYear, $nextMonth, $nextDay)
+        ];
+    }
+}
+
+// Group into rows of 7 days (Sunday - Saturday)
+$calendarRows = array_chunk($calendarCells, 7);
 ?>
 <!-- ==================================================================== -->
 <!--   MARSU GUIDANCE & COUNSELING SYSTEM: SESSION CALENDAR               -->
@@ -55,18 +154,18 @@ $currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <!-- Left: Month Navigation Controls -->
             <div class="btn-group" role="group">
-                <a href="<?= url('guidance/session_calendar') ?>?month=9&year=<?= $currentYear ?>"
+                <a href="<?= url('guidance/session_calendar') ?>?month=<?= $prevMonth ?>&year=<?= $prevYear ?>"
                     class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
                     title="Previous Month"
                     style="height: 38px; width: 44px; font-size: 14px; border-radius: 6px 0 0 6px;">
                     <i class="bi bi-chevron-left"></i>
                 </a>
-                <a href="<?= url('guidance/session_calendar') ?>?month=10&year=2026"
+                <a href="<?= url('guidance/session_calendar') ?>?month=<?= (int)date('n') ?>&year=<?= (int)date('Y') ?>"
                     class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center px-3"
                     style="height: 38px; font-size: 14px; font-weight: 500;">
                     Today
                 </a>
-                <a href="<?= url('guidance/session_calendar') ?>?month=11&year=<?= $currentYear ?>"
+                <a href="<?= url('guidance/session_calendar') ?>?month=<?= $nextMonth ?>&year=<?= $nextYear ?>"
                     class="btn btn-outline-secondary shadow-none d-inline-flex align-items-center justify-content-center"
                     title="Next Month" style="height: 38px; width: 44px; font-size: 14px; border-radius: 0 6px 6px 0;">
                     <i class="bi bi-chevron-right"></i>
@@ -76,7 +175,7 @@ $currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
             <!-- Center: Current Month & Year Display -->
             <div>
                 <h5 class="fw-bold mb-0" style="color: #800020; font-size: 20px; letter-spacing: -0.2px;">
-                    October <?= $currentYear ?>
+                    <?= e($monthName) ?> <?= $currentYear ?>
                 </h5>
             </div>
 
@@ -86,13 +185,11 @@ $currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
                     <i class="bi bi-funnel me-1"></i>Filter by Year:
                 </label>
                 <select class="form-select form-select-sm shadow-none bg-white"
-                    onchange="window.location.href='<?= url('guidance/session_calendar') ?>?year=' + this.value + '&month=10';"
+                    onchange="window.location.href='<?= url('guidance/session_calendar') ?>?year=' + this.value + '&month=<?= $currentMonth ?>';"
                     style="width: 110px; height: 38px; border-color: #CBD5E1; font-size: 14px; font-weight: 500; border-radius: 6px; cursor: pointer;">
-                    <option value="2024" <?= ($currentYear === 2024) ? 'selected' : '' ?>>2024</option>
-                    <option value="2025" <?= ($currentYear === 2025) ? 'selected' : '' ?>>2025</option>
-                    <option value="2026" <?= ($currentYear === 2026) ? 'selected' : '' ?>>2026</option>
-                    <option value="2027" <?= ($currentYear === 2027) ? 'selected' : '' ?>>2027</option>
-                    <option value="2028" <?= ($currentYear === 2028) ? 'selected' : '' ?>>2028</option>
+                    <?php for ($y = 2024; $y <= 2028; $y++): ?>
+                        <option value="<?= $y ?>" <?= ($currentYear === $y) ? 'selected' : '' ?>><?= $y ?></option>
+                    <?php endfor; ?>
                 </select>
             </div>
         </div>
@@ -124,185 +221,57 @@ $currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
                 </tr>
             </thead>
             <tbody>
-                <!-- Row 1: Sept 27 - Oct 3 -->
-                <tr>
-                    <td class="p-2 align-top" style="width: 14.2857%; height: 115px; background-color: #F8FAFC;">
-                        <div class="text-muted fw-semibold" style="font-size: 13px; opacity: 0.45; line-height: 2.0;">27
-                        </div>
-                    </td>
-                    <td class="p-2 align-top" style="width: 14.2857%; height: 115px; background-color: #F8FAFC;">
-                        <div class="text-muted fw-semibold" style="font-size: 13px; opacity: 0.45; line-height: 2.0;">28
-                        </div>
-                    </td>
-                    <td class="p-2 align-top" style="width: 14.2857%; height: 115px; background-color: #F8FAFC;">
-                        <div class="text-muted fw-semibold" style="font-size: 13px; opacity: 0.45; line-height: 2.0;">29
-                        </div>
-                    </td>
-                    <td class="p-2 align-top" style="width: 14.2857%; height: 115px; background-color: #F8FAFC;">
-                        <div class="text-muted fw-semibold" style="font-size: 13px; opacity: 0.45; line-height: 2.0;">30
-                        </div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">1</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">2</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">3</div>
-                    </td>
-                </tr>
-
-                <!-- Row 2: Oct 4 - Oct 10 -->
-                <tr>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">4</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">5</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">6</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">7</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">8</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">9</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">10</div>
-                    </td>
-                </tr>
-
-                <!-- Row 3: Oct 11 - Oct 17 -->
-                <tr>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">11</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">12</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">13</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">14</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">15</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">16</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">17</div>
-                    </td>
-                </tr>
-
-                <!-- Row 4: Oct 18 - Oct 24 -->
-                <tr>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">18</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">19</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">20</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">21</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">22</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">23</div>
-                    </td>
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">24</div>
-                    </td>
-                </tr>
-
-                <!-- Row 5: Oct 25 - Oct 31 -->
-                <tr>
-                    <!-- Sun Oct 25 -->
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">25</div>
-                    </td>
-
-                    <!-- Mon Oct 26 -->
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="d-flex flex-column justify-content-between" style="height: 100%;">
-                            <span class="fw-bold text-dark" style="font-size: 14px;">26</span>
-                            <div class="mt-auto">
-                                <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
-                                    style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
-                                    View Schedule &rarr;
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Tue Oct 27 -->
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="d-flex flex-column justify-content-between" style="height: 100%;">
-                            <span class="fw-bold text-dark" style="font-size: 14px;">27</span>
-                            <div class="mt-auto">
-                                <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
-                                    style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
-                                    View Schedule &rarr;
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Wed Oct 28 -->
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="d-flex flex-column justify-content-between" style="height: 100%;">
-                            <span class="fw-bold text-dark" style="font-size: 14px;">28</span>
-                            <div class="mt-auto">
-                                <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
-                                    style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
-                                    View Schedule &rarr;
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Thu Oct 29: TODAY (Active Session) -->
-                    <td class="p-2 align-top bg-light"
-                        style="width: 14.2857%; height: 115px; line-height: 2.0; border: 2px solid #800020 !important;">
-                        <div class="d-flex flex-column justify-content-between" style="height: 100%;">
-                            <div>
-                                <span
-                                    style="width: 26px; height: 26px; border-radius: 50%; background-color: #800020; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">
-                                    29
-                                </span>
-                            </div>
-                            <div class="mt-auto">
-                                <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
-                                    style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
-                                    View Schedule &rarr;
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Fri Oct 30 -->
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">30</div>
-                    </td>
-
-                    <!-- Sat Oct 31 -->
-                    <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
-                        <div class="fw-bold text-dark" style="font-size: 14px;">31</div>
-                    </td>
-                </tr>
+                <?php foreach ($calendarRows as $row): ?>
+                    <tr>
+                        <?php foreach ($row as $cell): ?>
+                            <?php if (!$cell['isCurrentMonth']): ?>
+                                <!-- Previous / Next Month Day -->
+                                <td class="p-2 align-top" style="width: 14.2857%; height: 115px; background-color: #F8FAFC;">
+                                    <div class="text-muted fw-semibold" style="font-size: 13px; opacity: 0.45; line-height: 2.0;">
+                                        <?= $cell['day'] ?>
+                                    </div>
+                                </td>
+                            <?php elseif ($cell['isToday']): ?>
+                                <!-- TODAY (Active Current Date Highlight) -->
+                                <td class="p-2 align-top bg-light"
+                                    style="width: 14.2857%; height: 115px; line-height: 2.0; border: 2px solid #800020 !important;">
+                                    <div class="d-flex flex-column justify-content-between" style="height: 100%;">
+                                        <div>
+                                            <span
+                                                style="width: 26px; height: 26px; border-radius: 50%; background-color: #800020; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">
+                                                <?= $cell['day'] ?>
+                                            </span>
+                                        </div>
+                                        <div class="mt-auto">
+                                            <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
+                                                style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
+                                                View Schedule &rarr;
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            <?php elseif ($cell['hasSession']): ?>
+                                <!-- Current Month Day with Scheduled Session -->
+                                <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                                    <div class="d-flex flex-column justify-content-between" style="height: 100%;">
+                                        <span class="fw-bold text-dark" style="font-size: 14px;"><?= $cell['day'] ?></span>
+                                        <div class="mt-auto">
+                                            <a href="<?= url('guidance/session_view') ?>" class="text-decoration-none"
+                                                style="color: #800020; font-size: 11.5px; font-weight: 600; line-height: 2.0;">
+                                                View Schedule &rarr;
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            <?php else: ?>
+                                <!-- Current Month Day without Session -->
+                                <td class="p-2 align-top bg-white" style="width: 14.2857%; height: 115px; line-height: 2.0;">
+                                    <div class="fw-bold text-dark" style="font-size: 14px;"><?= $cell['day'] ?></div>
+                                </td>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>
@@ -323,7 +292,7 @@ $currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
                 </div>
                 <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
             </div>
-            <form action="" method="POST" onsubmit="event.preventDefault();">
+            <form action="" method="POST" onsubmit="event.preventDefault(); alert('Counseling session scheduled successfully!'); const m = bootstrap.Modal.getInstance(document.getElementById('modal-schedule-session')); if (m) m.hide();">
                 <?= csrf_field() ?>
                 <div class="modal-body p-4 bg-white" style="font-size: 14.5px;">
 
@@ -351,13 +320,10 @@ $currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
                             <select class="form-select shadow-none bg-white" required
                                 style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
                                 <option value="" selected disabled>Select program...</option>
-                                <option value="BSIS - 3A">BSIS (Information Systems)</option>
-                                <option value="BaPOS - 2A">BaPOS (Political Science)</option>
-                                <option value="BSTM - 2B">BSTM (Tourism Management)</option>
-                                <option value="BEED - 2A">BEED (Elementary Education)</option>
-                                <option value="BSIT - 3B">BSIT (Information Technology)</option>
-                                <option value="BSED - 4A">BSED (Secondary Education)</option>
-                                <option value="BSN - 1A">BSN (Nursing)</option>
+                                <option value="BSIS">BSIS (BS Information Systems)</option>
+                                <option value="BaPOS">BaPOS (BA Political Science)</option>
+                                <option value="BEED">BEED (Bachelor of Elementary Education)</option>
+                                <option value="BSTM">BSTM (BS Tourism Management)</option>
                             </select>
                         </div>
                         <div class="col-md-6 col-12">
@@ -372,7 +338,7 @@ $currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
                                 style="font-size: 13px; letter-spacing: 0.3px;">Session Date <span
                                     class="text-danger">*</span></label>
                             <input type="date" class="form-control shadow-none bg-white"
-                                value="<?= sprintf('%04d-10-29', $currentYear) ?>" required
+                                value="<?= date('Y-m-d') ?>" required
                                 style="font-size: 14.5px; border-color: #CBD5E1; border-radius: 8px; height: 46px;">
                         </div>
                         <div class="col-md-4 col-12">
@@ -430,7 +396,7 @@ $currentYear = isset($_GET['year']) ? (int) $_GET['year'] : 2026;
                     <button type="button" class="btn btn-outline-secondary btn-sm px-3 shadow-none"
                         data-bs-dismiss="modal"
                         style="font-size: 14px; height: 38px; border-radius: 6px;">Cancel</button>
-                    <button type="button" class="btn text-white btn-sm px-4 shadow-none" data-bs-dismiss="modal"
+                    <button type="submit" class="btn text-white btn-sm px-4 shadow-none"
                         style="background-color: #800020; border: 1px solid #800020; font-size: 14px; font-weight: 500; height: 38px; border-radius: 6px;">
                         <i class="bi bi-calendar-check me-1.5"></i>Confirm Session
                     </button>

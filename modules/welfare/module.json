@@ -10,6 +10,13 @@
         "icon": "bi-shield-check",
         "items": [
             {
+                "label": "Dashboard",
+                "route": "welfare/dashboard",
+                "permission": "welfare.view",
+                "icon": "bi-speedometer",
+                "children": []
+            },
+            {
                 "label": "Student Profile Management",
                 "icon": "bi-person-vcard",
                 "permission": "welfare.view",

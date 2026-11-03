@@ -264,7 +264,7 @@ class HomeController
     {
         $user = Auth::user();
         View::render('welfare/Views/financial-assistance-records', [
-            'title' => 'Financial assistance records',
+            'title' => 'Financial assistance recordsdss',
             'slug'  => 'welfare'
         ]);
     }
@@ -361,6 +361,14 @@ class HomeController
         $user = Auth::user();
         View::render('welfare/Views/intervention-reports', [
             'title' => 'Intervention reports',
+            'slug'  => 'welfare'
+        ]);
+    }
+      public function dashboard(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/dashboard', [
+            'title' => 'Dashboard',
             'slug'  => 'welfare'
         ]);
     }

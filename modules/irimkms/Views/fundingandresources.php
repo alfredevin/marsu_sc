@@ -256,20 +256,6 @@
         </div>
     </div>
 
-    <!-- Quick Portal Nav Pills -->
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="<?= url('/irimkms/proposalsandapprovals') ?>" class="main-nav-pill"><i class="bi bi-file-earmark-check text-maroon me-1"></i> Proposals & Approvals</a>
-        <a href="<?= url('/irimkms/researchprojects') ?>" class="main-nav-pill"><i class="bi bi-journal-code text-maroon me-1"></i> Research Projects</a>
-        <a href="<?= url('/irimkms/projectmilestone') ?>" class="main-nav-pill"><i class="bi bi-flag text-maroon me-1"></i> Milestones</a>
-        <a href="<?= url('/irimkms/implementationprogress') ?>" class="main-nav-pill"><i class="bi bi-hourglass-split text-maroon me-1"></i> Implementation Progress</a>
-        <a href="<?= url('/irimkms/fundingandresources') ?>" class="main-nav-pill active"><i class="bi bi-cash-coin text-white me-1"></i> Grants & Funding</a>
-        <a href="<?= url('/irimkms/knowledgemanagement') ?>" class="main-nav-pill"><i class="bi bi-book-half text-maroon me-1"></i> Publications</a>
-        <a href="<?= url('/irimkms/searchableresearch') ?>" class="main-nav-pill"><i class="bi bi-search text-maroon me-1"></i> Discovery Engine</a>
-        <a href="<?= url('/irimkms/evaluationforms') ?>" class="main-nav-pill"><i class="bi bi-clipboard-data text-maroon me-1"></i> Evaluation Tools</a>
-        <a href="<?= url('/irimkms/completionreporting') ?>" class="main-nav-pill"><i class="bi bi-award text-maroon me-1"></i> Completion Reports</a>
-        <a href="<?= url('/irimkms/performanceindicators') ?>" class="main-nav-pill"><i class="bi bi-graph-up-arrow text-maroon me-1"></i> Performance Analytics</a>
-    </div>
-
     <!-- Top Metric Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-3">
@@ -543,7 +529,6 @@
                     <table class="table table-hover align-middle mb-0" id="allocationsTable">
                         <thead class="bg-light text-dark">
                             <tr>
-                                <th>Project Code</th>
                                 <th>Research Title & Lead PI</th>
                                 <th>Total Approved Award</th>
                                 <th>Disbursed Amount</th>
@@ -563,7 +548,6 @@
                                         $barBg = $pct >= 100 ? 'bg-success' : ($pct >= 50 ? 'bg-info' : 'bg-warning');
                                     ?>
                                     <tr>
-                                        <td><span class="badge bg-maroon text-white"><?= e($pj['project_code']) ?></span></td>
                                         <td>
                                             <strong class="text-dark d-block"><?= e($pj['title']) ?></strong>
                                             <small class="text-muted"><i class="fas fa-user-circle me-1"></i><?= e($pj['lead_pi']) ?> • <?= e($pj['college'] ?? 'N/A') ?></small>
@@ -586,7 +570,6 @@
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td><span class="badge bg-maroon text-white">PROP-2026-7721</span></td>
                                     <td>
                                         <strong class="text-dark">Smart Agricultural Crop Pest Detection</strong><br>
                                         <small class="text-muted">Prof. Gabriel Ramos • College of Agriculture</small>
@@ -607,7 +590,6 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-maroon text-white">PROP-2026-5540</span></td>
                                     <td>
                                         <strong class="text-dark">Nanomaterial-Based Solar Cell Efficiency</strong><br>
                                         <small class="text-muted">Engr. Ramon Valenzuela • College of Engineering</small>
@@ -985,8 +967,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label font-weight-bold text-dark">Associated Project Code / Title</label>
-                        <input type="text" class="form-control" id="bookingProject" placeholder="e.g. PRJ-2026-001 (Optional)">
+                        <label class="form-label font-weight-bold text-dark">Associated Research Project Title</label>
+                        <input type="text" class="form-control" id="bookingProject" placeholder="e.g. AI-Driven Water Quality Monitoring System (Optional)">
                     </div>
 
                     <div class="mb-3">
@@ -1025,7 +1007,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label font-weight-bold text-dark">Project Code & Title</label>
+                        <label class="form-label font-weight-bold text-dark">Research Project Title</label>
                         <input type="text" class="form-control" id="disbursementProjectCode" readonly>
                     </div>
 
@@ -1293,7 +1275,7 @@
     }
 
     function openDisbursementModal(code, title, remainingBalance) {
-        document.getElementById('disbursementProjectCode').value = `${code} - ${title}`;
+        document.getElementById('disbursementProjectCode').value = title;
         document.getElementById('disbursementAmount').value = remainingBalance || 50000;
 
         const modalEl = document.getElementById('disbursementModal');
@@ -1329,19 +1311,18 @@
     }
 
     function exportFinancialLedgerCSV() {
-        const rows = [["Project Code", "Title & PI", "Approved Award (P)", "Disbursed Amount (P)", "Remaining Balance (P)", "Utilization (%)"]];
+        const rows = [["Research Title & PI", "Approved Award (P)", "Disbursed Amount (P)", "Remaining Balance (P)", "Utilization (%)"]];
 
         document.querySelectorAll('#allocationsTable tbody tr').forEach(row => {
             const cols = row.querySelectorAll('td');
-            if (cols.length >= 6) {
-                const code = cols[0].innerText.trim();
-                const titlePi = cols[1].innerText.replace(/\n/g, ' - ').trim();
-                const award = cols[2].innerText.replace(/[^\d.]/g, '');
-                const disbursed = cols[3].innerText.replace(/[^\d.]/g, '');
-                const remaining = cols[4].innerText.replace(/[^\d.]/g, '');
-                const utilization = cols[5].innerText.replace(/\n/g, ' ').trim();
+            if (cols.length >= 5) {
+                const titlePi = cols[0].innerText.replace(/\n/g, ' - ').trim();
+                const award = cols[1].innerText.replace(/[^\d.]/g, '');
+                const disbursed = cols[2].innerText.replace(/[^\d.]/g, '');
+                const remaining = cols[3].innerText.replace(/[^\d.]/g, '');
+                const utilization = cols[4].innerText.replace(/\n/g, ' ').trim();
 
-                rows.push([`"${code}"`, `"${titlePi}"`, `"${award}"`, `"${disbursed}"`, `"${remaining}"`, `"${utilization}"`]);
+                rows.push([`"${titlePi}"`, `"${award}"`, `"${disbursed}"`, `"${remaining}"`, `"${utilization}"`]);
             }
         });
 

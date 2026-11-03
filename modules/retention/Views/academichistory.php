@@ -312,7 +312,7 @@
                                     </span>
                                 </td>
                                 <td class="text-end pe-3">
-                                    <!-- PINDUTIN PARA BUMUKAS ANG TERM-BY-TERM TRANSCRIPT -->
+                                    <!-- Click to view term-by-term transcript -->
                                     <a href="academichistory?student_id=<?= urlencode($row['student_number'] ?? $row['id']) ?>"
                                         class="btn btn-sm btn-outline-primary fw-semibold">
                                         View Transcript
@@ -340,13 +340,13 @@
                 const query = input.value.trim().toLowerCase();
                 const rows = document.querySelectorAll('.student-row');
 
-                // Live filter sa table habang nagta-type
+                // Live filter table rows while typing
                 rows.forEach(row => {
                     const text = row.innerText.toLowerCase();
                     row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
                 });
 
-                // Kusa mag-reload kapag binura gamit ang backspace
+                // Automatically restore list when search is cleared
                 if (query === '' && hadQuery) {
                     const url = new URL(window.location.href);
                     url.searchParams.delete('q');
@@ -354,7 +354,7 @@
                 }
             }
 
-            // Kapag pinindot ang (x) icon sa search box
+            // When clear button (x) is clicked in search input
             const sBox = document.getElementById('searchInput');
             if (sBox) {
                 sBox.addEventListener('search', function () {

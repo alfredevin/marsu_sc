@@ -1,18 +1,162 @@
 {
-    "name": "University Health & Medical Consultation Clinic",
+    "name": "Student Health Profile",
     "slug": "health",
     "version": "1.0.0",
-    "description": "Campus clinic consultations, medical checkups, dental triage, and electronic health records strictly protected under the Data Privacy Act of 2012 (RA 10173).",
+    "description": "Student health records, clinic consultations, medical checkups, and wellness monitoring strictly protected under the Data Privacy Act of 2012 (RA 10173).",
     "author": "MarSU CICS Student Development Group",
     "default_enabled": true,
-    "section": "Student Welfare & Clinic",
+    "section": "Student Health Profile",
     "menu": {
         "icon": "bi-heart-pulse-fill",
         "items": [
             {
-                "label": "Overview & Records",
+                "label": "Patient Registration (HSSO)",
+                "icon": "bi-file-earmark-person",
                 "route": "health",
                 "permission": "health.view"
+            },
+            {
+                "label": "Student Info Hub",
+                "icon": "bi-info-circle",
+                "route": "health/student-info-hub",
+                "permission": "health.view"
+            },
+            {
+                "label": "Health Statistics",
+                "icon": "bi-bar-chart",
+                "route": "health/health-statistics",
+                "permission": "health.view"
+            },
+            {
+                "label": "Consultation Mgmt",
+                "icon": "bi-clipboard2-pulse",
+                "permission": "health.view",
+                "children": [
+                    {
+                        "label": "Medical Assessment",
+                        "icon": "bi-clipboard2-check",
+                        "route": "health/medical-assessment",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Treatment Records",
+                        "icon": "bi-file-medical",
+                        "route": "health/treatment-records",
+                        "permission": "health.view"
+                    }
+                ]
+            },
+            {
+                "label": "Appointment & Schedule",
+                "icon": "bi-calendar-check",
+                "permission": "health.view",
+                "children": [
+                    {
+                        "label": "Consultation Requests",
+                        "icon": "bi-calendar-plus",
+                        "route": "health/consultation-requests",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "List of Appointments",
+                        "icon": "bi-calendar-week",
+                        "route": "health/appointments-list",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Queue Management",
+                        "icon": "bi-people",
+                        "route": "health/queue-management",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Reminders",
+                        "icon": "bi-bell",
+                        "route": "health/reminders",
+                        "permission": "health.view"
+                    }
+                ]
+            },
+            {
+                "label": "Health Monitoring",
+                "icon": "bi-heart-pulse",
+                "permission": "health.view",
+                "children": [
+                    {
+                        "label": "Vital Signs Recording",
+                        "icon": "bi-activity",
+                        "route": "health/vital-signs",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Screening Results",
+                        "icon": "bi-file-earmark-medical",
+                        "route": "health/screening-results",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Immunization Tracking",
+                        "icon": "bi-shield-plus",
+                        "route": "health/immunization-tracking",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Health Risk Monitoring",
+                        "icon": "bi-exclamation-triangle",
+                        "route": "health/health-risk-monitoring",
+                        "permission": "health.view"
+                    }
+                ]
+            },
+            {
+                "label": "Reports & Analytics",
+                "icon": "bi-graph-up-arrow",
+                "permission": "health.view",
+                "children": [
+                    {
+                        "label": "Common Health Concerns",
+                        "icon": "bi-pie-chart",
+                        "route": "health/common-health-concerns",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Clinic Utilization",
+                        "icon": "bi-bar-chart-line",
+                        "route": "health/clinic-utilization",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Program Evaluation",
+                        "icon": "bi-clipboard-data",
+                        "route": "health/program-evaluation",
+                        "permission": "health.view"
+                    }
+                ]
+            },
+            {
+                "label": "Health Services Mgmt",
+                "icon": "bi-boxes",
+                "permission": "health.view",
+                "children": [
+                    {
+                        "label": "Inventory & Medical Supplies",
+                        "icon": "bi-box-seam",
+                        "route": "health/inventory-supplies",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Medicine Dispensing",
+                        "icon": "bi-capsule",
+                        "route": "health/medicine-dispensing",
+                        "permission": "health.view"
+                    },
+                    {
+                        "label": "Clinic Staff Schedule",
+                        "icon": "bi-person-badge",
+                        "route": "health/staff-schedule",
+                        "permission": "health.view"
+                    }
+                ]
             }
         ]
     },

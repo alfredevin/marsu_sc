@@ -10,7 +10,13 @@
         "icon": "bi-journal-bookmark-fill",
         "items": [
             {
-                "label": "Research Managements",
+                "label": "Dashboard",
+                "icon": "bi-file-earmark-check",
+                "route": "irimkms/index",
+                "permission": "irimkms.view"
+            },
+            {
+                "label": "Research Management",
                 "icon": "bi-journal-text",
                 "permission": "irimkms.view",
                 "children": [
@@ -21,7 +27,7 @@
                         "permission": "irimkms.view"
                     },
                     {
-                        "label": "Research Profiles",
+                        "label": "Researcher Profile",
                         "icon": "bi-person-badge",
                         "route": "irimkms/researchprofiles",
                         "permission": "irimkms.view"

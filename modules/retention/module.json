@@ -10,7 +10,7 @@
         "icon": "bi-graph-up-arrow",
         "items": [
             {
-                "label": "Student Information Managements",
+                "label": "Student Information Management",
                 "icon": "bi-people",
                 "permission": "retention.view",
                 "children": [
@@ -18,24 +18,6 @@
                         "label": "Student Profiles",
                         "icon": "bi-person-circle",
                         "route": "retention/profile",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Academic History",
-                        "icon": "bi-clock-history",
-                        "route": "retention/academichistory",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Program and Enrollment Records",
-                        "icon": "bi-file-earmark-medical",
-                        "route": "retention/enrollmentrecords",
-                        "permission": "retention.view"
-                    },
-                    {
-                        "label": "Demographic Information",
-                        "icon": "bi-pie-chart",
-                        "route": "retention/demographicinfo",
                         "permission": "retention.view"
                     }
                 ]

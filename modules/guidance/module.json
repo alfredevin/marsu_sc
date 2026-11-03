@@ -16,76 +16,100 @@
                 "children": [
                     {
                         "label": "Student Profile",
-                        "route": "guidance/student-profile",
+                        "route": "guidance/student_profile",
                         "permission": "guidance.view"
                     },
                     {
                         "label": "Student History",
-                        "route": "guidance/student-history",
+                        "route": "guidance/student_history",
                         "permission": "guidance.view"
                     }
                 ]
             },
             {
-                "label": "Guidance Services",
-                "icon": "bi-people",
+                "label": "Appointments",
+                "icon": "bi-calendar-check",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Appointments",
-                        "route": "guidance/appointments",
+                        "label": "Appointment Requests",
+                        "route": "guidance/appointment_requests",
                         "permission": "guidance.view"
                     },
                     {
                         "label": "Session Calendar",
-                        "route": "guidance/session-calendar",
+                        "route": "guidance/session_calendar",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Case Monitoring",
-                        "route": "guidance/case-monitoring",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Counseling",
-                        "route": "guidance/counseling",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Career Counseling",
-                        "route": "guidance/career-counseling",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Psychological Support",
-                        "route": "guidance/psychological-support",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Exit Interviews",
-                        "route": "guidance/exit-interviews",
+                        "label": "Appointment Status",
+                        "route": "guidance/appointment_status",
                         "permission": "guidance.view"
                     }
                 ]
             },
             {
-                "label": "Records Management",
-                "icon": "bi-folder",
+                "label": "Case Management",
+                "icon": "bi-journal-medical",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Counseling Records",
-                        "route": "guidance/counseling-records",
+                        "label": "Student Concerns",
+                        "route": "guidance/student_concerns",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Career Assessments",
-                        "route": "guidance/career-assessments",
+                        "label": "Counseling Session",
+                        "route": "guidance/counseling_session",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Service Records",
-                        "route": "guidance/service-records",
+                        "label": "Case Progress",
+                        "route": "guidance/case_progress",
+                        "permission": "guidance.view"
+                    }
+                ]
+            },
+            {
+                "label": "Assessment & Evaluation",
+                "icon": "bi-clipboard-data",
+                "permission": "guidance.view",
+                "children": [
+                    {
+                        "label": "Guidance Assessment",
+                        "route": "guidance/guidance_assessment",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Career Assessment",
+                        "route": "guidance/career_assessment",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Student Evaluation Records",
+                        "route": "guidance/student_evaluation_records",
+                        "permission": "guidance.view"
+                    }
+                ]
+            },
+            {
+                "label": "Intervention Management",
+                "icon": "bi-heart-pulse",
+                "permission": "guidance.view",
+                "children": [
+                    {
+                        "label": "Counseling Plans",
+                        "route": "guidance/counseling_plans",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Referrals",
+                        "route": "guidance/referrals",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Follow Up",
+                        "route": "guidance/follow_up",
                         "permission": "guidance.view"
                     }
                 ]
@@ -96,23 +120,18 @@
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Counseling Utilization",
-                        "route": "guidance/counseling-utilization",
+                        "label": "Counseling Service Utilization",
+                        "route": "guidance/counseling_service_utilization",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Student Concerns",
-                        "route": "guidance/student-concerns",
+                        "label": "Student Concerns Summary",
+                        "route": "guidance/student_concerns_summarry",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Career Readiness",
-                        "route": "guidance/career-readiness",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Exit Interview Summary",
-                        "route": "guidance/exit-interview-summary",
+                        "label": "Guidance Program Reports",
+                        "route": "guidance/guidance_program_reports",
                         "permission": "guidance.view"
                     }
                 ]
@@ -124,24 +143,29 @@
                 "children": [
                     {
                         "label": "Student Concern Types",
-                        "route": "guidance/student-concern-types",
+                        "route": "guidance/student_concern_types",
                         "permission": "guidance.view"
                     }
                 ]
             },
             {
-                "label": "System Management",
+                "label": "User Management",
                 "icon": "bi-gear-fill",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "User Accounts",
-                        "route": "guidance/user-accounts",
+                        "label": "User Account Management",
+                        "route": "guidance/user_account_management",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Settings",
-                        "route": "guidance/settings",
+                        "label": "Role Based Access Control",
+                        "route": "guidance/role_based_access_control",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Activity Logs",
+                        "route": "guidance/activity_logs",
                         "permission": "guidance.view"
                     }
                 ]

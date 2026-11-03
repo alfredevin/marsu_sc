@@ -249,40 +249,14 @@
     <?php endif; ?>
 
     <!-- Page Hero Banner -->
-    <div class="page-hero d-flex align-items-center justify-content-between flex-wrap">
-        <div>
-            <span class="hero-badge-tag"><i class="fas fa-clipboard-check me-1"></i> Interactive Assessment Hub</span>
-            <h1 class="page-hero-title mb-1">
-                <i class="fas fa-clipboard-list me-2 text-warning"></i>Evaluation Forms & Assessment Tools
-            </h1>
-            <p class="page-hero-subtitle">
-                Standardized peer review rubrics, technical panel scorecards, interactive ethics clearance assessors, and live evaluation analytics workspace.
-            </p>
-        </div>
-        <div class="mt-3 mt-lg-0 d-flex gap-2">
-            <button class="btn btn-gold btn-sm px-3 py-2 font-weight-bold shadow-sm" onclick="switchMainTab('scorecard')">
-                <i class="fas fa-calculator me-1"></i> Interactive Scorecard Workspace
-            </button>
-            <button class="btn btn-outline-light btn-sm px-3 py-2" onclick="switchMainTab('ethics')">
-                <i class="fas fa-shield-alt me-1"></i> Ethics Risk Calculator
-            </button>
-            <button class="btn btn-light btn-sm px-3 py-2 text-maroon font-weight-bold" onclick="exportEvaluationRubricsCSV()">
-                <i class="fas fa-file-csv me-1"></i> Export Rubrics Matrix
-            </button>
-        </div>
-    </div>
-
-    <!-- Quick Portal Nav Pills -->
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="<?= url('/irimkms/proposalsandapprovals') ?>" class="main-nav-pill"><i class="bi bi-file-earmark-check text-maroon me-1"></i> Proposals & Approvals</a>
-        <a href="<?= url('/irimkms/researchprojects') ?>" class="main-nav-pill"><i class="bi bi-journal-code text-maroon me-1"></i> Research Projects</a>
-        <a href="<?= url('/irimkms/projectmilestone') ?>" class="main-nav-pill"><i class="bi bi-flag text-maroon me-1"></i> Milestones</a>
-        <a href="<?= url('/irimkms/implementationprogress') ?>" class="main-nav-pill"><i class="bi bi-hourglass-split text-maroon me-1"></i> Implementation Progress</a>
-        <a href="<?= url('/irimkms/fundingandresources') ?>" class="main-nav-pill"><i class="bi bi-cash-coin text-maroon me-1"></i> Grants & Funding</a>
-        <a href="<?= url('/irimkms/knowledgemanagement') ?>" class="main-nav-pill"><i class="bi bi-book-half text-maroon me-1"></i> Publications</a>
-        <a href="<?= url('/irimkms/evaluationforms') ?>" class="main-nav-pill active"><i class="bi bi-clipboard-data text-white me-1"></i> Evaluation Tools</a>
-        <a href="<?= url('/irimkms/completionreporting') ?>" class="main-nav-pill"><i class="bi bi-award text-maroon me-1"></i> Completion Reports</a>
-        <a href="<?= url('/irimkms/performanceindicators') ?>" class="main-nav-pill"><i class="bi bi-graph-up-arrow text-maroon me-1"></i> Performance Analytics</a>
+    <div class="page-hero">
+        <span class="hero-badge-tag"><i class="fas fa-clipboard-check me-1"></i> Interactive Assessment Hub</span>
+        <h1 class="page-hero-title mb-1">
+            <i class="fas fa-clipboard-list me-2 text-warning"></i>Evaluation Forms & Assessment Tools
+        </h1>
+        <p class="page-hero-subtitle mb-0">
+            Standardized peer review rubrics, technical panel scorecards, interactive ethics clearance assessors, and live evaluation analytics workspace.
+        </p>
     </div>
 
     <!-- KPI Summary Cards -->

@@ -23,14 +23,13 @@
         }
     </style>
 
-    <!-- 1. CONCISE HEADER & SINGLE-LINE FILTER BAR -->
+    <!-- 1. HEADER AND FILTERS -->
     <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom flex-wrap gap-2">
         <div>
             <h6 class="fw-bold marsu-maroon-text mb-0 text-nowrap">
-                <i class="bi bi-exclamation-octagon-fill me-1"></i> Failed & Incomplete Subject Watchlist
+                <i class="bi bi-exclamation-octagon-fill me-1"></i> Failed and Incomplete Subject Watchlist
             </h6>
-            <small class="text-muted">Institutional tracking of course failures (5.00), Incomplete (INC) marks, and
-                removal examination compliance.</small>
+            <small class="text-muted">Track failed marks (5.00), incomplete grades (INC), and removal deadlines.</small>
         </div>
 
         <form method="GET" action="" class="d-flex align-items-center gap-2 flex-wrap ms-auto">
@@ -87,7 +86,7 @@
         </form>
     </div>
 
-    <!-- 2. STRATEGIC DEFICIENCY KPI CARDS -->
+    <!-- 2. SUMMARY KPI CARDS -->
     <div class="row g-3 mb-4">
         <!-- Total Deficiencies -->
         <div class="col-xl-3 col-md-6">
@@ -95,7 +94,7 @@
                 <span class="text-muted small fw-semibold text-uppercase">Total Deficiencies</span>
                 <div class="d-flex align-items-baseline justify-content-between mt-2">
                     <h3 class="fw-bold mb-0 text-danger"><?= $totalDeficiencies ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Active Watchlist</span>
+                    <span class="badge bg-danger-subtle text-danger border border-danger">Active List</span>
                 </div>
                 <small class="text-muted mt-2 d-block">Total active failing (5.00) or incomplete records</small>
             </div>
@@ -104,12 +103,12 @@
         <!-- Incomplete Marks (INC) -->
         <div class="col-xl-3 col-md-6">
             <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Incomplete (INC) Marks</span>
+                <span class="text-muted small fw-semibold text-uppercase">Incomplete Marks (INC)</span>
                 <div class="d-flex align-items-baseline justify-content-between mt-2">
                     <h3 class="fw-bold mb-0 text-dark"><?= $totalInc ?></h3>
                     <span class="badge bg-warning-subtle text-dark border border-warning">1-Year Window</span>
                 </div>
-                <small class="text-muted mt-2 d-block">Pending final examination or major requirement</small>
+                <small class="text-muted mt-2 d-block">Missing final exam or course requirement</small>
             </div>
         </div>
 
@@ -119,46 +118,42 @@
                 <span class="text-muted small fw-semibold text-uppercase">Course Failures (5.00)</span>
                 <div class="d-flex align-items-baseline justify-content-between mt-2">
                     <h3 class="fw-bold mb-0 text-danger"><?= $totalFailed ?></h3>
-                    <span class="badge bg-light text-danger border border-danger">Retake Mandatory</span>
+                    <span class="badge bg-light text-danger border border-danger">Retake Required</span>
                 </div>
-                <small class="text-muted mt-2 d-block">Requires curricular re-enrollment & advising</small>
+                <small class="text-muted mt-2 d-block">Requires course re-enrollment and advising</small>
             </div>
         </div>
 
-        <!-- Pending Removal Examinations -->
+        <!-- Pending Resolutions -->
         <div class="col-xl-3 col-md-6">
             <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
                 <span class="text-muted small fw-semibold text-uppercase">Pending Resolutions</span>
                 <div class="d-flex align-items-baseline justify-content-between mt-2">
                     <h3 class="fw-bold mb-0 text-primary"><?= $totalPendingRem ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">In-Progress</span>
+                    <span class="badge bg-info-subtle text-info border border-info">In Progress</span>
                 </div>
-                <small class="text-muted mt-2 d-block">Scheduled removal exams or pending completions</small>
+                <small class="text-muted mt-2 d-block">Removal exams or completion in progress</small>
             </div>
         </div>
     </div>
 
-    <!-- 3. DEFICIENCY & REMOVAL TRACKING LEDGER TABLE -->
+    <!-- 3. DEFICIENCY LEDGER TABLE -->
     <div class="card border rounded-3 shadow-sm bg-white mb-3">
-        <div
-            class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="m-0 fw-bold marsu-maroon-text">
-                <i class="bi bi-clipboard2-x-fill me-1"></i> Active Deficiencies & Removal Tracking Ledger
+                <i class="bi bi-clipboard2-x-fill me-1"></i> Active Deficiency Records
             </h6>
 
             <div class="d-flex align-items-center gap-2">
                 <!-- Filter Status Buttons -->
                 <div class="btn-group btn-group-sm" role="group">
-                    <button type="button" class="btn btn-outline-secondary active quick-filter-btn"
-                        data-filter="all">All</button>
-                    <button type="button" class="btn btn-outline-danger quick-filter-btn"
-                        data-filter="Failed (5.00)">5.00 Failures</button>
-                    <button type="button" class="btn btn-outline-warning text-dark quick-filter-btn"
-                        data-filter="Incomplete (INC)">INC Marks</button>
+                    <button type="button" class="btn btn-outline-secondary active quick-filter-btn" data-filter="all">All</button>
+                    <button type="button" class="btn btn-outline-danger quick-filter-btn" data-filter="Failed (5.00)">5.00 Failures</button>
+                    <button type="button" class="btn btn-outline-warning text-dark quick-filter-btn" data-filter="Incomplete (INC)">INC Marks</button>
                 </div>
 
                 <input type="text" id="defSearchInput" class="form-control form-control-sm"
-                    placeholder="Search ID, Name, or Course..." style="width: 210px;" onkeyup="filterDeficiencyTable()">
+                    placeholder="Search ID, Name, or Subject..." style="width: 250px;" onkeyup="filterDeficiencyTable()">
             </div>
         </div>
 
@@ -168,11 +163,11 @@
                     <tr>
                         <th class="ps-3 py-3">Student ID</th>
                         <th class="py-3">Student Name</th>
-                        <th class="py-3">Subject & Course</th>
-                        <th class="py-3 text-center">Mark</th>
+                        <th class="py-3">Subject</th>
+                        <th class="py-3 text-center">Grade</th>
                         <th class="py-3 text-center">Deficiency Type</th>
                         <th class="py-3">Term Recorded</th>
-                        <th class="py-3">Faculty In-Charge</th>
+                        <th class="py-3">Instructor</th>
                         <th class="py-3 text-center">Resolution Status</th>
                         <th class="py-3 text-end pe-3">Actions</th>
                     </tr>
@@ -204,8 +199,7 @@
                                     <div class="fw-bold text-dark"><?= htmlspecialchars($row['course_code']) ?></div>
                                     <small class="text-muted"><?= htmlspecialchars($row['course_title']) ?></small>
                                 </td>
-                                <td
-                                    class="text-center fw-bold fs-6 <?= $isFail ? 'text-danger' : ($isInc ? 'text-warning' : 'text-secondary') ?>">
+                                <td class="text-center fw-bold fs-6 <?= $isFail ? 'text-danger' : ($isInc ? 'text-warning' : 'text-secondary') ?>">
                                     <?= htmlspecialchars($row['grade']) ?>
                                 </td>
                                 <td class="text-center">
@@ -240,7 +234,7 @@
                                             <li>
                                                 <a class="dropdown-item small"
                                                     href="academicsupportprograms?course_code=<?= urlencode($row['course_code']) ?>&student_id=<?= urlencode($row['student_id']) ?>">
-                                                    <i class="bi bi-mortarboard me-2 text-success"></i> Endorse to Peer Tutoring
+                                                    <i class="bi bi-mortarboard me-2 text-success"></i> Study Support
                                                 </a>
                                             </li>
                                             <li>
@@ -258,13 +252,11 @@
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <!-- Standard MarSU Empty State Box -->
                         <tr>
                             <td colspan="9" class="text-center py-5 text-muted">
                                 <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
                                 <p class="mb-0 fw-semibold">No active failing or incomplete records found</p>
-                                <small>All evaluated students are in good academic standing, or records have not yet synced
-                                    from the central database.</small>
+                                <small>All evaluated students are in good academic standing, or no records matched the selected filters.</small>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -275,7 +267,7 @@
 
 </div>
 
-<!-- Instant Search & Quick Filter Script -->
+<!-- Search and Filter Script -->
 <script>
     function filterDeficiencyTable() {
         const input = document.getElementById('defSearchInput').value.toLowerCase();

@@ -51,3 +51,15 @@ The following permissions are defined in `module.json` and registered into the s
    Export telemetry in `widgets.php`. Core will automatically render them on the Executive Dashboard.
 5. **Git Workflow**:
    Develop exclusively within your module directory: `modules/orgleadership/`. Submit Pull Requests targeting the `main` branch.
+
+### Organization Management Test Data
+
+The organization-management migration creates `sld_organizations` and `sld_members`.
+After running migrations, load repeat-safe mock organizations and membership records with:
+
+```bash
+php scripts/migrate.php orgleadership
+php scripts/seed.php orgleadership
+```
+
+The mock data includes active, probationary, and pending-accreditation organizations.

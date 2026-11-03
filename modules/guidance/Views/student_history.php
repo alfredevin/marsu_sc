@@ -1,497 +1,660 @@
 <!-- ==================================================================== -->
-<!--   GUIDANCE & COUNSELING SYSTEM: STUDENT HISTORY & DEVELOPMENT        -->
-<!--   FRONT-END TEMPLATE SHELL (NO BACK-END DATA YET)                    -->
+<!--   MARSU GUIDANCE & COUNSELING SYSTEM: STUDENT COUNSELING HISTORY     -->
 <!-- ==================================================================== -->
 
-<!-- BREADCRUMB & PAGE HEADER -->
-<div class="mb-4">
-    <!-- Breadcrumb Trail -->
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb mb-0" style="font-size: 13.5px; background: transparent; padding: 0; line-height: 1.5;">
-            <li class="breadcrumb-item">
-                <a href="#" style="color: #800020; text-decoration: none; font-weight: 600;">
-                    <i class="bi bi-house-door-fill me-1"></i>Home
-                </a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="#" style="color: #800020; text-decoration: none; font-weight: 500;">
-                    Guidance & Counseling Services
-                </a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="#" style="color: #800020; text-decoration: none; font-weight: 500;">
-                    Student Profile Directory
-                </a>
-            </li>
-            <li class="breadcrumb-item active text-muted" aria-current="page">
-                Student Guidance History
-            </li>
-        </ol>
-    </nav>
+<!-- 1. PAGE BREADCRUMB & HEADER -->
+<div class="card shadow-sm border-0 mb-4 bg-white" style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
+    <div class="card-body p-4">
+        <!-- Breadcrumb Trail -->
+        <nav aria-label="breadcrumb" class="mb-2">
+            <ol class="breadcrumb mb-0"
+                style="font-size: 14.5px; background: transparent; padding: 0; line-height: 1.5;">
+                <li class="breadcrumb-item">
+                    <a href="<?= url('guidance') ?>" style="color: #800020; text-decoration: none; font-weight: 600;">
+                        <i class="bi bi-house-door-fill me-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="<?= url('guidance/student_directory') ?>"
+                        style="color: #800020; text-decoration: none; font-weight: 500;">
+                        Student Information Management
+                    </a>
+                </li>
+                <li class="breadcrumb-item active text-muted" aria-current="page">
+                    Student Counseling History
+                </li>
+            </ol>
+        </nav>
 
-    <!-- Page Title & Subtitle -->
-    <div class="pt-1">
-        <h4 class="fw-bold mb-1" style="color: #1A202C; font-size: 20px; letter-spacing: -0.2px;">
-            Student Guidance History & Development Dossier
-        </h4>
-        <p class="text-muted mb-0" style="font-size: 13.5px; line-height: 1.5;">
-            Directory of student counseling logs, intake profiles, behavioral tracking, and holistic development
-            records.
-        </p>
-    </div>
-</div>
-
-<!-- 4 KPI CARDS (FRONT-END SHELL) -->
-<div class="row g-3 mb-4">
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #EBE4E4; border-left: 4px solid #800020 !important; border-radius: 10px; background-color: #ffffff; min-height: 105px;">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div
-                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        TOTAL COUNSELING SESSIONS
-                    </div>
-                    <div class="mt-1" style="font-size: 24px; font-weight: 700; color: #1A202C; line-height: 1.1;">0
-                    </div>
-                </div>
-                <div
-                    style="width: 42px; height: 42px; min-width: 42px; min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; background-color: #FDF2F4; color: #800020;">
-                    <i class="bi bi-chat-heart-fill"></i>
-                </div>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-1">
+            <div>
+                <h4 class="fw-bold mb-1" style="color: #1A202C; font-size: 22px; letter-spacing: -0.2px;">
+                    Student Counseling History
+                </h4>
+                <p class="text-muted mb-0" style="font-size: 15px; line-height: 1.5;">
+                    Manage student counseling history, case trajectories, and longitudinal guidance records.
+                </p>
             </div>
-            <div class="mt-2" style="font-size: 13px; color: #718096;">Documented intake & routine sessions</div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #EBE4E4; border-left: 4px solid #D4A017 !important; border-radius: 10px; background-color: #ffffff; min-height: 105px;">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div
-                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        DEVELOPMENT LOGS
-                    </div>
-                    <div class="mt-1" style="font-size: 24px; font-weight: 700; color: #1A202C; line-height: 1.1;">0
-                    </div>
-                </div>
-                <div
-                    style="width: 42px; height: 42px; min-width: 42px; min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; background-color: #FEFCF0; color: #B7791F; border: 1px solid #F6E05E;">
-                    <i class="bi bi-award-fill"></i>
-                </div>
-            </div>
-            <div class="mt-2" style="font-size: 13px; color: #718096;">Workshops & peer training logs</div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #EBE4E4; border-left: 4px solid #800020 !important; border-radius: 10px; background-color: #ffffff; min-height: 105px;">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div
-                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        FACULTY REFERRALS
-                    </div>
-                    <div class="mt-1" style="font-size: 24px; font-weight: 700; color: #1A202C; line-height: 1.1;">0
-                    </div>
-                </div>
-                <div
-                    style="width: 42px; height: 42px; min-width: 42px; min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; background-color: #FDF2F4; color: #800020;">
-                    <i class="bi bi-person-exclamation"></i>
-                </div>
-            </div>
-            <div class="mt-2" style="font-size: 13px; color: #718096;">Referred student cases on file</div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-lg-3 col-md-6 col-12">
-        <div class="card shadow-sm p-3 h-100 d-flex flex-column justify-content-between"
-            style="border: 1px solid #EBE4E4; border-left: 4px solid #800020 !important; border-radius: 10px; background-color: #ffffff; min-height: 105px;">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div
-                        style="font-size: 12px; font-weight: 700; color: #4A5568; letter-spacing: 0.5px; text-transform: uppercase;">
-                        CLEARED PROFILES
-                    </div>
-                    <div class="mt-1" style="font-size: 24px; font-weight: 700; color: #1A202C; line-height: 1.1;">0
-                    </div>
-                </div>
-                <div
-                    style="width: 42px; height: 42px; min-width: 42px; min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; background-color: #FDF2F4; color: #800020;">
-                    <i class="bi bi-shield-check"></i>
-                </div>
-            </div>
-            <div class="mt-2" style="font-size: 13px; color: #718096;">Profiles in good standing</div>
         </div>
     </div>
 </div>
 
-<!-- STUDENT GUIDANCE DIRECTORY TABLE CARD -->
-<div class="card shadow-sm border-0 mb-4" style="border: 1px solid #EBE4E4 !important; border-radius: 10px;">
-    <!-- CARD HEADER -->
-    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3 px-3 px-md-4"
-        style="border-bottom: 1px solid #EBE4E4;">
-        <h6 class="m-0 fw-bold" style="font-size: 15px; color: #800020;">
-            <i class="bi bi-journal-medical me-2" style="color: #D4A017;"></i>Student Guidance & History Directory
-        </h6>
+<style>
+    .btn-marsu {
+        background-color: #800020;
+        border-color: #800020;
+        color: #ffffff;
+    }
 
-        <div class="d-flex align-items-center flex-wrap gap-2">
-            <!-- Program Filter Dropdown -->
-            <div class="d-flex align-items-center">
-                <span class="me-2 text-muted fw-semibold small text-nowrap" style="font-size: 13.5px;">Program:</span>
-                <div class="dropdown">
-                    <button class="btn btn-sm bg-white d-flex align-items-center justify-content-between shadow-none"
-                        type="button" id="programDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false"
-                        onclick="var a = document.getElementById('historyDropdownArrow'); if(a){ a.style.transform = (a.style.transform === 'rotate(180deg)') ? 'rotate(0deg)' : 'rotate(180deg)'; }"
-                        style="min-width: 155px; height: 38px; border: 1px solid #ced4da; border-radius: 6px; font-size: 13.5px; color: #2D3748; padding: 6px 12px;">
-                        <span id="selectedProgramText">All Programs</span>
-                        <i class="bi bi-chevron-down ms-2" id="historyDropdownArrow"
-                            style="transition: transform 0.2s ease; font-size: 12px; color: #6c757d;"></i>
-                    </button>
-                    <ul class="dropdown-menu shadow-sm py-1" aria-labelledby="programDropdownBtn"
-                        style="min-width: 155px; font-size: 13.5px; border: 1px solid #EBE4E4;">
-                        <li>
-                            <a class="dropdown-item active" href="javascript:void(0);"
-                                onclick="document.getElementById('selectedProgramText').textContent='All Programs'; document.getElementById('historyDropdownArrow').style.transform='rotate(0deg)'; document.querySelectorAll('#modal-guidance-dossier, .dropdown-menu .dropdown-item').forEach(function(el){ el.classList.remove('active'); }); this.classList.add('active'); var rows = document.querySelectorAll('#guidanceTableBody tr.guidance-row'); var visible = 0; rows.forEach(function(r){ r.style.display = ''; visible++; }); var noMatch = document.getElementById('noMatchGuidance'); if(noMatch){ noMatch.classList.add('d-none'); }">
-                                All Programs
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="javascript:void(0);"
-                                onclick="document.getElementById('selectedProgramText').textContent='BSIS'; document.getElementById('historyDropdownArrow').style.transform='rotate(0deg)'; document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(function(el){ el.classList.remove('active'); }); this.classList.add('active'); var rows = document.querySelectorAll('#guidanceTableBody tr.guidance-row'); var visible = 0; rows.forEach(function(r){ if(r.getAttribute('data-program') === 'BSIS'){ r.style.display = ''; visible++; } else { r.style.display = 'none'; } }); var noMatch = document.getElementById('noMatchGuidance'); if(noMatch){ if(visible === 0){ noMatch.classList.remove('d-none'); } else { noMatch.classList.add('d-none'); } }">
-                                BSIS
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="javascript:void(0);"
-                                onclick="document.getElementById('selectedProgramText').textContent='BEED'; document.getElementById('historyDropdownArrow').style.transform='rotate(0deg)'; document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(function(el){ el.classList.remove('active'); }); this.classList.add('active'); var rows = document.querySelectorAll('#guidanceTableBody tr.guidance-row'); var visible = 0; rows.forEach(function(r){ if(r.getAttribute('data-program') === 'BEED'){ r.style.display = ''; visible++; } else { r.style.display = 'none'; } }); var noMatch = document.getElementById('noMatchGuidance'); if(noMatch){ if(visible === 0){ noMatch.classList.remove('d-none'); } else { noMatch.classList.add('d-none'); } }">
-                                BEED
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="javascript:void(0);"
-                                onclick="document.getElementById('selectedProgramText').textContent='BSTM'; document.getElementById('historyDropdownArrow').style.transform='rotate(0deg)'; document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(function(el){ el.classList.remove('active'); }); this.classList.add('active'); var rows = document.querySelectorAll('#guidanceTableBody tr.guidance-row'); var visible = 0; rows.forEach(function(r){ if(r.getAttribute('data-program') === 'BSTM'){ r.style.display = ''; visible++; } else { r.style.display = 'none'; } }); var noMatch = document.getElementById('noMatchGuidance'); if(noMatch){ if(visible === 0){ noMatch.classList.remove('d-none'); } else { noMatch.classList.add('d-none'); } }">
-                                BSTM
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="javascript:void(0);"
-                                onclick="document.getElementById('selectedProgramText').textContent='BAPoS'; document.getElementById('historyDropdownArrow').style.transform='rotate(0deg)'; document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(function(el){ el.classList.remove('active'); }); this.classList.add('active'); var rows = document.querySelectorAll('#guidanceTableBody tr.guidance-row'); var visible = 0; rows.forEach(function(r){ if(r.getAttribute('data-program') === 'BAPoS'){ r.style.display = ''; visible++; } else { r.style.display = 'none'; } }); var noMatch = document.getElementById('noMatchGuidance'); if(noMatch){ if(visible === 0){ noMatch.classList.remove('d-none'); } else { noMatch.classList.add('d-none'); } }">
-                                BAPoS
-                            </a>
-                        </li>
-                    </ul>
+    .btn-marsu:hover {
+        background-color: #660019;
+        border-color: #660019;
+        color: #ffffff;
+    }
+
+    .btn-outline-marsu {
+        color: #800020 !important;
+        border-color: #800020 !important;
+    }
+
+    .btn-outline-marsu:hover {
+        background-color: #800020 !important;
+        color: #ffffff !important;
+    }
+
+    @media print {
+
+        nav,
+        .breadcrumb,
+        .btn,
+        #historyFilterToolbar,
+        header,
+        sidebar,
+        aside,
+        .navbar,
+        .card-footer {
+            display: none !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .print-only {
+            display: block !important;
+        }
+    }
+</style>
+
+<!-- ==================================================================== -->
+<!-- PRINT HEADER (PRINT ONLY)                                            -->
+<!-- ==================================================================== -->
+<div class="print-only text-center mb-4" style="display: none;">
+    <div style="font-size: 11pt; text-transform: uppercase; font-family: 'Times New Roman', serif;">Republic of the
+        Philippines</div>
+    <div style="font-size: 15pt; font-weight: bold; color: #800020; font-family: 'Times New Roman', serif;">MARINDUQUE
+        STATE UNIVERSITY</div>
+    <div style="font-size: 11pt; font-weight: bold; font-family: 'Times New Roman', serif;">OFFICE OF STUDENT AFFAIRS
+        &amp; SERVICES</div>
+    <div style="font-size: 10.5pt; font-style: italic; font-family: 'Times New Roman', serif;">Guidance and Counseling
+        Services Center</div>
+    <div style="font-size: 13pt; font-weight: bold; margin-top: 10px; text-transform: uppercase;">STUDENT COUNSELING
+        HISTORY LEDGER</div>
+    <hr style="border-top: 2px solid #800020; margin-top: 8px; margin-bottom: 14px;">
+</div>
+
+<!-- 2. SEARCH & FILTER TOOLBAR (MATCHING APPOINTMENT_LISTS & STUDENT DIRECTORY) -->
+<div class="card shadow-sm border-0 mb-4 bg-white" id="historyFilterToolbar"
+    style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
+    <div class="card-body p-4">
+        <div class="row g-3 align-items-center">
+            <!-- Search Bar -->
+            <div class="col-xl-3 col-lg-3 col-md-12 col-12">
+                <div class="input-group">
+                    <span class="input-group-text border-end-0 text-muted bg-white ps-3"
+                        style="border-color: #ced4da; font-size: 15px; height: 42px; border-radius: 8px 0 0 8px;">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" id="searchInput" class="form-control border-start-0 shadow-none ps-2 bg-white"
+                        placeholder="Search Student ID, Name..." oninput="filterHistoryTable()"
+                        style="border-color: #ced4da; font-size: 14.5px; height: 42px; border-radius: 0 8px 8px 0;">
                 </div>
             </div>
 
-            <!-- Quick Search Input -->
-            <div class="input-group input-group-sm" style="width: 240px;">
-                <span class="input-group-text border-end-0 text-muted"
-                    style="background-color: #ffffff; border-color: #ced4da; font-size: 13.5px;">
-                    <i class="bi bi-search"></i>
-                </span>
-                <input type="text" id="guidanceSearchInput" class="form-control border-start-0 shadow-none"
-                    placeholder="Search Student ID, name..."
-                    style="font-size: 13.5px; height: 38px; border-color: #ced4da;">
+            <!-- Program Filter (Strictly BSIS, BSTM, BEED, BaPOS) -->
+            <div class="col-xl-2 col-lg-2 col-md-6 col-6">
+                <select id="programFilter" class="form-select shadow-none bg-white" onchange="filterHistoryTable()"
+                    style="height: 42px; font-size: 14.5px; border-color: #ced4da; border-radius: 8px; padding: 0 14px; font-weight: 500;">
+                    <option value="all" selected>All Programs</option>
+                    <option value="BSIS">BSIS</option>
+                    <option value="BSTM">BSTM</option>
+                    <option value="BEED">BEED</option>
+                    <option value="BaPOS">BaPOS</option>
+                </select>
+            </div>
+
+            <!-- Year Level Filter (Strictly 1st Year, 2nd Year, 3rd Year, 4th Year) -->
+            <div class="col-xl-2 col-lg-2 col-md-6 col-6">
+                <select id="yearFilter" class="form-select shadow-none bg-white" onchange="filterHistoryTable()"
+                    style="height: 42px; font-size: 14.5px; border-color: #ced4da; border-radius: 8px; padding: 0 14px; font-weight: 500;">
+                    <option value="all" selected>All Year Levels</option>
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                    <option value="4th Year">4th Year</option>
+                </select>
+            </div>
+
+            <!-- Department Filter (Exact 4 Colleges) -->
+            <div class="col-xl-3 col-lg-3 col-md-6 col-6">
+                <select id="departmentFilter" class="form-select shadow-none bg-white" onchange="filterHistoryTable()"
+                    style="height: 42px; font-size: 14.5px; border-color: #ced4da; border-radius: 8px; padding: 0 14px; font-weight: 500;">
+                    <option value="all" selected>All Departments</option>
+                    <option value="College of Information and Computing Sciences">College of Information and Computing
+                        Sciences</option>
+                    <option value="College of Arts and Sciences">College of Arts and Sciences</option>
+                    <option value="College of Education">College of Education</option>
+                    <option value="College of Business and Accountancy">College of Business and Accountancy</option>
+                </select>
+            </div>
+
+            <!-- Status Filter -->
+            <div class="col-xl-2 col-lg-2 col-md-6 col-6">
+                <select id="statusFilter" class="form-select shadow-none bg-white" onchange="filterHistoryTable()"
+                    style="height: 42px; font-size: 14.5px; border-color: #ced4da; border-radius: 8px; padding: 0 14px; font-weight: 500;">
+                    <option value="all" selected>All Statuses</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Under Monitoring">Under Monitoring</option>
+                </select>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- TABLE AREA -->
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead style="background-color: #f8f9fa;">
-                    <tr>
-                        <th class="ps-3 ps-md-4"
-                            style="font-size: 13.5px; font-weight: 600; padding: 10px 12px; min-width: 115px; color: #2D3748;">
-                            Student ID</th>
-                        <th
-                            style="font-size: 13.5px; font-weight: 600; padding: 10px 12px; min-width: 170px; color: #2D3748;">
-                            Full Name</th>
-                        <th class="text-center"
-                            style="font-size: 13.5px; font-weight: 600; padding: 10px 12px; width: 100px; color: #2D3748;">
-                            Program</th>
-                        <th class="text-center"
-                            style="font-size: 13.5px; font-weight: 600; padding: 10px 12px; width: 100px; color: #2D3748;">
-                            Year Level</th>
-                        <th class="text-center"
-                            style="font-size: 13.5px; font-weight: 600; padding: 10px 12px; width: 135px; color: #2D3748;">
-                            Counseling Logs</th>
-                        <th class="text-center"
-                            style="font-size: 13.5px; font-weight: 600; padding: 10px 12px; width: 145px; color: #2D3748;">
-                            Development Logs</th>
-                        <th class="text-center"
-                            style="font-size: 13.5px; font-weight: 600; padding: 10px 12px; width: 135px; color: #2D3748;">
-                            Guidance Status</th>
-                        <th class="text-center"
-                            style="font-size: 13.5px; font-weight: 600; padding: 10px 12px; width: 90px; color: #2D3748;">
-                            Action</th>
+<!-- 3. STUDENT HISTORY TABLE (DIRECT DIV / DOM RENDERING LIKE APPOINTMENT_LISTS) -->
+<div class="card shadow-sm border-0 mb-4 bg-white" style="border: 1px solid #E2E8F0 !important; border-radius: 10px;">
+    <div class="card-body p-0 bg-white">
+        <div class="table-responsive bg-white">
+            <table class="table table-hover align-middle mb-0 bg-white" id="historyMasterTable">
+                <thead class="bg-white" style="border-bottom: 1px solid #E2E8F0 !important;">
+                    <tr class="bg-white">
+                        <th class="ps-4 text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Student ID
+                        </th>
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Full Name
+                        </th>
+                        <th class="text-center text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Program
+                        </th>
+                        <th class="text-center text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Year Level
+                        </th>
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Department
+                        </th>
+                        <th class="text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Presenting Concern
+                        </th>
+                        <th class="text-center text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Status
+                        </th>
+                        <th class="text-center pe-4 text-nowrap bg-white"
+                            style="font-size: 13.5px; font-weight: 600; padding: 14px 18px; width: 90px; color: #2D3748; vertical-align: middle; border-bottom: 1px solid #E2E8F0 !important;">
+                            Action
+                        </th>
                     </tr>
                 </thead>
-                <tbody style="font-size: 13.5px;" id="guidanceTableBody">
-                    <!-- Front-End Row Shell 1 (Halimbawa: BSIS) -->
-                    <tr class="guidance-row" data-program="BSIS">
-                        <td class="ps-3 ps-md-4 fw-semibold" style="padding: 10px 12px; color: #800020;">XX-XXXX</td>
-                        <td style="padding: 10px 12px;" class="text-muted">—</td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <span class="d-inline-block text-center"
-                                style="width: 75px; border: 1px solid #dcdcdc; border-radius: 4px; padding: 2px 0; background: #fafafa; font-size: 12.5px; color: #333; font-weight: 500;">BSIS</span>
+                <tbody id="studentHistoryTableBody" style="font-size: 14.5px;">
+
+                    <!-- Row 1: RAMOS, CARLOS M. -->
+                    <tr class="student-history-row align-middle" data-student-id="2023-01089"
+                        data-student-name="RAMOS, CARLOS M." data-program="BSIS" data-year="3rd Year"
+                        data-college="College of Information and Computing Sciences"
+                        data-concern="Academic Performance &amp; Retention Risk" data-status="Under Monitoring">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle;">
+                            2023-01089
                         </td>
-                        <td class="text-center text-muted" style="padding: 10px 12px;">1st Year</td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <span class="badge bg-light text-muted border px-2 py-1"
-                                style="font-size: 12px; font-weight: 500;">0
-                                Sessions</span>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="fw-bold text-dark">RAMOS, CARLOS M.</span>
                         </td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <span class="badge bg-light text-muted border px-2 py-1"
-                                style="font-size: 12px; font-weight: 500;">0
-                                Logs</span>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; min-width: 65px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 10px;">
+                                BSIS
+                            </span>
                         </td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <span class="d-inline-block text-center badge"
-                                style="width: 105px; border: 1px solid #2e7d32; color: #1b5e20; background-color: #e8f5e9; border-radius: 50rem; padding: 5px 0; font-size: 12px; font-weight: 500;">Good
-                                Standing</span>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;">
+                                3rd Year
+                            </span>
                         </td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <button type="button" class="btn btn-sm shadow-none" data-bs-toggle="modal"
-                                data-bs-target="#modal-guidance-dossier"
-                                onmousedown="this.style.backgroundColor='#800020'; this.style.color='#ffffff';"
-                                onmouseup="this.style.backgroundColor='transparent'; this.style.color='#800020';"
-                                style="width: 68px; border: 1px solid #800020; color: #800020; border-radius: 4px; padding: 2px 0; font-size: 13px; font-weight: 500;">
-                                View
-                            </button>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="text-dark">College of Information and Computing Sciences</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="badge"
+                                style="background-color: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 6px;">
+                                Academic Performance &amp; Retention Risk
+                            </span>
+                        </td>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 95px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 12px;">
+                                Under Monitoring
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <a href="<?= url('guidance/student_history_view') ?>?id=2023-01089"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Complete Case Timeline" aria-label="View Complete Case Timeline"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
                         </td>
                     </tr>
 
-                    <!-- Front-End Row Shell 2 (Halimbawa: BSIT) -->
-                    <tr class="guidance-row" data-program="BSIT">
-                        <td class="ps-3 ps-md-4 fw-semibold" style="padding: 10px 12px; color: #800020;">XX-XXXX</td>
-                        <td style="padding: 10px 12px;" class="text-muted">—</td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <span class="d-inline-block text-center"
-                                style="width: 75px; border: 1px solid #dcdcdc; border-radius: 4px; padding: 2px 0; background: #fafafa; font-size: 12.5px; color: #333; font-weight: 500;">BEED</span>
+                    <!-- Row 2: SANTOS, MARIA C. -->
+                    <tr class="student-history-row align-middle" data-student-id="2023-01042"
+                        data-student-name="SANTOS, MARIA C." data-program="BaPOS" data-year="2nd Year"
+                        data-college="College of Arts and Sciences"
+                        data-concern="Mental Health &amp; Emotional Well-being" data-status="Resolved">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle;">
+                            2023-01042
                         </td>
-                        <td class="text-center text-muted" style="padding: 10px 12px;">2nd Year</td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <span class="badge bg-light text-muted border px-2 py-1"
-                                style="font-size: 12px; font-weight: 500;">0
-                                Sessions</span>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="fw-bold text-dark">SANTOS, MARIA C.</span>
                         </td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <span class="badge bg-light text-muted border px-2 py-1"
-                                style="font-size: 12px; font-weight: 500;">0
-                                Logs</span>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; min-width: 65px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 10px;">
+                                BaPOS
+                            </span>
                         </td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <span class="d-inline-block text-center badge"
-                                style="width: 105px; border: 1px solid #2e7d32; color: #1b5e20; background-color: #e8f5e9; border-radius: 50rem; padding: 5px 0; font-size: 12px; font-weight: 500;">Good
-                                Standing</span>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;">
+                                2nd Year
+                            </span>
                         </td>
-                        <td class="text-center" style="padding: 10px 12px;">
-                            <button type="button" class="btn btn-sm shadow-none" data-bs-toggle="modal"
-                                data-bs-target="#modal-guidance-dossier"
-                                onmousedown="this.style.backgroundColor='#800020'; this.style.color='#ffffff';"
-                                onmouseup="this.style.backgroundColor='transparent'; this.style.color='#800020';"
-                                style="width: 68px; border: 1px solid #800020; color: #800020; border-radius: 4px; padding: 2px 0; font-size: 13px; font-weight: 500;">
-                                View
-                            </button>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="text-dark">College of Arts and Sciences</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="badge"
+                                style="background-color: #FDF2F4; color: #800020; border: 1px solid #f8d7da; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 6px;">
+                                Mental Health &amp; Emotional Well-being
+                            </span>
+                        </td>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="border: 1px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 95px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 12px;">
+                                Resolved
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <a href="<?= url('guidance/student_history_view') ?>?id=2023-01042"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Complete Case Timeline" aria-label="View Complete Case Timeline"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 3: MENDOZA, JUAN B. -->
+                    <tr class="student-history-row align-middle" data-student-id="2022-00512"
+                        data-student-name="MENDOZA, JUAN B." data-program="BEED" data-year="3rd Year"
+                        data-college="College of Education" data-concern="Academic Retention &amp; Exam Anxiety"
+                        data-status="Resolved">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle;">
+                            2022-00512
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="fw-bold text-dark">MENDOZA, JUAN B.</span>
+                        </td>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; min-width: 65px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 10px;">
+                                BEED
+                            </span>
+                        </td>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;">
+                                3rd Year
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="text-dark">College of Education</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="badge"
+                                style="background-color: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 6px;">
+                                Academic Retention &amp; Exam Anxiety
+                            </span>
+                        </td>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="border: 1px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 95px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 12px;">
+                                Resolved
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <a href="<?= url('guidance/student_history_view') ?>?id=2022-00512"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Complete Case Timeline" aria-label="View Complete Case Timeline"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Row 4: DELA CRUZ, BEA L. -->
+                    <tr class="student-history-row align-middle" data-student-id="2024-03115"
+                        data-student-name="DELA CRUZ, BEA L." data-program="BSTM" data-year="1st Year"
+                        data-college="College of Business and Accountancy"
+                        data-concern="Career Guidance &amp; Course Alignment" data-status="Resolved">
+                        <td class="ps-4 fw-bold text-nowrap"
+                            style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle;">
+                            2024-03115
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="fw-bold text-dark">DELA CRUZ, BEA L.</span>
+                        </td>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; min-width: 65px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 10px;">
+                                BSTM
+                            </span>
+                        </td>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;">
+                                1st Year
+                            </span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="text-dark">College of Business and Accountancy</span>
+                        </td>
+                        <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span class="badge"
+                                style="background-color: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 6px;">
+                                Career Guidance &amp; Course Alignment
+                            </span>
+                        </td>
+                        <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <span
+                                style="border: 1px solid #28a745; background-color: #f4fbf6; color: #155724; border-radius: 50rem; min-width: 95px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 12px;">
+                                Resolved
+                            </span>
+                        </td>
+                        <td class="text-center pe-4 text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                            <a href="<?= url('guidance/student_history_view') ?>?id=2024-03115"
+                                class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                title="View Complete Case Timeline" aria-label="View Complete Case Timeline"
+                                style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- No Results Row -->
+                    <tr id="noResultsRow" style="display: none;">
+                        <td colspan="8" class="text-center py-5 text-muted" style="padding: 30px;">
+                            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+                            No student counseling history records match your search or filters.
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
 
-            <!-- Empty state kapag walang tumutugmang record sa filter -->
-            <div id="noMatchGuidance" class="text-center py-4 text-muted d-none" style="font-size: 13px;">
-                <i class="bi bi-search mb-2 d-block fs-4 text-secondary"></i> No record found.
+        <!-- Pagination Footer Matching Appointment Lists & Student Directory -->
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3 px-4"
+            style="border-top: 1px solid #E2E8F0 !important;">
+            <div class="text-muted" style="font-size: 14px;" id="tableFooterCount">
+                Showing 1 to 4 of 4 records
             </div>
+            <nav aria-label="Student history pagination">
+                <ul class="pagination pagination-sm mb-0 gap-1">
+                    <li class="page-item disabled">
+                        <span class="page-link shadow-none" style="border-radius: 4px;">&laquo;</span>
+                    </li>
+                    <li class="page-item active">
+                        <span class="page-link shadow-none"
+                            style="background-color: #800020; border-color: #800020; border-radius: 4px;">1</span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link shadow-none" style="border-radius: 4px;">&raquo;</span>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
 
 <!-- ==================================================================== -->
-<!--   MODAL: GUIDANCE COUNSELING & STUDENT DEVELOPMENT DOSSIER           -->
+<!--   STUDENT HISTORY DATASET STORE (FRONTEND DIV CONTAINER)             -->
 <!-- ==================================================================== -->
-<div class="modal fade" id="modal-guidance-dossier" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content shadow border-0" style="border-radius: 10px; overflow: hidden;">
-
-            <!-- MODAL HEADER -->
-            <div class="modal-header text-white px-4 py-2.5" style="background-color: #800020;">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-shield-lock-fill" style="color: #D4A017; font-size: 17px;"></i>
-                    <h5 class="modal-title m-0 fw-semibold" style="font-size: 16px;">Confidential Guidance Dossier &
-                        Student History</h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <!-- MODAL BODY -->
-            <div class="modal-body p-4" style="background-color: #fcfcfc;">
-
-                <!-- 1. CONNECTED PROFILE REFERENCE CARD -->
-                <div class="card p-3 mb-3 shadow-none"
-                    style="background-color: #ffffff; border: 1px solid #EBE4E4 !important; border-radius: 8px;">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <div class="d-flex align-items-center gap-3">
-                            <div
-                                style="width: 50px; height: 50px; border-radius: 50%; background: #FDF2F4; color: #800020; display: flex; align-items: center; justify-content: center; font-size: 19px; font-weight: 700;">
-                                <i class="bi bi-person-fill"></i>
-                            </div>
-                            <div>
-                                <h4 class="fw-bold mb-1" style="color: #800020; font-size: 18.5px;">Student Full Name
-                                </h4>
-                                <div class="text-muted" style="font-size: 13.5px;">
-                                    <span class="me-3"><strong>Student ID:</strong> XX-XXXX</span>
-                                    <span class="me-3"><strong>Program:</strong> Degree Program</span>
-                                    <span class="me-3"><strong>Year Level:</strong> Year Level</span>
-                                    <span><strong>Contact:</strong> —</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge"
-                                style="border: 1px solid #2e7d32; color: #1b5e20; background-color: #e8f5e9; border-radius: 50rem; padding: 6px 14px; font-weight: 500; font-size: 12.5px;">Good
-                                Standing</span>
-                            <div class="text-muted small mt-1" style="font-size: 12px;">Intake Status: Pending
-                                Verification</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. INTAKE BASELINE & EMERGENCY DEMOGRAPHICS -->
-                <div class="card p-3 mb-3 shadow-none"
-                    style="border-radius: 8px; border: 1px solid #EBE4E4 !important; background: #ffffff;">
-                    <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom">
-                        <i class="bi bi-file-earmark-person-fill" style="color: #800020; font-size: 15px;"></i>
-                        <span class="fw-bold text-uppercase" style="font-size: 13px; color: #2D3748;">
-                            Guidance Intake Profile & Emergency Reference
-                        </span>
-                    </div>
-                    <div class="row g-2" style="font-size: 13.5px;">
-                        <div class="col-md-3 col-6"><span class="text-muted d-block" style="font-size: 12px;">Living
-                                Arrangement:</span><strong>—</strong></div>
-                        <div class="col-md-3 col-6"><span class="text-muted d-block" style="font-size: 12px;">Parent /
-                                Guardian:</span><strong>—</strong></div>
-                        <div class="col-md-3 col-6"><span class="text-muted d-block" style="font-size: 12px;">Emergency
-                                Contact No:</span><strong>—</strong></div>
-                        <div class="col-md-3 col-6"><span class="text-muted d-block" style="font-size: 12px;">Medical
-                                / Physical Notes:</span><strong>—</strong></div>
-                    </div>
-                </div>
-
-                <!-- 3. PAST COUNSELING & CONSULTATION HISTORY -->
-                <div class="card p-3 mb-3 shadow-none"
-                    style="border-radius: 8px; border: 1px solid #EBE4E4 !important; background: #ffffff;">
-                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-clock-history" style="color: #800020; font-size: 15px;"></i>
-                            <span class="fw-bold text-uppercase" style="font-size: 13px; color: #2D3748;">
-                                Counseling & Consultation History
-                            </span>
-                        </div>
-                        <span class="badge bg-light text-secondary border" style="font-size: 12px;">0 Sessions
-                            Logged</span>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered align-middle mb-0"
-                            style="font-size: 13px; border-color: #f0f0f0;">
-                            <thead class="bg-light text-secondary">
-                                <tr>
-                                    <th class="ps-3" style="font-weight: 600; width: 110px;">Date</th>
-                                    <th style="font-weight: 600; width: 150px;">Consultation Type</th>
-                                    <th style="font-weight: 600; width: 180px;">Nature of Concern</th>
-                                    <th style="font-weight: 600; width: 160px;">Attending Counselor</th>
-                                    <th class="text-center" style="font-weight: 600; width: 100px;">Status</th>
-                                    <th style="font-weight: 600;">Intervention / Action Taken</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="ps-3 text-muted">—</td>
-                                    <td class="text-muted">—</td>
-                                    <td class="text-muted">—</td>
-                                    <td class="text-muted">—</td>
-                                    <td class="text-center text-muted">—</td>
-                                    <td class="text-muted">—</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 4. STUDENT DEVELOPMENT RECORDS -->
-                <div class="card p-3 mb-3 shadow-none"
-                    style="border-radius: 8px; border: 1px solid #EBE4E4 !important; background: #ffffff;">
-                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-award-fill" style="color: #D4A017; font-size: 15px;"></i>
-                            <span class="fw-bold text-uppercase" style="font-size: 13px; color: #2D3748;">
-                                Student Development Records (Seminars, Leadership & Workshops)
-                            </span>
-                        </div>
-                        <button class="btn btn-sm shadow-none"
-                            onmousedown="this.style.backgroundColor='#800020'; this.style.color='#ffffff';"
-                            onmouseup="this.style.backgroundColor='transparent'; this.style.color='#800020';"
-                            style="border: 1px solid #800020; color: #800020; font-size: 12.5px; border-radius: 4px; padding: 2px 10px;">
-                            <i class="bi bi-plus-lg me-1"></i>Add Development Record
-                        </button>
-                    </div>
-
-                    <div class="row g-2">
-                        <div class="col-12 text-center py-4 text-muted"
-                            style="font-size: 13px; background-color: #fafafa; border: 1px dashed #EBE4E4; border-radius: 6px;">
-                            <i class="bi bi-folder-x d-block fs-3 mb-1 text-secondary"></i>
-                            No development or seminar records logged for this student yet.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. PSYCHOLOGICAL ASSESSMENT & BEHAVIORAL CLEARANCE -->
-                <div class="card p-3 shadow-none"
-                    style="border-radius: 8px; border: 1px solid #EBE4E4 !important; background: #ffffff;">
-                    <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom">
-                        <i class="bi bi-shield-check" style="color: #800020; font-size: 15px;"></i>
-                        <span class="fw-bold text-uppercase" style="font-size: 13px; color: #2D3748;">
-                            Psychological Testing & Guidance Clearance Record
-                        </span>
-                    </div>
-
-                    <div class="row g-2" style="font-size: 13.5px;">
-                        <div class="col-md-4 col-12">
-                            <span class="text-muted d-block" style="font-size: 12px;">Standardized Tests Taken:</span>
-                            <strong class="text-muted d-block mt-1">—</strong>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <span class="text-muted d-block" style="font-size: 12px;">Disciplinary & Anecdotal
-                                Records:</span>
-                            <strong class="text-muted d-block mt-1">—</strong>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <span class="text-muted d-block" style="font-size: 12px;">Annual Guidance
-                                Clearance:</span>
-                            <strong class="text-muted d-block mt-1">—</strong>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- MODAL FOOTER -->
-            <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-sm shadow-none"
-                    style="border: 1px solid #ced4da; font-size: 13px; color: #4A5568;">
-                    <i class="bi bi-printer me-1"></i>Print Guidance Summary
-                </button>
-                <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal"
-                    style="font-size: 13px;">
-                    Close
-                </button>
-            </div>
-        </div>
+<div id="studentHistoryDatasetStore" class="d-none" aria-hidden="true">
+    <div id="hist-data-2023-01089" data-student-id="2023-01089" data-student-name="RAMOS, CARLOS M." data-program="BSIS"
+        data-year="3rd Year" data-college="College of Information and Computing Sciences"
+        data-concern="Academic Performance &amp; Retention Risk" data-status="Under Monitoring">
+    </div>
+    <div id="hist-data-2023-01042" data-student-id="2023-01042" data-student-name="SANTOS, MARIA C."
+        data-program="BaPOS" data-year="2nd Year" data-college="College of Arts and Sciences"
+        data-concern="Mental Health &amp; Emotional Well-being" data-status="Resolved">
+    </div>
+    <div id="hist-data-2022-00512" data-student-id="2022-00512" data-student-name="MENDOZA, JUAN B." data-program="BEED"
+        data-year="3rd Year" data-college="College of Education" data-concern="Academic Retention &amp; Exam Anxiety"
+        data-status="Resolved">
+    </div>
+    <div id="hist-data-2024-03115" data-student-id="2024-03115" data-student-name="DELA CRUZ, BEA L."
+        data-program="BSTM" data-year="1st Year" data-college="College of Business and Accountancy"
+        data-concern="Career Guidance &amp; Course Alignment" data-status="Resolved">
     </div>
 </div>
+
+<!-- ==================================================================== -->
+<!--   NATIVE FRONTEND FILTER & EXPORT SCRIPT                             -->
+<!-- ==================================================================== -->
+<script>
+    // Normalization helper strictly restricting programs to BSIS, BSTM, BEED, BaPOS
+    function normalizeProgram(val) {
+        if (!val) return 'BSIS';
+        const s = String(val).toUpperCase();
+        if (s.includes('IS') || s.includes('INFO') || s.includes('COMP') || s.includes('IT')) return 'BSIS';
+        if (s.includes('TOUR') || s.includes('BSTM') || s.includes('TM')) return 'BSTM';
+        if (s.includes('EDUC') || s.includes('BEED') || s.includes('ELED') || s.includes('TEACH')) return 'BEED';
+        if (s.includes('POL') || s.includes('BAPOS') || s.includes('POS') || s.includes('ARTS')) return 'BaPOS';
+        return 'BSIS';
+    }
+
+    // Normalization helper strictly restricting year level to 1st Year, 2nd Year, 3rd Year, 4th Year
+    function normalizeYear(val) {
+        if (!val) return '1st Year';
+        const s = String(val).toLowerCase();
+        if (s.includes('4') || s.includes('fourth')) return '4th Year';
+        if (s.includes('3') || s.includes('third')) return '3rd Year';
+        if (s.includes('2') || s.includes('second')) return '2nd Year';
+        if (s.includes('1') || s.includes('first')) return '1st Year';
+        return '1st Year';
+    }
+
+    // Real-time Multi-Filter Engine operating directly on DOM rows
+    function filterHistoryTable() {
+        const query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+        const prog = document.getElementById('programFilter').value;
+        const yr = document.getElementById('yearFilter').value;
+        const dept = document.getElementById('departmentFilter').value;
+        const status = document.getElementById('statusFilter').value;
+
+        const rows = document.querySelectorAll('.student-history-row');
+        let visible = 0;
+
+        rows.forEach(row => {
+            const rowId = (row.getAttribute('data-student-id') || '').toLowerCase();
+            const rowName = (row.getAttribute('data-student-name') || '').toLowerCase();
+            const rowProg = (row.getAttribute('data-program') || '');
+            const rowYr = (row.getAttribute('data-year') || '');
+            const rowDept = (row.getAttribute('data-college') || '');
+            const rowConcern = (row.getAttribute('data-concern') || '').toLowerCase();
+            const rowStatus = (row.getAttribute('data-status') || '');
+            const rowText = (row.textContent || '').toLowerCase();
+
+            const matchesQuery = !query ||
+                rowId.includes(query) ||
+                rowName.includes(query) ||
+                rowProg.toLowerCase().includes(query) ||
+                rowYr.toLowerCase().includes(query) ||
+                rowDept.toLowerCase().includes(query) ||
+                rowConcern.includes(query) ||
+                rowText.includes(query);
+
+            const matchesProg = (prog === 'all') || (rowProg === prog);
+            const matchesYr = (yr === 'all') || (rowYr === yr);
+            const matchesDept = (dept === 'all') || (rowDept === dept);
+            const matchesStatus = (status === 'all') || rowStatus.toLowerCase().includes(status.toLowerCase());
+
+            if (matchesQuery && matchesProg && matchesYr && matchesDept && matchesStatus) {
+                row.style.setProperty('display', '', '');
+                visible++;
+            } else {
+                row.style.setProperty('display', 'none', 'important');
+            }
+        });
+
+        const noResults = document.getElementById('noResultsRow');
+        if (noResults) {
+            noResults.style.display = (visible === 0) ? '' : 'none';
+        }
+
+        const footerCount = document.getElementById('tableFooterCount');
+        if (footerCount) {
+            footerCount.textContent = `Showing 1 to ${visible} of ${rows.length} records`;
+        }
+    }
+
+    // Export Student Counseling History to CSV
+    function exportStudentHistoryCSV() {
+        const rows = document.querySelectorAll('.student-history-row');
+        if (!rows.length) return;
+
+        let csv = "Student ID,Student Name,Program,Year Level,Department,Presenting Concern,Case Status\n";
+
+        rows.forEach(row => {
+            if (row.style.display !== 'none') {
+                const sid = row.getAttribute('data-student-id') || '';
+                const sname = row.getAttribute('data-student-name') || '';
+                const sprog = row.getAttribute('data-program') || '';
+                const syr = row.getAttribute('data-year') || '';
+                const scol = row.getAttribute('data-college') || '';
+                const scon = row.getAttribute('data-concern') || '';
+                const sstat = row.getAttribute('data-status') || '';
+                csv += `"${sid}","${sname}","${sprog}","${syr}","${scol}","${scon}","${sstat}"\n`;
+            }
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `MarSU_Student_Counseling_History_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Sync newly registered cases from localStorage dynamically
+    document.addEventListener('DOMContentLoaded', function () {
+        try {
+            const registeredCases = JSON.parse(localStorage.getItem('marsu_registered_cases') || '[]');
+            const tbody = document.getElementById('studentHistoryTableBody');
+            const noResults = document.getElementById('noResultsRow');
+
+            if (tbody && Array.isArray(registeredCases)) {
+                registeredCases.forEach(rc => {
+                    if (rc.student_id && !document.querySelector(`.student-history-row[data-student-id="${rc.student_id}"]`)) {
+                        const cleanProg = normalizeProgram(rc.program);
+                        const cleanYr = normalizeYear(rc.year);
+                        const cleanCol = rc.college || "College of Information and Computing Sciences";
+                        const cleanConcern = rc.concern_type || rc.concern || "Guidance Consultation";
+                        const cleanStatus = rc.status || "Under Monitoring";
+
+                        const tr = document.createElement('tr');
+                        tr.className = 'student-history-row align-middle';
+                        tr.setAttribute('data-student-id', rc.student_id);
+                        tr.setAttribute('data-student-name', rc.student_name || "Enrolled Client");
+                        tr.setAttribute('data-program', cleanProg);
+                        tr.setAttribute('data-year', cleanYr);
+                        tr.setAttribute('data-college', cleanCol);
+                        tr.setAttribute('data-concern', cleanConcern);
+                        tr.setAttribute('data-status', cleanStatus);
+
+                        tr.innerHTML = `
+                            <td class="ps-4 fw-bold text-nowrap" style="padding: 16px 18px; color: #1A202C !important; vertical-align: middle;">
+                                ${rc.student_id}
+                            </td>
+                            <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                                <span class="fw-bold text-dark">${rc.student_name || "Enrolled Client"}</span>
+                            </td>
+                            <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                                <span style="background-color: #f8fafc; color: #334155; border: 1px solid #dee2e6; border-radius: 6px; min-width: 65px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 10px;">
+                                    ${cleanProg}
+                                </span>
+                            </td>
+                            <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                                <span style="background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;">
+                                    ${cleanYr}
+                                </span>
+                            </td>
+                            <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                                <span class="text-dark">${cleanCol}</span>
+                            </td>
+                            <td class="text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                                <span class="badge" style="background-color: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 6px;">
+                                    ${cleanConcern}
+                                </span>
+                            </td>
+                            <td class="text-center text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                                <span style="border: 1px solid #d97706; background-color: #fffbeb; color: #92400e; border-radius: 50rem; min-width: 95px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; padding: 2px 12px;">
+                                    ${cleanStatus}
+                                </span>
+                            </td>
+                            <td class="text-center pe-4 text-nowrap" style="padding: 16px 18px; vertical-align: middle;">
+                                <a href="<?= url('guidance/student_history_view') ?>?id=${encodeURIComponent(rc.student_id)}"
+                                   class="btn btn-sm btn-outline-primary btn-outline-marsu shadow-none d-inline-flex align-items-center justify-content-center"
+                                   title="View Complete Case Timeline" aria-label="View Complete Case Timeline"
+                                   style="width: 36px; height: 36px; border-radius: 6px; font-size: 15px; padding: 0;">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        `;
+                        if (noResults) {
+                            tbody.insertBefore(tr, noResults);
+                        } else {
+                            tbody.appendChild(tr);
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.error('Storage sync error:', e);
+        }
+
+        filterHistoryTable();
+    });
+</script>

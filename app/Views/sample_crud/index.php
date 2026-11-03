@@ -154,8 +154,9 @@
                         <tr>
                             <th class="ps-3" style="width: 50px;">ID</th>
                             <th>Title (Field 1)</th>
-3*                            <th>Location (Field 2)</th>
-                            <th>Category (Field 3)</th>
+                            <th>Location</th>
+                            <th>Gender</th>
+                            <th>Category (Field 2)</th>
                             <th>Date Added</th>
                             <th class="text-end pe-3" style="width: 130px;">Action</th>
 
@@ -175,29 +176,6 @@
                                 <tr>
                                     <td class="ps-3 text-muted fw-bold">#<?= e($item['id']) ?></td>
 
-                                    <td>
-                                        <?= e($item['title']) ?>
-                                    </td>
-
-                                    <td>
-                                        <?= e($item['location']) ?>
-                                    </td>
-                                    <td>
-                                        <?= e($item['gender']) ?>
-                                    </td>
-
-                                    <td>
-                                       <?= e($item['location']) ?>
-                                    </td>
-                                    <td>
-                                        <strong class="text-marsu-burgundy fs-6"><?= e($item['location']) ?></strong>
-                                    </td>
-                                    <td>
-                                        <strong class="text-marsu-burgundy fs-6"><?= e($item['location']) ?></strong>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-gold font-monospace"><?= e($item['category']) ?></span>
-                                    </td>
                                     <td class="text-muted small">
                                         <?= e(date('M d, Y h:i A', strtotime($item['created_at']))) ?>
                                     </td>

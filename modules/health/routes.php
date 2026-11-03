@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Route declarations for module: Smart Student Health Monitoring and Clinic Management System
  * Slug: health

@@ -18,7 +18,7 @@ Heto ang pinakasimpleng gabay para makapag-save at makapag-display kayo ng data 
 
 ## 🏷️ 2. Table Prefix ng Bawat Module
 
-Bawat table na gagawin ninyo sa MySQL ay **REQUIRED** na magsimula sa nakatakdang prefix ng inyong grupo:
+Bawat table na gagawin ninyo sa MySQL ay **REQiweuriewurUIRED** na magsimula sa nakatakdang prefix ng inyong grupo:
 
 | Module Slug | Prefix | Halimbawa ng Table |
 | :--- | :--- | :--- |

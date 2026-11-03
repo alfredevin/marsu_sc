@@ -1,65 +1,32 @@
 <?php
 namespace Modules\Analytics\Support;
 
-use Core\View;
 use Core\Auth;
 use Core\Database;
-use Core\Session;
 
 /**
- * Academic Analytics Policy Settings Engine (Group 8A)
- * Manages institutional policy parameters, numeric ranges, and dynamic fallbacks.
+ * Academic Analytics policy settings, read exclusively from `ana_settings`.
+ * A key that is not configured returns null; callers display "Not configured"
+ * instead of assuming a value.
  */
 class AnalyticsSettings
 {
     private static ?array $cache = null;
 
-    private static array $defaults = [
-        'attendance.max_absence_ratio'        => 0.20,
-        'attendance.min_allowable_cuts'        => 3,
-        'attendance.late_weight'               => 0.75,
-        'attendance.critical_rate'             => 80.0,
-        'attendance.monitored_rate'            => 88.0,
-        'attendance.absence_warning_count'     => 4,
-        'grading.default_passing_cutoff'       => 3.04,
-        'grading.allow_faculty_custom_weights' => true,
-        'grading.inc_removal_days'             => 365,
-        'analytics.bottleneck_passing_rate'    => 85.0,
-    ];
-
-    /**
-     * Load all settings from the database and populate internal cache.
-     */
     private static function loadCache(): void
     {
         if (self::$cache !== null) {
             return;
         }
-
         self::$cache = [];
-        try {
-            $rows = Database::fetchAll("SELECT * FROM `ana_settings`");
-            if (!empty($rows)) {
-                foreach ($rows as $row) {
-                    self::$cache[$row['key']] = self::castValue($row['value'], $row['type']);
-                }
-                return;
+        foreach (Database::fetchAll("SELECT `key`, `value`, `type` FROM `ana_settings`") as $row) {
+            if ($row['value'] === '' || $row['value'] === null) {
+                continue;
             }
-        } catch (\Throwable $e) {}
-
-        try {
-            $rows = Database::fetchAll("SELECT * FROM `ret_settings`");
-            foreach ($rows as $row) {
-                self::$cache[$row['key']] = self::castValue($row['value'], $row['type']);
-            }
-        } catch (\Throwable $e) {
-            self::$cache = [];
+            self::$cache[$row['key']] = self::castValue($row['value'], $row['type']);
         }
     }
 
-    /**
-     * Cast raw string value to its specified schema type.
-     */
     private static function castValue(mixed $val, string $type): mixed
     {
         return match ($type) {
@@ -70,76 +37,44 @@ class AnalyticsSettings
         };
     }
 
-    /**
-     * Retrieve a setting value by key with safe fallback.
-     */
-    public static function get(string $key, mixed $fallback = null): mixed
+    public static function get(string $key): mixed
     {
         self::loadCache();
-
-        if (isset(self::$cache[$key])) {
-            return self::$cache[$key];
-        }
-
-        if ($fallback !== null) {
-            return $fallback;
-        }
-
-        return self::$defaults[$key] ?? null;
+        return self::$cache[$key] ?? null;
     }
 
-    /**
-     * Fetch all setting rows for admin governance display.
-     */
+    public static function isConfigured(string $key): bool
+    {
+        return self::get($key) !== null;
+    }
+
     public static function all(): array
     {
-        try {
-            $rows = Database::fetchAll("SELECT * FROM `ana_settings` ORDER BY `id` ASC");
-            if (!empty($rows)) return $rows;
-        } catch (\Throwable $e) {}
-
-        try {
-            return Database::fetchAll("SELECT * FROM `ret_settings` ORDER BY `id` ASC");
-        } catch (\Throwable $e) {
-            return [];
-        }
+        return Database::fetchAll("SELECT * FROM `ana_settings` ORDER BY `id` ASC");
     }
 
     /**
-     * Update a setting value with min/max constraint validation.
+     * Update a setting value with min/max validation. Returns false when the key
+     * is unknown or the value is out of range.
      */
     public static function set(string $key, mixed $val, ?int $updatedBy = null): bool
     {
-        $targetTable = 'ana_settings';
-        $row = null;
-        try {
-            $row = Database::fetchOne("SELECT * FROM `ana_settings` WHERE `key` = :key LIMIT 1", ['key' => $key]);
-        } catch (\Throwable $e) {}
-
-        if (!$row) {
-            try {
-                $row = Database::fetchOne("SELECT * FROM `ret_settings` WHERE `key` = :key LIMIT 1", ['key' => $key]);
-                if ($row) $targetTable = 'ret_settings';
-            } catch (\Throwable $e) {}
-        }
-
+        $row = Database::fetchOne("SELECT * FROM `ana_settings` WHERE `key` = :key LIMIT 1", ['key' => $key]);
         if (!$row) {
             return false;
         }
 
-        $type = $row['type'];
-        $numericVal = is_numeric($val) ? (float) $val : null;
-
-        if ($numericVal !== null) {
-            if ($row['min_value'] !== null && $numericVal < (float) $row['min_value']) {
+        if (is_numeric($val)) {
+            $num = (float) $val;
+            if ($row['min_value'] !== null && $num < (float) $row['min_value']) {
                 return false;
             }
-            if ($row['max_value'] !== null && $numericVal > (float) $row['max_value']) {
+            if ($row['max_value'] !== null && $num > (float) $row['max_value']) {
                 return false;
             }
         }
 
-        $valToStore = match ($type) {
+        $stored = match ($row['type']) {
             'bool'    => ($val ? '1' : '0'),
             'int'     => (string) (int) $val,
             'decimal' => (string) (float) $val,
@@ -147,20 +82,28 @@ class AnalyticsSettings
         };
 
         Database::update(
-            $targetTable,
-            [
-                'value'      => $valToStore,
-                'updated_by' => $updatedBy ?? Auth::id(),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
+            'ana_settings',
+            ['value' => $stored, 'updated_by' => $updatedBy ?? Auth::id(), 'updated_at' => date('Y-m-d H:i:s')],
             '`key` = :key',
             ['key' => $key]
         );
 
         if (self::$cache !== null) {
-            self::$cache[$key] = self::castValue($valToStore, $type);
+            self::$cache[$key] = self::castValue($stored, $row['type']);
         }
-
         return true;
+    }
+
+    /**
+     * Maximum allowed absences for a class given the number of sessions held,
+     * or null when the absence ratio is not configured.
+     */
+    public static function allowedAbsences(int $sessionsHeld): ?int
+    {
+        $ratio = self::get('attendance.max_absence_ratio');
+        if ($ratio === null) {
+            return null;
+        }
+        return (int) floor($sessionsHeld * (float) $ratio);
     }
 }

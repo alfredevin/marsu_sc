@@ -1,20 +1,14 @@
 <?php
 namespace Modules\Analytics\Support;
 
-use Core\View;
 use Core\Auth;
 use Core\Database;
-use Core\Session;
 
 /**
- * Academic Analytics Audit and Governance Change Log Helper (Group 8A)
- * Tracks modifications to classes, grading requests, attendance voids, and conduct reclassifications.
+ * Audit history for the Analytics module. `ana_change_log` is the only audit table.
  */
 class ChangeLog
 {
-    /**
-     * Record an administrative or faculty governance event.
-     */
     public static function record(
         string $entity,
         int $entityId,
@@ -24,114 +18,59 @@ class ChangeLog
         ?string $newValue = null,
         ?string $reason = null
     ): int {
-        $userId = Auth::id() ? (int) Auth::id() : null;
+        $id = Database::insert('ana_change_log', [
+            'entity'     => $entity,
+            'entity_id'  => $entityId,
+            'action'     => $action,
+            'field'      => $field,
+            'old_value'  => $oldValue,
+            'new_value'  => $newValue,
+            'reason'     => $reason,
+            'changed_by' => Auth::id() ? (int) Auth::id() : null,
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
 
-        $targetTable = 'ana_change_log';
-        $id = 0;
-        try {
-            $id = Database::insert($targetTable, [
-                'entity'     => $entity,
-                'entity_id'  => $entityId,
-                'action'     => $action,
-                'field'      => $field,
-                'old_value'  => $oldValue,
-                'new_value'  => $newValue,
-                'reason'     => $reason,
-                'changed_by' => $userId,
-                'created_at' => date('Y-m-d H:i:s'),
-            ]);
-        } catch (\Throwable $e) {
-            try {
-                $id = Database::insert('ret_change_log', [
-                    'entity'     => $entity,
-                    'entity_id'  => $entityId,
-                    'action'     => $action,
-                    'field'      => $field,
-                    'old_value'  => $oldValue,
-                    'new_value'  => $newValue,
-                    'reason'     => $reason,
-                    'changed_by' => $userId,
-                    'created_at' => date('Y-m-d H:i:s'),
-                ]);
-            } catch (\Throwable $ex) {}
-        }
-
-        // Integrate with core Logger::audit if available
         if (class_exists(\Core\Logger::class) && method_exists(\Core\Logger::class, 'audit')) {
             try {
-                \Core\Logger::audit(
-                    "analytics.{$action}",
-                    $entity,
-                    $entityId,
-                    [
-                        'field'  => $field,
-                        'old'    => $oldValue,
-                        'new'    => $newValue,
-                        'reason' => $reason,
-                    ]
-                );
-            } catch (\Throwable $e) {}
+                \Core\Logger::audit("analytics.{$action}", $entity, $entityId, [
+                    'field' => $field, 'old' => $oldValue, 'new' => $newValue, 'reason' => $reason,
+                ]);
+            } catch (\Throwable $e) {
+            }
         }
 
-        return (int) $id;
+        return $id;
     }
 
-    /**
-     * Fetch change log history for a specific entity.
-     */
     public static function forEntity(string $entity, int $entityId): array
     {
-        try {
-            $rows = Database::fetchAll(
-                "SELECT cl.*, CONCAT(u.first_name, ' ', u.last_name) as user_name, u.email as user_email 
-                 FROM `ana_change_log` cl 
-                 LEFT JOIN `users` u ON cl.changed_by = u.id 
-                 WHERE cl.entity = :entity AND cl.entity_id = :id 
-                 ORDER BY cl.id DESC",
-                ['entity' => $entity, 'id' => $entityId]
-            );
-            if (!empty($rows)) return $rows;
-        } catch (\Throwable $e) {}
-
-        try {
-            return Database::fetchAll(
-                "SELECT cl.*, CONCAT(u.first_name, ' ', u.last_name) as user_name, u.email as user_email 
-                 FROM `ret_change_log` cl 
-                 LEFT JOIN `users` u ON cl.changed_by = u.id 
-                 WHERE cl.entity = :entity AND cl.entity_id = :id 
-                 ORDER BY cl.id DESC",
-                ['entity' => $entity, 'id' => $entityId]
-            );
-        } catch (\Throwable $e) {
-            return [];
-        }
+        return Database::fetchAll(
+            "SELECT cl.*, CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email
+             FROM `ana_change_log` cl
+             LEFT JOIN `users` u ON cl.changed_by = u.id
+             WHERE cl.entity = :entity AND cl.entity_id = :id
+             ORDER BY cl.id DESC",
+            ['entity' => $entity, 'id' => $entityId]
+        );
     }
 
-    /**
-     * Fetch recent audit change entries across all analytics entities.
-     */
-    public static function recent(int $limit = 50): array
+    public static function recent(int $limit = 50, ?string $entity = null): array
     {
-        $limit = max(1, min(200, (int) $limit));
-        try {
-            $rows = Database::fetchAll(
-                "SELECT cl.*, CONCAT(u.first_name, ' ', u.last_name) as user_name, u.email as user_email 
-                 FROM `ana_change_log` cl 
-                 LEFT JOIN `users` u ON cl.changed_by = u.id 
-                 ORDER BY cl.id DESC LIMIT {$limit}"
-            );
-            if (!empty($rows)) return $rows;
-        } catch (\Throwable $e) {}
-
-        try {
-            return Database::fetchAll(
-                "SELECT cl.*, CONCAT(u.first_name, ' ', u.last_name) as user_name, u.email as user_email 
-                 FROM `ret_change_log` cl 
-                 LEFT JOIN `users` u ON cl.changed_by = u.id 
-                 ORDER BY cl.id DESC LIMIT {$limit}"
-            );
-        } catch (\Throwable $e) {
-            return [];
+        $limit = max(1, min(500, $limit));
+        $where = '';
+        $params = [];
+        if ($entity !== null && $entity !== '') {
+            $where = 'WHERE cl.entity = :entity';
+            $params['entity'] = $entity;
         }
+        return Database::fetchAll(
+            "SELECT cl.*, CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email
+             FROM `ana_change_log` cl
+             LEFT JOIN `users` u ON cl.changed_by = u.id
+             {$where}
+             ORDER BY cl.id DESC
+             LIMIT {$limit}",
+            $params
+        );
     }
 }

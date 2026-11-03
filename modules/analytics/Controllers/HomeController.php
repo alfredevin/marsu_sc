@@ -1,2146 +1,883 @@
 <?php
 namespace Modules\Analytics\Controllers;
 
-use Core\View;
-use Core\Auth;
 use Core\Database;
 use Core\Session;
+use Core\View;
+use Modules\Analytics\Support\AnalyticsAccess;
+use Modules\Analytics\Support\AnalyticsSettings;
+use Modules\Analytics\Support\ChangeLog;
+use Modules\Analytics\Support\ClassRecord;
+use Modules\Analytics\Support\Csv;
+use Modules\Analytics\Support\GradeCalculator;
+use Modules\Analytics\Support\Ui;
 
 /**
- * Controller for Student Retention & Academic Risk Early Warning System
+ * Landing dispatcher and read-only Monitoring & Oversight pages.
+ * Every query applies AnalyticsAccess program scope.
  */
 class HomeController
 {
+    // ------------------------------------------------------------------
+    // Dispatcher
+    // ------------------------------------------------------------------
+
     public function index(): void
     {
-        // Role-Based Smart Router: Redirect faculty persona to faculty workspace
-        if (!can('analytics.view')) {
-            if (can('analytics.faculty.classes')) {
-                redirect(url('analytics/faculty'));
-                return;
-            }
-            View::render('errors/403', [
-                'title'         => 'Access Forbidden (403)',
-                'permissionKey' => 'analytics.view',
-            ]);
-            return;
+        $persona = AnalyticsAccess::persona();
+        $personas = AnalyticsAccess::personas();
+        if ($persona === null || !isset($personas[$persona])) {
+            AnalyticsAccess::forbidden('analytics.*');
         }
-
-        $user = Auth::user();
-
-        // 1. Fetch live records from ret_records
-        $records = [];
-        try {
-            $records = Database::fetchAll("SELECT * FROM `ana_records` WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 15");
-        } catch (\Throwable $e) {
-            $records = [];
-        }
-
-        // 2. Fetch High-Risk logs and Early Warning alerts
-        $recentAlerts = [];
-        $highRiskCount = 0;
-        $moderateRiskCount = 0;
-        $lowRiskCount = 0;
-        try {
-            $recentAlerts = Database::fetchAll("SELECT * FROM `ana_risk_logs` WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 5");
-            $highRiskCount = (int) Database::fetchColumn("SELECT COUNT(*) FROM `ana_risk_logs` WHERE `risk_level` = 'High' AND deleted_at IS NULL");
-            $moderateRiskCount = (int) Database::fetchColumn("SELECT COUNT(*) FROM `ana_risk_logs` WHERE (`risk_level` = 'Moderate' OR `risk_level` = 'Medium') AND deleted_at IS NULL");
-            $lowRiskCount = (int) Database::fetchColumn("SELECT COUNT(*) FROM `ana_risk_logs` WHERE `risk_level` = 'Low' AND deleted_at IS NULL");
-        } catch (\Throwable $e) {
-            $recentAlerts = [];
-        }
-
-        if ($highRiskCount === 0) $highRiskCount = 18;
-        if ($moderateRiskCount === 0) $moderateRiskCount = 31;
-        if ($lowRiskCount === 0) $lowRiskCount = 817;
-
-        // 3. Total Students Monitored
-        $totalStudents = 866;
-        try {
-            $stdCount = (int) Database::fetchColumn("SELECT COUNT(*) FROM `students` WHERE deleted_at IS NULL");
-            if ($stdCount > 0) $totalStudents = $stdCount;
-        } catch (\Throwable $e) {}
-
-        // 4. Active Interventions and Advising count
-        $activeInterventions = 0;
-        try {
-            $advCount = (int) Database::fetchColumn("SELECT COUNT(*) FROM `ana_records` WHERE `status` = 'Completed' OR `status` = 'Scheduled'");
-            $supCount = (int) Database::fetchColumn("SELECT COUNT(*) FROM `ana_records` WHERE `status` = 'Active' OR `status` = 'Enrolled'");
-            $activeInterventions = $advCount + $supCount;
-        } catch (\Throwable $e) {
-            $activeInterventions = 42;
-        }
-        if ($activeInterventions === 0) $activeInterventions = 42;
-
-        // 5. Subject Performance Analytics (Passing Rates & Grade Breakdown)
-        $coursePassingList = [];
-        $totalHonor = 785;
-        $totalPass = 1512;
-        $totalRisk = 186;
-        $totalFail = 201;
-        $bottleneckCount = 31;
-        $totalCourses = 80;
-        $overallPassingRate = 86.5;
-        $overallMeanGpa = 2.29;
-
-        try {
-            $subjectRows = Database::fetchAll("SELECT sub.id, sub.code, sub.title, COALESCE(p.code, 'General') as department FROM `subjects` sub LEFT JOIN `programs` p ON sub.program_id = p.id WHERE sub.deleted_at IS NULL ORDER BY sub.code ASC");
-            if (!empty($subjectRows)) {
-                $totalCourses = count($subjectRows);
-                $coursePassingList = [];
-                $tempHonors = 0;
-                $tempPass = 0;
-                $tempRisk = 0;
-                $tempFail = 0;
-                $tempBottlenecks = 0;
-                $totalEnrolledSum = 0;
-                $weightedGpaSum = 0;
-                $totalPassedSum = 0;
-
-                foreach ($subjectRows as $row) {
-                    $subId = (int) $row['id'];
-                    $enrolled = 35;
-                    $seedFactor = ($subId * 7) % 23;
-                    $isHardCourse = ($seedFactor < 7 || stripos($row['title'], 'Programming') !== false || stripos($row['title'], 'Calculus') !== false || stripos($row['title'], 'Data') !== false);
-
-                    if ($isHardCourse) {
-                        $pRate = round(74.0 + ($seedFactor % 10), 1);
-                        $mGpa = round(2.65 + (($seedFactor % 6) * 0.08), 2);
-                        $failed = max(3, (int) round($enrolled * (100 - $pRate) / 100));
-                        $passed = $enrolled - $failed;
-                        $honors = max(1, (int) round($passed * 0.15));
-                        $riskCount = max(2, (int) round($failed * 0.6));
-                    } else {
-                        $pRate = round(86.5 + ($seedFactor % 12), 1);
-                        $pRate = min(98.5, $pRate);
-                        $mGpa = round(1.75 + (($seedFactor % 5) * 0.09), 2);
-                        $failed = max(0, (int) round($enrolled * (100 - $pRate) / 100));
-                        $passed = $enrolled - $failed;
-                        $honors = max(3, (int) round($passed * 0.35));
-                        $riskCount = max(0, (int) round($failed * 0.5));
-                    }
-
-                    if ($pRate < 85.0) {
-                        $tempBottlenecks++;
-                    }
-
-                    $totalEnrolledSum += $enrolled;
-                    $weightedGpaSum += ($mGpa * $enrolled);
-                    $totalPassedSum += (($pRate / 100) * $enrolled);
-                    $tempHonors += $honors;
-                    $tempPass += $passed;
-                    $tempRisk += $riskCount;
-                    $tempFail += $failed;
-
-                    $coursePassingList[] = [
-                        'code' => $row['code'],
-                        'title' => $row['title'],
-                        'rate' => $pRate,
-                        'is_bottleneck' => ($pRate < 85.0)
-                    ];
-                }
-
-                if ($totalEnrolledSum > 0) {
-                    $overallPassingRate = round(($totalPassedSum / $totalEnrolledSum) * 100, 1);
-                    $overallMeanGpa = round($weightedGpaSum / $totalEnrolledSum, 2);
-                    $totalHonor = $tempHonors;
-                    $totalPass = $tempPass;
-                    $totalRisk = $tempRisk;
-                    $totalFail = $tempFail;
-                    $bottleneckCount = $tempBottlenecks;
-                }
-            }
-        } catch (\Throwable $e) {}
-
-        // Select top 12 representative subjects for the dashboard bar chart (a mix of high performing and bottleneck subjects)
-        $dashboardChartSubjects = [];
-        if (!empty($coursePassingList)) {
-            $bottlenecks = array_values(array_filter($coursePassingList, fn($c) => $c['is_bottleneck']));
-            $normalCourses = array_values(array_filter($coursePassingList, fn($c) => !$c['is_bottleneck']));
-            $dashboardChartSubjects = array_merge(array_slice($bottlenecks, 0, 6), array_slice($normalCourses, 0, 6));
-        } else {
-            $dashboardChartSubjects = [
-                ['code' => 'CC101', 'title' => 'Intro to Computing', 'rate' => 88.5, 'is_bottleneck' => false],
-                ['code' => 'CC102', 'title' => 'Fund. of Programming', 'rate' => 76.5, 'is_bottleneck' => true],
-                ['code' => 'IT111', 'title' => 'Discrete Structures', 'rate' => 78.0, 'is_bottleneck' => true],
-                ['code' => 'IS211', 'title' => 'Data Management', 'rate' => 89.2, 'is_bottleneck' => false],
-                ['code' => 'MATH101', 'title' => 'Calculus I', 'rate' => 74.5, 'is_bottleneck' => true],
-                ['code' => 'GE104', 'title' => 'Purposive Comm', 'rate' => 96.0, 'is_bottleneck' => false],
-                ['code' => 'IT212', 'title' => 'Data Structures', 'rate' => 75.0, 'is_bottleneck' => true],
-                ['code' => 'BSIS301', 'title' => 'Enterprise Architecture', 'rate' => 91.5, 'is_bottleneck' => false],
-                ['code' => 'BSTM202', 'title' => 'Tourism Operations', 'rate' => 94.0, 'is_bottleneck' => false],
-                ['code' => 'BEED105', 'title' => 'Child Development', 'rate' => 95.8, 'is_bottleneck' => false],
-                ['code' => 'BAPoS201', 'title' => 'Political Theory', 'rate' => 88.0, 'is_bottleneck' => false],
-                ['code' => 'CS202', 'title' => 'Algorithms', 'rate' => 77.2, 'is_bottleneck' => true],
-            ];
-        }
-
-        // 6. Longitudinal multi-year retention trend data
-        $longitudinalTrends = [
-            'years' => ['A.Y. 2024-2025', 'A.Y. 2025-2026', 'A.Y. 2026-2027'],
-            'retention' => [94.1, 95.4, 96.2],
-            'attrition' => [5.9, 4.6, 3.8],
-            'gwa' => [2.23, 2.18, 2.14]
-        ];
-
-        // 7. Program-level risk distribution data
-        $programRiskDistribution = [
-            'labels' => ['BSIS', 'BSTM', 'BEED', 'BAPoS', 'BSIT', 'BSCS'],
-            'low' => [295, 258, 292, 174, 185, 160],
-            'moderate' => [18, 16, 13, 11, 14, 12],
-            'high' => [7, 6, 5, 5, 6, 4]
-        ];
-
-        View::render('analytics/Views/index', [
-            'title' => 'Student Retention & Academic Risk Early Warning System — Dashboard',
-            'moduleName' => 'Student Retention & Academic Risk Early Warning System',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Academic Analytics' => '',
-                'Student Retention & Academic Risk Early Warning System' => ''
-            ],
-            // KPI Metrics
-            'overallRetentionRate' => 96.2,
-            'overallPassingRate' => $overallPassingRate,
-            'overallMeanGpa' => $overallMeanGpa,
-            'highRiskCount' => $highRiskCount,
-            'moderateRiskCount' => $moderateRiskCount,
-            'lowRiskCount' => $lowRiskCount,
-            'totalStudents' => $totalStudents,
-            'totalCourses' => $totalCourses,
-            'bottleneckCount' => $bottleneckCount,
-            'activeInterventions' => $activeInterventions,
-            // Chart Telemetry
-            'dashboardChartSubjects' => $dashboardChartSubjects,
-            'gradeDistribution' => [
-                'honor' => $totalHonor,
-                'pass' => $totalPass,
-                'deficient' => ($totalRisk + $totalFail)
-            ],
-            'longitudinalTrends' => $longitudinalTrends,
-            'programRiskDistribution' => $programRiskDistribution,
-            // Records and alerts
-            'records' => $records,
-            'recentAlerts' => $recentAlerts
-        ]);
+        redirect(url($personas[$persona]['url']));
     }
 
-    public function show(): void
+    public function switchPersona(): void
     {
-        $id = (int) ($_GET['id'] ?? 0);
-        $record = Database::fetchOne("SELECT * FROM `ana_records` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]);
-
-        if (!$record) {
-            Session::flash('error', 'Record not found.');
-            redirect(url('analytics'));
+        $key = (string) ($_POST['persona'] ?? '');
+        if (!AnalyticsAccess::setPersona($key)) {
+            redirect(url('analytics'), 'error', 'That workspace is not available to your account.');
         }
-
-        View::render('analytics/Views/index', [
-            'title' => 'View Record #{$id}',
-            'moduleName' => 'Student Retention & Academic Risk Early Warning System',
-            'slug' => 'retention',
-            'record' => $record,
-            'records' => [],
-            'crumbs' => ['Student Retention & Academic Risk Early Warning System' => url('analytics'), 'View' => '']
-        ]);
+        redirect(url(AnalyticsAccess::personas()[$key]['url']));
     }
 
-    public function store(): void
+    public function legacyStudents(): void
     {
-        $type = trim($_POST['type'] ?? 'record');
-        $user = Auth::user();
-        $userId = Auth::id();
-        if (!$userId) {
-            Session::flash('error', 'Authentication required.');
-            redirect(url('analytics'));
-            return;
-        }
-        $userId = (int) $userId;
-
-        try {
-            if ($type === 'attendance') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $sessionDate = trim($_POST['session_date'] ?? date('Y-m-d'));
-                $subjectCode = trim($_POST['subject_code'] ?? '');
-                $status = trim($_POST['status'] ?? 'Present');
-                $remarks = trim($_POST['remarks'] ?? '');
-
-                // 1. Look up subject_id
-                $subjRow = Database::fetchOne("SELECT id FROM `subjects` WHERE `code` = ? LIMIT 1", [$subjectCode]);
-                $subjectId = $subjRow['id'] ?? null;
-
-                // 2. Look up active academic year and semester
-                $activeAY = Database::fetchOne("SELECT id FROM `academic_years` WHERE `is_active` = 1 LIMIT 1");
-                $ayId = $activeAY['id'] ?? 3;
-                $activeSem = Database::fetchOne("SELECT id FROM `semesters` WHERE `academic_year_id` = ? AND `is_active` = 1 LIMIT 1", [$ayId]);
-                $semId = $activeSem['id'] ?? 7;
-
-                // 3. Insert into dedicated ret_attendance_records table
-                Database::insert('ret_attendance_records', [
-                    'student_id'       => $studentId,
-                    'subject_id'       => $subjectId,
-                    'subject_code'     => $subjectCode,
-                    'academic_year_id' => $ayId,
-                    'semester_id'      => $semId,
-                    'session_date'     => $sessionDate,
-                    'status'           => $status,
-                    'remarks'          => $remarks,
-                    'logged_by'        => $userId,
-                    'created_at'       => date('Y-m-d H:i:s')
-                ]);
-
-                // 4. Activity log in ret_records
-                Database::insert('ret_records', [
-                    'title' => "Attendance: {$subjectCode} - {$status} for Student {$studentId}",
-                    'description' => "Date: {$sessionDate} | Status: {$status} | Notes: {$remarks}",
-                    'status' => 'active',
-                    'created_by' => $userId,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-
-                // 5. Activity log if unexcused absence
-                if ($status === 'Absent') {
-                    $unexcusedCount = (int) (Database::fetchColumn(
-                        "SELECT COUNT(*) FROM `ana_attendance_records` WHERE `student_id` = ? AND `status` = 'Absent' AND `deleted_at` IS NULL",
-                        [$studentId]
-                    ) ?: 0);
-                    if ($unexcusedCount >= 4) {
-                        Database::insert('ret_records', [
-                            'title' => "Absence Warning: Student {$studentId} reached {$unexcusedCount} unexcused cuts",
-                            'description' => "Student {$studentId} has exceeded the standard attendance warning limit in {$subjectCode}.",
-                            'status' => 'pending',
-                            'created_by' => $userId,
-                            'created_at' => date('Y-m-d H:i:s')
-                        ]);
-                    }
-                }
-
-                Session::flash('success', 'Attendance record saved successfully.');
-                redirect(url('analytics/attendancerecords'));
-                return;
-            }
-
-            if ($type === 'task_exception') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $subjectCode = trim($_POST['subject_code'] ?? '');
-                $assessmentType = trim($_POST['assessment_type'] ?? 'Assignment');
-                $exceptionStatus = trim($_POST['exception_status'] ?? 'Late Submission');
-                $remediationNotes = trim($_POST['remediation_notes'] ?? '');
-
-                Database::insert('ret_records', [
-                    'title' => "Task Exception: " . ($subjectCode ?: 'Coursework') . " - {$assessmentType} ({$exceptionStatus}) for Student {$studentId}",
-                    'description' => "Remediation & Reason: {$remediationNotes}",
-                    'status' => 'active',
-                    'created_by' => $userId,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Assessment task exception logged successfully.');
-                redirect(url('analytics/participationtracking'));
-                return;
-            }
-
-            if ($type === 'advising') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $advisingDate = trim($_POST['advising_date'] ?? date('Y-m-d'));
-                $topic = trim($_POST['topic'] ?? 'General Academic Advising');
-                $notes = trim($_POST['notes'] ?? '');
-                $recommendations = trim($_POST['recommendations'] ?? '');
-                $status = trim($_POST['status'] ?? 'Completed');
-                $followUpDate = !empty($_POST['follow_up_date']) ? $_POST['follow_up_date'] : null;
-
-                Database::insert('ret_advising_records', [
-                    'student_id' => $studentId,
-                    'advisor_id' => $userId,
-                    'advising_date' => $advisingDate,
-                    'topic' => $topic,
-                    'notes' => $notes,
-                    'recommendations' => $recommendations,
-                    'status' => $status,
-                    'follow_up_date' => $followUpDate,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Academic advising session logged successfully.');
-                redirect(url('analytics/advisingrecords'));
-                return;
-            }
-
-            if ($type === 'guidance') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $severity = trim($_POST['severity_level'] ?? 'Medium');
-                $reason = trim($_POST['referral_reason'] ?? '');
-                $notes = trim($_POST['notes'] ?? '');
-
-                Database::insert('ret_guidance_referrals', [
-                    'student_id' => $studentId,
-                    'referred_by' => $userId,
-                    'referral_reason' => $reason,
-                    'severity_level' => $severity,
-                    'status' => 'Pending Intake',
-                    'resolution_notes' => $notes,
-                    'referred_at' => date('Y-m-d H:i:s'),
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Guidance & counseling referral submitted successfully.');
-                redirect(url('analytics/guidancereferrals'));
-                return;
-            }
-
-            if ($type === 'support') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $subjectCode = trim($_POST['subject_code'] ?? '');
-                $programName = trim($_POST['program_name'] ?? 'Peer Mentoring Clinic');
-                $mentorName = trim($_POST['mentor_name'] ?? '');
-                $enrolledAt = trim($_POST['enrolled_at'] ?? date('Y-m-d'));
-
-                Database::insert('ret_academic_support', [
-                    'student_id' => $studentId,
-                    'program_name' => $programName,
-                    'subject_code' => $subjectCode,
-                    'mentor_name' => $mentorName,
-                    'status' => 'Active',
-                    'enrolled_at' => $enrolledAt,
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Student successfully enrolled in academic support program.');
-                redirect(url('analytics/academicsupportprograms'));
-                return;
-            }
-
-            if ($type === 'behavior') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $incidentDate = trim($_POST['incident_date'] ?? date('Y-m-d'));
-                $incidentType = trim($_POST['incident_type'] ?? 'Classroom Conduct');
-                $severity = trim($_POST['severity'] ?? 'Minor');
-                $description = trim($_POST['description'] ?? '');
-
-                Database::insert('ret_behavior_records', [
-                    'student_id' => $studentId,
-                    'reported_by' => $userId,
-                    'incident_date' => $incidentDate,
-                    'incident_type' => $incidentType,
-                    'severity' => $severity,
-                    'description' => $description,
-                    'status' => 'Reported',
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Student behavior incident log recorded.');
-                redirect(url('analytics/behaviorrecords'));
-                return;
-            }
-
-            if ($type === 'risk') {
-                $studentId = trim($_POST['student_id'] ?? '');
-                $riskLevel = trim($_POST['risk_level'] ?? 'Moderate');
-                $riskFactors = trim($_POST['risk_factors'] ?? '');
-                $riskScore = ($riskLevel === 'High') ? 85.0 : (($riskLevel === 'Moderate') ? 60.0 : 30.0);
-
-                Database::insert('ret_risk_logs', [
-                    'student_id' => $studentId,
-                    'risk_level' => $riskLevel,
-                    'risk_score' => $riskScore,
-                    'risk_factors' => $riskFactors,
-                    'status' => 'Active',
-                    'detected_at' => date('Y-m-d H:i:s'),
-                    'created_at' => date('Y-m-d H:i:s')
-                ]);
-                Session::flash('success', 'Student successfully flagged as at-risk.');
-                redirect(url('analytics/atriskstudents'));
-                return;
-            }
-
-            // Default fallback: ret_records
-            $title = trim($_POST['title'] ?? '');
-            $description = trim($_POST['description'] ?? '');
-
-            if (!$title) {
-                Session::flash('error', 'Title is required.');
-                redirect(url('analytics'));
-                return;
-            }
-
-            Database::insert('ret_records', [
-                'title' => $title,
-                'description' => $description,
-                'status' => 'active',
-                'created_by' => $userId,
-                'created_at' => date('Y-m-d H:i:s')
-            ]);
-            Session::flash('success', 'New record added successfully.');
-            redirect(url('analytics'));
-        } catch (\Exception $e) {
-            Session::flash('error', 'Could not save record: ' . $e->getMessage());
-            redirect(url('analytics'));
-        }
-    }
-    public function profile(): void
-    {
-        $user = Auth::user();
-
-        $studentIdParam = trim($_GET['student_id'] ?? '');
-        $activeTab = trim($_GET['tab'] ?? $_GET['view'] ?? 'demographics');
-        if (!in_array($activeTab, ['demographics', 'academic', 'enrollment'])) {
-            $activeTab = 'demographics';
-        }
-
-        $department = trim($_GET['department'] ?? '');
-        $yearLevel = trim($_GET['year_level'] ?? '');
-        $section = trim($_GET['section'] ?? '');
-        $search = trim($_GET['q'] ?? '');
-
-        // Dynamic fetch of programs and sections from database
-        $departments = [];
-        $sections = [];
-        try {
-            $departments = Database::fetchAll("SELECT DISTINCT `code`, `name` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
-            $sections = Database::fetchAll("SELECT DISTINCT `id`, `name`, `year_level` FROM `sections` WHERE `deleted_at` IS NULL ORDER BY `year_level` ASC, `name` ASC");
-        } catch (\Throwable $e) {
-            $departments = [];
-            $sections = [];
-        }
-
-        $selectedStudent = null;
-        $studentList = [];
-        $demographics = [];
-        $academicHistory = [];
-        $enrollmentRecord = [];
-
-        // 1. DETAIL VIEW: When student_id is selected (Combined Sub-Modules)
-        if (!empty($studentIdParam)) {
-            try {
-                $sql = "SELECT 
-                            s.*,
-                            CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) AS full_name,
-                            COALESCE(p.code, 'N/A') AS program_code,
-                            COALESCE(p.name, 'N/A') AS program_name,
-                            COALESCE(p.years, 4) AS program_years,
-                            COALESCE(d.name, 'N/A') AS department_name,
-                            COALESCE(d.code, 'N/A') AS department_code,
-                            COALESCE(d.head_name, 'N/A') AS department_head,
-                            COALESCE(sec.name, '-') AS section_name
-                        FROM `students` s
-                        LEFT JOIN `programs` p ON s.program_id = p.id
-                        LEFT JOIN `departments` d ON p.department_id = d.id
-                        LEFT JOIN `sections` sec ON s.section_id = sec.id
-                        WHERE (s.student_number = ? OR s.id = ?)
-                        LIMIT 1";
-
-                $selectedStudent = Database::fetchOne($sql, [
-                    $studentIdParam,
-                    is_numeric($studentIdParam) ? (int) $studentIdParam : 0
-                ]);
-
-                if (!empty($selectedStudent)) {
-                    // SUB-MODULE 1: DEMOGRAPHIC INFORMATION
-                    $addr = $selectedStudent['address'] ?? '';
-                    $isBoarding = (stripos($addr, 'Boarding') !== false) || (stripos($addr, 'Dorm') !== false);
-                    $isDistant = (stripos($addr, 'Torrijos') !== false) || (stripos($addr, 'Buenavista') !== false) || (stripos($addr, 'Santa Cruz') !== false);
-
-                    $demographics = [
-                        'living_arrangement' => $isBoarding ? 'Boarding House' : 'With Family',
-                        'commute_risk_level' => $isDistant ? 'High (Distant Commute)' : ($isBoarding ? 'Moderate (Relocated)' : 'Low (Local Resident)'),
-                        'address' => $addr ?: 'Marinduque',
-                        'guardian_name' => $selectedStudent['guardian_name'] ?? 'Not Recorded',
-                        'guardian_contact' => $selectedStudent['guardian_contact'] ?? 'Not Recorded',
-                        'is_reachable' => !empty($selectedStudent['guardian_contact'])
-                    ];
-
-                    // Fetch subjects for Academic History and Enrollment Records from database
-                    $progId = (int) ($selectedStudent['program_id'] ?? 1);
-                    $allSubjects = Database::fetchAll("SELECT * FROM `subjects` WHERE `program_id` = ? OR `program_id` = 1 ORDER BY `code` ASC", [$progId]);
-                    if (empty($allSubjects)) {
-                        $allSubjects = Database::fetchAll("SELECT * FROM `subjects` ORDER BY `code` ASC LIMIT 16");
-                    }
-
-                    // SUB-MODULE 2: ACADEMIC HISTORY & TRANSCRIPT
-                    $semestersList = [
-                        'A.Y. 2026-2027 • 1st Semester',
-                        'A.Y. 2025-2026 • 2nd Semester',
-                        'A.Y. 2025-2026 • 1st Semester'
-                    ];
-                    $groupedRecords = [];
-                    $totalQualityPoints = 0;
-                    $totalCreditedUnits = 0;
-                    $totalEarnedUnits = 0;
-                    $totalFailedUnits = 0;
-
-                    $chunkSize = max(4, min(8, (int) ceil(count($allSubjects) / 3)));
-                    $chunks = array_chunk($allSubjects, $chunkSize);
-
-                    foreach ($chunks as $cIdx => $subChunk) {
-                        if ($cIdx >= 3) break;
-                        $termLabel = $semestersList[$cIdx] ?? ("Term " . ($cIdx + 1));
-                        $termUnits = 0;
-                        $termPoints = 0;
-                        $passedUnits = 0;
-                        $recList = [];
-
-                        foreach ($subChunk as $sItem) {
-                            $u = (float) ($sItem['units'] ?? 3.0);
-                            $termUnits += $u;
-
-                            $hashVal = crc32(($selectedStudent['student_number'] ?? 'STD') . $sItem['code']);
-                            $gradePool = [1.25, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00];
-                            if (($hashVal % 15) === 0) {
-                                $grade = 5.00;
-                            } elseif (($hashVal % 25) === 0) {
-                                $grade = 'INC';
-                            } else {
-                                $grade = $gradePool[$hashVal % count($gradePool)];
-                            }
-
-                            $isPass = ($grade !== 'INC' && $grade <= 3.00);
-                            $isFail = ($grade === 5.00);
-
-                            if ($isPass) {
-                                $termPoints += ($grade * $u);
-                                $totalQualityPoints += ($grade * $u);
-                                $totalCreditedUnits += $u;
-                                $totalEarnedUnits += $u;
-                                $passedUnits += $u;
-                                $remarks = 'PASSED';
-                                $flag = 'Credited';
-                            } elseif ($isFail) {
-                                $termPoints += (5.00 * $u);
-                                $totalQualityPoints += (5.00 * $u);
-                                $totalCreditedUnits += $u;
-                                $totalFailedUnits += $u;
-                                $remarks = 'FAILED';
-                                $flag = 'Prerequisite Blocked';
-                            } else {
-                                $remarks = 'INCOMPLETE';
-                                $flag = 'Removal Required';
-                            }
-
-                            $recList[] = [
-                                'course_code' => $sItem['code'],
-                                'course_title' => $sItem['title'],
-                                'units' => $u,
-                                'grade' => is_numeric($grade) ? number_format($grade, 2) : $grade,
-                                'remarks' => $remarks,
-                                'flag' => $flag
-                            ];
-                        }
-
-                        $termGpa = ($termUnits > 0 && $termPoints > 0) ? round($termPoints / $termUnits, 2) : 0.00;
-
-                        $groupedRecords[] = [
-                            'term_label' => $termLabel,
-                            'records' => $recList,
-                            'term_units' => $termUnits,
-                            'term_gpa' => $termGpa,
-                            'passed_units' => $passedUnits
-                        ];
-                    }
-
-                    $cumulativeGwa = ($totalCreditedUnits > 0) ? round($totalQualityPoints / $totalCreditedUnits, 2) : 2.00;
-
-                    $academicHistory = [
-                        'cumulativeGwa' => $cumulativeGwa,
-                        'totalEarnedUnits' => $totalEarnedUnits,
-                        'totalFailedUnits' => $totalFailedUnits,
-                        'groupedRecords' => $groupedRecords,
-                        'academicStanding' => ($cumulativeGwa <= 1.75 && $totalFailedUnits == 0) ? 'Dean\'s Lister Tier (Honor)' : (($totalFailedUnits > 0 || $cumulativeGwa > 3.00) ? 'Scholastic Deficiency / Probation' : 'Good Academic Standing')
-                    ];
-
-                    // SUB-MODULE 3: PROGRAM AND ENROLLMENT RECORDS
-                    $activeAy = Database::fetchOne("SELECT * FROM `academic_years` WHERE `is_active` = 1 LIMIT 1");
-                    if (!$activeAy) {
-                        $activeAy = Database::fetchOne("SELECT * FROM `academic_years` ORDER BY `id` DESC LIMIT 1");
-                    }
-                    $activeSem = Database::fetchOne("SELECT * FROM `semesters` WHERE `is_active` = 1 LIMIT 1");
-                    if (!$activeSem) {
-                        $activeSem = Database::fetchOne("SELECT * FROM `semesters` ORDER BY `id` ASC LIMIT 1");
-                    }
-
-                    $enrolledLoad = array_slice($allSubjects, 0, 7);
-                    $totalEnrolledUnits = 0;
-                    foreach ($enrolledLoad as $sub) {
-                        $totalEnrolledUnits += (float) ($sub['units'] ?? 3.0);
-                    }
-
-                    $enrollmentRecord = [
-                        'academic_year' => $activeAy['label'] ?? ($activeAy['code'] ?? 'Academic Year 2026-2027'),
-                        'semester' => $activeSem['name'] ?? '1st Semester 2026-2027',
-                        'program_code' => $selectedStudent['program_code'],
-                        'program_name' => $selectedStudent['program_name'],
-                        'department_name' => $selectedStudent['department_name'],
-                        'department_code' => $selectedStudent['department_code'],
-                        'department_head' => $selectedStudent['department_head'],
-                        'program_years' => $selectedStudent['program_years'] . ' Years',
-                        'enrollment_status' => ucfirst($selectedStudent['enrollment_status'] ?? 'Enrolled'),
-                        'year_level' => ($selectedStudent['year_level'] ?? 1) . 'st Year',
-                        'section_name' => $selectedStudent['section_name'],
-                        'admission_date' => !empty($selectedStudent['created_at']) ? date('F d, Y', strtotime($selectedStudent['created_at'])) : 'August 19, 2026',
-                        'enrolled_subjects' => $enrolledLoad,
-                        'total_enrolled_units' => $totalEnrolledUnits
-                    ];
-                }
-            } catch (\Throwable $e) {
-                $selectedStudent = null;
-            }
-        }
-
-        // 2. MASTER DIRECTORY ROSTER: Default list view
-        if (!$selectedStudent) {
-            try {
-                $sql = "SELECT 
-                            s.id,
-                            s.student_number,
-                            CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) AS full_name,
-                            COALESCE(p.code, 'N/A') AS program_code,
-                            s.year_level,
-                            COALESCE(sec.name, '-') AS section_name,
-                            s.address,
-                            s.email,
-                            s.contact_number,
-                            s.enrollment_status
-                        FROM `students` s
-                        LEFT JOIN `programs` p ON s.program_id = p.id
-                        LEFT JOIN `sections` sec ON s.section_id = sec.id
-                        WHERE s.deleted_at IS NULL";
-
-                $params = [];
-
-                if (!empty($search)) {
-                    $sql .= " AND (s.student_number LIKE ? 
-                               OR s.first_name LIKE ? 
-                               OR s.last_name LIKE ? 
-                               OR CONCAT(s.first_name, ' ', s.last_name) LIKE ? 
-                               OR CONCAT(s.last_name, ', ', s.first_name) LIKE ? 
-                               OR s.email LIKE ?)";
-                    $qTerm = '%' . $search . '%';
-                    $params[] = $qTerm;
-                    $params[] = $qTerm;
-                    $params[] = $qTerm;
-                    $params[] = $qTerm;
-                    $params[] = $qTerm;
-                    $params[] = $qTerm;
-                }
-
-                if (!empty($department)) {
-                    $sql .= " AND p.code = ?";
-                    $params[] = $department;
-                }
-
-                if (!empty($yearLevel)) {
-                    $sql .= " AND s.year_level = ?";
-                    $params[] = (int) $yearLevel;
-                }
-
-                if (!empty($section)) {
-                    $sql .= " AND (sec.name = ? OR s.section_id = ?)";
-                    $params[] = $section;
-                    $params[] = is_numeric($section) ? (int) $section : 0;
-                }
-
-                $page = max(1, (int) ($_GET['page'] ?? 1));
-                $perPage = 20;
-
-                $countSql = "SELECT COUNT(*) " . substr($sql, strpos($sql, "FROM `students`"));
-                $totalRecords = (int) (Database::fetchColumn($countSql, $params) ?: 0);
-                $pagination = $this->buildPagination($totalRecords, $perPage, $page, $_GET);
-
-                $sql .= " ORDER BY s.id ASC LIMIT {$perPage} OFFSET {$pagination['offset']}";
-
-                $studentList = Database::fetchAll($sql, $params);
-            } catch (\Throwable $e) {
-                $studentList = [];
-                $pagination = $this->buildPagination(0, 20, 1, $_GET);
-            }
-        }
-
-        View::render('analytics/Views/profile', [
-            'title' => !empty($selectedStudent) ? 'Student Profile: ' . htmlspecialchars($selectedStudent['full_name']) : 'Student Profiles',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
-                'Student Information Management' => '',
-                'Student Profiles' => ''
-            ],
-            'activeTab' => $activeTab,
-            'selectedStudent' => $selectedStudent,
-            'demographics' => $demographics,
-            'academicHistory' => $academicHistory,
-            'enrollmentRecord' => $enrollmentRecord,
-            'studentList' => $studentList,
-            'pagination' => $pagination ?? $this->buildPagination(0, 20, 1, $_GET),
-            'department' => $department,
-            'yearLevel' => $yearLevel,
-            'section' => $section,
-            'search' => $search,
-            'departments' => $departments,
-            'sections' => $sections
-        ]);
+        redirect(url('analytics/students'));
     }
 
-    public function academichistory(): void
+    public function legacyClassRecords(): void
     {
-        $studentId = trim($_GET['student_id'] ?? '');
-        header('Location: ' . url('analytics/profile' . (!empty($studentId) ? '?student_id=' . urlencode($studentId) . '&tab=academic' : '')));
-        exit;
+        redirect(url('analytics/class-records'));
     }
 
-    public function enrollmentrecords(): void
+    // ------------------------------------------------------------------
+    // Shared filters
+    // ------------------------------------------------------------------
+
+    private function programFilter(): ?int
     {
-        $studentId = trim($_GET['student_id'] ?? '');
-        header('Location: ' . url('analytics/profile' . (!empty($studentId) ? '?student_id=' . urlencode($studentId) . '&tab=enrollment' : '')));
-        exit;
-    }
-
-    public function demographicinfo(): void
-    {
-        $studentId = trim($_GET['student_id'] ?? '');
-        header('Location: ' . url('analytics/profile' . (!empty($studentId) ? '?student_id=' . urlencode($studentId) . '&tab=demographics' : '')));
-        exit;
-    }
-
-    public function gradestracking(): void
-    {
-        $user = Auth::user();
-        $facultyId = $user['id'] ?? (int) Auth::id();
-        $selectedClassId = trim($_GET['class_id'] ?? '');
-
-        $facultyClasses = [];
-        $allStudentsMasterlist = [];
-        $sections = [];
-
-        try {
-            if (!empty($facultyId)) {
-                $facultyClasses = Database::fetchAll("SELECT * FROM `faculty_classes` WHERE `faculty_id` = ?", [$facultyId]);
-            }
-        } catch (\Throwable $e) {
-            $facultyClasses = [];
+        $id = (int) ($_GET['program'] ?? 0);
+        if ($id <= 0) {
+            return null;
         }
-
-        // Fetch list of all sections from database
-        try {
-            $sections = Database::fetchAll("SELECT `id`, `name`, `year_level` FROM `sections` WHERE `deleted_at` IS NULL ORDER BY `year_level` ASC, `name` ASC");
-        } catch (\Throwable $e) {
-            $sections = [];
+        $scope = AnalyticsAccess::scopedProgramIds();
+        if ($scope !== null && !in_array($id, $scope, true)) {
+            return null;
         }
-
-        // Fetch student masterlist including section_name and section_id from database
-        try {
-            $allStudentsMasterlist = Database::fetchAll(
-                "SELECT 
-                    s.student_number as student_id, 
-                    CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) as full_name, 
-                    p.code as department, 
-                    s.year_level, 
-                    s.section_id,
-                    COALESCE(sec.name, '') as section_name
-                 FROM `students` s
-                 LEFT JOIN `programs` p ON s.program_id = p.id
-                 LEFT JOIN `sections` sec ON s.section_id = sec.id
-                 WHERE s.deleted_at IS NULL
-                 ORDER BY s.last_name ASC, s.first_name ASC"
-            );
-        } catch (\Throwable $e) {
-            $allStudentsMasterlist = [];
-        }
-
-        View::render('analytics/Views/gradestracking', [
-            'title' => 'Grades Tracking & Class Record',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
-                'Academic Monitoring' => '',
-                'Grades Tracking' => ''
-            ],
-            'facultyClasses' => $facultyClasses,
-            'allStudentsMasterlist' => $allStudentsMasterlist,
-            'sections' => $sections,
-            'selectedClassId' => $selectedClassId
-        ]);
-    }
-
-    public function subjectperformance(): void
-    {
-        $user = Auth::user();
-
-        $department = trim($_GET['department'] ?? '');
-        $schoolYear = trim($_GET['school_year'] ?? '2026-2027');
-        $semester = trim($_GET['semester'] ?? '1st Semester');
-        $search = trim($_GET['q'] ?? '');
-
-        // 1. Dynamic Dropdown Data from Database
-        $departments = [];
-        try {
-            $deptRows = Database::fetchAll("SELECT DISTINCT `code` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
-            $departments = array_column($deptRows, 'code');
-        } catch (\Throwable $e) {
-            $departments = ['BSIS', 'BSTM', 'BEED', 'BAPoS'];
-        }
-
-        $schoolYears = ['2026-2027', '2025-2026'];
-        $semesters = ['1st Semester', '2nd Semester'];
-
-        // 2. Fetch real faculty instructors with their departments from employees table
-        $facultyList = [];
-        $facultyByDept = [];
-        try {
-            $facultyList = Database::fetchAll("SELECT id, CONCAT(first_name, ' ', last_name) as full_name, position, department_id FROM `employees` WHERE type = 'faculty' AND deleted_at IS NULL ORDER BY last_name ASC");
-            foreach ($facultyList as $f) {
-                $dId = (int) ($f['department_id'] ?? 0);
-                $facultyByDept[$dId][] = $f;
-            }
-        } catch (\Throwable $e) {
-            $facultyList = [];
-            $facultyByDept = [];
-        }
-
-        $coursePerformanceList = [];
-
-        try {
-            // 3. Query subjects directly from subjects table and programs table
-            $sql = "SELECT 
-                        sub.id as subject_id,
-                        sub.code as course_code, 
-                        sub.title as course_title,
-                        sub.units,
-                        sub.program_id,
-                        COALESCE(p.department_id, 6) as department_id,
-                        COALESCE(p.code, 'General') as department
-                    FROM `subjects` sub
-                    LEFT JOIN `programs` p ON sub.program_id = p.id
-                    WHERE sub.deleted_at IS NULL";
-            $params = [];
-
-            if (!empty($department)) {
-                $sql .= " AND p.code = ?";
-                $params[] = $department;
-            }
-            if (!empty($search)) {
-                $sql .= " AND (sub.code LIKE ? OR sub.title LIKE ?)";
-                $params[] = '%' . $search . '%';
-                $params[] = '%' . $search . '%';
-            }
-
-            $sql .= " ORDER BY sub.code ASC";
-            $subjectRows = Database::fetchAll($sql, $params);
-
-            // Fetch student enrollment counts per program from students table
-            $programStudentCounts = [];
-            try {
-                $counts = Database::fetchAll("SELECT program_id, COUNT(*) as total FROM `students` WHERE deleted_at IS NULL GROUP BY program_id");
-                foreach ($counts as $cnt) {
-                    $programStudentCounts[$cnt['program_id']] = (int) $cnt['total'];
-                }
-            } catch (\Throwable $e) {
-                $programStudentCounts = [];
-            }
-
-            foreach ($subjectRows as $row) {
-                $subId = (int) $row['subject_id'];
-                $progId = (int) ($row['program_id'] ?? 1);
-                $deptId = (int) ($row['department_id'] ?? 6);
-
-                // Assign real faculty instructor from matching department
-                $deptFaculty = $facultyByDept[$deptId] ?? $facultyList;
-                $dCount = count($deptFaculty);
-                $instructorName = 'Faculty Instructor';
-                if ($dCount > 0) {
-                    $fIndex = $subId % $dCount;
-                    $instructorName = $deptFaculty[$fIndex]['full_name'];
-                }
-
-                // Realistic class enrollment calculated from real student population
-                $baseStudents = $programStudentCounts[$progId] ?? 35;
-                $enrolled = max(18, min(45, (int) round($baseStudents * 0.85)));
-
-                // Deterministic GPA & passing analytics based on course characteristics
-                $seedFactor = ($subId * 7) % 23;
-                $isHardCourse = ($seedFactor < 7 || stripos($row['course_title'], 'Programming') !== false || stripos($row['course_title'], 'Calculus') !== false || stripos($row['course_title'], 'Data') !== false);
-
-                if ($isHardCourse) {
-                    $passingRate = round(74.0 + ($seedFactor % 10), 1);
-                    $meanGpa = round(2.65 + (($seedFactor % 6) * 0.08), 2);
-                    $failed = max(3, (int) round($enrolled * (100 - $passingRate) / 100));
-                    $passed = $enrolled - $failed;
-                    $honors = max(1, (int) round($passed * 0.15));
-                    $riskCount = max(2, (int) round($failed * 0.6));
-                } else {
-                    $passingRate = round(86.5 + ($seedFactor % 12), 1);
-                    $passingRate = min(98.5, $passingRate);
-                    $meanGpa = round(1.75 + (($seedFactor % 5) * 0.09), 2);
-                    $failed = max(0, (int) round($enrolled * (100 - $passingRate) / 100));
-                    $passed = $enrolled - $failed;
-                    $honors = max(3, (int) round($passed * 0.35));
-                    $riskCount = max(0, (int) round($failed * 0.5));
-                }
-
-                $isBottleneck = ($passingRate < 85.0);
-
-                $coursePerformanceList[] = [
-                    'course_code' => $row['course_code'],
-                    'course_title' => $row['course_title'],
-                    'department' => $row['department'],
-                    'units' => (float) ($row['units'] ?? 3.0),
-                    'enrolled' => $enrolled,
-                    'mean_gpa' => $meanGpa,
-                    'passing_rate' => $passingRate,
-                    'instructor' => $instructorName,
-                    'honor_count' => $honors,
-                    'pass_count' => $passed,
-                    'risk_count' => $riskCount,
-                    'fail_count' => $failed,
-                    'is_bottleneck' => $isBottleneck
-                ];
-            }
-        } catch (\Throwable $e) {
-            $coursePerformanceList = [];
-        }
-
-        $totalCourses = count($coursePerformanceList);
-        $totalEnrolledSum = 0;
-        $weightedGpaSum = 0;
-        $totalPassedSum = 0;
-        $bottleneckCount = 0;
-        $totalHonor = 0;
-        $totalPass = 0;
-        $totalRisk = 0;
-        $totalFail = 0;
-
-        foreach ($coursePerformanceList as $c) {
-            $totalEnrolledSum += $c['enrolled'];
-            $weightedGpaSum += ($c['mean_gpa'] * $c['enrolled']);
-            $totalPassedSum += (($c['passing_rate'] / 100) * $c['enrolled']);
-
-            if ($c['is_bottleneck']) {
-                $bottleneckCount++;
-            }
-
-            $totalHonor += $c['honor_count'];
-            $totalPass += $c['pass_count'];
-            $totalRisk += $c['risk_count'];
-            $totalFail += $c['fail_count'];
-        }
-
-        $overallPassingRate = $totalEnrolledSum > 0 ? round(($totalPassedSum / $totalEnrolledSum) * 100, 1) : 0;
-        $overallMeanGpa = $totalEnrolledSum > 0 ? round($weightedGpaSum / $totalEnrolledSum, 2) : 0;
-
-        $page = max(1, (int) ($_GET['page'] ?? 1));
-        $perPage = 20;
-        $pagination = $this->buildPagination($totalCourses, $perPage, $page, $_GET);
-        $paginatedCourses = array_slice($coursePerformanceList, $pagination['offset'], $perPage);
-
-        View::render('analytics/Views/subjectperformance', [
-            'title' => 'Course & Subject Performance Analytics',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
-                'Academic Monitoring' => '',
-                'Subject Performance' => ''
-            ],
-            'department' => $department,
-            'schoolYear' => $schoolYear,
-            'semester' => $semester,
-            'search' => $search,
-            'departments' => $departments,
-            'schoolYears' => $schoolYears,
-            'semesters' => $semesters,
-            'overallPassingRate' => $overallPassingRate,
-            'overallMeanGpa' => $overallMeanGpa,
-            'bottleneckCount' => $bottleneckCount,
-            'totalCourses' => $totalCourses,
-            'coursePerformanceList' => $paginatedCourses,
-            'pagination' => $pagination,
-            'gradeDistribution' => [
-                'honor' => $totalHonor,
-                'pass' => $totalPass,
-                'risk' => $totalRisk,
-                'fail' => $totalFail
-            ]
-        ]);
-    }
-
-    public function progressreports(): void
-    {
-        $user = Auth::user();
-
-        $department = trim($_GET['department'] ?? '');
-        $yearLevel = trim($_GET['year_level'] ?? '');
-        $section = trim($_GET['section'] ?? '');
-        $status = trim($_GET['status'] ?? '');
-        $search = trim($_GET['q'] ?? '');
-
-        $departments = [];
-        $sections = [];
-        try {
-            $deptRows = Database::fetchAll("SELECT DISTINCT `code` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
-            $departments = array_column($deptRows, 'code');
-
-            $secRows = Database::fetchAll("SELECT DISTINCT `name` FROM `sections` WHERE `deleted_at` IS NULL ORDER BY `name` ASC");
-            $sections = array_column($secRows, 'name');
-        } catch (\Throwable $e) {
-            $departments = ['BSIS', 'BSTM', 'BEED', 'BAPoS'];
-            $sections = [];
-        }
-
-        $statusOptions = ['On-Track', 'Delayed', 'Critical / MRR Risk', 'Graduating Candidate'];
-        $progressList = [];
-
-        try {
-            // Direct query from students table joined with programs and sections
-            $sql = "SELECT 
-                        s.id,
-                        s.student_number,
-                        CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) as full_name,
-                        COALESCE(p.code, 'N/A') as program_code,
-                        COALESCE(p.name, 'N/A') as program_name,
-                        COALESCE(p.years, 4) as program_years,
-                        s.year_level,
-                        COALESCE(sec.name, '-') as section_name
-                    FROM `students` s
-                    LEFT JOIN `programs` p ON s.program_id = p.id
-                    LEFT JOIN `sections` sec ON s.section_id = sec.id
-                    WHERE s.deleted_at IS NULL";
-            $params = [];
-
-            if (!empty($department)) {
-                $sql .= " AND p.code = ?";
-                $params[] = $department;
-            }
-            if (!empty($yearLevel)) {
-                $sql .= " AND s.year_level = ?";
-                $params[] = (int) $yearLevel;
-            }
-            if (!empty($section)) {
-                $sql .= " AND (sec.name = ? OR s.section_id = ?)";
-                $params[] = $section;
-                $params[] = is_numeric($section) ? (int) $section : 0;
-            }
-            if (!empty($search)) {
-                $sql .= " AND (s.student_number LIKE ? OR s.first_name LIKE ? OR s.last_name LIKE ? OR CONCAT(s.first_name, ' ', s.last_name) LIKE ?)";
-                $q = '%' . $search . '%';
-                $params[] = $q;
-                $params[] = $q;
-                $params[] = $q;
-                $params[] = $q;
-            }
-
-            $sql .= " ORDER BY s.last_name ASC";
-            $rawStudents = Database::fetchAll($sql, $params);
-
-            $currentYear = (int) date('Y');
-
-            foreach ($rawStudents as $std) {
-                $stdIdNum = (int) ($std['id'] ?? 1);
-                $yLevel = (int) ($std['year_level'] ?? 1);
-                $progYears = (int) ($std['program_years'] ?? 4);
-                $totalRequiredUnits = $progYears * 36; // 144 units standard
-
-                // Deterministic calculation based on student year level & status
-                $seed = ($stdIdNum * 13) % 29;
-                $isAtRiskStudent = ($seed === 3 || $seed === 7 || $seed === 17);
-
-                if ($isAtRiskStudent) {
-                    $earnedUnits = max(18.0, ($yLevel - 1) * 36.0 + 9.0);
-                    $stdStatus = ($yLevel >= 3) ? 'Critical / MRR Risk' : 'Delayed';
-                } else {
-                    $earnedUnits = min((float) $totalRequiredUnits, ($yLevel - 1) * 36.0 + 27.0);
-                    if ($yLevel >= $progYears && $earnedUnits >= ($totalRequiredUnits - 18.0)) {
-                        $stdStatus = 'Graduating Candidate';
-                    } else {
-                        $stdStatus = 'On-Track';
-                    }
-                }
-
-                $percentProgress = min(100.0, round(($earnedUnits / $totalRequiredUnits) * 100, 1));
-                $remainingYears = max(0, $progYears - $yLevel);
-                if ($stdStatus === 'Delayed' || $stdStatus === 'Critical / MRR Risk') {
-                    $remainingYears += 1;
-                }
-                $targetGradYear = $currentYear + $remainingYears;
-
-                $record = [
-                    'student_id' => $std['student_number'],
-                    'full_name' => $std['full_name'],
-                    'department' => $std['program_code'],
-                    'year_level' => $yLevel,
-                    'section' => $std['section_name'],
-                    'units_earned' => $earnedUnits,
-                    'total_units' => $totalRequiredUnits,
-                    'percent_progress' => $percentProgress,
-                    'milestone_status' => $stdStatus,
-                    'target_grad_year' => $targetGradYear
-                ];
-
-                if (empty($status) || $stdStatus === $status) {
-                    $progressList[] = $record;
-                }
-            }
-        } catch (\Throwable $e) {
-            $progressList = [];
-        }
-
-        $totalCohorts = count($progressList);
-        $onTrackCount = 0;
-        $delayedCount = 0;
-        $graduatingCount = 0;
-        $totalProgressSum = 0;
-
-        foreach ($progressList as $item) {
-            $totalProgressSum += $item['percent_progress'];
-            if ($item['milestone_status'] === 'On-Track') $onTrackCount++;
-            if ($item['milestone_status'] === 'Delayed' || $item['milestone_status'] === 'Critical / MRR Risk') $delayedCount++;
-            if ($item['milestone_status'] === 'Graduating Candidate') $graduatingCount++;
-        }
-
-        $onTrackRate = $totalCohorts > 0 ? round(($onTrackCount / $totalCohorts) * 100, 1) : 0;
-        $avgProgress = $totalCohorts > 0 ? round($totalProgressSum / $totalCohorts, 1) : 0;
-
-        $page = max(1, (int) ($_GET['page'] ?? 1));
-        $perPage = 20;
-        $pagination = $this->buildPagination($totalCohorts, $perPage, $page, $_GET);
-        $paginatedProgress = array_slice($progressList, $pagination['offset'], $perPage);
-
-        View::render('analytics/Views/progressreports', [
-            'title' => 'Academic Progress Reports',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
-                'Academic Monitoring' => '',
-                'Progress Reports' => ''
-            ],
-            'department' => $department,
-            'yearLevel' => $yearLevel,
-            'section' => $section,
-            'status' => $status,
-            'search' => $search,
-            'departments' => $departments,
-            'sections' => $sections,
-            'statusOptions' => $statusOptions,
-            'progressList' => $paginatedProgress,
-            'pagination' => $pagination,
-            'totalCohorts' => $totalCohorts,
-            'onTrackRate' => $onTrackRate,
-            'avgProgress' => $avgProgress,
-            'delayedCount' => $delayedCount,
-            'graduatingCount' => $graduatingCount
-        ]);
-    }
-
-    public function failedincompletemonitoring(): void
-    {
-        $user = Auth::user();
-
-        $department = trim($_GET['department'] ?? '');
-        $schoolYear = trim($_GET['school_year'] ?? '2026-2027');
-        $semester = trim($_GET['semester'] ?? '');
-        $deficiencyType = trim($_GET['deficiency_type'] ?? '');
-        $courseFilter = trim($_GET['course_code'] ?? '');
-        $search = trim($_GET['q'] ?? '');
-
-        $departments = [];
-        try {
-            $deptRows = Database::fetchAll("SELECT DISTINCT `code` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
-            $departments = array_column($deptRows, 'code');
-        } catch (\Throwable $e) {
-            $departments = ['BSIS', 'BSTM', 'BEED', 'BAPoS'];
-        }
-
-        $schoolYears = ['2026-2027', '2025-2026'];
-        $semesters = ['1st Semester', '2nd Semester'];
-        $deficiencyTypes = ['Failed (5.00)', 'Incomplete (INC)', 'Dropped (DRP)'];
-
-        // Fetch real faculty from employees with their departments
-        $facultyList = [];
-        $facultyByDept = [];
-        try {
-            $facultyList = Database::fetchAll("SELECT id, CONCAT(first_name, ' ', last_name) as full_name, position, department_id FROM `employees` WHERE type = 'faculty' AND deleted_at IS NULL ORDER BY last_name ASC");
-            foreach ($facultyList as $f) {
-                $dId = (int) ($f['department_id'] ?? 0);
-                $facultyByDept[$dId][] = $f;
-            }
-        } catch (\Throwable $e) {
-            $facultyList = [];
-            $facultyByDept = [];
-        }
-        $facultyCount = count($facultyList);
-
-        // Fetch real subjects from subjects table
-        $subjectRows = [];
-        try {
-            $subjectRows = Database::fetchAll("SELECT id, code, title, units, program_id FROM `subjects` WHERE deleted_at IS NULL ORDER BY id ASC");
-        } catch (\Throwable $e) {
-            $subjectRows = [];
-        }
-        $subjectCount = count($subjectRows);
-
-        $deficienciesList = [];
-
-        try {
-            // Direct query from real students table
-            $sql = "SELECT 
-                        s.id,
-                        s.student_number,
-                        CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) as full_name,
-                        s.program_id,
-                        COALESCE(p.code, 'N/A') as program_code,
-                        COALESCE(p.department_id, 6) as department_id,
-                        s.year_level,
-                        COALESCE(sec.name, '-') as section_name
-                    FROM `students` s
-                    LEFT JOIN `programs` p ON s.program_id = p.id
-                    LEFT JOIN `sections` sec ON s.section_id = sec.id
-                    WHERE s.deleted_at IS NULL";
-            $params = [];
-
-            if (!empty($department)) {
-                $sql .= " AND p.code = ?";
-                $params[] = $department;
-            }
-
-            $rawStudents = Database::fetchAll($sql, $params);
-
-            // 1. Fetch Real Incomplete & Failing Grades from ana_class_grades (fallback to ret_class_grades)
-            $realGrades = [];
-            try {
-                $realGrades = Database::fetchAll("
-                    SELECT g.id AS grade_id, g.remarks, g.inc_deadline, g.final_grade,
-                           st.student_number, CONCAT(st.last_name, ', ', st.first_name) AS full_name,
-                           COALESCE(p.code, 'N/A') AS department, st.year_level, COALESCE(sec.name, 'A') AS section,
-                           COALESCE(c.subject_code, 'SUBJ') AS course_code, 
-                           COALESCE(c.subject_title, 'Course Title') AS course_title,
-                           COALESCE(c.units, 3.0) AS units, 
-                           CONCAT(u.first_name, ' ', u.last_name) AS instructor,
-                           sem.name AS semester_name, ay.label AS academic_year_label
-                    FROM `ana_class_grades` g
-                    JOIN `students` st ON g.student_id = st.id
-                    LEFT JOIN `programs` p ON st.program_id = p.id
-                    LEFT JOIN `sections` sec ON st.section_id = sec.id
-                    JOIN `ana_classes` c ON g.class_id = c.id
-                    LEFT JOIN `users` u ON c.faculty_user_id = u.id
-                    LEFT JOIN `semesters` sem ON c.semester_id = sem.id
-                    LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
-                    WHERE g.remarks IN ('INC', 'FAILED', 'DRP')
-                    ORDER BY g.id DESC
-                ");
-            } catch (\Throwable $e) {
-                try {
-                    $realGrades = Database::fetchAll("
-                        SELECT g.id AS grade_id, g.remarks, g.inc_deadline, g.final_grade,
-                               st.student_number, CONCAT(st.last_name, ', ', st.first_name) AS full_name,
-                               COALESCE(p.code, 'N/A') AS department, st.year_level, COALESCE(sec.name, 'A') AS section,
-                               COALESCE(c.subject_code, 'SUBJ') AS course_code, 
-                               COALESCE(c.subject_title, 'Course Title') AS course_title,
-                               COALESCE(c.units, 3.0) AS units, 
-                               CONCAT(u.first_name, ' ', u.last_name) AS instructor,
-                               sem.name AS semester_name, ay.label AS academic_year_label
-                        FROM `ret_class_grades` g
-                        JOIN `students` st ON g.student_id = st.id
-                        LEFT JOIN `programs` p ON st.program_id = p.id
-                        LEFT JOIN `sections` sec ON st.section_id = sec.id
-                        JOIN `ret_classes` c ON g.class_id = c.id
-                        LEFT JOIN `users` u ON c.faculty_user_id = u.id
-                        LEFT JOIN `semesters` sem ON c.semester_id = sem.id
-                        LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
-                        WHERE g.remarks IN ('INC', 'FAILED', 'DRP')
-                        ORDER BY g.id DESC
-                    ");
-                } catch (\Throwable $e2) {
-                    $realGrades = [];
-                }
-            }
-
-            foreach ($realGrades as $rg) {
-                $rem = strtoupper($rg['remarks']);
-                $type = ($rem === 'INC') ? 'Incomplete (INC)' : (($rem === 'FAILED') ? 'Failed (5.00)' : 'Dropped (DRP)');
-                $gradeVal = ($rem === 'INC') ? 'INC' : (($rem === 'FAILED') ? '5.00' : 'DRP');
-                $resStatus = ($rem === 'INC') ? 'Pending Requirements' : (($rem === 'FAILED') ? 'Mandatory Retake' : 'Requires Re-enrollment');
-                $deadline = !empty($rg['inc_deadline']) ? date('F d, Y', strtotime($rg['inc_deadline'])) : 'Not Specified';
-
-                if (!empty($deficiencyType) && $type !== $deficiencyType) continue;
-                if (!empty($department) && $rg['department'] !== $department) continue;
-                if (!empty($courseFilter) && $rg['course_code'] !== $courseFilter) continue;
-                if (!empty($search)) {
-                    $q = strtolower($search);
-                    $m = (strpos(strtolower($rg['student_number']), $q) !== false)
-                      || (strpos(strtolower($rg['full_name']), $q) !== false)
-                      || (strpos(strtolower($rg['course_code']), $q) !== false);
-                    if (!$m) continue;
-                }
-
-                $deficienciesList[] = [
-                    'grade_id'          => (int) $rg['grade_id'],
-                    'student_id'        => $rg['student_number'],
-                    'full_name'         => $rg['full_name'],
-                    'department'        => $rg['department'],
-                    'year_level'        => $rg['year_level'] ?? 1,
-                    'section'           => $rg['section'],
-                    'course_code'       => $rg['course_code'],
-                    'course_title'      => $rg['course_title'],
-                    'units'             => (float) $rg['units'],
-                    'instructor'        => $rg['instructor'] ?: 'Faculty Instructor',
-                    'grade'             => $gradeVal,
-                    'deficiency_type'   => $type,
-                    'term_recorded'     => ($rg['semester_name'] ?? '1st Semester') . ' • ' . ($rg['academic_year_label'] ?? '2026-2027'),
-                    'resolution_status' => $resStatus,
-                    'removal_deadline'  => $deadline,
-                ];
-            }
-
-            foreach ($rawStudents as $std) {
-                $stdIdNum = (int) $std['id'];
-                $deptId = (int) ($std['department_id'] ?? 6);
-                $seed = ($stdIdNum * 17) % 31;
-
-                // Select students who have deficiency marks (roughly ~25% of student population)
-                if ($seed < 8 && $subjectCount > 0) {
-                    $subIndex = ($stdIdNum * 3) % $subjectCount;
-                    $subject = $subjectRows[$subIndex];
-
-                    $deptFaculty = $facultyByDept[$deptId] ?? $facultyList;
-                    $dCount = count($deptFaculty);
-                    $fIndex = ($stdIdNum * 5) % max(1, $dCount);
-                    $instructorName = $dCount > 0 ? $deptFaculty[$fIndex]['full_name'] : 'Faculty Instructor';
-
-                    // Determine deficiency type & grade
-                    if ($seed % 3 === 0) {
-                        $gradeVal = '5.00';
-                        $type = 'Failed (5.00)';
-                        $resolutionStatus = 'Mandatory Retake';
-                        $deadline = 'End of AY 2026-2027';
-                    } elseif ($seed % 3 === 1) {
-                        $gradeVal = 'INC';
-                        $type = 'Incomplete (INC)';
-                        $resolutionStatus = 'Pending Final Exam';
-                        $deadline = 'July 31, 2027';
-                    } else {
-                        $gradeVal = 'DRP';
-                        $type = 'Dropped (DRP)';
-                        $resolutionStatus = 'Requires Re-enrollment';
-                        $deadline = 'Next Term Offering';
-                    }
-
-                    $term = (($seed % 2 === 0) ? '1st Semester' : '2nd Semester') . ' • 2026-2027';
-
-                    // Apply filters
-                    if (!empty($deficiencyType) && $type !== $deficiencyType) {
-                        continue;
-                    }
-                    if (!empty($courseFilter) && $subject['code'] !== $courseFilter) {
-                        continue;
-                    }
-                    if (!empty($search)) {
-                        $q = strtolower($search);
-                        $matches = (strpos(strtolower($std['student_number']), $q) !== false)
-                                || (strpos(strtolower($std['full_name']), $q) !== false)
-                                || (strpos(strtolower($subject['code']), $q) !== false)
-                                || (strpos(strtolower($subject['title']), $q) !== false);
-                        if (!$matches) {
-                            continue;
-                        }
-                    }
-
-                    $deficienciesList[] = [
-                        'student_id' => $std['student_number'],
-                        'full_name' => $std['full_name'],
-                        'department' => $std['program_code'],
-                        'year_level' => $std['year_level'],
-                        'section' => $std['section_name'],
-                        'course_code' => $subject['code'],
-                        'course_title' => $subject['title'],
-                        'units' => (float) ($subject['units'] ?? 3.0),
-                        'instructor' => $instructorName,
-                        'grade' => $gradeVal,
-                        'deficiency_type' => $type,
-                        'term_recorded' => $term,
-                        'resolution_status' => $resolutionStatus,
-                        'removal_deadline' => $deadline
-                    ];
-                }
-            }
-        } catch (\Throwable $e) {
-            $deficienciesList = [];
-        }
-
-        $totalDeficiencies = count($deficienciesList);
-        $totalInc = 0;
-        $totalFailed = 0;
-        $totalPendingRem = 0;
-
-        foreach ($deficienciesList as $def) {
-            if ($def['deficiency_type'] === 'Incomplete (INC)') $totalInc++;
-            if ($def['deficiency_type'] === 'Failed (5.00)') $totalFailed++;
-            if (stripos($def['resolution_status'], 'Pending') !== false || stripos($def['resolution_status'], 'Exam') !== false) {
-                $totalPendingRem++;
-            }
-        }
-
-        $page = max(1, (int) ($_GET['page'] ?? 1));
-        $perPage = 20;
-        $pagination = $this->buildPagination($totalDeficiencies, $perPage, $page, $_GET);
-        $paginatedDeficiencies = array_slice($deficienciesList, $pagination['offset'], $perPage);
-
-        View::render('analytics/Views/failedincompletemonitoring', [
-            'title' => 'Failed & Incomplete Subject Watchlist',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
-                'Academic Monitoring' => '',
-                'Failed Incomplete Monitoring' => ''
-            ],
-            'department' => $department,
-            'schoolYear' => $schoolYear,
-            'semester' => $semester,
-            'deficiencyType' => $deficiencyType,
-            'courseFilter' => $courseFilter,
-            'search' => $search,
-            'departments' => $departments,
-            'schoolYears' => $schoolYears,
-            'semesters' => $semesters,
-            'deficiencyTypes' => $deficiencyTypes,
-            'deficienciesList' => $paginatedDeficiencies,
-            'pagination' => $pagination,
-            'totalDeficiencies' => $totalDeficiencies,
-            'totalInc' => $totalInc,
-            'totalFailed' => $totalFailed,
-            'totalPendingRem' => $totalPendingRem
-        ]);
-    }
-
-    public function attendancerecords(): void
-    {
-        $user = Auth::user();
-        $department = trim($_GET['department'] ?? '');
-        $yearLevel = trim($_GET['year_level'] ?? '');
-        $section = trim($_GET['section'] ?? '');
-        $subjectCode = trim($_GET['subject_code'] ?? '');
-        $complianceFilter = trim($_GET['compliance'] ?? '');
-        $search = trim($_GET['q'] ?? '');
-
-        // 1. Fetch Active Academic Year & Semester
-        $activeYear = Database::fetchOne("SELECT id, code, label FROM `academic_years` WHERE `is_active` = 1 LIMIT 1");
-        $ayId = (int) ($activeYear['id'] ?? 3);
-        $ayLabel = $activeYear['label'] ?? 'Academic Year 2026-2027';
-
-        $activeSem = Database::fetchOne("SELECT id, code, name FROM `semesters` WHERE `academic_year_id` = ? AND `is_active` = 1 LIMIT 1", [$ayId]);
-        $semId = (int) ($activeSem['id'] ?? 7);
-        $semName = $activeSem['name'] ?? '1st Semester';
-
-        // 2. Reference Programs, Sections, and Subjects
-        $departments = [];
-        $sections = [];
-        $subjects = [];
-        try {
-            $deptRows = Database::fetchAll("SELECT DISTINCT `code` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
-            $departments = array_column($deptRows, 'code');
-            $secRows = Database::fetchAll("SELECT DISTINCT `name` FROM `sections` WHERE `deleted_at` IS NULL ORDER BY `name` ASC");
-            $sections = array_column($secRows, 'name');
-            $subjects = Database::fetchAll("SELECT id, code, title FROM `subjects` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
-        } catch (\Throwable $e) {
-            $departments = ['BSIS', 'BSTM', 'BEED', 'BAPoS', 'BSCS', 'ACT'];
-            $sections = ['BSIS 1st Year', 'BSIS 2nd Year', 'BSTM 1st Year'];
-            $subjects = [];
-        }
-
-        // 3. Query Real Student Attendance Records
-        $attendanceList = [];
-        try {
-            $sql = "SELECT s.id, s.student_number,
-                           CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) AS full_name,
-                           COALESCE(p.code, 'N/A') AS program_code,
-                           s.year_level,
-                           COALESCE(sec.name, 'A') AS section_name,
-                           COUNT(att.id) AS total_sessions,
-                           SUM(CASE WHEN att.status = 'Present' THEN 1 ELSE 0 END) AS present_count,
-                           SUM(CASE WHEN att.status = 'Absent' THEN 1 ELSE 0 END) AS absent_count,
-                           SUM(CASE WHEN att.status = 'Excused' THEN 1 ELSE 0 END) AS excused_count,
-                           SUM(CASE WHEN att.status = 'Late' THEN 1 ELSE 0 END) AS late_count,
-                           COUNT(DISTINCT att.subject_code) AS enrolled_courses_count
-                    FROM `students` s
-                    LEFT JOIN `programs` p ON s.program_id = p.id
-                    LEFT JOIN `sections` sec ON s.section_id = sec.id
-                    LEFT JOIN `ana_attendance_records` att ON att.student_id = s.student_number
-                        AND att.deleted_at IS NULL
-                        AND att.academic_year_id = ?
-                        AND att.semester_id = ?";
-            $params = [$ayId, $semId];
-
-            if (!empty($subjectCode)) {
-                $sql .= " AND att.subject_code = ?";
-                $params[] = $subjectCode;
-            }
-
-            $sql .= " WHERE s.deleted_at IS NULL";
-
-            if (!empty($search)) {
-                $sql .= " AND (s.student_number LIKE ? OR s.first_name LIKE ? OR s.last_name LIKE ? OR CONCAT(s.first_name, ' ', s.last_name) LIKE ?)";
-                $qTerm = '%' . $search . '%';
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-            }
-            if (!empty($department)) {
-                $sql .= " AND p.code = ?";
-                $params[] = $department;
-            }
-            if (!empty($yearLevel)) {
-                $sql .= " AND s.year_level = ?";
-                $params[] = (int) $yearLevel;
-            }
-            if (!empty($section)) {
-                $sql .= " AND sec.name = ?";
-                $params[] = $section;
-            }
-
-            $sql .= " GROUP BY s.id ORDER BY absent_count DESC, s.last_name ASC";
-            $rawStudents = Database::fetchAll($sql, $params);
-
-            foreach ($rawStudents as $std) {
-                $totalSessions = (int) ($std['total_sessions'] ?? 0);
-                $presentCount = (int) ($std['present_count'] ?? 0);
-                $absentCount = (int) ($std['absent_count'] ?? 0);
-                $excusedCount = (int) ($std['excused_count'] ?? 0);
-                $lateCount = (int) ($std['late_count'] ?? 0);
-                $coursesCount = max(1, (int) ($std['enrolled_courses_count'] ?? 1));
-
-                if ($totalSessions > 0) {
-                    $attendanceRate = round((($presentCount + ($lateCount * 0.75) + $excusedCount) / $totalSessions) * 100, 1);
-                    $termAllowableCuts = max(3, (int) round($totalSessions * 0.20));
-                    $remainingCuts = max(0, $termAllowableCuts - $absentCount);
-
-                    if ($absentCount >= $termAllowableCuts || $attendanceRate < 80.0) {
-                        $complianceStatus = 'Critical Risk';
-                        $complianceBadge = 'bg-danger-subtle text-danger border border-danger';
-                        $chedNote = 'Policy Exceeded (>20% Cuts)';
-                    } elseif ($absentCount >= ($termAllowableCuts - 1) || $attendanceRate < 88.0) {
-                        $complianceStatus = 'Monitored';
-                        $complianceBadge = 'bg-warning-subtle text-dark border border-warning';
-                        $chedNote = $remainingCuts . ' cut' . ($remainingCuts == 1 ? '' : 's') . ' remaining';
-                    } else {
-                        $complianceStatus = 'Compliant';
-                        $complianceBadge = 'bg-success-subtle text-success border border-success';
-                        $chedNote = 'In Good Standing';
-                    }
-                } else {
-                    $attendanceRate = null;
-                    $complianceStatus = 'No Logs Yet';
-                    $complianceBadge = 'bg-light text-secondary border';
-                    $chedNote = 'No sessions recorded';
-                }
-
-                $std['total_sessions'] = $totalSessions;
-                $std['present_count'] = $presentCount;
-                $std['absent_count'] = $absentCount;
-                $std['excused_count'] = $excusedCount;
-                $std['late_count'] = $lateCount;
-                $std['attendance_rate'] = $attendanceRate;
-                $std['enrolled_courses_count'] = $coursesCount;
-                $std['compliance_status'] = $complianceStatus;
-                $std['compliance_badge'] = $complianceBadge;
-                $std['ched_note'] = $chedNote;
-
-                if (!empty($complianceFilter)) {
-                    if ($complianceFilter === 'chronic' && $complianceStatus !== 'Critical Risk') continue;
-                    if ($complianceFilter === 'monitored' && $complianceStatus !== 'Monitored') continue;
-                    if ($complianceFilter === 'compliant' && $complianceStatus !== 'Compliant') continue;
-                }
-
-                $attendanceList[] = $std;
-            }
-        } catch (\Throwable $e) {
-            $attendanceList = [];
-        }
-
-        $totalStudents = count($attendanceList);
-        $activeWithLogs = array_filter($attendanceList, fn($s) => ($s['total_sessions'] ?? 0) > 0);
-        $cohortRate = count($activeWithLogs) > 0 ? round(array_sum(array_column($activeWithLogs, 'attendance_rate')) / count($activeWithLogs), 1) : 0.0;
-        $criticalCount = count(array_filter($attendanceList, fn($s) => ($s['compliance_status'] ?? '') === 'Critical Risk'));
-        $monitoredCount = count(array_filter($attendanceList, fn($s) => ($s['compliance_status'] ?? '') === 'Monitored'));
-        $compliantCount = count(array_filter($attendanceList, fn($s) => ($s['compliance_status'] ?? '') === 'Compliant'));
-
-        $page = max(1, (int) ($_GET['page'] ?? 1));
-        $perPage = 20;
-        $pagination = $this->buildPagination($totalStudents, $perPage, $page, $_GET);
-        $paginatedAttendance = array_slice($attendanceList, $pagination['offset'], $perPage);
-
-        $recentSessions = [];
-        try {
-            $recentSessions = Database::fetchAll("
-                SELECT att.*, 
-                       st.first_name, st.last_name, st.student_number,
-                       COALESCE(c.subject_code, att.subject_code) AS display_subject_code,
-                       COALESCE(c.section_name, '-') AS section_name,
-                       CONCAT(u.first_name, ' ', u.last_name) AS recorded_by_name
-                FROM `ana_attendance_records` att
-                LEFT JOIN `students` st ON (att.student_id = st.student_number OR att.student_id = st.id)
-                LEFT JOIN `ret_classes` c ON att.class_id = c.id
-                LEFT JOIN `users` u ON att.logged_by = u.id
-                WHERE att.deleted_at IS NULL
-                ORDER BY att.session_date DESC, att.id DESC
-                LIMIT 50
-            ");
-        } catch (\Throwable $e) {
-            $recentSessions = [];
-        }
-
-        View::render('analytics/Views/attendancerecords', [
-            'title' => 'Student Attendance Records & Roll-Call Monitoring',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
-                'Attendance & Engagement' => '',
-                'Attendance Records' => ''
-            ],
-            'attendanceList' => $paginatedAttendance,
-            'recentSessions' => $recentSessions,
-            'pagination' => $pagination,
-            'departments' => $departments,
-            'sections' => $sections,
-            'subjects' => $subjects,
-            'department' => $department,
-            'yearLevel' => $yearLevel,
-            'section' => $section,
-            'subjectCode' => $subjectCode,
-            'complianceFilter' => $complianceFilter,
-            'search' => $search,
-            'cohortRate' => $cohortRate,
-            'criticalCount' => $criticalCount,
-            'monitoredCount' => $monitoredCount,
-            'compliantCount' => $compliantCount,
-            'totalStudents' => $totalStudents,
-            'ayLabel' => $ayLabel,
-            'semName' => $semName
-        ]);
-    }
-
-    public function participationtracking(): void
-    {
-        $user = Auth::user();
-        $department = trim($_GET['department'] ?? '');
-        $yearLevel = trim($_GET['year_level'] ?? '');
-        $section = trim($_GET['section'] ?? '');
-        $search = trim($_GET['q'] ?? '');
-
-        $departments = [];
-        $sections = [];
-        try {
-            $deptRows = Database::fetchAll("SELECT DISTINCT `code` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
-            $departments = array_column($deptRows, 'code');
-            $secRows = Database::fetchAll("SELECT DISTINCT `name` FROM `sections` WHERE `deleted_at` IS NULL ORDER BY `name` ASC");
-            $sections = array_column($secRows, 'name');
-        } catch (\Throwable $e) {
-            $departments = ['BSIS', 'BSTM', 'BEED', 'BAPoS', 'BSCS', 'ACT'];
-        }
-
-        $participationList = [];
-        try {
-            $sql = "SELECT s.id, s.student_number,
-                           CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) AS full_name,
-                           COALESCE(p.code, 'N/A') AS program_code,
-                           s.year_level,
-                           COALESCE(sec.name, 'A') AS section_name
-                    FROM `students` s
-                    LEFT JOIN `programs` p ON s.program_id = p.id
-                    LEFT JOIN `sections` sec ON s.section_id = sec.id
-                    WHERE s.deleted_at IS NULL";
-            $params = [];
-
-            if (!empty($search)) {
-                $sql .= " AND (s.student_number LIKE ? OR s.first_name LIKE ? OR s.last_name LIKE ? OR CONCAT(s.first_name, ' ', s.last_name) LIKE ?)";
-                $qTerm = '%' . $search . '%';
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-            }
-            if (!empty($department)) {
-                $sql .= " AND p.code = ?";
-                $params[] = $department;
-            }
-            if (!empty($yearLevel)) {
-                $sql .= " AND s.year_level = ?";
-                $params[] = (int) $yearLevel;
-            }
-            if (!empty($section)) {
-                $sql .= " AND sec.name = ?";
-                $params[] = $section;
-            }
-
-            $sql .= " ORDER BY s.id ASC";
-            $rawStudents = Database::fetchAll($sql, $params);
-
-            foreach ($rawStudents as $std) {
-                $seed = (int) $std['id'];
-                $quizzesDone = 8 - (($seed % 13 === 0) ? 3 : (($seed % 6 === 0) ? 1 : 0));
-                $activitiesDone = 12 - (($seed % 11 === 0) ? 2 : 0);
-                $totalTasks = 20;
-                $completedTasks = $quizzesDone + $activitiesDone;
-                $missedTasks = max(0, $totalTasks - $completedTasks);
-                $complianceRate = round(($completedTasks / $totalTasks) * 100, 1);
-
-                $std['quizzes_done'] = $quizzesDone;
-                $std['activities_done'] = $activitiesDone;
-                $std['missed_tasks'] = $missedTasks;
-                $std['compliance_rate'] = $complianceRate;
-                $participationList[] = $std;
-            }
-        } catch (\Throwable $e) {
-            $participationList = [];
-        }
-
-        $totalStudents = count($participationList);
-        $zeroMissedCount = count(array_filter($participationList, fn($p) => ($p['missed_tasks'] ?? 0) === 0));
-        $minorMissedCount = count(array_filter($participationList, fn($p) => ($p['missed_tasks'] ?? 0) >= 1 && ($p['missed_tasks'] ?? 0) <= 2));
-        $criticalMissedCount = count(array_filter($participationList, fn($p) => ($p['missed_tasks'] ?? 0) >= 3));
-        $avgAssessmentRate = $totalStudents > 0 ? round(array_sum(array_column($participationList, 'compliance_rate')) / $totalStudents, 1) : 86.4;
-
-        $page = max(1, (int) ($_GET['page'] ?? 1));
-        $perPage = 20;
-        $pagination = $this->buildPagination($totalStudents, $perPage, $page, $_GET);
-        $paginatedParticipation = array_slice($participationList, $pagination['offset'], $perPage);
-
-        View::render('analytics/Views/participationtracking', [
-            'title' => 'Class Record Participation & Task Submission Tracking',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
-                'Academic Monitoring' => '',
-                'Participation Tracking' => ''
-            ],
-            'participationList' => $paginatedParticipation,
-            'pagination' => $pagination,
-            'departments' => $departments,
-            'sections' => $sections,
-            'department' => $department,
-            'yearLevel' => $yearLevel,
-            'section' => $section,
-            'search' => $search,
-            'zeroMissedCount' => $zeroMissedCount,
-            'minorMissedCount' => $minorMissedCount,
-            'criticalMissedCount' => $criticalMissedCount,
-            'avgAssessmentRate' => $avgAssessmentRate
-        ]);
-    }
-
-    public function studentengagement(): void
-    {
-        $user = Auth::user();
-        $department = trim($_GET['department'] ?? '');
-        $yearLevel = trim($_GET['year_level'] ?? '');
-        $section = trim($_GET['section'] ?? '');
-        $search = trim($_GET['q'] ?? '');
-
-        $departments = [];
-        $sections = [];
-        try {
-            $deptRows = Database::fetchAll("SELECT DISTINCT `code` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
-            $departments = array_column($deptRows, 'code');
-            $secRows = Database::fetchAll("SELECT DISTINCT `name` FROM `sections` WHERE `deleted_at` IS NULL ORDER BY `name` ASC");
-            $sections = array_column($secRows, 'name');
-        } catch (\Throwable $e) {
-            $departments = ['BSIS', 'BSTM', 'BEED', 'BAPoS', 'BSCS', 'ACT'];
-        }
-
-        $engagementList = [];
-        try {
-            $sql = "SELECT s.id, s.student_number,
-                           CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', SUBSTRING(s.middle_name, 1, 1), '.'), '')) AS full_name,
-                           COALESCE(p.code, 'N/A') AS program_code,
-                           s.year_level,
-                           COALESCE(sec.name, 'A') AS section_name
-                    FROM `students` s
-                    LEFT JOIN `programs` p ON s.program_id = p.id
-                    LEFT JOIN `sections` sec ON s.section_id = sec.id
-                    WHERE s.deleted_at IS NULL";
-            $params = [];
-
-            if (!empty($search)) {
-                $sql .= " AND (s.student_number LIKE ? OR s.first_name LIKE ? OR s.last_name LIKE ? OR CONCAT(s.first_name, ' ', s.last_name) LIKE ?)";
-                $qTerm = '%' . $search . '%';
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-            }
-            if (!empty($department)) {
-                $sql .= " AND p.code = ?";
-                $params[] = $department;
-            }
-            if (!empty($yearLevel)) {
-                $sql .= " AND s.year_level = ?";
-                $params[] = (int) $yearLevel;
-            }
-            if (!empty($section)) {
-                $sql .= " AND sec.name = ?";
-                $params[] = $section;
-            }
-
-            $sql .= " ORDER BY s.id ASC";
-            $rawStudents = Database::fetchAll($sql, $params);
-
-            $turnaroundSpeeds = ['Early Turn-in', 'On-Time', 'On-Time', 'On-Time', 'Late (-1 Day)', 'Late (-2 Days)'];
-            $lastActivities = ['2 hrs ago', '5 hrs ago', 'Yesterday', '2 days ago', '3 days ago'];
-
-            foreach ($rawStudents as $std) {
-                $seed = (int) $std['id'];
-                $speed = $turnaroundSpeeds[$seed % count($turnaroundSpeeds)];
-                $score = ($seed % 19 === 0) ? 68.0 : (($seed % 8 === 0) ? 79.5 : round(85.0 + ($seed % 14), 1));
-                $lastActivity = $lastActivities[$seed % count($lastActivities)];
-
-                $std['turnaround_speed'] = $speed;
-                $std['engagement_score'] = $score;
-                $std['last_activity'] = $lastActivity;
-                $engagementList[] = $std;
-            }
-        } catch (\Throwable $e) {
-            $engagementList = [];
-        }
-
-        $totalStudents = count($engagementList);
-        $submitRate = $totalStudents > 0 ? round(array_sum(array_column($engagementList, 'engagement_score')) / $totalStudents, 1) : 88.5;
-        $highComplianceCount = count(array_filter($engagementList, fn($e) => ($e['engagement_score'] ?? 0) >= 90.0));
-        $deficitCount = count(array_filter($engagementList, fn($e) => ($e['engagement_score'] ?? 0) < 75.0));
-
-        $page = max(1, (int) ($_GET['page'] ?? 1));
-        $perPage = 20;
-        $pagination = $this->buildPagination($totalStudents, $perPage, $page, $_GET);
-        $paginatedEngagement = array_slice($engagementList, $pagination['offset'], $perPage);
-
-        View::render('analytics/Views/studentengagement', [
-            'title' => 'Coursework Submission Compliance & Engagement Audit',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
-                'Academic Monitoring' => '',
-                'Student Engagement' => ''
-            ],
-            'engagementList' => $paginatedEngagement,
-            'pagination' => $pagination,
-            'departments' => $departments,
-            'sections' => $sections,
-            'department' => $department,
-            'yearLevel' => $yearLevel,
-            'section' => $section,
-            'search' => $search,
-            'submitRate' => $submitRate,
-            'highComplianceCount' => $highComplianceCount,
-            'deficitCount' => $deficitCount,
-            'totalStudents' => $totalStudents
-        ]);
-    }
-
-    public function behaviorrecords(): void
-    {
-        $user = Auth::user();
-        $department = trim($_GET['department'] ?? '');
-        $severity = trim($_GET['severity'] ?? '');
-        $search = trim($_GET['q'] ?? '');
-
-        $departments = [];
-        try {
-            $deptRows = Database::fetchAll("SELECT DISTINCT `code` FROM `programs` WHERE `deleted_at` IS NULL ORDER BY `code` ASC");
-            $departments = array_column($deptRows, 'code');
-        } catch (\Throwable $e) {
-            $departments = ['BSIS', 'BSTM', 'BEED', 'BAPoS', 'POLSCI'];
-        }
-
-        $behaviorList = [];
-        try {
-            $sql = "SELECT b.*,
-                           CONCAT(s.last_name, ', ', s.first_name) AS full_name,
-                           CONCAT(s.last_name, ', ', s.first_name) AS student_name,
-                           s.student_number,
-                           COALESCE(p.code, 'N/A') AS program_code,
-                           s.year_level
-                    FROM `ret_behavior_records` b
-                    LEFT JOIN `students` s ON (b.student_id = s.id OR b.student_id = s.student_number)
-                    LEFT JOIN `programs` p ON s.program_id = p.id
-                    WHERE 1=1";
-            $params = [];
-
-            if (!empty($search)) {
-                $sql .= " AND (s.student_number LIKE ? OR s.first_name LIKE ? OR s.last_name LIKE ? OR b.incident_type LIKE ? OR b.description LIKE ?)";
-                $qTerm = '%' . $search . '%';
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-                $params[] = $qTerm;
-            }
-            if (!empty($department)) {
-                $sql .= " AND p.code = ?";
-                $params[] = $department;
-            }
-            if (!empty($severity)) {
-                $sql .= " AND b.severity = ?";
-                $params[] = $severity;
-            }
-
-            $sql .= " ORDER BY b.id DESC";
-            $behaviorList = Database::fetchAll($sql, $params);
-        } catch (\Throwable $e) {
-            $behaviorList = [];
-        }
-
-        $totalIncidents = count($behaviorList);
-        $minorCount = 0;
-        $majorCount = 0;
-        $severeCount = 0;
-        $investigationCount = 0;
-        $resolvedCount = 0;
-
-        foreach ($behaviorList as $row) {
-            $sev = $row['severity'] ?? 'Minor';
-            $st = $row['status'] ?? 'Reported';
-            if ($sev === 'Minor')
-                $minorCount++;
-            if ($sev === 'Moderate')
-                $majorCount++;
-            if ($sev === 'Severe')
-                $severeCount++;
-            if ($st === 'Under Investigation' || $st === 'Reported')
-                $investigationCount++;
-            if ($st === 'Resolved' || $st === 'Dismissed')
-                $resolvedCount++;
-        }
-
-        $page = max(1, (int) ($_GET['page'] ?? 1));
-        $perPage = 20;
-        $pagination = $this->buildPagination($totalIncidents, $perPage, $page, $_GET);
-        $paginatedBehavior = array_slice($behaviorList, $pagination['offset'], $perPage);
-
-        View::render('analytics/Views/behaviorrecords', [
-            'title' => 'Student Behavior & Discipline Records',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
-            'user' => $user,
-            'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
-                'Academic Monitoring' => '',
-                'Behavioral Records' => ''
-            ],
-            'department' => $department,
-            'severity' => $severity,
-            'search' => $search,
-            'departments' => $departments,
-            'behaviorList' => $paginatedBehavior,
-            'pagination' => $pagination,
-            'totalIncidents' => $totalIncidents,
-            'minorCount' => $minorCount,
-            'majorCount' => $majorCount,
-            'severeCount' => $severeCount,
-            'investigationCount' => $investigationCount,
-            'resolvedCount' => $resolvedCount,
-            'resolvedBehaviorCount' => $resolvedCount
-        ]);
+        return $id;
     }
 
     /**
-     * Build server-side pagination metadata and HTML links.
-     *
-     * @param int $totalRecords Total count of matching items in DB
-     * @param int $perPage Items per page (default 20)
-     * @param int $currentPage Current page number
-     * @param array $queryParams Existing $_GET parameters to retain
-     * @return array
+     * Term filter for class-based queries. Returns [sql, params].
      */
-    private function buildPagination(int $totalRecords, int $perPage, int $currentPage, array $queryParams = []): array
+    private function classFilters(?array $term, ?int $programId, string $alias = 'c'): array
     {
-        $perPage = max(1, $perPage);
-        $totalPages = max(1, (int) ceil($totalRecords / $perPage));
-        $currentPage = max(1, min($currentPage, $totalPages));
-        $offset = ($currentPage - 1) * $perPage;
-        $from = $totalRecords > 0 ? $offset + 1 : 0;
-        $to = min($offset + $perPage, $totalRecords);
-
-        unset($queryParams['page']);
-
-        $buildUrl = function (int $p) use ($queryParams): string {
-            $params = array_merge($queryParams, ['page' => $p]);
-            return '?' . http_build_query($params);
-        };
-
-        $html = '<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pt-3 mt-3 border-top px-3 pb-3">';
-        $html .= '<div class="text-muted small">';
-        if ($totalRecords > 0) {
-            $html .= 'Showing <span class="fw-bold text-dark">' . $from . '</span> to <span class="fw-bold text-dark">' . $to . '</span> of <span class="fw-bold text-dark">' . number_format($totalRecords) . '</span> entries';
-        } else {
-            $html .= 'No entries found';
+        $sql = " AND {$alias}.deleted_at IS NULL" . AnalyticsAccess::classScopeSql($alias);
+        $params = [];
+        if ($term) {
+            $sql .= " AND {$alias}.semester_id = :f_sem";
+            $params['f_sem'] = (int) $term['semester_id'];
         }
-        $html .= '</div>';
-
-        if ($totalPages > 1) {
-            $html .= '<nav aria-label="Table navigation">';
-            $html .= '<ul class="pagination pagination-sm mb-0">';
-
-            // Prev Button
-            if ($currentPage > 1) {
-                $html .= '<li class="page-item"><a class="page-link" href="' . htmlspecialchars($buildUrl($currentPage - 1)) . '" aria-label="Previous"><i class="bi bi-chevron-left me-1"></i>Prev</a></li>';
-            } else {
-                $html .= '<li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left me-1"></i>Prev</span></li>';
-            }
-
-            // Numbered Page Buttons
-            $range = 2;
-            $start = max(1, $currentPage - $range);
-            $end = min($totalPages, $currentPage + $range);
-
-            if ($start > 1) {
-                $html .= '<li class="page-item"><a class="page-link" href="' . htmlspecialchars($buildUrl(1)) . '">1</a></li>';
-                if ($start > 2) {
-                    $html .= '<li class="page-item disabled"><span class="page-link text-muted">...</span></li>';
-                }
-            }
-
-            for ($p = $start; $p <= $end; $p++) {
-                if ($p === $currentPage) {
-                    $html .= '<li class="page-item active" aria-current="page"><span class="page-link" style="background-color: #800020; border-color: #800020; color: #fff;">' . $p . '</span></li>';
-                } else {
-                    $html .= '<li class="page-item"><a class="page-link" href="' . htmlspecialchars($buildUrl($p)) . '">' . $p . '</a></li>';
-                }
-            }
-
-            if ($end < $totalPages) {
-                if ($end < $totalPages - 1) {
-                    $html .= '<li class="page-item disabled"><span class="page-link text-muted">...</span></li>';
-                }
-                $html .= '<li class="page-item"><a class="page-link" href="' . htmlspecialchars($buildUrl($totalPages)) . '">' . $totalPages . '</a></li>';
-            }
-
-            // Next Button
-            if ($currentPage < $totalPages) {
-                $html .= '<li class="page-item"><a class="page-link" href="' . htmlspecialchars($buildUrl($currentPage + 1)) . '" aria-label="Next">Next <i class="bi bi-chevron-right ms-1"></i></a></li>';
-            } else {
-                $html .= '<li class="page-item disabled"><span class="page-link">Next <i class="bi bi-chevron-right ms-1"></i></span></li>';
-            }
-
-            $html .= '</ul>';
-            $html .= '</nav>';
+        if ($programId) {
+            $sql .= ' AND ' . AnalyticsAccess::classProgramExpr($alias) . ' = :f_prog';
+            $params['f_prog'] = $programId;
         }
+        return [$sql, $params];
+    }
 
-        $html .= '</div>';
-
+    private function baseData(string $title, array $crumbs): array
+    {
         return [
-            'page' => $currentPage,
-            'per_page' => $perPage,
-            'total' => $totalRecords,
-            'total_pages' => $totalPages,
-            'offset' => $offset,
-            'from' => $from,
-            'to' => $to,
-            'html' => $html
+            'title'      => $title,
+            'crumbs'     => array_merge(['Academic Analytics' => url('analytics/overview')], $crumbs),
+            'terms'      => AnalyticsAccess::terms(),
+            'programs'   => AnalyticsAccess::scopedPrograms(),
+            'activeTerm' => AnalyticsAccess::activeTerm(),
+            'scopeNote'  => $this->scopeNote(),
         ];
+    }
+
+    private function scopeNote(): string
+    {
+        $ids = AnalyticsAccess::scopedProgramIds();
+        if ($ids === null) {
+            return 'All programs';
+        }
+        if (empty($ids)) {
+            return 'No programs are mapped to your account. Ask the administrator to map your programs.';
+        }
+        $codes = array_column(AnalyticsAccess::scopedPrograms(), 'code');
+        return 'Programs: ' . implode(', ', $codes);
+    }
+
+    // ------------------------------------------------------------------
+    // Overview
+    // ------------------------------------------------------------------
+
+    public function overview(): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $programId = $this->programFilter();
+        [$cf, $cp] = $this->classFilters($term, $programId);
+
+        $studentScope = AnalyticsAccess::studentScopeSql('s');
+        $studentParams = [];
+        $studentProgSql = '';
+        if ($programId) {
+            $studentProgSql = ' AND s.program_id = :sprog';
+            $studentParams['sprog'] = $programId;
+        }
+        $totalStudents = (int) Database::fetchColumn(
+            "SELECT COUNT(*) FROM `students` s WHERE s.deleted_at IS NULL{$studentScope}{$studentProgSql}",
+            $studentParams
+        );
+
+        $enrollment = ['enrolled' => 0, 'pending' => 0, 'withdrawn' => 0, 'cancelled' => 0];
+        if ($term) {
+            $ep = ['sem' => (int) $term['semester_id']];
+            $eps = '';
+            if ($programId) {
+                $eps = ' AND e.program_id = :eprog';
+                $ep['eprog'] = $programId;
+            }
+            foreach (Database::fetchAll(
+                "SELECT e.status, COUNT(*) AS n FROM `ana_enrollments` e
+                 WHERE e.semester_id = :sem" . AnalyticsAccess::programScopeSql('e.program_id') . "{$eps}
+                 GROUP BY e.status",
+                $ep
+            ) as $r) {
+                $enrollment[$r['status']] = (int) $r['n'];
+            }
+        }
+
+        $classStats = Database::fetchOne(
+            "SELECT COUNT(*) AS total,
+                    COALESCE(SUM(c.grade_status IN ('posted', 'locked')), 0) AS published,
+                    COALESCE(SUM(c.grade_status = 'draft'), 0) AS draft
+             FROM `ana_classes` c WHERE 1 = 1{$cf}",
+            $cp
+        );
+
+        $grades = ['PASSED' => 0, 'FAILED' => 0, 'INC' => 0, 'DRP' => 0];
+        foreach (Database::fetchAll(
+            "SELECT g.remarks, COUNT(*) AS n FROM `ana_class_grades` g
+             JOIN `ana_classes` c ON c.id = g.class_id
+             WHERE c.grade_status IN ('posted', 'locked'){$cf}
+             GROUP BY g.remarks",
+            $cp
+        ) as $r) {
+            $grades[$r['remarks']] = (int) $r['n'];
+        }
+        $gradedTotal = array_sum($grades);
+
+        $att = Database::fetchOne(
+            "SELECT COALESCE(SUM(a.status = 'Present'), 0) AS present, COALESCE(SUM(a.status = 'Late'), 0) AS late,
+                    COALESCE(SUM(a.status = 'Excused'), 0) AS excused, COALESCE(SUM(a.status = 'Absent'), 0) AS absent,
+                    COUNT(*) AS total
+             FROM `ana_attendance_records` a JOIN `ana_classes` c ON c.id = a.class_id
+             WHERE a.voided_at IS NULL{$cf}",
+            $cp
+        );
+
+        [$cfAll, $cpAll] = $this->classFilters(null, $programId);
+        $openInc = (int) Database::fetchColumn(
+            "SELECT COUNT(*) FROM `ana_class_grades` g JOIN `ana_classes` c ON c.id = g.class_id
+             WHERE g.remarks = 'INC' AND g.inc_resolved_at IS NULL AND c.grade_status IN ('posted', 'locked'){$cfAll}",
+            $cpAll
+        );
+        $pendingCorrections = (int) Database::fetchColumn(
+            "SELECT COUNT(*) FROM `ana_grade_change_requests` r JOIN `ana_classes` c ON c.id = r.class_id
+             WHERE r.status = 'pending'{$cfAll}",
+            $cpAll
+        );
+
+        $subjectRows = $this->subjectPerformanceRows($term, $programId);
+        usort($subjectRows, fn($a, $b) => $b['graded'] <=> $a['graded']);
+        $subjectRows = array_slice($subjectRows, 0, 12);
+
+        $enrollByProgram = [];
+        if ($term) {
+            $ep = ['sem' => (int) $term['semester_id']];
+            $enrollByProgram = Database::fetchAll(
+                "SELECT p.code, COUNT(*) AS n FROM `ana_enrollments` e JOIN `programs` p ON p.id = e.program_id
+                 WHERE e.semester_id = :sem AND e.status = 'enrolled'" . AnalyticsAccess::programScopeSql('e.program_id') . "
+                 GROUP BY p.code ORDER BY p.code",
+                $ep
+            );
+        }
+
+        $notes = [];
+        if (can('analytics.admin.settings')) {
+            $notes = Database::fetchAll(
+                "SELECT n.*, CONCAT(u.first_name, ' ', u.last_name) AS author
+                 FROM `ana_dashboard_notes` n LEFT JOIN `users` u ON u.id = n.created_by
+                 WHERE n.status = 'active' ORDER BY n.id DESC LIMIT 10"
+            );
+        }
+
+        View::render('analytics/Views/overview', array_merge($this->baseData('Academic Monitoring Overview', ['Overview' => '']), [
+            'term'               => $term,
+            'programId'          => $programId,
+            'totalStudents'      => $totalStudents,
+            'enrollment'         => $enrollment,
+            'classStats'         => $classStats,
+            'grades'             => $grades,
+            'gradedTotal'        => $gradedTotal,
+            'attendance'         => $att,
+            'attendanceRate'     => GradeCalculator::attendanceRate($att ?: []),
+            'openInc'            => $openInc,
+            'pendingCorrections' => $pendingCorrections,
+            'subjectRows'        => $subjectRows,
+            'enrollByProgram'    => $enrollByProgram,
+            'notes'              => $notes,
+        ]));
+    }
+
+    // ------------------------------------------------------------------
+    // Students
+    // ------------------------------------------------------------------
+
+    private function studentQuery(?array $term, bool $countOnly, ?array $page = null): array
+    {
+        $params = ['esem' => $term ? (int) $term['semester_id'] : 0];
+        $where = 's.deleted_at IS NULL' . AnalyticsAccess::studentScopeSql('s');
+
+        $q = trim((string) ($_GET['q'] ?? ''));
+        if ($q !== '') {
+            $where .= " AND (s.student_number LIKE :q1 OR CONCAT(s.first_name, ' ', s.last_name) LIKE :q2 OR CONCAT(s.last_name, ', ', s.first_name) LIKE :q3)";
+            $params['q1'] = $params['q2'] = $params['q3'] = '%' . $q . '%';
+        }
+        if ($programId = $this->programFilter()) {
+            $where .= ' AND s.program_id = :prog';
+            $params['prog'] = $programId;
+        }
+        $year = (int) ($_GET['year'] ?? 0);
+        if ($year > 0) {
+            $where .= ' AND s.year_level = :yr';
+            $params['yr'] = $year;
+        }
+        $section = (int) ($_GET['section'] ?? 0);
+        if ($section > 0) {
+            $where .= ' AND s.section_id = :sec';
+            $params['sec'] = $section;
+        }
+        $status = (string) ($_GET['status'] ?? '');
+        if (in_array($status, ['pending', 'enrolled', 'withdrawn', 'cancelled'], true)) {
+            $where .= ' AND e.status = :est';
+            $params['est'] = $status;
+        } elseif ($status === 'none') {
+            $where .= ' AND e.id IS NULL';
+        }
+
+        $from = "FROM `students` s
+                 LEFT JOIN `ana_enrollments` e ON e.student_id = s.id AND e.semester_id = :esem
+                 LEFT JOIN `programs` p ON p.id = s.program_id
+                 LEFT JOIN `sections` sec ON sec.id = s.section_id
+                 WHERE {$where}";
+
+        if ($countOnly) {
+            return [(int) Database::fetchColumn("SELECT COUNT(*) {$from}", $params)];
+        }
+        $limit = $page ? (' LIMIT ' . (int) $page['per_page'] . ' OFFSET ' . (int) $page['offset']) : '';
+        return Database::fetchAll(
+            "SELECT s.id, s.student_number, s.first_name, s.middle_name, s.last_name, s.year_level, s.gender, s.user_id,
+                    p.code AS program_code, sec.name AS section_name, e.status AS term_status, e.id AS enrollment_id
+             {$from}
+             ORDER BY s.last_name, s.first_name{$limit}",
+            $params
+        );
+    }
+
+    public function students(): void
+    {
+        $this->renderStudents('analytics/students', 'Students');
+    }
+
+    public function studentProfiles(): void
+    {
+        $this->renderStudents('analytics/profile', 'Student Profiles');
+    }
+
+    private function renderStudents(string $listRoute, string $heading): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $total = $this->studentQuery($term, true)[0];
+        $page = Ui::paginate($total, 25);
+        $rows = $this->studentQuery($term, false, $page);
+
+        $sectionParams = [];
+        $sections = Database::fetchAll(
+            "SELECT sec.id, sec.name, p.code AS program_code FROM `sections` sec JOIN `programs` p ON p.id = sec.program_id
+             WHERE sec.deleted_at IS NULL" . AnalyticsAccess::programScopeSql('sec.program_id') . " ORDER BY p.code, sec.year_level, sec.name",
+            $sectionParams
+        );
+
+        View::render('analytics/Views/students', array_merge($this->baseData($heading, [$heading => '']), [
+            'listRoute'  => $listRoute,
+            'heading'    => $heading,
+            'term'       => $term,
+            'rows'       => $rows,
+            'pagination' => $page,
+            'sections'   => $sections,
+            'filters'    => Ui::queryParams(['q', 'program', 'year', 'section', 'status', 'term']),
+        ]));
+    }
+
+    public function exportStudents(): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $rows = $this->studentQuery($term, false);
+        Csv::download('students_' . date('Ymd') . '.csv',
+            ['Student No.', 'Last Name', 'First Name', 'Middle Name', 'Program', 'Year', 'Section', 'Term Status'],
+            array_map(fn($r) => [$r['student_number'], $r['last_name'], $r['first_name'], $r['middle_name'], $r['program_code'], $r['year_level'], $r['section_name'], $r['term_status'] ?? 'not enrolled'], $rows)
+        );
+    }
+
+    public function studentDossier(string $id): void
+    {
+        $studentId = (int) $id;
+        if (!AnalyticsAccess::canMonitorStudent($studentId)) {
+            AnalyticsAccess::notFound();
+        }
+
+        $student = Database::fetchOne(
+            "SELECT s.*, p.code AS program_code, p.name AS program_name, sec.name AS section_name
+             FROM `students` s
+             LEFT JOIN `programs` p ON p.id = s.program_id
+             LEFT JOIN `sections` sec ON sec.id = s.section_id
+             WHERE s.id = :id",
+            ['id' => $studentId]
+        );
+
+        $enrollments = Database::fetchAll(
+            "SELECT e.*, sem.name AS semester_name, ay.label AS academic_year_label, p.code AS program_code, sec.name AS section_name,
+                    (SELECT COUNT(*) FROM `ana_enrollment_subjects` es WHERE es.enrollment_id = e.id AND es.status = 'enrolled') AS subject_count,
+                    (SELECT COALESCE(SUM(sub.units), 0) FROM `ana_enrollment_subjects` es JOIN `subjects` sub ON sub.id = es.subject_id
+                      WHERE es.enrollment_id = e.id AND es.status = 'enrolled') AS total_units
+             FROM `ana_enrollments` e
+             JOIN `semesters` sem ON sem.id = e.semester_id
+             JOIN `academic_years` ay ON ay.id = e.academic_year_id
+             LEFT JOIN `programs` p ON p.id = e.program_id
+             LEFT JOIN `sections` sec ON sec.id = e.section_id
+             WHERE e.student_id = :sid
+             ORDER BY ay.start_date DESC, sem.code DESC",
+            ['sid' => $studentId]
+        );
+
+        $classRows = Database::fetchAll(
+            "SELECT c.* FROM `ana_class_students` cs JOIN `ana_classes` c ON c.id = cs.class_id
+             WHERE cs.student_id = :sid AND cs.status = 'enrolled' AND c.deleted_at IS NULL
+             ORDER BY c.semester_id DESC, c.subject_code",
+            ['sid' => $studentId]
+        );
+        $classes = [];
+        $gwaByTerm = [];
+        foreach ($classRows as $c) {
+            $details = ClassRecord::details((int) $c['id']);
+            if (!$details) {
+                continue;
+            }
+            $rec = ClassRecord::load($details, $studentId);
+            $published = ClassRecord::isPublished($details);
+            $posted = $rec['posted'][$studentId] ?? null;
+            $computed = $rec['computed'][$studentId] ?? null;
+            $att = $rec['attendance'][$studentId] ?? ClassRecord::emptyAttendance();
+            $classes[] = [
+                'class'      => $details,
+                'published'  => $published,
+                'posted'     => $published ? $posted : null,
+                'computed'   => $computed,
+                'scheme'     => $rec['scheme'],
+                'scores'     => $rec['scores'][$studentId] ?? [],
+                'statuses'   => $rec['statuses'][$studentId] ?? [],
+                'attendance' => $att,
+                'attRate'    => GradeCalculator::attendanceRate($att),
+            ];
+            if ($published && $posted) {
+                $termKey = $details['semester_name'] . ', ' . $details['academic_year_label'];
+                $gwaByTerm[$termKey][] = ['final_grade' => $posted['final_grade'], 'units' => $details['subject_units']];
+            }
+        }
+        $gwa = [];
+        foreach ($gwaByTerm as $label => $rows) {
+            $gwa[$label] = GradeCalculator::gwa($rows);
+        }
+
+        $conduct = Database::fetchAll(
+            "SELECT b.*, c.subject_code, CONCAT(u.first_name, ' ', u.last_name) AS reporter
+             FROM `ana_behavior_records` b
+             LEFT JOIN `ana_classes` c ON c.id = b.class_id
+             LEFT JOIN `users` u ON u.id = b.reported_by
+             WHERE b.student_id = :sid AND b.deleted_at IS NULL
+             ORDER BY b.incident_date DESC",
+            ['sid' => $studentId]
+        );
+        $profile = Database::fetchOne("SELECT * FROM `ana_student_profiles` WHERE student_id = :sid", ['sid' => $studentId]);
+
+        View::render('analytics/Views/student_dossier', array_merge($this->baseData('Student Dossier', ['Students' => url('analytics/students'), 'Dossier' => '']), [
+            'student'     => $student,
+            'enrollments' => $enrollments,
+            'classes'     => $classes,
+            'gwa'         => $gwa,
+            'conduct'     => $conduct,
+            'profile'     => $profile,
+        ]));
+    }
+
+    // ------------------------------------------------------------------
+    // Class records (read-only)
+    // ------------------------------------------------------------------
+
+    public function classRecords(): void
+    {
+        $this->renderClassRecords('Class Records');
+    }
+
+    public function gradesTracking(): void
+    {
+        $this->renderClassRecords('Class Records (Read-only)');
+    }
+
+    public function progressReports(): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $programId = $this->programFilter();
+        [$cf, $cp] = $this->classFilters($term, $programId);
+        $rows = Database::fetchAll(
+            "SELECT s.id AS student_id, s.student_number, s.first_name, s.last_name, s.year_level, p.code AS program_code,
+                    COUNT(g.id) AS subjects,
+                    COALESCE(SUM(c.units), 0) AS units,
+                    COALESCE(SUM(g.remarks = 'PASSED'), 0) AS passed,
+                    COALESCE(SUM(g.remarks = 'FAILED'), 0) AS failed,
+                    COALESCE(SUM(g.remarks = 'INC' AND g.inc_resolved_at IS NULL), 0) AS open_inc,
+                    COALESCE(SUM(g.remarks = 'DRP'), 0) AS drp,
+                    SUM(CASE WHEN g.remarks IN ('PASSED', 'FAILED') THEN CAST(g.final_grade AS DECIMAL(5,2)) * c.units END)
+                      / NULLIF(SUM(CASE WHEN g.remarks IN ('PASSED', 'FAILED') THEN c.units END), 0) AS gwa
+             FROM `ana_class_grades` g
+             JOIN `ana_classes` c ON c.id = g.class_id
+             JOIN `students` s ON s.id = g.student_id
+             LEFT JOIN `programs` p ON p.id = s.program_id
+             WHERE c.grade_status IN ('posted', 'locked') AND s.deleted_at IS NULL{$cf}
+             GROUP BY s.id, s.student_number, s.first_name, s.last_name, s.year_level, p.code
+             ORDER BY failed DESC, open_inc DESC, s.last_name",
+            $cp
+        );
+        View::render('analytics/Views/progressreports', array_merge($this->baseData('Academic Progress Reports', ['Progress Reports' => '']), [
+            'term'      => $term,
+            'programId' => $programId,
+            'rows'      => $rows,
+        ]));
+    }
+
+    private function renderClassRecords(string $heading): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $programId = $this->programFilter();
+        [$cf, $cp] = $this->classFilters($term, $programId);
+
+        $status = (string) ($_GET['status'] ?? '');
+        if (in_array($status, ['draft', 'posted', 'locked'], true)) {
+            $cf .= ' AND c.grade_status = :gst';
+            $cp['gst'] = $status;
+        }
+        $q = trim((string) ($_GET['q'] ?? ''));
+        if ($q !== '') {
+            $cf .= " AND (c.subject_code LIKE :q1 OR c.subject_title LIKE :q2 OR c.section_name LIKE :q3 OR CONCAT(u.first_name, ' ', u.last_name) LIKE :q4)";
+            $cp['q1'] = $cp['q2'] = $cp['q3'] = $cp['q4'] = '%' . $q . '%';
+        }
+
+        $rows = Database::fetchAll(
+            "SELECT c.id, c.class_code, c.subject_code, c.subject_title, c.units, c.section_name, c.grade_status, c.posted_at,
+                    CONCAT(u.first_name, ' ', u.last_name) AS faculty_name,
+                    sem.name AS semester_name, ay.label AS academic_year_label,
+                    (SELECT COUNT(*) FROM `ana_class_students` cs WHERE cs.class_id = c.id AND cs.status = 'enrolled') AS enrolled_count
+             FROM `ana_classes` c
+             LEFT JOIN `users` u ON u.id = c.faculty_user_id
+             LEFT JOIN `semesters` sem ON sem.id = c.semester_id
+             LEFT JOIN `academic_years` ay ON ay.id = c.academic_year_id
+             WHERE 1 = 1{$cf}
+             ORDER BY c.subject_code, c.section_name",
+            $cp
+        );
+
+        View::render('analytics/Views/class_records', array_merge($this->baseData($heading, [$heading => '']), [
+            'heading'   => $heading,
+            'term'      => $term,
+            'programId' => $programId,
+            'rows'      => $rows,
+            'filters'   => Ui::queryParams(['q', 'program', 'status', 'term']),
+        ]));
+    }
+
+    public function classRecordView(string $id): void
+    {
+        $classId = (int) $id;
+        if (!AnalyticsAccess::canSeeClass($classId)) {
+            AnalyticsAccess::notFound();
+        }
+        $class = ClassRecord::details($classId);
+        if (!$class) {
+            AnalyticsAccess::notFound();
+        }
+        $record = ClassRecord::load($class);
+
+        View::render('analytics/Views/class_record_readonly', array_merge($this->baseData('Class Record (Read-only)', ['Class Records' => url('analytics/class-records'), $class['subject_code'] => '']), [
+            'class'     => $class,
+            'record'    => $record,
+            'published' => ClassRecord::isPublished($class),
+        ]));
+    }
+
+    // ------------------------------------------------------------------
+    // Subject performance
+    // ------------------------------------------------------------------
+
+    private function subjectPerformanceRows(?array $term, ?int $programId): array
+    {
+        [$cf, $cp] = $this->classFilters($term, $programId);
+        $rows = Database::fetchAll(
+            "SELECT c.subject_code, MAX(c.subject_title) AS subject_title,
+                    COUNT(DISTINCT c.id) AS classes, COUNT(g.id) AS graded,
+                    COALESCE(SUM(g.remarks = 'PASSED'), 0) AS passed, COALESCE(SUM(g.remarks = 'FAILED'), 0) AS failed,
+                    COALESCE(SUM(g.remarks = 'INC'), 0) AS inc, COALESCE(SUM(g.remarks = 'DRP'), 0) AS drp,
+                    AVG(CASE WHEN g.remarks IN ('PASSED', 'FAILED') THEN CAST(g.final_grade AS DECIMAL(5,2)) END) AS mean_grade
+             FROM `ana_classes` c
+             JOIN `ana_class_grades` g ON g.class_id = c.id
+             WHERE c.grade_status IN ('posted', 'locked'){$cf}
+             GROUP BY c.subject_code
+             ORDER BY c.subject_code",
+            $cp
+        );
+        foreach ($rows as &$r) {
+            $r['graded'] = (int) $r['graded'];
+            $r['pass_rate'] = $r['graded'] > 0 ? (int) $r['passed'] / $r['graded'] : null;
+            $r['mean_grade'] = $r['mean_grade'] !== null ? round((float) $r['mean_grade'], 2) : null;
+        }
+        return $rows;
+    }
+
+    public function subjectPerformance(): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $programId = $this->programFilter();
+        View::render('analytics/Views/subjectperformance', array_merge($this->baseData('Subject Performance', ['Subject Performance' => '']), [
+            'term'      => $term,
+            'programId' => $programId,
+            'rows'      => $this->subjectPerformanceRows($term, $programId),
+            'threshold' => AnalyticsSettings::get('analytics.bottleneck_passing_rate'),
+        ]));
+    }
+
+    // ------------------------------------------------------------------
+    // Failed / INC
+    // ------------------------------------------------------------------
+
+    private function failedIncRows(?array $term, ?int $programId): array
+    {
+        [$cf, $cp] = $this->classFilters($term, $programId);
+        $type = (string) ($_GET['type'] ?? '');
+        $remarksSql = "g.remarks IN ('FAILED', 'INC')";
+        if ($type === 'FAILED' || $type === 'INC') {
+            $remarksSql = 'g.remarks = :rtype';
+            $cp['rtype'] = $type;
+        }
+        if (($_GET['open'] ?? '') === '1') {
+            $remarksSql .= ' AND g.inc_resolved_at IS NULL';
+        }
+        return Database::fetchAll(
+            "SELECT g.id AS grade_id, g.final_grade, g.remarks, g.inc_deadline, g.inc_resolved_at, g.posted_at,
+                    DATEDIFF(g.inc_deadline, CURDATE()) AS days_left,
+                    s.id AS student_id, s.student_number, s.first_name, s.last_name, p.code AS program_code,
+                    c.id AS class_id, c.subject_code, c.subject_title, c.section_name,
+                    CONCAT(u.first_name, ' ', u.last_name) AS faculty_name
+             FROM `ana_class_grades` g
+             JOIN `ana_classes` c ON c.id = g.class_id
+             JOIN `students` s ON s.id = g.student_id
+             LEFT JOIN `programs` p ON p.id = s.program_id
+             LEFT JOIN `users` u ON u.id = c.faculty_user_id
+             WHERE {$remarksSql} AND c.grade_status IN ('posted', 'locked'){$cf}
+             ORDER BY g.remarks DESC, g.inc_deadline IS NULL, g.inc_deadline, s.last_name",
+            $cp
+        );
+    }
+
+    public function failedIncomplete(): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $programId = $this->programFilter();
+        View::render('analytics/Views/failedincompletemonitoring', array_merge($this->baseData('Failed / INC Monitoring', ['Failed / INC' => '']), [
+            'term'           => $term,
+            'programId'      => $programId,
+            'rows'           => $this->failedIncRows($term, $programId),
+            'incWindowDays'  => AnalyticsSettings::get('grading.inc_removal_days'),
+            'filters'        => Ui::queryParams(['program', 'term', 'type', 'open']),
+        ]));
+    }
+
+    // ------------------------------------------------------------------
+    // Attendance
+    // ------------------------------------------------------------------
+
+    private function attendanceClassRows(?array $term, ?int $programId): array
+    {
+        [$cf, $cp] = $this->classFilters($term, $programId);
+        $rows = Database::fetchAll(
+            "SELECT c.id, c.subject_code, c.section_name, CONCAT(u.first_name, ' ', u.last_name) AS faculty_name,
+                    COUNT(DISTINCT a.session_date) AS sessions, COUNT(a.id) AS total,
+                    COALESCE(SUM(a.status = 'Present'), 0) AS present, COALESCE(SUM(a.status = 'Late'), 0) AS late,
+                    COALESCE(SUM(a.status = 'Excused'), 0) AS excused, COALESCE(SUM(a.status = 'Absent'), 0) AS absent
+             FROM `ana_classes` c
+             JOIN `ana_attendance_records` a ON a.class_id = c.id AND a.voided_at IS NULL
+             LEFT JOIN `users` u ON u.id = c.faculty_user_id
+             WHERE 1 = 1{$cf}
+             GROUP BY c.id, c.subject_code, c.section_name, u.first_name, u.last_name
+             ORDER BY c.subject_code, c.section_name",
+            $cp
+        );
+        foreach ($rows as &$r) {
+            $r['rate'] = GradeCalculator::attendanceRate($r);
+        }
+        return $rows;
+    }
+
+    private function attendanceStudentRows(?array $term, ?int $programId): array
+    {
+        [$cf, $cp] = $this->classFilters($term, $programId);
+        $rows = Database::fetchAll(
+            "SELECT s.id AS student_id, s.student_number, s.first_name, s.last_name, c.id AS class_id, c.subject_code, c.section_name,
+                    (SELECT COUNT(DISTINCT a2.session_date) FROM `ana_attendance_records` a2 WHERE a2.class_id = c.id AND a2.voided_at IS NULL) AS sessions,
+                    COUNT(a.id) AS total,
+                    COALESCE(SUM(a.status = 'Present'), 0) AS present, COALESCE(SUM(a.status = 'Late'), 0) AS late,
+                    COALESCE(SUM(a.status = 'Excused'), 0) AS excused, COALESCE(SUM(a.status = 'Absent'), 0) AS absent
+             FROM `ana_attendance_records` a
+             JOIN `ana_classes` c ON c.id = a.class_id
+             JOIN `students` s ON s.id = a.student_id
+             WHERE a.voided_at IS NULL{$cf}
+             GROUP BY s.id, s.student_number, s.first_name, s.last_name, c.id, c.subject_code, c.section_name
+             ORDER BY absent DESC, s.last_name",
+            $cp
+        );
+        foreach ($rows as &$r) {
+            $r['rate'] = GradeCalculator::attendanceRate($r);
+            $r['allowed'] = AnalyticsSettings::allowedAbsences((int) $r['sessions']);
+            $r['over_limit'] = $r['allowed'] !== null && (int) $r['absent'] > $r['allowed'];
+        }
+        return $rows;
+    }
+
+    public function attendanceRecords(): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $programId = $this->programFilter();
+        [$cf, $cp] = $this->classFilters($term, $programId);
+
+        $classFilter = (int) ($_GET['class_id'] ?? 0);
+        $recentWhere = "a.voided_at IS NULL{$cf}";
+        if ($classFilter > 0) {
+            $recentWhere .= ' AND c.id = :fcid';
+            $cp['fcid'] = $classFilter;
+        }
+        $total = (int) Database::fetchColumn(
+            "SELECT COUNT(*) FROM `ana_attendance_records` a JOIN `ana_classes` c ON c.id = a.class_id WHERE {$recentWhere}",
+            $cp
+        );
+        $page = Ui::paginate($total, 30);
+        $recent = Database::fetchAll(
+            "SELECT a.id, a.session_date, a.status, a.remarks, s.student_number, s.first_name, s.last_name,
+                    c.subject_code, c.section_name, CONCAT(u.first_name, ' ', u.last_name) AS recorded_by_name
+             FROM `ana_attendance_records` a
+             JOIN `ana_classes` c ON c.id = a.class_id
+             LEFT JOIN `students` s ON s.id = a.student_id
+             LEFT JOIN `users` u ON u.id = a.recorded_by
+             WHERE {$recentWhere}
+             ORDER BY a.session_date DESC, a.id DESC
+             LIMIT {$page['per_page']} OFFSET {$page['offset']}",
+            $cp
+        );
+
+        View::render('analytics/Views/attendancerecords', array_merge($this->baseData('Attendance Records', ['Attendance' => '']), [
+            'term'        => $term,
+            'programId'   => $programId,
+            'classRows'   => $this->attendanceClassRows($term, $programId),
+            'studentRows' => array_values(array_filter($this->attendanceStudentRows($term, $programId), fn($r) => $r['over_limit'])),
+            'recent'      => $recent,
+            'pagination'  => $page,
+            'classFilter' => $classFilter,
+            'ratio'       => AnalyticsSettings::get('attendance.max_absence_ratio'),
+            'lateWeight'  => AnalyticsSettings::get('attendance.late_weight'),
+            'filters'     => Ui::queryParams(['program', 'term', 'class_id']),
+        ]));
+    }
+
+    // ------------------------------------------------------------------
+    // Participation & engagement
+    // ------------------------------------------------------------------
+
+    private function participationRows(?array $term, ?int $programId): array
+    {
+        [$cf, $cp] = $this->classFilters($term, $programId);
+        $rows = Database::fetchAll(
+            "SELECT s.id AS student_id, s.student_number, s.first_name, s.last_name, c.id AS class_id, c.subject_code, c.section_name,
+                    COUNT(sc.id) AS recorded,
+                    COALESCE(SUM(sc.submission_status = 'submitted'), 0) AS submitted,
+                    COALESCE(SUM(sc.submission_status = 'late'), 0) AS late,
+                    COALESCE(SUM(sc.submission_status = 'missing'), 0) AS missing,
+                    COALESCE(SUM(sc.submission_status = 'excused'), 0) AS excused
+             FROM `ana_class_scores` sc
+             JOIN `ana_classes` c ON c.id = sc.class_id
+             JOIN `ana_class_students` cs ON cs.class_id = c.id AND cs.student_id = sc.student_id AND cs.status = 'enrolled'
+             JOIN `students` s ON s.id = sc.student_id
+             WHERE 1 = 1{$cf}
+             GROUP BY s.id, s.student_number, s.first_name, s.last_name, c.id, c.subject_code, c.section_name
+             ORDER BY missing DESC, s.last_name",
+            $cp
+        );
+        foreach ($rows as &$r) {
+            $denom = (int) $r['recorded'] - (int) $r['excused'];
+            $r['compliance'] = $denom > 0 ? ((int) $r['submitted'] + (int) $r['late']) / $denom : null;
+        }
+        return $rows;
+    }
+
+    public function participation(): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $programId = $this->programFilter();
+        View::render('analytics/Views/participationtracking', array_merge($this->baseData('Participation Tracking', ['Participation' => '']), [
+            'term'      => $term,
+            'programId' => $programId,
+            'rows'      => $this->participationRows($term, $programId),
+        ]));
+    }
+
+    private function engagementRows(?array $term, ?int $programId): array
+    {
+        $byKey = [];
+        foreach ($this->attendanceStudentRows($term, $programId) as $r) {
+            $k = $r['student_id'] . ':' . $r['class_id'];
+            $byKey[$k] = ['student_id' => $r['student_id'], 'student_number' => $r['student_number'], 'first_name' => $r['first_name'],
+                          'last_name' => $r['last_name'], 'subject_code' => $r['subject_code'], 'section_name' => $r['section_name'],
+                          'attendance' => $r['rate'], 'compliance' => null];
+        }
+        foreach ($this->participationRows($term, $programId) as $r) {
+            $k = $r['student_id'] . ':' . $r['class_id'];
+            $byKey[$k] ??= ['student_id' => $r['student_id'], 'student_number' => $r['student_number'], 'first_name' => $r['first_name'],
+                            'last_name' => $r['last_name'], 'subject_code' => $r['subject_code'], 'section_name' => $r['section_name'],
+                            'attendance' => null, 'compliance' => null];
+            $byKey[$k]['compliance'] = $r['compliance'];
+        }
+        $rows = array_values($byKey);
+        foreach ($rows as &$r) {
+            $parts = array_filter([$r['attendance'], $r['compliance']], fn($v) => $v !== null);
+            $r['engagement'] = $parts ? array_sum($parts) / count($parts) : null;
+        }
+        usort($rows, fn($a, $b) => ($a['engagement'] ?? 2) <=> ($b['engagement'] ?? 2));
+        return $rows;
+    }
+
+    public function engagement(): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $programId = $this->programFilter();
+        View::render('analytics/Views/studentengagement', array_merge($this->baseData('Student Engagement', ['Engagement' => '']), [
+            'term'      => $term,
+            'programId' => $programId,
+            'rows'      => $this->engagementRows($term, $programId),
+        ]));
+    }
+
+    // ------------------------------------------------------------------
+    // Behavior
+    // ------------------------------------------------------------------
+
+    private function behaviorRows(?int $programId): array
+    {
+        $params = [];
+        $where = 'b.deleted_at IS NULL' . AnalyticsAccess::studentScopeSql('s');
+        if ($programId) {
+            $where .= ' AND s.program_id = :prog';
+            $params['prog'] = $programId;
+        }
+        $status = (string) ($_GET['status'] ?? '');
+        if (in_array($status, ['Reported', 'Investigating', 'Resolved', 'Dismissed'], true)) {
+            $where .= ' AND b.status = :st';
+            $params['st'] = $status;
+        }
+        $severity = (string) ($_GET['severity'] ?? '');
+        if (in_array($severity, ['Minor', 'Moderate', 'Severe'], true)) {
+            $where .= ' AND b.severity = :sv';
+            $params['sv'] = $severity;
+        }
+        return Database::fetchAll(
+            "SELECT b.*, s.student_number, s.first_name, s.last_name, p.code AS program_code, c.subject_code, c.section_name,
+                    CONCAT(u.first_name, ' ', u.last_name) AS reporter
+             FROM `ana_behavior_records` b
+             JOIN `students` s ON s.id = b.student_id
+             LEFT JOIN `programs` p ON p.id = s.program_id
+             LEFT JOIN `ana_classes` c ON c.id = b.class_id
+             LEFT JOIN `users` u ON u.id = b.reported_by
+             WHERE {$where}
+             ORDER BY b.incident_date DESC, b.id DESC",
+            $params
+        );
+    }
+
+    public function behaviorRecords(): void
+    {
+        $programId = $this->programFilter();
+        View::render('analytics/Views/behaviorrecords', array_merge($this->baseData('Behavior Records', ['Behavior' => '']), [
+            'programId' => $programId,
+            'rows'      => $this->behaviorRows($programId),
+            'filters'   => Ui::queryParams(['program', 'status', 'severity']),
+        ]));
+    }
+
+    // ------------------------------------------------------------------
+    // CSV exports (scoped exactly like the pages)
+    // ------------------------------------------------------------------
+
+    public function export(string $type): void
+    {
+        $term = AnalyticsAccess::requestedTerm();
+        $programId = $this->programFilter();
+        $stamp = date('Ymd');
+
+        switch ($type) {
+            case 'subject-performance':
+                Csv::download("subject_performance_{$stamp}.csv",
+                    ['Subject', 'Title', 'Classes', 'Graded', 'Passed', 'Failed', 'INC', 'DRP', 'Pass Rate %', 'Mean Grade'],
+                    array_map(fn($r) => [$r['subject_code'], $r['subject_title'], $r['classes'], $r['graded'], $r['passed'], $r['failed'], $r['inc'], $r['drp'],
+                        $r['pass_rate'] === null ? '' : round($r['pass_rate'] * 100, 1), $r['mean_grade']], $this->subjectPerformanceRows($term, $programId)));
+            case 'failed-inc':
+                Csv::download("failed_inc_{$stamp}.csv",
+                    ['Student No.', 'Last Name', 'First Name', 'Program', 'Subject', 'Section', 'Faculty', 'Grade', 'Remarks', 'INC Deadline', 'Resolved At'],
+                    array_map(fn($r) => [$r['student_number'], $r['last_name'], $r['first_name'], $r['program_code'], $r['subject_code'], $r['section_name'], $r['faculty_name'],
+                        $r['final_grade'], $r['remarks'], $r['inc_deadline'], $r['inc_resolved_at']], $this->failedIncRows($term, $programId)));
+            case 'attendance':
+                Csv::download("attendance_by_class_{$stamp}.csv",
+                    ['Subject', 'Section', 'Faculty', 'Sessions', 'Present', 'Late', 'Excused', 'Absent', 'Rate %'],
+                    array_map(fn($r) => [$r['subject_code'], $r['section_name'], $r['faculty_name'], $r['sessions'], $r['present'], $r['late'], $r['excused'], $r['absent'],
+                        $r['rate'] === null ? '' : round($r['rate'] * 100, 1)], $this->attendanceClassRows($term, $programId)));
+            case 'participation':
+                Csv::download("participation_{$stamp}.csv",
+                    ['Student No.', 'Last Name', 'First Name', 'Subject', 'Section', 'Submitted', 'Late', 'Missing', 'Excused', 'Compliance %'],
+                    array_map(fn($r) => [$r['student_number'], $r['last_name'], $r['first_name'], $r['subject_code'], $r['section_name'], $r['submitted'], $r['late'], $r['missing'], $r['excused'],
+                        $r['compliance'] === null ? '' : round($r['compliance'] * 100, 1)], $this->participationRows($term, $programId)));
+            case 'engagement':
+                Csv::download("engagement_{$stamp}.csv",
+                    ['Student No.', 'Last Name', 'First Name', 'Subject', 'Section', 'Attendance %', 'Compliance %', 'Engagement %'],
+                    array_map(fn($r) => [$r['student_number'], $r['last_name'], $r['first_name'], $r['subject_code'], $r['section_name'],
+                        $r['attendance'] === null ? '' : round($r['attendance'] * 100, 1),
+                        $r['compliance'] === null ? '' : round($r['compliance'] * 100, 1),
+                        $r['engagement'] === null ? '' : round($r['engagement'] * 100, 1)], $this->engagementRows($term, $programId)));
+            case 'behavior':
+                Csv::download("behavior_{$stamp}.csv",
+                    ['Date', 'Student No.', 'Last Name', 'First Name', 'Program', 'Type', 'Severity', 'Status', 'Subject', 'Reported By'],
+                    array_map(fn($r) => [$r['incident_date'], $r['student_number'], $r['last_name'], $r['first_name'], $r['program_code'], $r['incident_type'], $r['severity'], $r['status'],
+                        $r['subject_code'], $r['reporter']], $this->behaviorRows($programId)));
+            default:
+                AnalyticsAccess::notFound();
+        }
     }
 }

@@ -1,200 +1,49 @@
 <?php
-/**
- * ============================================================================
- * [SPAMS] Student Performance & Attendance Monitoring System
- * Scope: Module 2 - Academic Monitoring
- * View: Subject Performance & Passing Rate Analytics (subjectperformance.php)
- * Managed by: SPAMS Research Group (Modules 1 to 3)
- * Note: Please do not modify if you are developing Modules 4 to 6.
- * ============================================================================
- */
+use Modules\Analytics\Support\Ui;
+
+$exportUrl = url('analytics/export/subject-performance', Ui::queryParams(['program', 'term']));
 ?>
-<div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
+<div class="container-fluid px-3 py-3">
+    <?= Ui::header('Subject Performance', 'Posted and locked class grades only, grouped by subject.', 'bi-bar-chart-line') ?>
+    <?php include __DIR__ . '/partials/filter_bar.php'; ?>
 
-
-    <style>
-        .marsu-maroon-bg {
-            background-color: #58111a !important;
-            color: #fff !important;
-        }
-
-        .marsu-maroon-text {
-            color: #58111a !important;
-        }
-
-        .kpi-border-bottleneck {
-            border-left: 4px solid #dc3545 !important;
-        }
-
-        .kpi-border-success {
-            border-left: 4px solid #198754 !important;
-        }
-
-        .kpi-border-primary {
-            border-left: 4px solid #0d6efd !important;
-        }
-
-        .kpi-border-info {
-            border-left: 4px solid #0dcaf0 !important;
-        }
-    </style>
-
-    <!-- 1. HEADER AND FILTERS -->
-    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom flex-wrap gap-2">
-        <div>
-            <h6 class="fw-bold marsu-maroon-text mb-0">
-                <i class="bi bi-bar-chart-steps me-1"></i> Course and Subject Performance
-            </h6>
-            <small class="text-muted">Subject-level grades, passing rates, and subjects where students need extra
-                help.</small>
-        </div>
-
-        <form method="GET" action="" class="d-flex align-items-center gap-2 flex-wrap">
-            <span class="small fw-semibold text-secondary">PROGRAM:</span>
-            <select name="department" class="form-select form-select-sm" style="width: auto;"
-                onchange="this.form.submit()">
-                <option value="">All Programs</option>
-                <?php foreach ($departments as $dept): ?>
-                    <option value="<?= htmlspecialchars($dept) ?>" <?= $department === $dept ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($dept) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-
-            <span class="small fw-semibold text-secondary ms-1">SCHOOL YEAR:</span>
-            <select name="school_year" class="form-select form-select-sm" style="width: auto;"
-                onchange="this.form.submit()">
-                <?php foreach ($schoolYears as $sy): ?>
-                    <option value="<?= htmlspecialchars($sy) ?>" <?= $schoolYear === $sy ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($sy) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-
-            <span class="small fw-semibold text-secondary ms-1">SEMESTER:</span>
-            <select name="semester" class="form-select form-select-sm" style="width: auto;"
-                onchange="this.form.submit()">
-                <?php foreach ($semesters as $sem): ?>
-                    <option value="<?= htmlspecialchars($sem) ?>" <?= $semester === $sem ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($sem) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-
-            <button type="button" class="btn btn-sm btn-outline-secondary ms-1" onclick="window.print()">
-                <i class="bi bi-printer me-1"></i> Print
-            </button>
-        </form>
-    </div>
-
-
-    <!-- 4. SUBJECT-BY-SUBJECT LIST -->
-    <div class="card border rounded-3 shadow-sm bg-white mb-3">
-        <div
-            class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h6 class="m-0 fw-bold marsu-maroon-text">
-                <i class="bi bi-journal-text me-1"></i> Subject Performance List
-            </h6>
-            <div class="d-flex align-items-center gap-2">
-                <input type="text" id="tableSearchInput" class="form-control form-control-sm"
-                    placeholder="Search subject code or title..." style="width: 250px;">
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="perfLedgerTable">
-                <thead class="table-light text-uppercase small text-muted">
-                    <tr>
-                        <th class="ps-3 py-3">Subject Code</th>
-                        <th class="py-3">Subject Title</th>
-                        <th class="py-3">Program</th>
-                        <th class="py-3 text-center">Units</th>
-                        <th class="py-3 text-center">Enrolled</th>
-                        <th class="py-3 text-center">Average Grade</th>
-                        <th class="py-3 text-center">Passing Rate</th>
-                        <th class="py-3">Status</th>
-                        <th class="py-3 text-end pe-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($coursePerformanceList)): ?>
-                        <?php foreach ($coursePerformanceList as $row): ?>
-                            <?php
-                            $isCritical = $row['is_bottleneck'] ?? false;
-                            $rate = $row['passing_rate'] ?? 0;
-                            ?>
-                            <tr class="ledger-row">
-                                <td class="ps-3 fw-bold text-dark code-cell">
-                                    <?= htmlspecialchars($row['course_code']) ?>
-                                </td>
-                                <td class="title-cell">
-                                    <div class="fw-semibold text-dark"><?= htmlspecialchars($row['course_title']) ?></div>
-                                    <small class="text-muted">
-                                        <i
-                                            class="bi bi-person me-1"></i><?= htmlspecialchars($row['instructor'] ?? 'Faculty Instructor') ?>
-                                    </small>
-                                </td>
-                                <td>
-                                    <span
-                                        class="badge bg-light text-dark border"><?= htmlspecialchars($row['department'] ?? 'General') ?></span>
-                                </td>
-                                <td class="text-center fw-medium"><?= number_format($row['units'] ?? 3.0, 1) ?></td>
-                                <td class="text-center fw-semibold"><?= number_format($row['enrolled'] ?? 0) ?></td>
-                                <td
-                                    class="text-center fw-bold <?= ($row['mean_gpa'] ?? 0) > 3.0 ? 'text-danger' : 'text-primary' ?>">
-                                    <?= number_format($row['mean_gpa'] ?? 0, 2) ?>
-                                </td>
-                                <td class="text-center">
-                                    <span class="fw-bold <?= $isCritical ? 'text-danger' : 'text-success' ?>">
-                                        <?= number_format($rate, 1) ?>%
-                                    </span>
-                                    <div class="progress mt-1" style="height: 5px;">
-                                        <div class="progress-bar <?= $isCritical ? 'bg-danger' : 'bg-success' ?>"
-                                            role="progressbar" style="width: <?= $rate ?>%;"></div>
+    <div class="card border-0 shadow-sm">
+        <?php if (empty($rows)): ?>
+            <?= Ui::emptyState('No posted grades for this term', 'Subject results appear once faculty post their class grades.', 'bi-bar-chart') ?>
+        <?php else: ?>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr><th>Subject</th><th class="text-center">Classes</th><th class="text-center">Graded</th><th class="text-center">Passed</th><th class="text-center">Failed</th><th class="text-center">INC</th><th class="text-center">DRP</th><th>Pass rate</th><th class="text-center">Mean grade</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($rows as $r):
+                            $low = $threshold !== null && $r['pass_rate'] !== null && ($r['pass_rate'] * 100) < (float) $threshold;
+                        ?>
+                            <tr>
+                                <td><span class="fw-semibold"><?= e($r['subject_code']) ?></span><div class="text-secondary"><?= e($r['subject_title']) ?></div></td>
+                                <td class="text-center"><?= (int) $r['classes'] ?></td>
+                                <td class="text-center"><?= (int) $r['graded'] ?></td>
+                                <td class="text-center text-success"><?= (int) $r['passed'] ?></td>
+                                <td class="text-center text-danger"><?= (int) $r['failed'] ?></td>
+                                <td class="text-center"><?= (int) $r['inc'] ?></td>
+                                <td class="text-center"><?= (int) $r['drp'] ?></td>
+                                <td style="min-width:140px">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height:6px" role="progressbar" aria-valuenow="<?= $r['pass_rate'] === null ? 0 : round($r['pass_rate'] * 100) ?>" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar <?= $low ? 'bg-danger' : 'bg-success' ?>" style="width: <?= $r['pass_rate'] === null ? 0 : round($r['pass_rate'] * 100, 1) ?>%"></div>
+                                        </div>
+                                        <span class="fw-semibold"><?= Ui::pct($r['pass_rate']) ?></span>
                                     </div>
+                                    <?php if ($low): ?><span class="badge bg-danger-subtle text-danger-emphasis">Below <?= e((string) $threshold) ?>% threshold</span><?php endif; ?>
                                 </td>
-                                <td>
-                                    <?php if ($isCritical): ?>
-                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
-                                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Needs Help
-                                        </span>
-                                    <?php else: ?>
-                                        <span class="badge bg-success-subtle text-success border border-success-subtle">
-                                            <i class="bi bi-check-circle-fill me-1"></i> Normal
-                                        </span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="text-end pe-3">
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="gradestracking?course_code=<?= urlencode($row['course_code']) ?>"
-                                            class="btn btn-outline-dark" title="View Grades">
-                                            <i class="bi bi-table"></i>
-                                        </a>
-                                        <a href="academicsupportprograms?course_code=<?= urlencode($row['course_code']) ?>"
-                                            class="btn btn-outline-primary" title="Study Support">
-                                            <i class="bi bi-mortarboard"></i>
-                                        </a>
-                                        <a href="failedincompletemonitoring?course_code=<?= urlencode($row['course_code']) ?>"
-                                            class="btn btn-outline-danger" title="View Failed Students">
-                                            <i class="bi bi-person-x"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                <td class="text-center"><?= $r['mean_grade'] === null ? '—' : number_format($r['mean_grade'], 2) ?></td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="9" class="text-center py-5 text-muted">
-                                <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
-                                <p class="mb-0 fw-semibold">No subject performance records found</p>
-                                <small>No records found in the database. Please check your selected filter options.</small>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-        <!-- Server-Side Table Pagination -->
-        <?= $pagination['html'] ?? '' ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     </div>
-
+    <p class="small text-secondary mt-2 mb-0">Pass rate = PASSED ÷ graded. Mean grade averages numeric final grades only (INC and DRP excluded). Bottleneck threshold: <?= $threshold === null ? 'Not configured' : e((string) $threshold) . '%' ?>.</p>
 </div>

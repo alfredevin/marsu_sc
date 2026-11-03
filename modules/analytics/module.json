@@ -1,8 +1,8 @@
 {
     "name": "Academic Analytics & Student Monitoring System",
     "slug": "analytics",
-    "version": "1.0.0",
-    "description": "Student demographics profiling, academic performance tracking, and attendance & engagement monitoring.",
+    "version": "2.0.0",
+    "description": "Term enrollment, faculty classrooms and class records, student academic portal, and read-only academic monitoring for program heads and administrators.",
     "author": "MarSU CICS Student Development Group 8A",
     "default_enabled": true,
     "section": "Academic Analytics",
@@ -43,6 +43,24 @@
                         "icon": "bi-flag",
                         "route": "analytics/faculty/conduct",
                         "permission": "analytics.faculty.behavior"
+                    },
+                    {
+                        "label": "Create Class",
+                        "icon": "bi-plus-square",
+                        "route": "analytics/faculty/classes/create",
+                        "permission": "analytics.faculty.classes"
+                    },
+                    {
+                        "label": "Class Stream",
+                        "icon": "bi-megaphone",
+                        "route": "analytics/faculty/stream",
+                        "permission": "analytics.faculty.classes"
+                    },
+                    {
+                        "label": "Join Requests",
+                        "icon": "bi-person-plus",
+                        "route": "analytics/faculty/join-requests",
+                        "permission": "analytics.faculty.classes"
                     }
                 ]
             },
@@ -157,22 +175,115 @@
                         "permission": "analytics.view"
                     }
                 ]
+            },
+            {
+                "label": "My Academics",
+                "icon": "bi-mortarboard",
+                "permission": "analytics.student.portal",
+                "children": [
+                    {
+                        "label": "Dashboard",
+                        "icon": "bi-speedometer",
+                        "route": "analytics/my",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "My Classes",
+                        "icon": "bi-collection",
+                        "route": "analytics/my/classes",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "My Grades",
+                        "icon": "bi-journal-check",
+                        "route": "analytics/my/grades",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "Attendance",
+                        "icon": "bi-calendar-check",
+                        "route": "analytics/my/attendance",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "INC Deficiencies",
+                        "icon": "bi-hourglass-split",
+                        "route": "analytics/my/deficiencies",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "Conduct",
+                        "icon": "bi-flag",
+                        "route": "analytics/my/conduct",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "My Profile",
+                        "icon": "bi-person-vcard",
+                        "route": "analytics/my/profile",
+                        "permission": "analytics.student.portal"
+                    }
+                ]
+            },
+            {
+                "label": "Registrar",
+                "icon": "bi-person-badge",
+                "permission": "analytics.registrar.view",
+                "children": [
+                    {
+                        "label": "Enrollment Dashboard",
+                        "icon": "bi-speedometer",
+                        "route": "analytics/registrar",
+                        "permission": "analytics.registrar.view"
+                    },
+                    {
+                        "label": "Term Enrollments",
+                        "icon": "bi-card-list",
+                        "route": "analytics/registrar/enrollments",
+                        "permission": "analytics.registrar.view"
+                    },
+                    {
+                        "label": "Enroll Students",
+                        "icon": "bi-person-plus",
+                        "route": "analytics/registrar/enrollments/create",
+                        "permission": "analytics.registrar.enrollment"
+                    },
+                    {
+                        "label": "Masterlist",
+                        "icon": "bi-list-ol",
+                        "route": "analytics/registrar/masterlist",
+                        "permission": "analytics.registrar.view"
+                    },
+                    {
+                        "label": "Posted Grades",
+                        "icon": "bi-journal-text",
+                        "route": "analytics/registrar/grades",
+                        "permission": "analytics.registrar.view"
+                    },
+                    {
+                        "label": "Roster Discrepancies",
+                        "icon": "bi-exclamation-diamond",
+                        "route": "analytics/registrar/discrepancies",
+                        "permission": "analytics.registrar.view"
+                    }
+                ]
             }
         ]
     },
     "permissions": {
-        "analytics.view": "View Academic Risk Dashboards & Cohort Trends",
-        "analytics.analyze": "Run Risk Identification Models",
-        "analytics.intervene": "Log Academic Remediation & Counseling Referrals",
-        "analytics.export": "Export CHED Cohort Survival Analytics",
-        "analytics.faculty.classes": "Manage Faculty Classes, Rosters & Class Records",
-        "analytics.faculty.attendance": "Take Roll-Call Attendance for Faculty Classes",
-        "analytics.faculty.behavior": "Report Conduct Incidents for Class Students",
-        "analytics.admin.settings": "Manage Retention Policies & Grading Templates",
-        "analytics.admin.classes": "Manage Class Offerings & Faculty Teaching Assignments",
-        "analytics.admin.grades": "Review Grade Correction Requests & INC Extensions",
-        "analytics.admin.attendance": "Void Erroneous Retention Attendance Records",
-        "analytics.admin.conduct": "Manage Conduct Case Progression & Severity",
-        "analytics.admin.profiles": "Manage Student Supplementary Retention Profiles"
+        "analytics.view": "View Academic Monitoring Dashboards (scoped by program for Program Heads)",
+        "analytics.export": "Export Academic Monitoring Data to CSV",
+        "analytics.student.portal": "Access Own Student Academic Portal",
+        "analytics.registrar.enrollment": "Manage Term Enrollments and Subject Loads",
+        "analytics.registrar.view": "View Masterlists, Registration Forms and Posted Grade Sheets",
+        "analytics.faculty.classes": "Create and Manage Own Classes, Rosters, Class Stream and Class Records",
+        "analytics.faculty.attendance": "Take Roll-Call Attendance for Own Classes",
+        "analytics.faculty.behavior": "Report Conduct Incidents for Own Class Students",
+        "analytics.admin.settings": "Manage Policy Settings, Grading Templates and Program Head Mapping",
+        "analytics.admin.classes": "Oversee Class Offerings, Faculty Reassignment and Term Closure",
+        "analytics.admin.grades": "Review Grade Correction Requests and INC Extensions",
+        "analytics.admin.attendance": "Void Erroneous Attendance Records",
+        "analytics.admin.conduct": "Manage Conduct Case Status and Severity",
+        "analytics.admin.profiles": "Manage Student Supplementary Profiles"
     }
 }

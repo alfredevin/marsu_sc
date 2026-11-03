@@ -19,6 +19,11 @@
             <p class="text-secondary small mb-0">Manage course sections, assign teaching faculty, and oversee term closure workflows.</p>
         </div>
         <div class="d-flex gap-2">
+            <?php if (can('analytics.admin.settings')): ?>
+                <a href="<?= url('analytics/admin/program-heads') ?>" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-diagram-3 me-1"></i>Program Heads
+                </a>
+            <?php endif; ?>
             <a href="<?= url('analytics/admin/classes/create') ?>" class="btn btn-marsu btn-sm">
                 <i class="bi bi-plus-circle me-1"></i>New Class Offering
             </a>
@@ -36,7 +41,7 @@
         <div class="small">
             <strong class="d-block text-dark">Faculty Assignment & Oversight Principle (Part E3)</strong>
             <span class="text-secondary">
-                Administrators create course offerings and assign teaching faculty. Reassigning a class requires an official justification and is permanently logged. 
+                Faculty create their own classes. Administrators may create a fallback offering for a chosen faculty owner, reassign or archive classes, and close terms. Reassigning a class requires an official justification and is permanently logged.
                 Administrators <strong>never encode task scores or submit grades</strong>; they view class records in read-only mode.
             </span>
         </div>

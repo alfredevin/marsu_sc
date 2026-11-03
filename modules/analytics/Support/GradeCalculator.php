@@ -1,122 +1,179 @@
 <?php
 namespace Modules\Analytics\Support;
 
-use Core\View;
-use Core\Auth;
-use Core\Database;
-use Core\Session;
-
 /**
- * Grade Calculator for Academic Analytics (Group 8A)
- * Direct PHP 8 port of the institutional grading formulas and transmutation rules.
+ * The only place grades are computed (Philippine 1.00 - 5.00 scale).
+ *
+ * Item transmutation: 5.00 - 4.00 * clamp(score / maxScore, 0, 1)
+ * Group share:        average(transmuted components) * weight / 100
+ * Final grade:        sum of group shares, PASSED when <= passing cutoff
+ * Excused items and groups with no recorded attendance sessions are left out of the average.
+ * INC / DRP are faculty-assigned marks that replace the numeric result when posting.
  */
 class GradeCalculator
 {
+    public const MARKS = ['INC', 'DRP'];
+
     /**
-     * Compute transmutation grade on the Philippine 1.00 - 5.00 scale.
-     * Formula: 5.00 - (4.00 * clamp(score / maxScore, 0, 1))
+     * Normalize template/class schemes (older ones use name/label instead of title).
      */
+    public static function normalizeScheme(?array $scheme, float $fallbackCutoff): array
+    {
+        $scheme = is_array($scheme) ? $scheme : [];
+        $groups = [];
+        foreach (($scheme['groups'] ?? []) as $i => $g) {
+            $items = [];
+            foreach (($g['items'] ?? []) as $it) {
+                $code = trim((string) ($it['code'] ?? ''));
+                if ($code === '') {
+                    continue;
+                }
+                $items[] = [
+                    'code'     => $code,
+                    'title'    => (string) ($it['title'] ?? $it['label'] ?? $code),
+                    'maxScore' => max(0.01, (float) ($it['maxScore'] ?? 100)),
+                    'dueDate'  => $it['dueDate'] ?? null,
+                ];
+            }
+            $groups[] = [
+                'id'            => (string) ($g['id'] ?? ('grp_' . $i)),
+                'title'         => (string) ($g['title'] ?? $g['name'] ?? ('Group ' . ($i + 1))),
+                'weight'        => (float) ($g['weight'] ?? 0),
+                'hasAttendance' => !empty($g['hasAttendance']),
+                'items'         => $items,
+            ];
+        }
+        return [
+            'name'          => (string) ($scheme['name'] ?? 'Class Grading Scheme'),
+            'passingCutoff' => (float) ($scheme['passingCutoff'] ?? $fallbackCutoff),
+            'groups'        => $groups,
+        ];
+    }
+
+    public static function items(array $scheme): array
+    {
+        $items = [];
+        foreach ($scheme['groups'] as $g) {
+            foreach ($g['items'] as $it) {
+                $items[$it['code']] = $it;
+            }
+        }
+        return $items;
+    }
+
     public static function transmuteItem(float $score, float $maxScore): float
     {
         if ($maxScore <= 0) {
             return 5.00;
         }
-
         $ratio = max(0.0, min(1.0, $score / $maxScore));
-        $transmuted = 5.00 - (4.00 * $ratio);
-        return round($transmuted, 2);
+        return round(5.00 - (4.00 * $ratio), 2);
     }
 
     /**
-     * Compute attendance component transmutation score.
+     * Late weight comes from settings; when it is not configured a late is counted as present.
      */
-    public static function transmuteAttendance(int $present, int $late, int $excused, int $total): float
+    public static function lateWeight(): float
     {
+        $w = AnalyticsSettings::get('attendance.late_weight');
+        return $w === null ? 1.0 : (float) $w;
+    }
+
+    public static function attendanceRate(array $att): ?float
+    {
+        $total = (int) ($att['total'] ?? 0);
         if ($total <= 0) {
-            return 1.00; // Perfect attendance credit when no sessions yet recorded
+            return null;
         }
+        $effective = (int) ($att['present'] ?? 0) + ((int) ($att['late'] ?? 0) * self::lateWeight()) + (int) ($att['excused'] ?? 0);
+        return max(0.0, min(1.0, $effective / $total));
+    }
 
-        $lateWeight = (float) AnalyticsSettings::get('attendance.late_weight', 0.75);
-        $effectivePresent = $present + ($late * $lateWeight) + $excused;
-        $ratio = max(0.0, min(1.0, $effectivePresent / $total));
-
-        $transmuted = 5.00 - (4.00 * $ratio);
-        return round($transmuted, 2);
+    public static function transmuteAttendance(array $att): ?float
+    {
+        $rate = self::attendanceRate($att);
+        return $rate === null ? null : round(5.00 - (4.00 * $rate), 2);
     }
 
     /**
-     * Compute complete class grades from scheme, raw scores, and attendance.
-     *
-     * @param array $scheme Grading scheme array (with groups, weights, items, passingCutoff)
-     * @param array $scoresByStudent Array format: [$studentId => ['item_code' => score, ...]]
-     * @param array $attendanceByStudent Array format: [$studentId => ['present' => P, 'late' => L, 'excused' => E, 'total' => T]]
-     * @return array Map of student computations: [$studentId => ['computed_grade' => float, 'final_grade' => string, 'remarks' => string, 'groups' => array]]
+     * @param array $scores   [item_code => float]
+     * @param array $statuses [item_code => submitted|late|missing|excused]
+     * @param array $att      ['present','late','excused','absent','total']
      */
-    public static function computeClassGrades(array $scheme, array $scoresByStudent, array $attendanceByStudent = []): array
+    public static function computeStudent(array $scheme, array $scores, array $statuses = [], array $att = []): array
     {
-        $passingCutoff = (float) ($scheme['passingCutoff'] ?? AnalyticsSettings::get('grading.default_passing_cutoff', 3.04));
-        $groups = $scheme['groups'] ?? [];
-        $results = [];
+        $final = 0.0;
+        $groups = [];
+        $itemTrans = [];
 
-        foreach ($scoresByStudent as $studentId => $rawScores) {
-            $studentId = (int) $studentId;
-            $overallFinalGrade = 0.0;
-            $groupDetails = [];
-
-            foreach ($groups as $grp) {
-                $grpWeight = (float) ($grp['weight'] ?? 0);
-                $grpItems = $grp['items'] ?? [];
-                $hasAttendance = !empty($grp['hasAttendance']);
-
-                $groupComponentsTotalTrans = 0.0;
-                $componentCount = 0;
-
-                // 1. Process items in this assessment group
-                foreach ($grpItems as $item) {
-                    $itemCode = $item['code'];
-                    $maxScore = (float) ($item['maxScore'] ?? 100);
-                    $scoreVal = isset($rawScores[$itemCode]) ? (float) $rawScores[$itemCode] : 0.0;
-
-                    $trans = self::transmuteItem($scoreVal, $maxScore);
-                    $groupComponentsTotalTrans += $trans;
-                    $componentCount++;
+        foreach ($scheme['groups'] as $g) {
+            $sum = 0.0;
+            $count = 0;
+            foreach ($g['items'] as $it) {
+                $code = $it['code'];
+                $trans = self::transmuteItem((float) ($scores[$code] ?? 0), (float) $it['maxScore']);
+                $itemTrans[$code] = $trans;
+                if (($statuses[$code] ?? null) === 'excused') {
+                    continue;
                 }
-
-                // 2. Process attendance if attached to this group
-                if ($hasAttendance) {
-                    $attData = $attendanceByStudent[$studentId] ?? ['present' => 0, 'late' => 0, 'excused' => 0, 'total' => 0];
-                    $attTrans = self::transmuteAttendance(
-                        (int) ($attData['present'] ?? 0),
-                        (int) ($attData['late'] ?? 0),
-                        (int) ($attData['excused'] ?? 0),
-                        (int) ($attData['total'] ?? 0)
-                    );
-                    $groupComponentsTotalTrans += $attTrans;
-                    $componentCount++;
-                }
-
-                $avgTrans = ($componentCount > 0) ? ($groupComponentsTotalTrans / $componentCount) : 5.00;
-                $share = $avgTrans * ($grpWeight / 100.0);
-                $overallFinalGrade += $share;
-
-                $groupDetails[$grp['id']] = [
-                    'weight'    => $grpWeight,
-                    'avg_trans' => round($avgTrans, 2),
-                    'share'     => round($share, 2),
-                ];
+                $sum += $trans;
+                $count++;
             }
-
-            $roundedFinal = round($overallFinalGrade, 2);
-            $remarks = ($roundedFinal <= $passingCutoff) ? 'PASSED' : 'FAILED';
-
-            $results[$studentId] = [
-                'computed_grade' => $roundedFinal,
-                'final_grade'    => number_format($roundedFinal, 2, '.', ''),
-                'remarks'        => $remarks,
-                'groups'         => $groupDetails,
-            ];
+            $attTrans = null;
+            if ($g['hasAttendance']) {
+                $attTrans = self::transmuteAttendance($att);
+                if ($attTrans !== null) {
+                    $sum += $attTrans;
+                    $count++;
+                }
+            }
+            $avg = $count > 0 ? $sum / $count : 5.00;
+            $share = $avg * ($g['weight'] / 100.0);
+            $final += $share;
+            $groups[$g['id']] = ['avg_trans' => round($avg, 2), 'share' => round($share, 2), 'att_trans' => $attTrans];
         }
 
-        return $results;
+        $rounded = round($final, 2);
+        return [
+            'computed_grade' => $rounded,
+            'final_grade'    => number_format($rounded, 2, '.', ''),
+            'remarks'        => $rounded <= $scheme['passingCutoff'] ? 'PASSED' : 'FAILED',
+            'groups'         => $groups,
+            'items'          => $itemTrans,
+        ];
+    }
+
+    /**
+     * Apply a faculty INC / DRP mark over the numeric result.
+     */
+    public static function applyMark(array $result, ?string $mark): array
+    {
+        if ($mark === 'INC' || $mark === 'DRP') {
+            $result['final_grade'] = $mark;
+            $result['remarks'] = $mark;
+        }
+        return $result;
+    }
+
+    /**
+     * General weighted average over numeric grades only (INC / DRP excluded).
+     * Rows need `final_grade` and `units`.
+     */
+    public static function gwa(array $rows): ?float
+    {
+        $weighted = 0.0;
+        $units = 0.0;
+        foreach ($rows as $r) {
+            if (!is_numeric($r['final_grade'] ?? null)) {
+                continue;
+            }
+            $u = (float) ($r['units'] ?? 0);
+            if ($u <= 0) {
+                continue;
+            }
+            $weighted += (float) $r['final_grade'] * $u;
+            $units += $u;
+        }
+        return $units > 0 ? round($weighted / $units, 2) : null;
     }
 }

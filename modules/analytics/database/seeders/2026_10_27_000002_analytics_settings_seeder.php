@@ -188,7 +188,7 @@ return new class {
                 'passing_cutoff' => 3.04,
                 'is_default'     => 1,
                 'is_active'      => 1,
-                'created_by'     => 1,
+                'created_by'     => null,
                 'created_at'     => $now,
             ]);
         }

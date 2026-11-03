@@ -1,223 +1,436 @@
 <?php
 namespace Modules\Analytics\Support;
 
-use Core\View;
 use Core\Auth;
 use Core\Database;
 use Core\Session;
+use Core\View;
 
 /**
- * Access and Persona Scoping Helper for MarSU Academic Analytics Module (Group 8A)
- * Resolves faculty class ownership, student record visibility, and administrative governance boundaries.
+ * Single source of truth for "who am I and what may I touch" in the Analytics module.
+ *
+ * Personas come from role slugs (user_roles) combined with permission keys.
+ * Data scopes are never merged: each workspace applies its own scope
+ * (program scope for monitoring, class ownership for faculty, self for students).
  */
 class AnalyticsAccess
 {
-    private static ?array $cachedStudent = null;
+    public const ADMIN_ROLES     = ['super_admin', 'lead_analytics', 'admin'];
+    public const OVERSIGHT_ROLES = ['dean', 'vpaa'];
+
+    private const PERSONA_SESSION_KEY = 'analytics.persona';
+
+    private static ?array $roles = null;
     private static bool $studentLoaded = false;
-    private static ?array $cachedFacultyStudentIds = null;
+    private static ?array $student = null;
+    private static ?array $programScope = null;
+    private static bool $programScopeLoaded = false;
+    private static ?array $facultyStudentIds = null;
+    private static bool $termLoaded = false;
+    private static ?array $term = null;
 
-    /**
-     * Resolve the student record associated with current logged-in user.
-     * Caches per request.
-     */
-    public static function currentStudent(): ?array
+    // ------------------------------------------------------------------
+    // Roles & personas
+    // ------------------------------------------------------------------
+
+    public static function roles(): array
     {
-        if (self::$studentLoaded) {
-            return self::$cachedStudent;
+        if (self::$roles !== null) {
+            return self::$roles;
         }
-
         $userId = Auth::id();
         if (!$userId) {
-            self::$cachedStudent = null;
-            self::$studentLoaded = true;
-            return null;
+            return self::$roles = [];
         }
-
-        try {
-            $student = Database::fetchOne(
-                "SELECT * FROM `students` WHERE `user_id` = :uid AND `deleted_at` IS NULL LIMIT 1",
-                ['uid' => (int) $userId]
-            );
-            self::$cachedStudent = $student ?: null;
-        } catch (\Throwable $e) {
-            self::$cachedStudent = null;
+        $rows = Database::fetchAll(
+            "SELECT r.slug FROM `user_roles` ur JOIN `roles` r ON r.id = ur.role_id WHERE ur.user_id = :uid",
+            ['uid' => (int) $userId]
+        );
+        $roles = array_column($rows, 'slug');
+        $user = Auth::user();
+        if (!empty($user['role'])) {
+            $roles[] = $user['role'];
         }
+        return self::$roles = array_values(array_unique($roles));
+    }
 
-        self::$studentLoaded = true;
-        return self::$cachedStudent;
+    public static function hasRole(string ...$slugs): bool
+    {
+        return (bool) array_intersect($slugs, self::roles());
+    }
+
+    public static function isAdmin(): bool
+    {
+        return self::hasRole(...self::ADMIN_ROLES);
+    }
+
+    public static function isProgramHead(): bool
+    {
+        return self::hasRole('program_head') && can('analytics.view');
+    }
+
+    public static function isOversightOnly(): bool
+    {
+        return !self::isAdmin() && self::hasRole(...self::OVERSIGHT_ROLES) && can('analytics.view');
+    }
+
+    public static function isRegistrar(): bool
+    {
+        return can('analytics.registrar.view') || can('analytics.registrar.enrollment');
+    }
+
+    public static function isFaculty(): bool
+    {
+        return can('analytics.faculty.classes');
+    }
+
+    public static function isStudentUser(): bool
+    {
+        return self::hasRole('student') && can('analytics.student.portal');
     }
 
     /**
-     * Resolve current user ID if user possesses faculty permissions.
+     * Workspaces available to the current user, in landing priority order.
      */
-    public static function facultyUserId(): ?int
+    public static function personas(): array
     {
-        if (can('analytics.faculty.classes')) {
-            $id = Auth::id();
-            return $id ? (int) $id : null;
+        $list = [];
+        if (self::isStudentUser()) {
+            $list['student'] = ['label' => 'Student', 'icon' => 'bi-mortarboard', 'url' => 'analytics/my'];
+        }
+        if (self::isFaculty()) {
+            $list['faculty'] = ['label' => 'Faculty', 'icon' => 'bi-person-workspace', 'url' => 'analytics/faculty'];
+        }
+        if (self::isRegistrar()) {
+            $list['registrar'] = ['label' => 'Registrar', 'icon' => 'bi-person-badge', 'url' => 'analytics/registrar'];
+        }
+        if (self::isAdmin()) {
+            $list['admin'] = ['label' => 'Administrator', 'icon' => 'bi-shield-lock', 'url' => 'analytics/overview'];
+        } elseif (self::isProgramHead()) {
+            $list['program_head'] = ['label' => 'Program Head', 'icon' => 'bi-diagram-3', 'url' => 'analytics/overview'];
+        } elseif (self::isOversightOnly()) {
+            $list['oversight'] = ['label' => 'Oversight (Read-only)', 'icon' => 'bi-binoculars', 'url' => 'analytics/overview'];
+        }
+        return $list;
+    }
+
+    /**
+     * Default persona for landing: student -> faculty (unless admin) -> registrar -> monitoring.
+     */
+    public static function defaultPersona(): ?string
+    {
+        $p = self::personas();
+        if (isset($p['student'])) {
+            return 'student';
+        }
+        if (isset($p['faculty']) && !self::isAdmin()) {
+            return 'faculty';
+        }
+        if (isset($p['registrar']) && !self::isAdmin()) {
+            return 'registrar';
+        }
+        foreach (['admin', 'program_head', 'oversight', 'faculty', 'registrar'] as $key) {
+            if (isset($p[$key])) {
+                return $key;
+            }
         }
         return null;
     }
 
+    public static function persona(): ?string
+    {
+        $chosen = Session::get(self::PERSONA_SESSION_KEY);
+        if ($chosen && isset(self::personas()[$chosen])) {
+            return $chosen;
+        }
+        return self::defaultPersona();
+    }
+
+    public static function setPersona(string $key): bool
+    {
+        if (!isset(self::personas()[$key])) {
+            return false;
+        }
+        Session::set(self::PERSONA_SESSION_KEY, $key);
+        return true;
+    }
+
+    // ------------------------------------------------------------------
+    // Student self-scope
+    // ------------------------------------------------------------------
+
+    public static function currentStudent(): ?array
+    {
+        if (self::$studentLoaded) {
+            return self::$student;
+        }
+        self::$studentLoaded = true;
+        $userId = Auth::id();
+        if (!$userId) {
+            return null;
+        }
+        self::$student = Database::fetchOne(
+            "SELECT s.*, p.code AS program_code, p.name AS program_name, sec.name AS section_name
+             FROM `students` s
+             LEFT JOIN `programs` p ON p.id = s.program_id
+             LEFT JOIN `sections` sec ON sec.id = s.section_id
+             WHERE s.user_id = :uid AND s.deleted_at IS NULL
+             LIMIT 1",
+            ['uid' => (int) $userId]
+        );
+        return self::$student;
+    }
+
+    public static function currentStudentId(): ?int
+    {
+        $s = self::currentStudent();
+        return $s ? (int) $s['id'] : null;
+    }
+
+    // ------------------------------------------------------------------
+    // Program scope (monitoring / oversight)
+    // ------------------------------------------------------------------
+
     /**
-     * Check if current user strictly owns the specified class.
-     * Even lead_analytics must own the class to edit scores/grades.
+     * null = all programs, array = only these program ids, [] = nothing.
      */
+    public static function scopedProgramIds(): ?array
+    {
+        if (self::$programScopeLoaded) {
+            return self::$programScope;
+        }
+        self::$programScopeLoaded = true;
+
+        if (self::isAdmin() || self::isOversightOnly()) {
+            return self::$programScope = null;
+        }
+        if (self::hasRole('program_head')) {
+            $rows = Database::fetchAll(
+                "SELECT program_id FROM `ana_program_heads` WHERE user_id = :uid",
+                ['uid' => (int) Auth::id()]
+            );
+            return self::$programScope = array_map('intval', array_column($rows, 'program_id'));
+        }
+        return self::$programScope = [];
+    }
+
+    /**
+     * SQL fragment restricting $column to the scoped programs. Program ids come
+     * from the database and are cast to int, so the fragment carries no user input.
+     */
+    public static function programScopeSql(string $column): string
+    {
+        $ids = self::scopedProgramIds();
+        if ($ids === null) {
+            return '';
+        }
+        if (empty($ids)) {
+            return ' AND 1 = 0';
+        }
+        return ' AND ' . $column . ' IN (' . implode(',', array_map('intval', $ids)) . ')';
+    }
+
+    public static function studentScopeSql(string $alias = 's'): string
+    {
+        return self::programScopeSql("{$alias}.program_id");
+    }
+
+    /**
+     * A class belongs to the program of its section, falling back to the subject's program.
+     */
+    public static function classProgramExpr(string $alias = 'c'): string
+    {
+        return "COALESCE((SELECT sx.program_id FROM `sections` sx WHERE sx.id = {$alias}.section_id), "
+             . "(SELECT jx.program_id FROM `subjects` jx WHERE jx.id = {$alias}.subject_id))";
+    }
+
+    public static function classScopeSql(string $alias = 'c'): string
+    {
+        return self::programScopeSql(self::classProgramExpr($alias));
+    }
+
+    public static function scopedPrograms(): array
+    {
+        return Database::fetchAll(
+            "SELECT p.id, p.code, p.name FROM `programs` p WHERE p.deleted_at IS NULL" . self::programScopeSql('p.id') . " ORDER BY p.code"
+        );
+    }
+
+    public static function canMonitorStudent(int $studentId): bool
+    {
+        if ($studentId <= 0 || !can('analytics.view')) {
+            return false;
+        }
+        $row = Database::fetchOne(
+            "SELECT s.id FROM `students` s WHERE s.id = :id AND s.deleted_at IS NULL" . self::studentScopeSql('s'),
+            ['id' => $studentId]
+        );
+        return $row !== null;
+    }
+
+    public static function canSeeClass(int $classId): bool
+    {
+        if ($classId <= 0 || !can('analytics.view')) {
+            return false;
+        }
+        $row = Database::fetchOne(
+            "SELECT c.id FROM `ana_classes` c WHERE c.id = :id AND c.deleted_at IS NULL" . self::classScopeSql('c'),
+            ['id' => $classId]
+        );
+        return $row !== null;
+    }
+
+    // ------------------------------------------------------------------
+    // Faculty ownership
+    // ------------------------------------------------------------------
+
+    public static function facultyUserId(): ?int
+    {
+        return self::isFaculty() && Auth::id() ? (int) Auth::id() : null;
+    }
+
     public static function ownsClass(int $classId): bool
     {
         $userId = Auth::id();
-        if (!$userId || $classId <= 0) {
+        if (!$userId || $classId <= 0 || !self::isFaculty()) {
             return false;
         }
-
-        try {
-            // First check ana_classes
-            $row = Database::fetchOne(
-                "SELECT `id` FROM `ana_classes` WHERE `id` = :id AND `faculty_user_id` = :uid AND `deleted_at` IS NULL LIMIT 1",
-                ['id' => $classId, 'uid' => (int) $userId]
-            );
-            if (!empty($row)) return true;
-        } catch (\Throwable $e) {}
-
-        try {
-            // Fallback check ret_classes
-            $row = Database::fetchOne(
-                "SELECT `id` FROM `ret_classes` WHERE `id` = :id AND `faculty_user_id` = :uid AND `deleted_at` IS NULL LIMIT 1",
-                ['id' => $classId, 'uid' => (int) $userId]
-            );
-            return !empty($row);
-        } catch (\Throwable $e) {
-            return false;
-        }
+        return Database::fetchOne(
+            "SELECT id FROM `ana_classes` WHERE id = :id AND faculty_user_id = :uid AND deleted_at IS NULL",
+            ['id' => $classId, 'uid' => (int) $userId]
+        ) !== null;
     }
 
-    /**
-     * Get array of student IDs currently enrolled on any of this faculty's classes.
-     */
-    public static function facultyStudentIds(?int $facultyUserId = null): array
-    {
-        $fid = $facultyUserId ?? self::facultyUserId();
-        if (!$fid) {
-            return [];
-        }
-
-        if (self::$cachedFacultyStudentIds !== null && $facultyUserId === null) {
-            return self::$cachedFacultyStudentIds;
-        }
-
-        try {
-            $rows = Database::fetchAll(
-                "SELECT DISTINCT cs.student_id 
-                 FROM `ana_class_students` cs 
-                 JOIN `ana_classes` c ON cs.class_id = c.id 
-                 WHERE c.faculty_user_id = :fid 
-                   AND c.deleted_at IS NULL 
-                   AND cs.status = 'enrolled'",
-                ['fid' => $fid]
-            );
-            $ids = array_map(fn($r) => (int) $r['student_id'], $rows);
-            if ($facultyUserId === null) {
-                self::$cachedFacultyStudentIds = $ids;
-            }
-            return $ids;
-        } catch (\Throwable $e) {}
-
-        try {
-            $rows = Database::fetchAll(
-                "SELECT DISTINCT cs.student_id 
-                 FROM `ret_class_students` cs 
-                 JOIN `ret_classes` c ON cs.class_id = c.id 
-                 WHERE c.faculty_user_id = :fid 
-                   AND c.deleted_at IS NULL 
-                   AND cs.status = 'enrolled'",
-                ['fid' => $fid]
-            );
-            $ids = array_map(fn($r) => (int) $r['student_id'], $rows);
-            if ($facultyUserId === null) {
-                self::$cachedFacultyStudentIds = $ids;
-            }
-            return $ids;
-        } catch (\Throwable $e) {
-            return [];
-        }
-    }
-
-    /**
-     * Check if current user has authorization to view the specified student's academic record.
-     */
-    public static function canSeeStudent(int $studentId): bool
-    {
-        if ($studentId <= 0) {
-            return false;
-        }
-
-        // 1. Institution-wide oversight / admin
-        if (can('analytics.view')) {
-            return true;
-        }
-
-        // 2. Faculty viewing enrolled student
-        if (can('analytics.faculty.classes')) {
-            $rosterStudentIds = self::facultyStudentIds();
-            return in_array($studentId, $rosterStudentIds, true);
-        }
-
-        return false;
-    }
-
-    /**
-     * Find class by ID and verify that the current user owns it.
-     * On failure, flashes an error message, redirects to faculty classes list, and halts.
-     */
     public static function findOwnClassOr404(string|int $id): array
     {
         $classId = (int) $id;
-        if ($classId <= 0) {
-            Session::flash('error', 'Record not found.');
-            redirect(url('analytics/faculty/classes'));
-            exit;
-        }
-
         $class = null;
-        try {
+        if ($classId > 0 && self::isFaculty()) {
             $class = Database::fetchOne(
-                "SELECT * FROM `ana_classes` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1",
-                ['id' => $classId]
+                "SELECT * FROM `ana_classes` WHERE id = :id AND faculty_user_id = :uid AND deleted_at IS NULL",
+                ['id' => $classId, 'uid' => (int) Auth::id()]
             );
-        } catch (\Throwable $e) {}
-
+        }
         if (!$class) {
-            try {
-                $class = Database::fetchOne(
-                    "SELECT * FROM `ret_classes` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1",
-                    ['id' => $classId]
-                );
-            } catch (\Throwable $e) {}
+            self::notFound();
         }
-
-        if (!$class || (int) $class['faculty_user_id'] !== (int) Auth::id()) {
-            Session::flash('error', 'Record not found.');
-            redirect(url('analytics/faculty/classes'));
-            exit;
-        }
-
         return $class;
     }
 
-    /**
-     * Determine whether the current user is an oversight-only persona (e.g. Dean, VPAA).
-     */
-    public static function isOversightOnly(): bool
+    public static function facultyStudentIds(): array
     {
-        if (!can('analytics.view')) {
-            return false;
+        if (self::$facultyStudentIds !== null) {
+            return self::$facultyStudentIds;
         }
+        $fid = self::facultyUserId();
+        if (!$fid) {
+            return self::$facultyStudentIds = [];
+        }
+        $rows = Database::fetchAll(
+            "SELECT DISTINCT cs.student_id
+             FROM `ana_class_students` cs
+             JOIN `ana_classes` c ON cs.class_id = c.id
+             WHERE c.faculty_user_id = :fid AND c.deleted_at IS NULL AND cs.status = 'enrolled'",
+            ['fid' => $fid]
+        );
+        return self::$facultyStudentIds = array_map('intval', array_column($rows, 'student_id'));
+    }
 
-        return !can('analytics.admin.settings')
-            && !can('analytics.admin.classes')
-            && !can('analytics.admin.grades')
-            && !can('analytics.admin.attendance')
-            && !can('analytics.admin.conduct')
-            && !can('analytics.admin.profiles');
+    public static function facultyHasStudent(int $studentId): bool
+    {
+        return in_array($studentId, self::facultyStudentIds(), true);
+    }
+
+    // ------------------------------------------------------------------
+    // Terms
+    // ------------------------------------------------------------------
+
+    /**
+     * Active term = active academic year + its active semester (lowest id when the
+     * core calendar holds duplicates). Returns null when nothing is active.
+     */
+    public static function activeTerm(): ?array
+    {
+        if (self::$termLoaded) {
+            return self::$term;
+        }
+        self::$termLoaded = true;
+        self::$term = Database::fetchOne(
+            "SELECT sem.id AS semester_id, sem.code AS semester_code, sem.name AS semester_name,
+                    ay.id AS academic_year_id, ay.label AS academic_year_label
+             FROM `academic_years` ay
+             JOIN `semesters` sem ON sem.academic_year_id = ay.id AND sem.is_active = 1
+             WHERE ay.is_active = 1
+             ORDER BY ay.id DESC, sem.id ASC
+             LIMIT 1"
+        );
+        if (self::$term) {
+            self::$term['label'] = self::$term['semester_name'] . ', ' . self::$term['academic_year_label'];
+        }
+        return self::$term;
+    }
+
+    /**
+     * Distinct terms (one semester row per academic year + semester code), newest first.
+     */
+    public static function terms(): array
+    {
+        $rows = Database::fetchAll(
+            "SELECT MIN(sem.id) AS semester_id, sem.code AS semester_code, MIN(sem.name) AS semester_name,
+                    ay.id AS academic_year_id, ay.label AS academic_year_label
+             FROM `semesters` sem
+             JOIN `academic_years` ay ON ay.id = sem.academic_year_id
+             GROUP BY ay.id, ay.label, ay.start_date, sem.code
+             ORDER BY ay.start_date DESC, ay.id DESC, FIELD(sem.code, 'summer', '2', '1')"
+        );
+        foreach ($rows as &$r) {
+            $r['label'] = $r['semester_name'] . ', ' . $r['academic_year_label'];
+        }
+        return $rows;
+    }
+
+    public static function findTerm(int $semesterId): ?array
+    {
+        $row = Database::fetchOne(
+            "SELECT sem.id AS semester_id, sem.code AS semester_code, sem.name AS semester_name,
+                    ay.id AS academic_year_id, ay.label AS academic_year_label
+             FROM `semesters` sem JOIN `academic_years` ay ON ay.id = sem.academic_year_id
+             WHERE sem.id = :id",
+            ['id' => $semesterId]
+        );
+        if ($row) {
+            $row['label'] = $row['semester_name'] . ', ' . $row['academic_year_label'];
+        }
+        return $row;
+    }
+
+    /**
+     * Term selected through ?term=, defaulting to the active term.
+     */
+    public static function requestedTerm(): ?array
+    {
+        $requested = (int) ($_GET['term'] ?? 0);
+        if ($requested > 0) {
+            return self::findTerm($requested);
+        }
+        return self::activeTerm();
+    }
+
+    // ------------------------------------------------------------------
+    // Responses
+    // ------------------------------------------------------------------
+
+    public static function notFound(): never
+    {
+        http_response_code(404);
+        View::render('errors/404', ['title' => 'Page Not Found', 'uri' => $_SERVER['REQUEST_URI'] ?? '']);
+        exit;
+    }
+
+    public static function forbidden(string $permissionKey = ''): never
+    {
+        http_response_code(403);
+        View::render('errors/403', ['title' => 'Access Forbidden (403)', 'permissionKey' => $permissionKey]);
+        exit;
     }
 }

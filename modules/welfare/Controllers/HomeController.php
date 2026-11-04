@@ -364,6 +364,14 @@ class HomeController
             'slug'  => 'welfare'
         ]);
     }
+      public function maintenance(): void
+    {
+        $user = Auth::user();
+        View::render('welfare/Views/maintenance', [
+            'title' => 'maintenance',
+            'slug'  => 'welfare'
+        ]);
+    }
       public function dashboard(): void
     {
         $user = Auth::user();

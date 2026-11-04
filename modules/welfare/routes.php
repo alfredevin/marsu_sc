@@ -35,3 +35,4 @@ $router->get('/welfare/student-welfare-reports', [HomeController::class, 'studen
 $router->get('/welfare/student-concerns', [HomeController::class, 'studentconcerns'], ['auth', 'permission:welfare.view']);
 $router->get('/welfare/service-reports', [HomeController::class, 'servicereports'], ['auth', 'permission:welfare.view']);
 $router->get('/welfare/intervention-reports', [HomeController::class, 'interventionreports'], ['auth', 'permission:welfare.view']);
+$router->get('/welfare/maintenance', [HomeController::class, 'maintenance'], ['auth', 'permission:welfare.view']);

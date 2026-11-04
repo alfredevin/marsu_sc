@@ -167,6 +167,23 @@
                         "permission": "welfare.view"
                     }
                 ]
+            },
+            {
+                "label": "maintenance",
+                "icon": "bi-calendar-check",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Appointments",
+                        "route": "welfare/maintenance",
+                        "permission": "welfare.view"
+                    },
+                    {
+                        "label": "Advisories",
+                        "route": "welfare/maintenance",
+                        "permission": "welfare.view"
+                    }
+                ]
             }
         ]
     },

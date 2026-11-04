@@ -1,0 +1,75 @@
+<?php
+include './../config.php';
+
+// Get all PRs
+$sql = "SELECT pr.*, dt.*, dept.department_name,  COUNT(pri.item_id) as item_count 
+        FROM purchase_request_tbl pr
+        LEFT JOIN purchase_request_items_tbl pri ON pr.pr_id = pri.pr_id
+        INNER JOIN dean_tbl dt ON pr.dean_id = dt.dean_id
+        LEFT JOIN department_tbl dept ON dt.department_id = dept.department_id
+         WHERE status = 1
+        GROUP BY pr.pr_id
+        ORDER BY pr.pr_id DESC";
+$result = mysqli_query($conn, $sql);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<?php include '../template/header.php'; ?>
+
+<body>
+    <?php include '../template/navbar.php'; ?>
+    <?php include '../template/sidebar.php'; ?>
+
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Purchase Requests</h1>
+            <p>List of all purchase requests. You can view details of items requested.</p>
+        </div>
+
+        <section class="section">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Purchase Request List</h5>
+                    <table class="table table-bordered datatable">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Dean Name</th>
+                                <th>Department</th>
+                                <th>Tracking Number</th>
+                                <th>Request Date</th>
+                                <th>Grand Total (₱)</th>
+                                <th>No. of Items</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-warning">Pending</span>
+                                    </td>
+                                    <td><?php echo $row['first_name'] . ' ' . $row['last_name']; ?></td>
+                                    <td><?php echo $row['department_name']; ?></td>
+                                    <td><?php echo $row['tracking_number']; ?></td>
+                                    <td><?php echo $row['request_date']; ?></td>
+                                    <td>₱<?php echo number_format($row['grand_total'], 2); ?></td>
+                                    <td><?php echo $row['item_count']; ?></td>
+                                    <td>
+                                        <a href="view_pr_items?id=<?php echo $row['pr_id']; ?>" class="btn btn-primary btn-sm">View Items</a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <?php include '../template/footer.php'; ?>
+    <?php include '../template/script.php'; ?>
+</body>
+
+</html>

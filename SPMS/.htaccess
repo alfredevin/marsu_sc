@@ -1,0 +1,24 @@
+<IfModule mod_rewrite.c>
+  Options -Indexes
+  RewriteEngine on
+  
+  # Disable directory listing
+  Options -Indexes
+  
+  # Prevent viewing of .htaccess file
+  <Files .htaccess>
+    Order allow,deny
+    Deny from all
+  </Files>
+  
+  # Remove .php extension
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.php -f
+  RewriteRule ^([^\.]+)$ $1.php [NC,L]
+  
+  # Block access to sensitive files
+  <FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak)$">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+</IfModule>

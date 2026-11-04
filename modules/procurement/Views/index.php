@@ -122,6 +122,105 @@
     </div>
 </div>
 
+<!-- SPMS Live Operational Tables -->
+<div class="row g-4 mb-4">
+    <!-- Pending PPMPs Table -->
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-file-earmark-text text-primary me-2"></i>Pending PPMP Submissions
+                </h6>
+                <a href="<?= url('procurement/approval-worlkflow') ?>" class="btn btn-sm btn-outline-primary">
+                    View All <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small">
+                            <tr>
+                                <th class="ps-3">PPMP Code</th>
+                                <th>Department</th>
+                                <th>Grand Total</th>
+                                <th class="text-end pe-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            <?php if (!empty($recentPpmps)): ?>
+                                <?php foreach ($recentPpmps as $p): ?>
+                                    <tr>
+                                        <td class="ps-3 fw-semibold text-primary"><?= e($p['ppmp_code']) ?></td>
+                                        <td><?= e($p['department_name']) ?></td>
+                                        <td class="fw-bold">&#8369;<?= number_format((float)$p['grand_total'], 2) ?></td>
+                                        <td class="text-end pe-3">
+                                            <a href="<?= url('procurement/approval-worlkflow') ?>" class="btn btn-xs btn-outline-success py-1 px-2">
+                                                Review
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No pending PPMPs recorded.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Deliveries Table -->
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3 bg-white h-100">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-truck text-success me-2"></i>Incoming Deliveries (Pending)
+                </h6>
+                <a href="<?= url('procurement/delivery-tracker') ?>" class="btn btn-sm btn-outline-success">
+                    View All <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small">
+                            <tr>
+                                <th class="ps-3">PO Number</th>
+                                <th>Supplier</th>
+                                <th>Contract Total</th>
+                                <th class="text-end pe-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            <?php if (!empty($pendingDeliveries)): ?>
+                                <?php foreach ($pendingDeliveries as $d): ?>
+                                    <tr>
+                                        <td class="ps-3 fw-semibold text-dark"><?= e($d['po_number']) ?></td>
+                                        <td><?= e($d['supplier_name'] ?? 'Accredited Supplier') ?></td>
+                                        <td class="fw-bold text-success">&#8369;<?= number_format((float)$d['total_amount'], 2) ?></td>
+                                        <td class="text-end pe-3">
+                                            <a href="<?= url('procurement/delivery-tracker') ?>" class="btn btn-xs btn-success py-1 px-2 text-white">
+                                                Receive
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No incoming deliveries at this time.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Procurement Modules Quick Access (Collapsible Drawer) -->
 <div class="card border-0 shadow-sm rounded-3 bg-white mt-4">
     <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center cursor-pointer" 

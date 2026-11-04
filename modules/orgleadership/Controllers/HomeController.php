@@ -29,7 +29,6 @@ class HomeController
         'sld_organizations' => 'organization_tbl',
         'sld_organization_accreditations' => 'organization_accreditations',
         'sld_members' => 'organization_memberships',
-        'sld_organization_memberships' => 'organization_memberships',
         'sld_organization_classifications' => 'organization_classifications',
         'sld_officers' => 'officers',
         'sld_leadership_positions' => 'leadership_positions',
@@ -52,7 +51,6 @@ class HomeController
         'sld_organizations' => ['id' => 'organization_id', 'name' => 'organization_name'],
         'sld_organization_accreditations' => ['id' => 'accreditation_id'],
         'sld_members' => ['id' => 'membership_id', 'student_number' => 'student_id', 'member_name' => 'student_id', 'joined_at' => 'joined_date', 'status' => 'membership_status'],
-        'sld_organization_memberships' => ['id' => 'membership_id'],
         'sld_organization_classifications' => ['id' => 'classification_id'],
         'sld_officers' => ['id' => 'officer_id'],
         'sld_leadership_positions' => ['id' => 'position_id'],
@@ -93,35 +91,6 @@ class HomeController
         'announcements' => ['announcement_id', 'organization_id', 'title', 'message', 'published_by_student_id', 'published_at', 'announcement_status', 'created_at', 'updated_at', 'deleted_at'],
         'organization_performance_snapshots' => ['snapshot_id', 'organization_id', 'reporting_period', 'activities_count', 'active_members_count', 'accomplishments_summary', 'generated_at', 'created_at', 'updated_at', 'deleted_at'],
     ];
-    private const SUBMENUS = [
-        'organizationRegistration' => ['organization-registration', 'Organization Registration and Accreditation'],
-        'organizationProfile'      => ['organization-profile', 'Organization Profile Management'],
-        'membershipRecords'        => ['membership-records', 'Membership Records'],
-        'officerProfiles'          => ['officer-profiles', 'Officer Profiles'],
-        'leadershipPositions'      => ['leadership-positions', 'Leadership Positions'],
-        'termManagement'           => ['term-management', 'Term Management'],
-        'leadershipHistory'        => ['leadership-history', 'Leadership History Records'],
-        'trainingDevelopment'      => ['training-development', 'Training and Development Tracking'],
-        'activityProposals'        => ['activity-proposals', 'Activity Proposal Submission'],
-        'eventApprovals'           => ['event-approvals', 'Event Approval Workflow'],
-        'activityCalendar'         => ['activity-calendar', 'Activity Calendar'],
-        'venueSchedules'           => ['venue-schedules', 'Venue and Schedule Management'],
-        'eventDocumentation'       => ['event-documentation', 'Event Documentation'],
-        'attendanceMonitoring'     => ['attendance-monitoring', 'Attendance Monitoring'],
-        'participationTracking'    => ['participation-tracking', 'Participation Tracking'],
-        'involvementHistory'       => ['involvement-history', 'Student Involvement History'],
-        'engagementPoints'         => ['engagement-points', 'Engagement Points and Credits'],
-        'recognitionRecords'       => ['recognition-records', 'Recognition Records'],
-        'announcements'            => ['announcements', 'Announcements'],
-        'organizationUpdates'      => ['organization-updates', 'Organization Updates'],
-        'activityReminders'        => ['activity-reminders', 'Activity Reminders'],
-        'approvalNotifications'    => ['approval-notifications', 'Approval Notifications'],
-        'organizationPerformance'  => ['organization-performance', 'Organization Performance Reports'],
-        'participationStatistics'  => ['participation-statistics', 'Student Participation Statistics'],
-        'leadershipReports'        => ['leadership-reports', 'Leadership Involvement Reports'],
-        'activityReports'          => ['activity-reports', 'Activity Accomplishment Reports'],
-    ];
-
     private function importedTable(string $table): string
     {
         return self::IMPORTED_TABLES[$table] ?? $table;
@@ -645,25 +614,8 @@ class HomeController
     }
 
     /* =========================================================================
-     * 4. Views & Submenu Workspaces
+     * 4. Organization and submenu workspaces
      * ========================================================================= */
-
-    private function renderSubmenu(string $action): void
-    {
-        [$view, $title] = self::SUBMENUS[$action] ?? ['submenu-template', 'Student Leadership'];
-        View::render('orgleadership/Views/' . $view, [
-            'title'      => $title,
-            'moduleName' => 'Student Organization and Leadership Management',
-            'slug'       => 'orgleadership',
-            'user'       => Auth::user(),
-            'crumbs'     => [
-                'Student Affairs (OSAS)' => '',
-                'Student Organization and Leadership Management' => url('orgleadership'),
-                $title => ''
-            ],
-        ]);
-    }
-
     public function organizationRegistration(): void
     {
         $organizations = $this->fetchImportedAll(

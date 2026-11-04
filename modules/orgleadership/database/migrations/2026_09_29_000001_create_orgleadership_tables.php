@@ -10,14 +10,6 @@ return new class {
     public function up(): void {
         $db = Database::pdo();
 
-        $importedSchema = $db->prepare(
-            'SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = :table_name'
-        );
-        $importedSchema->execute(['table_name' => 'organization_tbl']);
-        if ((int)$importedSchema->fetchColumn() > 0) {
-            return;
-        }
-
         $db->exec("CREATE TABLE IF NOT EXISTS `sld_records` (
             `id` INT AUTO_INCREMENT PRIMARY KEY,
             `title` VARCHAR(191) NOT NULL,

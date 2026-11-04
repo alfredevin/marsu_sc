@@ -29,6 +29,7 @@ The following permissions are defined in `module.json` and registered into the s
 ## 3. Database Isolation Rules
 - **Mandatory Table Prefix**: Any new table created by this module MUST begin with `sld_` (e.g., `sld_logs`).
 - **Imported schema**: Runtime organization, activity, and leadership data uses the tables from `orgleadership_schema.sql` directly. The controller maps legacy module names to those imported tables; do not create or populate a second copy of the business data.
+- **Dashboard compatibility**: Keep `sld_records`; the shared ERP dashboard still reads its count. It is not used for organization, activity, or leadership records.
 - **Never Modify Core Tables**: Do NOT execute `ALTER TABLE` or `DROP TABLE` on core tables (`users`, `students`, `roles`, etc.).
 - **Foreign Keys**: You may create Foreign Keys referencing `users(id)` or `students(id)` using `ON DELETE SET NULL` or `ON DELETE CASCADE`.
 
@@ -55,7 +56,7 @@ The following permissions are defined in `module.json` and registered into the s
 
 ### Imported Schema Setup
 
-The organization-management screens use the imported schema. Run the module migration once to add the nullable archive columns used by the module, then seed only baseline lookup values (organization classifications and leadership positions):
+The organization-management screens use the imported schema. Run the module migrations to create the shared-dashboard `sld_records` table when missing and add nullable archive columns to imported tables, then seed only baseline lookup values (organization classifications and leadership positions):
 
 ```bash
 php scripts/migrate.php orgleadership

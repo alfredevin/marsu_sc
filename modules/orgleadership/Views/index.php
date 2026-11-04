@@ -1,166 +1,67 @@
-
-
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
-        <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
+        <h1 class="h3 fw-bold text-marsu-burgundy mb-1">
             <i class="bi bi-award-fill me-2 text-gold"></i><?= e($moduleName) ?>
         </h1>
-        <p class="text-muted small mb-0">Coordinates student council elections, officer term accreditation, leadership performance scorecards, and institutional awards.</p>
+        <p class="text-muted small mb-0">Manage registered organizations, accreditation, leadership, and student activities.</p>
     </div>
     <div class="d-flex gap-2">
-        <button class="btn btn-marsu btn-sm" data-bs-toggle="modal" data-bs-target="#newRecordModal">
-            <i class="bi bi-plus-lg me-1"></i>New Entry
-        </button>
+        <a class="btn btn-outline-marsu btn-sm" href="<?= e(url('orgleadership/organization-profile')) ?>">
+            <i class="bi bi-building-gear me-1"></i>Organization profiles
+        </a>
+        <a class="btn btn-marsu btn-sm" href="<?= e(url('orgleadership/organization-registration')) ?>">
+            <i class="bi bi-plus-lg me-1"></i>Register organization
+        </a>
     </div>
 </div>
 
-<!-- KPI Cards -->
 <div class="row g-3 mb-4">
-    <div class="col-md-4">
+    <div class="col-sm-6 col-xl-4">
         <div class="card card-kpi border-burgundy p-3 h-100">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-muted small text-uppercase fw-bold">Total Recorded</div>
-                    <div class="h3 font-weight-bold mb-0 text-marsu-burgundy"><?= count($records) ?></div>
-                </div>
-                <div class="kpi-icon-badge">
-                    <i class="bi bi-award-fill"></i>
-                </div>
-            </div>
+            <div class="text-muted small text-uppercase fw-bold">Registered organizations</div>
+            <div class="h3 fw-bold mb-0 text-marsu-burgundy"><?= (int)($stats['organizations'] ?? 0) ?></div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-sm-6 col-xl-4">
         <div class="card card-kpi border-gold p-3 h-100">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-muted small text-uppercase fw-bold">Active Status</div>
-                    <div class="h3 font-weight-bold mb-0 text-marsu-burgundy">
-                        <?= count(array_filter($records, fn($r) => ($r['status'] ?? '') === 'active')) ?>
-                    </div>
-                </div>
-                <div class="kpi-icon-badge badge-gold">
-                    <i class="bi bi-check2-circle"></i>
-                </div>
-            </div>
+            <div class="text-muted small text-uppercase fw-bold">Active organizations</div>
+            <div class="h3 fw-bold mb-0 text-marsu-burgundy"><?= (int)($stats['active'] ?? 0) ?></div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-sm-6 col-xl-4">
         <div class="card card-kpi p-3 h-100">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-muted small text-uppercase fw-bold">Module Channel</div>
-                    <div class="h4 font-weight-bold mb-0 text-secondary"><?= e($slug) ?></div>
-                </div>
-                <div class="kpi-icon-badge">
-                    <i class="bi bi-cpu"></i>
-                </div>
-            </div>
+            <div class="text-muted small text-uppercase fw-bold">Awaiting accreditation</div>
+            <div class="h3 fw-bold mb-0 text-marsu-burgundy"><?= (int)($stats['pending'] ?? 0) ?></div>
         </div>
     </div>
 </div>
 
-<!-- Records Table -->
 <div class="card">
-    <div class="card-header card-header-accent d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-marsu-burgundy">
-            <i class="bi bi-table me-2"></i><?= e($moduleName) ?> Records Directory
-        </h6>
-        <div class="input-group input-group-sm w-auto">
-            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" class="form-control border-start-0" id="tableFilterInput" placeholder="Quick search records...">
-        </div>
+    <div class="card-header card-header-accent d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <h2 class="h6 mb-0 fw-bold text-marsu-burgundy"><i class="bi bi-buildings me-2"></i>Recently registered organizations</h2>
+        <a class="small" href="<?= e(url('orgleadership/organization-registration')) ?>">View registration workspace</a>
     </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="moduleDataTable">
-                <thead class="table-marsu">
-                    <tr>
-                        <th style="width: 60px;">#</th>
-                        <th>Title / Subject</th>
-                        <th>Description / Remarks</th>
-                        <th>Status</th>
-                        <th>Created Date</th>
-                        <th class="text-end" style="width: 120px;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($records)): ?>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-marsu">
+                <tr><th>Organization</th><th>Classification</th><th>School year</th><th>Status</th><th>Accreditation date</th><th class="text-end">Action</th></tr>
+            </thead>
+            <tbody>
+                <?php if (empty($organizations)): ?>
+                    <tr><td colspan="6" class="text-center py-4 text-muted">No organizations have been registered yet.</td></tr>
+                <?php else: ?>
+                    <?php foreach ($organizations as $organization): ?>
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
-                                <i class="bi bi-inbox fs-2 d-block mb-1 text-gold"></i>
-                                No records found in <code>sld_records</code>. Click "New Entry" to add one.
-                            </td>
+                            <td><strong><?= e($organization['name']) ?></strong><small class="d-block text-muted"><?= e($organization['acronym']) ?></small></td>
+                            <td><?= e($organization['category'] ?? 'Unclassified') ?></td>
+                            <td><?= e($organization['school_year'] ?? '-') ?></td>
+                            <td><span class="badge <?= $organization['status'] === 'Active' ? 'bg-success' : ($organization['status'] === 'Inactive' ? 'bg-secondary' : 'bg-warning text-dark') ?>"><?= e($organization['status']) ?></span></td>
+                            <td><?= e($organization['accreditation_date'] ? date('M d, Y', strtotime($organization['accreditation_date'])) : '-') ?></td>
+                            <td class="text-end"><a class="btn btn-sm btn-outline-marsu" href="<?= e(url('orgleadership/organization-profile?id=' . (int)$organization['id'])) ?>"><i class="bi bi-eye me-1"></i>Open</a></td>
                         </tr>
-                    <?php else: ?>
-                        <?php foreach ($records as $i => $r): ?>
-                            <tr>
-                                <td><?= $i + 1 ?></td>
-                                <td class="fw-bold text-marsu-burgundy"><?= e($r['title']) ?></td>
-                                <td class="small text-muted"><?= e($r['description'] ?? 'No description') ?></td>
-                                <td>
-                                    <?php if (($r['status'] ?? '') === 'active'): ?>
-                                        <span class="badge bg-success">Active</span>
-                                    <?php else: ?>
-                                        <span class="badge bg-secondary"><?= e(ucfirst($r['status'] ?? 'pending')) ?></span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="small text-muted"><?= e(date('M d, Y h:i A', strtotime($r['created_at']))) ?></td>
-                                <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-secondary" onclick="alert('Viewing entry #<?= $r['id'] ?>')">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
     </div>
 </div>
-
-<!-- Modal: New Entry -->
-<div class="modal fade" id="newRecordModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-marsu-burgundy text-white">
-                <h5 class="modal-title fs-6"><i class="bi bi-plus-circle me-2"></i>Create New <?= e($moduleName) ?> Entry</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="POST" action="<?= url('orgleadership/create') ?>">
-                <?= csrf_field() ?>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Title / Designation <span class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control form-control-sm" required placeholder="e.g. Assessment Report / Transaction / Case Reference">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Description / Observations</label>
-                        <textarea name="description" class="form-control form-control-sm" rows="3" placeholder="Enter specific details, remarks, or notes..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-marsu btn-sm"><i class="bi bi-check-lg me-1"></i>Save Entry</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const filterInput = document.getElementById('tableFilterInput');
-    const table = document.getElementById('moduleDataTable');
-    if (filterInput && table) {
-        filterInput.addEventListener('keyup', function() {
-            const query = this.value.toLowerCase();
-            const rows = table.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
-        });
-    }
-});
-</script>

@@ -27,7 +27,8 @@ The following permissions are defined in `module.json` and registered into the s
 ---
 
 ## 3. Database Isolation Rules
-- **Mandatory Table Prefix**: All tables created for this module MUST begin with `sld_` (e.g., `sld_records`, `sld_logs`).
+- **Mandatory Table Prefix**: Any new table created by this module MUST begin with `sld_` (e.g., `sld_logs`).
+- **Imported schema**: Runtime organization, activity, and leadership data uses the tables from `orgleadership_schema.sql` directly. The controller maps legacy module names to those imported tables; do not create or populate a second copy of the business data.
 - **Never Modify Core Tables**: Do NOT execute `ALTER TABLE` or `DROP TABLE` on core tables (`users`, `students`, `roles`, etc.).
 - **Foreign Keys**: You may create Foreign Keys referencing `users(id)` or `students(id)` using `ON DELETE SET NULL` or `ON DELETE CASCADE`.
 
@@ -52,14 +53,13 @@ The following permissions are defined in `module.json` and registered into the s
 5. **Git Workflow**:
    Develop exclusively within your module directory: `modules/orgleadership/`. Submit Pull Requests targeting the `main` branch.
 
-### Organization Management Test Data
+### Imported Schema Setup
 
-The organization-management migration creates `sld_organizations` and `sld_members`.
-After running migrations, load repeat-safe mock organizations and membership records with:
+The organization-management screens use the imported schema. Run the module migration once to add the nullable archive columns used by the module, then seed only baseline lookup values (organization classifications and leadership positions):
 
 ```bash
 php scripts/migrate.php orgleadership
 php scripts/seed.php orgleadership
 ```
 
-The mock data includes active, probationary, and pending-accreditation organizations.
+The seeders do not insert sample organizations, memberships, officers, or student records. Existing imported records remain the source of truth.

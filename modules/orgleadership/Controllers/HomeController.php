@@ -25,6 +25,74 @@ class HomeController
     private const OFFICER_STATUSES = ['Active', 'Inactive', 'Graduated', 'Removed'];
     private const TERM_STATUSES = ['Upcoming', 'Current', 'Completed'];
     private const TRAINING_STATUSES = ['Registered', 'Attended', 'Completed', 'Not Completed'];
+    private const IMPORTED_TABLES = [
+        'sld_organizations' => 'organization_tbl',
+        'sld_organization_accreditations' => 'organization_accreditations',
+        'sld_members' => 'organization_memberships',
+        'sld_organization_memberships' => 'organization_memberships',
+        'sld_organization_classifications' => 'organization_classifications',
+        'sld_officers' => 'officers',
+        'sld_leadership_positions' => 'leadership_positions',
+        'sld_leadership_terms' => 'leadership_terms',
+        'sld_officer_appointments' => 'officer_appointments',
+        'sld_leadership_trainings' => 'leadership_trainings',
+        'sld_activity_proposals' => 'activity_proposals',
+        'sld_event_approvals' => 'event_approvals',
+        'sld_venues' => 'venues',
+        'sld_activity_calendar' => 'activity_calendar',
+        'sld_event_documentations' => 'event_documentations',
+        'sld_activity_attendances' => 'activity_attendances',
+        'sld_student_participations' => 'student_participations',
+        'sld_engagement_credits' => 'engagement_credits',
+        'sld_student_recognitions' => 'student_recognitions',
+        'sld_announcements' => 'announcements',
+        'sld_organization_performance_snapshots' => 'organization_performance_snapshots',
+    ];
+    private const IMPORTED_COLUMNS = [
+        'sld_organizations' => ['id' => 'organization_id', 'name' => 'organization_name'],
+        'sld_organization_accreditations' => ['id' => 'accreditation_id'],
+        'sld_members' => ['id' => 'membership_id', 'student_number' => 'student_id', 'member_name' => 'student_id', 'joined_at' => 'joined_date', 'status' => 'membership_status'],
+        'sld_organization_memberships' => ['id' => 'membership_id'],
+        'sld_organization_classifications' => ['id' => 'classification_id'],
+        'sld_officers' => ['id' => 'officer_id'],
+        'sld_leadership_positions' => ['id' => 'position_id'],
+        'sld_leadership_terms' => ['id' => 'term_id'],
+        'sld_officer_appointments' => ['id' => 'appointment_id'],
+        'sld_leadership_trainings' => ['id' => 'training_id'],
+        'sld_activity_proposals' => ['id' => 'proposal_id'],
+        'sld_event_approvals' => ['id' => 'approval_id'],
+        'sld_venues' => ['id' => 'venue_id'],
+        'sld_activity_calendar' => ['id' => 'calendar_id', 'activity_title' => 'event_name', 'start_datetime' => 'start_time', 'end_datetime' => 'end_time', 'status' => 'calendar_status'],
+        'sld_event_documentations' => ['id' => 'documentation_id'],
+        'sld_activity_attendances' => ['id' => 'attendance_id'],
+        'sld_student_participations' => ['id' => 'participation_id'],
+        'sld_engagement_credits' => ['id' => 'credit_id'],
+        'sld_student_recognitions' => ['id' => 'recognition_id'],
+        'sld_announcements' => ['id' => 'announcement_id'],
+        'sld_organization_performance_snapshots' => ['id' => 'snapshot_id'],
+    ];
+    private const IMPORTED_COLUMN_ALLOWLIST = [
+        'organization_tbl' => ['organization_id', 'classification_id', 'organization_name', 'acronym', 'description', 'email', 'contact_number', 'school_year', 'status', 'created_at', 'updated_at', 'deleted_at'],
+        'organization_accreditations' => ['accreditation_id', 'organization_id', 'school_year', 'submitted_at', 'decision_date', 'decision_status', 'remarks', 'created_at', 'updated_at', 'deleted_at'],
+        'organization_memberships' => ['membership_id', 'organization_id', 'student_id', 'school_year', 'joined_date', 'membership_status', 'created_at', 'updated_at', 'deleted_at'],
+        'organization_classifications' => ['classification_id', 'classification_name', 'description', 'created_at', 'updated_at', 'deleted_at'],
+        'officers' => ['officer_id', 'student_id', 'organization_id', 'profile_summary', 'officers_status', 'created_at', 'updated_at', 'deleted_at'],
+        'leadership_positions' => ['position_id', 'position_name', 'description', 'created_at', 'updated_at', 'deleted_at'],
+        'leadership_terms' => ['term_id', 'organization_id', 'term_name', 'start_date', 'end_date', 'term_status', 'created_at', 'updated_at', 'deleted_at'],
+        'officer_appointments' => ['appointment_id', 'officer_id', 'position_id', 'organization_id', 'term_id', 'start_date', 'end_date', 'created_at', 'updated_at', 'deleted_at'],
+        'leadership_trainings' => ['training_id', 'officer_id', 'training_title', 'training_date', 'provider', 'completion_status', 'created_at', 'updated_at', 'deleted_at'],
+        'activity_proposals' => ['proposal_id', 'organization_id', 'submitted_by_student_id', 'activity_title', 'objectives', 'proposed_date', 'proposed_budget', 'submitted_at', 'proposal_status', 'created_at', 'updated_at', 'deleted_at'],
+        'event_approvals' => ['approval_id', 'proposal_id', 'approver_student_id', 'approval_step', 'decision', 'decision_at', 'comments', 'created_at', 'updated_at', 'deleted_at'],
+        'venues' => ['venue_id', 'venue_name', 'venue_status', 'created_at', 'updated_at', 'deleted_at'],
+        'activity_calendar' => ['calendar_id', 'proposal_id', 'venue_id', 'event_name', 'start_time', 'end_time', 'calendar_status', 'created_at', 'updated_at', 'deleted_at'],
+        'event_documentations' => ['documentation_id', 'calendar_id', 'document_type', 'file_name', 'file_path', 'uploaded_at', 'created_at', 'updated_at', 'deleted_at'],
+        'activity_attendances' => ['attendance_id', 'calendar_id', 'student_id', 'attendance_status', 'time_in', 'time_out', 'created_at', 'updated_at', 'deleted_at'],
+        'student_participations' => ['participation_id', 'calendar_id', 'student_id', 'participation_role', 'contribution_details', 'created_at', 'updated_at', 'deleted_at'],
+        'engagement_credits' => ['credit_id', 'student_id', 'calendar_id', 'points', 'reason', 'awarded_at', 'created_at', 'updated_at', 'deleted_at'],
+        'student_recognitions' => ['recognition_id', 'student_id', 'recognition_title', 'recognition_date', 'description', 'created_at', 'updated_at', 'deleted_at'],
+        'announcements' => ['announcement_id', 'organization_id', 'title', 'message', 'published_by_student_id', 'published_at', 'announcement_status', 'created_at', 'updated_at', 'deleted_at'],
+        'organization_performance_snapshots' => ['snapshot_id', 'organization_id', 'reporting_period', 'activities_count', 'active_members_count', 'accomplishments_summary', 'generated_at', 'created_at', 'updated_at', 'deleted_at'],
+    ];
     private const SUBMENUS = [
         'organizationRegistration' => ['organization-registration', 'Organization Registration and Accreditation'],
         'organizationProfile'      => ['organization-profile', 'Organization Profile Management'],
@@ -54,28 +122,213 @@ class HomeController
         'activityReports'          => ['activity-reports', 'Activity Accomplishment Reports'],
     ];
 
+    private function importedTable(string $table): string
+    {
+        return self::IMPORTED_TABLES[$table] ?? $table;
+    }
+
+    private function importedSql(string $sql): array
+    {
+        $aliases = [];
+        $primaryTable = null;
+        $reserved = ['AS', 'WHERE', 'ON', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'JOIN', 'GROUP', 'ORDER', 'LIMIT', 'HAVING', 'UNION'];
+        preg_match_all('~\\b(?:FROM|JOIN)\\s+`?(sld_[A-Za-z0-9_]+)`?(?:\\s+(?:AS\\s+)?`?([A-Za-z_][A-Za-z0-9_]*)`?)?~i', $sql, $matches, PREG_SET_ORDER);
+
+        $depth = 0;
+        $quote = null;
+        $sqlLength = strlen($sql);
+        for ($offset = 0; $offset < $sqlLength; $offset++) {
+            $character = $sql[$offset];
+            if ($quote !== null) {
+                if ($character === '\\') {
+                    $offset++;
+                    continue;
+                }
+                if ($character === $quote) {
+                    if (($sql[$offset + 1] ?? null) === $quote) {
+                        $offset++;
+                    } else {
+                        $quote = null;
+                    }
+                }
+                continue;
+            }
+            if ($character === "'" || $character === '"' || $character === '`') {
+                $quote = $character;
+                continue;
+            }
+            if ($character === '(') {
+                $depth++;
+                continue;
+            }
+            if ($character === ')') {
+                $depth = max(0, $depth - 1);
+                continue;
+            }
+            if ($depth === 0 && strncasecmp(substr($sql, $offset, 4), 'FROM', 4) === 0
+                && ($offset === 0 || !preg_match('~[A-Za-z0-9_]~', $sql[$offset - 1]))) {
+                $fromTail = substr($sql, $offset + 4);
+                if (preg_match('~^\\s+`?(sld_[A-Za-z0-9_]+)`?~i', $fromTail, $mainTableMatch)) {
+                    $primaryTable = $mainTableMatch[1];
+                    break;
+                }
+            }
+        }
+
+        foreach ($matches as $match) {
+            $logicalTable = $match[1];
+            if (!isset(self::IMPORTED_TABLES[$logicalTable])) {
+                continue;
+            }
+            $physicalTable = self::IMPORTED_TABLES[$logicalTable];
+            $candidateAlias = strtoupper($match[2] ?? '');
+            if ($candidateAlias !== '' && !in_array($candidateAlias, $reserved, true)) {
+                $aliases[$match[2]] = $logicalTable;
+            }
+        }
+
+        foreach (self::IMPORTED_TABLES as $logicalTable => $physicalTable) {
+            $sql = preg_replace('~(?<![A-Za-z0-9_])`?' . preg_quote($logicalTable, '~') . '`?(?![A-Za-z0-9_])~', '`' . $physicalTable . '`', $sql);
+        }
+
+        foreach ($aliases as $alias => $logicalTable) {
+            foreach (self::IMPORTED_COLUMNS[$logicalTable] ?? [] as $logicalColumn => $physicalColumn) {
+                if ($logicalColumn === $physicalColumn) {
+                    continue;
+                }
+                $pattern = '~(?<![A-Za-z0-9_])' . preg_quote($alias, '~') . '\\s*\\.\\s*`?' . preg_quote($logicalColumn, '~') . '`?(?![A-Za-z0-9_])~i';
+                $sql = preg_replace($pattern, $alias . '.' . $physicalColumn, $sql);
+            }
+        }
+
+        if ($primaryTable !== null) {
+            foreach (self::IMPORTED_COLUMNS[$primaryTable] ?? [] as $logicalColumn => $physicalColumn) {
+                if ($logicalColumn === $physicalColumn) {
+                    continue;
+                }
+                $pattern = '~(?<![A-Za-z0-9_.:])`?' . preg_quote($logicalColumn, '~') . '`?(?![A-Za-z0-9_])~i';
+                $sql = preg_replace($pattern, $physicalColumn, $sql);
+            }
+        }
+
+        return [$sql, $primaryTable];
+    }
+
+    private function importedRows(array $rows, ?string $logicalTable): array
+    {
+        if ($logicalTable === null) {
+            return $rows;
+        }
+
+        $columnMap = self::IMPORTED_COLUMNS[$logicalTable] ?? [];
+        foreach ($rows as &$row) {
+            foreach ($columnMap as $logicalColumn => $physicalColumn) {
+                if (!array_key_exists($logicalColumn, $row) && array_key_exists($physicalColumn, $row)) {
+                    $row[$logicalColumn] = $row[$physicalColumn];
+                }
+            }
+            if ($logicalTable === 'sld_organizations') {
+                $row['category'] ??= 'Unclassified';
+                $row['adviser'] ??= 'Not recorded in imported schema';
+                $row['accreditation_date'] ??= null;
+            } elseif ($logicalTable === 'sld_members') {
+                $row['member_name'] ??= $row['student_number'] ?? $row['student_id'] ?? '';
+                $row['role'] ??= 'Member';
+            }
+        }
+        unset($row);
+        return $rows;
+    }
+
+    private function fetchImportedAll(string $sql, array $params = []): array
+    {
+        [$sql, $logicalTable] = $this->importedSql($sql);
+        return $this->importedRows(Database::fetchAll($sql, $params), $logicalTable);
+    }
+
+    private function fetchImportedOne(string $sql, array $params = []): ?array
+    {
+        [$sql, $logicalTable] = $this->importedSql($sql);
+        $row = Database::fetchOne($sql, $params);
+        return $row ? ($this->importedRows([$row], $logicalTable)[0] ?? null) : null;
+    }
+
+    private function fetchImportedColumn(string $sql, array $params = [])
+    {
+        [$sql] = $this->importedSql($sql);
+        return Database::fetchColumn($sql, $params);
+    }
+
+    private function importedWriteData(string $table, array $data): array
+    {
+        $physicalTable = $this->importedTable($table);
+        $allowlist = self::IMPORTED_COLUMN_ALLOWLIST[$physicalTable] ?? null;
+        if ($allowlist === null) {
+            return $data;
+        }
+
+        $mapped = [];
+        foreach ($data as $column => $value) {
+            $physicalColumn = self::IMPORTED_COLUMNS[$table][$column] ?? $column;
+            if (in_array($physicalColumn, $allowlist, true) && !array_key_exists($physicalColumn, $mapped)) {
+                $mapped[$physicalColumn] = $value;
+            }
+        }
+        return $mapped;
+    }
+
+    private function importedWhere(string $table, string $where): string
+    {
+        foreach (self::IMPORTED_COLUMNS[$table] ?? [] as $logicalColumn => $physicalColumn) {
+            if ($logicalColumn === $physicalColumn) {
+                continue;
+            }
+            $pattern = '~(?<![A-Za-z0-9_.:])`?' . preg_quote($logicalColumn, '~') . '`?(?![A-Za-z0-9_])~i';
+            $where = preg_replace($pattern, $physicalColumn, $where);
+        }
+        return $where;
+    }
+
+    private function insertImported(string $table, array $data)
+    {
+        return Database::insert($this->importedTable($table), $this->importedWriteData($table, $data));
+    }
+
+    private function updateImported(string $table, array $data, string $where, array $params = [])
+    {
+        $mappedData = $this->importedWriteData($table, $data);
+        if (!$mappedData) {
+            return 0;
+        }
+        return Database::update($this->importedTable($table), $mappedData, $this->importedWhere($table, $where), $params);
+    }
+
     /* =========================================================================
-     * 1. Dashboard & Core Record CRUD (SampleCrud Pattern)
+     * 1. Dashboard & legacy route compatibility
      * ========================================================================= */
 
     public function index(): void
     {
         $user = Auth::user();
-
-        $records = [];
-        try {
-            $records = Database::fetchAll(
-                "SELECT * FROM `sld_records` WHERE deleted_at IS NULL ORDER BY created_at DESC"
-            );
-        } catch (\Exception $e) {
-            $records = [];
-        }
+        $organizations = $this->fetchImportedAll(
+            "SELECT o.*, c.classification_name AS category,
+                    (SELECT MAX(a.decision_date) FROM `sld_organization_accreditations` a WHERE a.organization_id = o.organization_id AND a.deleted_at IS NULL) AS accreditation_date
+             FROM `sld_organizations` o
+             LEFT JOIN `sld_organization_classifications` c ON c.classification_id = o.classification_id
+             WHERE o.deleted_at IS NULL ORDER BY o.created_at DESC LIMIT 10"
+        );
+        $stats = [
+            'organizations' => (int)$this->fetchImportedColumn("SELECT COUNT(*) FROM `sld_organizations` WHERE deleted_at IS NULL"),
+            'active' => (int)$this->fetchImportedColumn("SELECT COUNT(*) FROM `sld_organizations` WHERE status = 'Active' AND deleted_at IS NULL"),
+            'pending' => (int)$this->fetchImportedColumn("SELECT COUNT(*) FROM `sld_organizations` WHERE status IN ('Pending', 'Pending Accreditation') AND deleted_at IS NULL"),
+        ];
 
         View::render('orgleadership/Views/index', [
             'title'      => 'Student Leadership Accreditation & Officer Evaluation',
             'moduleName' => 'Student Leadership Accreditation & Officer Evaluation',
             'slug'       => 'orgleadership',
-            'records'    => $records,
+            'organizations' => $organizations,
+            'stats'      => $stats,
             'user'       => $user,
             'crumbs'     => [
                 'Student Affairs (OSAS)' => '',
@@ -87,99 +340,22 @@ class HomeController
     public function show(): void
     {
         $id = (int)($_GET['id'] ?? 0);
-        $record = Database::fetchOne(
-            "SELECT * FROM `sld_records` WHERE id = :id AND deleted_at IS NULL",
-            ['id' => $id]
-        );
-
-        if (!$record) {
-            Session::flash('error', 'Record not found.');
-            redirect(url('orgleadership'));
-            return;
-        }
-
-        View::render('orgleadership/Views/index', [
-            'title'      => "View Record #{$id}",
-            'moduleName' => 'Student Leadership Accreditation & Officer Evaluation',
-            'slug'       => 'orgleadership',
-            'record'     => $record,
-            'records'    => [],
-            'crumbs'     => [
-                'Student Leadership Accreditation & Officer Evaluation' => url('orgleadership'),
-                'View' => ''
-            ]
-        ]);
+        redirect(url('orgleadership/organization-profile' . ($id > 0 ? '?id=' . $id : '')));
     }
 
     public function store(): void
     {
-        $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ?? '');
-
-        if ($title === '') {
-            Session::flash('error', 'Title is required.');
-            redirect(url('orgleadership'));
-            return;
-        }
-
-        try {
-            Database::insert('sld_records', [
-                'title'       => $title,
-                'description' => $description !== '' ? $description : null,
-                'status'      => 'active',
-                'created_by'  => Auth::id(),
-                'created_at'  => date('Y-m-d H:i:s')
-            ]);
-            Session::flash('success', "New entry \"{$title}\" added successfully.");
-        } catch (\Exception $e) {
-            Session::flash('error', 'Could not save record: ' . $e->getMessage());
-        }
-
-        redirect(url('orgleadership'));
+        $this->storeOrganization();
     }
 
     public function update(): void
     {
-        $id = (int)($_POST['id'] ?? 0);
-        $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ?? '');
-        $status = trim($_POST['status'] ?? 'active');
-
-        if ($id <= 0 || $title === '') {
-            Session::flash('error', 'Valid record ID and Title are required.');
-            redirect(url('orgleadership'));
-            return;
-        }
-
-        try {
-            Database::update('sld_records', [
-                'title'       => $title,
-                'description' => $description !== '' ? $description : null,
-                'status'      => $status,
-                'updated_at'  => date('Y-m-d H:i:s')
-            ], 'id = :id AND deleted_at IS NULL', ['id' => $id]);
-
-            Session::flash('success', "Entry #{$id} updated successfully.");
-        } catch (\Exception $e) {
-            Session::flash('error', 'Could not update record: ' . $e->getMessage());
-        }
-
-        redirect(url('orgleadership'));
+        $this->updateOrganization();
     }
 
     public function delete(): void
     {
-        $id = (int)($_POST['id'] ?? 0);
-
-        if ($id > 0) {
-            Database::update('sld_records', [
-                'deleted_at' => date('Y-m-d H:i:s')
-            ], 'id = :id', ['id' => $id]);
-
-            Session::flash('success', "Record #{$id} archived successfully.");
-        }
-
-        redirect(url('orgleadership'));
+        $this->deleteOrganization();
     }
 
     /* =========================================================================
@@ -190,32 +366,28 @@ class HomeController
     {
         $name = trim($_POST['name'] ?? '');
         $acronym = strtoupper(trim($_POST['acronym'] ?? ''));
-        $category = trim($_POST['category'] ?? '');
+        $classificationId = (int)($_POST['classification_id'] ?? 0);
         $description = trim($_POST['description'] ?? '');
-        $adviser = trim($_POST['adviser'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $contactNumber = trim($_POST['contact_number'] ?? '');
-        $schoolYear = trim($_POST['school_year'] ?? '');
+        $schoolYear = trim($_POST['school_year'] ?? '') ?: date('Y') . '-' . (date('Y') + 1);
 
-        if ($name === '' || $acronym === '' || $category === '' || $adviser === '') {
-            Session::flash('error', 'Name, acronym, category, and adviser are required.');
+        if ($name === '' || $acronym === '' || $classificationId < 1) {
+            Session::flash('error', 'Organization name, acronym, and classification are required.');
             redirect(url('orgleadership/organization-profile'));
             return;
         }
 
         try {
-            Database::insert('sld_organizations', [
-                'name'              => $name,
+            $this->insertImported('sld_organizations', [
                 'organization_name' => $name,
                 'acronym'           => $acronym,
-                'category'          => $category,
+                'classification_id' => $classificationId,
                 'description'       => $description !== '' ? $description : null,
-                'adviser'           => $adviser,
                 'email'             => $email !== '' ? $email : null,
                 'contact_number'    => $contactNumber !== '' ? $contactNumber : null,
-                'school_year'       => $schoolYear !== '' ? $schoolYear : null,
+                'school_year'       => $schoolYear,
                 'status'            => 'Pending Accreditation',
-                'created_by'        => Auth::id(),
                 'created_at'        => date('Y-m-d H:i:s'),
             ]);
             Session::flash('success', "Organization \"{$name}\" registered and queued for accreditation.");
@@ -233,14 +405,13 @@ class HomeController
         $id = (int)($_POST['organization_id'] ?? $_POST['id'] ?? 0);
         $name = trim($_POST['name'] ?? '');
         $acronym = strtoupper(trim($_POST['acronym'] ?? ''));
-        $category = trim($_POST['category'] ?? '');
+        $classificationId = (int)($_POST['classification_id'] ?? 0);
         $description = trim($_POST['description'] ?? '');
-        $adviser = trim($_POST['adviser'] ?? '');
         $status = trim($_POST['status'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $contactNumber = trim($_POST['contact_number'] ?? '');
 
-        if ($id < 1 || $name === '' || $acronym === '' || $category === '' || $adviser === '') {
+        if ($id < 1 || $name === '' || $acronym === '' || $classificationId < 1) {
             Session::flash('error', 'Please provide a valid organization and complete all required fields.');
             redirect(url('orgleadership/organization-profile'));
             return;
@@ -248,12 +419,10 @@ class HomeController
 
         try {
             $data = [
-                'name'              => $name,
                 'organization_name' => $name,
                 'acronym'           => $acronym,
-                'category'          => $category,
+                'classification_id' => $classificationId,
                 'description'       => $description !== '' ? $description : null,
-                'adviser'           => $adviser,
                 'updated_at'        => date('Y-m-d H:i:s'),
             ];
 
@@ -265,12 +434,9 @@ class HomeController
             }
             if (in_array($status, self::ORGANIZATION_STATUSES, true)) {
                 $data['status'] = $status;
-                if ($status === 'Active') {
-                    $data['accreditation_date'] = date('Y-m-d');
-                }
             }
 
-            Database::update('sld_organizations', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
+            $this->updateImported('sld_organizations', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
             Session::flash('success', "Organization profile for \"{$name}\" updated successfully.");
         } catch (\PDOException $e) {
             Session::flash('error', $e->getCode() === '23000'
@@ -300,13 +466,45 @@ class HomeController
         }
 
         try {
-            Database::update('sld_organizations', [
-                'status'             => $status,
-                'accreditation_date' => $accreditationDate !== '' ? $accreditationDate : null,
-                'updated_at'         => date('Y-m-d H:i:s'),
+            $this->updateImported('sld_organizations', [
+                'status'     => $status,
+                'updated_at' => date('Y-m-d H:i:s'),
             ], 'id = :id AND deleted_at IS NULL', ['id' => $id]);
 
-            Session::flash('success', 'Organization classification, status, and accreditation date updated.');
+            if ($accreditationDate !== '' || $status === 'Active') {
+                $organization = $this->fetchImportedOne(
+                    'SELECT id, school_year FROM `sld_organizations` WHERE id = :id AND deleted_at IS NULL',
+                    ['id' => $id]
+                );
+                if ($organization) {
+                    $decisionStatus = match ($status) {
+                        'Active' => 'Approved',
+                        'Pending Accreditation', 'Pending' => 'Pending',
+                        default => 'Returned',
+                    };
+                    $accreditation = $this->fetchImportedOne(
+                        'SELECT id FROM `sld_organization_accreditations` WHERE organization_id = :organization_id AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1',
+                        ['organization_id' => $id]
+                    );
+                    $accreditationData = [
+                        'school_year' => $organization['school_year'] ?: date('Y') . '-' . (date('Y') + 1),
+                        'decision_date' => $accreditationDate !== '' ? $accreditationDate : date('Y-m-d'),
+                        'decision_status' => $decisionStatus,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ];
+                    if ($accreditation) {
+                        $this->updateImported('sld_organization_accreditations', $accreditationData, 'id = :id', ['id' => (int)$accreditation['id']]);
+                    } else {
+                        $accreditationData['organization_id'] = $id;
+                        $accreditationData['submitted_at'] = date('Y-m-d H:i:s');
+                        $accreditationData['created_at'] = date('Y-m-d H:i:s');
+                        $accreditationData['remarks'] = null;
+                        $this->insertImported('sld_organization_accreditations', $accreditationData);
+                    }
+                }
+            }
+
+            Session::flash('success', 'Organization status and accreditation record updated.');
         } catch (\Exception $e) {
             Session::flash('error', 'Could not update organization status: ' . $e->getMessage());
         }
@@ -319,7 +517,7 @@ class HomeController
         $id = (int)($_POST['organization_id'] ?? $_POST['id'] ?? 0);
 
         if ($id > 0) {
-            Database::update('sld_organizations', [
+            $this->updateImported('sld_organizations', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
 
@@ -336,19 +534,17 @@ class HomeController
     public function storeMember(): void
     {
         $organizationId = (int)($_POST['organization_id'] ?? 0);
-        $memberName = trim($_POST['member_name'] ?? '');
         $studentNumber = trim($_POST['student_number'] ?? '');
-        $role = trim($_POST['role'] ?? '') ?: 'Member';
         $joinedAt = trim($_POST['joined_at'] ?? '');
         $schoolYear = trim($_POST['school_year'] ?? '') ?: date('Y') . '-' . (date('Y') + 1);
 
-        if ($organizationId < 1 || $memberName === '') {
-            Session::flash('error', 'Select an organization and provide the member name.');
+        if ($organizationId < 1 || $studentNumber === '') {
+            Session::flash('error', 'Select an organization and provide a student number.');
             redirect(url('orgleadership/membership-records'));
             return;
         }
 
-        $organizationExists = (int)Database::fetchColumn(
+        $organizationExists = (int)$this->fetchImportedColumn(
             'SELECT COUNT(*) FROM `sld_organizations` WHERE id = :id AND deleted_at IS NULL',
             ['id' => $organizationId]
         );
@@ -360,34 +556,15 @@ class HomeController
         }
 
         try {
-            // Insert into primary sld_members table
-            Database::insert('sld_members', [
+            $this->insertImported('sld_members', [
                 'organization_id' => $organizationId,
-                'member_name'     => $memberName,
-                'student_number'  => $studentNumber !== '' ? $studentNumber : null,
-                'role'            => $role,
+                'student_number'  => $studentNumber,
+                'school_year'     => $schoolYear,
                 'joined_at'       => $joinedAt !== '' ? $joinedAt : date('Y-m-d'),
                 'status'          => 'Active',
                 'created_at'      => date('Y-m-d H:i:s'),
             ]);
-
-            // Also keep sld_organization_memberships in sync if student number is provided
-            if ($studentNumber !== '') {
-                try {
-                    Database::insert('sld_organization_memberships', [
-                        'organization_id'   => $organizationId,
-                        'student_id'        => $studentNumber,
-                        'joined_date'       => $joinedAt !== '' ? $joinedAt : date('Y-m-d'),
-                        'membership_status' => 'Active',
-                        'school_year'       => $schoolYear,
-                        'created_at'        => date('Y-m-d H:i:s'),
-                    ]);
-                } catch (\Exception $ignored) {
-                    // Ignore duplicate or non-critical secondary log
-                }
-            }
-
-            Session::flash('success', "Membership record for \"{$memberName}\" added successfully.");
+            Session::flash('success', 'Membership record added successfully.');
         } catch (\Exception $e) {
             Session::flash('error', 'Could not save member record: ' . $e->getMessage());
         }
@@ -399,27 +576,23 @@ class HomeController
     {
         $memberId = (int)($_POST['member_id'] ?? $_POST['id'] ?? 0);
         $organizationId = (int)($_POST['organization_id'] ?? 0);
-        $memberName = trim($_POST['member_name'] ?? '');
         $studentNumber = trim($_POST['student_number'] ?? '');
-        $role = trim($_POST['role'] ?? 'Member');
         $status = trim($_POST['status'] ?? 'Active');
 
-        if ($memberId < 1 || $memberName === '') {
-            Session::flash('error', 'Member ID and Member Name are required.');
+        if ($memberId < 1 || $studentNumber === '') {
+            Session::flash('error', 'Member ID and student number are required.');
             redirect(url('orgleadership/membership-records?organization_id=' . $organizationId));
             return;
         }
 
         try {
-            Database::update('sld_members', [
-                'member_name'    => $memberName,
+            $this->updateImported('sld_members', [
                 'student_number' => $studentNumber !== '' ? $studentNumber : null,
-                'role'           => $role,
                 'status'         => in_array($status, self::MEMBER_STATUSES, true) ? $status : 'Active',
                 'updated_at'     => date('Y-m-d H:i:s'),
             ], 'id = :id AND deleted_at IS NULL', ['id' => $memberId]);
 
-            Session::flash('success', "Member \"{$memberName}\" updated successfully.");
+            Session::flash('success', 'Membership record updated successfully.');
         } catch (\Exception $e) {
             Session::flash('error', 'Could not update member: ' . $e->getMessage());
         }
@@ -440,7 +613,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_members', [
+            $this->updateImported('sld_members', [
                 'status'     => $status,
                 'updated_at' => date('Y-m-d H:i:s'),
             ], 'id = :member_id AND deleted_at IS NULL', [
@@ -461,7 +634,7 @@ class HomeController
         $organizationId = (int)($_POST['organization_id'] ?? 0);
 
         if ($memberId > 0) {
-            Database::update('sld_members', [
+            $this->updateImported('sld_members', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $memberId]);
 
@@ -493,8 +666,15 @@ class HomeController
 
     public function organizationRegistration(): void
     {
-        $organizations = Database::fetchAll(
-            'SELECT * FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY created_at DESC'
+        $organizations = $this->fetchImportedAll(
+            "SELECT o.*, c.classification_name AS category,
+                    (SELECT MAX(a.decision_date) FROM `sld_organization_accreditations` a WHERE a.organization_id = o.organization_id AND a.deleted_at IS NULL) AS accreditation_date
+             FROM `sld_organizations` o
+             LEFT JOIN `sld_organization_classifications` c ON c.classification_id = o.classification_id
+             WHERE o.deleted_at IS NULL ORDER BY o.created_at DESC"
+        );
+        $classifications = $this->fetchImportedAll(
+            'SELECT id, classification_name FROM `sld_organization_classifications` WHERE deleted_at IS NULL ORDER BY classification_name ASC'
         );
 
         View::render('orgleadership/Views/organization-registration', [
@@ -503,6 +683,7 @@ class HomeController
             'slug'          => 'orgleadership',
             'user'          => Auth::user(),
             'organizations' => $organizations,
+            'classifications' => $classifications,
             'crumbs'        => [
                 'Student Affairs (OSAS)' => '',
                 'Student Organization and Leadership Management' => url('orgleadership'),
@@ -513,15 +694,26 @@ class HomeController
 
     public function organizationProfile(): void
     {
-        $organizations = Database::fetchAll(
-            'SELECT * FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC'
+        $organizations = $this->fetchImportedAll(
+            "SELECT o.*, c.classification_name AS category,
+                    (SELECT MAX(a.decision_date) FROM `sld_organization_accreditations` a WHERE a.organization_id = o.organization_id AND a.deleted_at IS NULL) AS accreditation_date
+             FROM `sld_organizations` o
+             LEFT JOIN `sld_organization_classifications` c ON c.classification_id = o.classification_id
+             WHERE o.deleted_at IS NULL ORDER BY o.organization_name ASC"
         );
 
         $id = (int)($_GET['id'] ?? ($organizations[0]['id'] ?? 0));
-        $organization = $id > 0 ? Database::fetchOne(
-            'SELECT * FROM `sld_organizations` WHERE id = :id AND deleted_at IS NULL',
+        $organization = $id > 0 ? $this->fetchImportedOne(
+            "SELECT o.*, c.classification_name AS category,
+                    (SELECT MAX(a.decision_date) FROM `sld_organization_accreditations` a WHERE a.organization_id = o.organization_id AND a.deleted_at IS NULL) AS accreditation_date
+             FROM `sld_organizations` o
+             LEFT JOIN `sld_organization_classifications` c ON c.classification_id = o.classification_id
+             WHERE o.organization_id = :id AND o.deleted_at IS NULL",
             ['id' => $id]
         ) : null;
+        $classifications = $this->fetchImportedAll(
+            'SELECT id, classification_name FROM `sld_organization_classifications` WHERE deleted_at IS NULL ORDER BY classification_name ASC'
+        );
 
         View::render('orgleadership/Views/organization-profile', [
             'title'         => 'Organization Profile Management',
@@ -530,6 +722,7 @@ class HomeController
             'user'          => Auth::user(),
             'organizations' => $organizations,
             'organization'  => $organization,
+            'classifications' => $classifications,
             'statuses'      => self::ORGANIZATION_STATUSES,
             'crumbs'        => [
                 'Student Affairs (OSAS)' => '',
@@ -541,7 +734,7 @@ class HomeController
 
     public function membershipRecords(): void
     {
-        $organizations = Database::fetchAll(
+        $organizations = $this->fetchImportedAll(
             'SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC'
         );
 
@@ -554,10 +747,17 @@ class HomeController
             }
         }
 
-        $members = $organizationId > 0 ? Database::fetchAll(
-            'SELECT * FROM `sld_members` WHERE organization_id = :organization_id AND deleted_at IS NULL ORDER BY member_name ASC',
+        $members = $organizationId > 0 ? $this->fetchImportedAll(
+            "SELECT m.*, m.membership_id AS id, m.student_id AS student_number,
+                    COALESCE(NULLIF(CONCAT_WS(' ', s.first_name, s.last_name), ''), m.student_id) AS member_name,
+                    'Member' AS role, m.joined_date AS joined_at, m.membership_status AS status
+             FROM `organization_memberships` m
+             LEFT JOIN `students` s ON s.student_number = m.student_id
+             WHERE m.organization_id = :organization_id AND m.deleted_at IS NULL
+             ORDER BY member_name ASC",
             ['organization_id' => $organizationId]
         ) : [];
+        $students = $this->fetchImportedAll('SELECT student_number, first_name, last_name FROM `students` ORDER BY last_name ASC LIMIT 500');
 
         View::render('orgleadership/Views/membership-records', [
             'title'                => 'Membership Records',
@@ -568,6 +768,7 @@ class HomeController
             'organizationId'       => $organizationId,
             'selectedOrganization' => $selectedOrganization,
             'memberStatuses'       => self::MEMBER_STATUSES,
+            'students'             => $students,
             'members'              => $members,
             'crumbs'               => [
                 'Student Affairs (OSAS)' => '',
@@ -582,7 +783,7 @@ class HomeController
      * ========================================================================= */
     public function leadershipPositions(): void
     {
-        $positions = Database::fetchAll("
+        $positions = $this->fetchImportedAll("
             SELECT lp.*, 
                    COUNT(oa.id) as active_officers_count
             FROM `sld_leadership_positions` lp
@@ -618,7 +819,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_leadership_positions', [
+            $this->insertImported('sld_leadership_positions', [
                 'position_name' => $name,
                 'description'   => $description !== '' ? $description : null,
                 'created_at'    => date('Y-m-d H:i:s')
@@ -646,7 +847,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_leadership_positions', [
+            $this->updateImported('sld_leadership_positions', [
                 'position_name' => $name,
                 'description'   => $description !== '' ? $description : null,
                 'updated_at'    => date('Y-m-d H:i:s')
@@ -665,7 +866,7 @@ class HomeController
     {
         $id = (int)($_POST['position_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_leadership_positions', [
+            $this->updateImported('sld_leadership_positions', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Position #{$id} archived successfully.");
@@ -678,7 +879,7 @@ class HomeController
      * ========================================================================= */
     public function termManagement(): void
     {
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
         $orgFilter = (int)($_GET['organization_id'] ?? 0);
 
         $sql = "
@@ -697,7 +898,7 @@ class HomeController
         }
         $sql .= " GROUP BY lt.id ORDER BY lt.start_date DESC";
 
-        $terms = Database::fetchAll($sql, $params);
+        $terms = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/term-management', [
             'title'         => 'Term Management',
@@ -731,7 +932,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_leadership_terms', [
+            $this->insertImported('sld_leadership_terms', [
                 'organization_id' => $orgId,
                 'term_name'       => $termName,
                 'start_date'      => $startDate,
@@ -763,7 +964,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_leadership_terms', [
+            $this->updateImported('sld_leadership_terms', [
                 'organization_id' => $orgId,
                 'term_name'       => $termName,
                 'start_date'      => $startDate,
@@ -791,7 +992,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_leadership_terms', [
+            $this->updateImported('sld_leadership_terms', [
                 'term_status' => $status,
                 'updated_at'  => date('Y-m-d H:i:s')
             ], 'id = :id AND deleted_at IS NULL', ['id' => $id]);
@@ -807,7 +1008,7 @@ class HomeController
     {
         $id = (int)($_POST['term_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_leadership_terms', [
+            $this->updateImported('sld_leadership_terms', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Term #{$id} archived successfully.");
@@ -820,10 +1021,10 @@ class HomeController
      * ========================================================================= */
     public function officerProfiles(): void
     {
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
-        $positions = Database::fetchAll("SELECT id, position_name FROM `sld_leadership_positions` WHERE deleted_at IS NULL ORDER BY position_name ASC");
-        $terms = Database::fetchAll("SELECT id, organization_id, term_name, term_status FROM `sld_leadership_terms` WHERE deleted_at IS NULL ORDER BY start_date DESC");
-        $students = Database::fetchAll("SELECT student_number, first_name, last_name, email FROM `students` ORDER BY last_name ASC LIMIT 50");
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $positions = $this->fetchImportedAll("SELECT id, position_name FROM `sld_leadership_positions` WHERE deleted_at IS NULL ORDER BY position_name ASC");
+        $terms = $this->fetchImportedAll("SELECT id, organization_id, term_name, term_status FROM `sld_leadership_terms` WHERE deleted_at IS NULL ORDER BY start_date DESC");
+        $students = $this->fetchImportedAll("SELECT student_number, first_name, last_name, email FROM `students` ORDER BY last_name ASC LIMIT 50");
 
         $orgFilter = (int)($_GET['organization_id'] ?? 0);
         $statusFilter = trim($_GET['status'] ?? '');
@@ -856,7 +1057,7 @@ class HomeController
         }
         $sql .= " ORDER BY o.id DESC";
 
-        $officers = Database::fetchAll($sql, $params);
+        $officers = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/officer-profiles', [
             'title'           => 'Officer Profiles',
@@ -895,7 +1096,7 @@ class HomeController
         }
 
         try {
-            $officerId = Database::insert('sld_officers', [
+            $officerId = $this->insertImported('sld_officers', [
                 'student_id'      => $studentId,
                 'organization_id' => $orgId,
                 'profile_summary' => $summary !== '' ? $summary : null,
@@ -904,7 +1105,7 @@ class HomeController
             ]);
 
             if ($positionId > 0 && $termId > 0) {
-                Database::insert('sld_officer_appointments', [
+                $this->insertImported('sld_officer_appointments', [
                     'officer_id'      => $officerId,
                     'position_id'     => $positionId,
                     'organization_id' => $orgId,
@@ -940,7 +1141,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_officers', [
+            $this->updateImported('sld_officers', [
                 'student_id'      => $studentId,
                 'organization_id' => $orgId,
                 'profile_summary' => $summary !== '' ? $summary : null,
@@ -949,17 +1150,17 @@ class HomeController
             ], 'id = :id AND deleted_at IS NULL', ['id' => $id]);
 
             if ($positionId > 0 && $termId > 0) {
-                $existingApp = Database::fetchOne(
+                $existingApp = $this->fetchImportedOne(
                     "SELECT id FROM `sld_officer_appointments` WHERE officer_id = :oid AND term_id = :tid AND deleted_at IS NULL LIMIT 1",
                     ['oid' => $id, 'tid' => $termId]
                 );
                 if ($existingApp) {
-                    Database::update('sld_officer_appointments', [
+                    $this->updateImported('sld_officer_appointments', [
                         'position_id' => $positionId,
                         'updated_at'  => date('Y-m-d H:i:s')
                     ], 'id = :id', ['id' => $existingApp['id']]);
                 } else {
-                    Database::insert('sld_officer_appointments', [
+                    $this->insertImported('sld_officer_appointments', [
                         'officer_id'      => $id,
                         'position_id'     => $positionId,
                         'organization_id' => $orgId,
@@ -990,7 +1191,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_officers', [
+            $this->updateImported('sld_officers', [
                 'officers_status' => $status,
                 'updated_at'      => date('Y-m-d H:i:s')
             ], 'id = :id AND deleted_at IS NULL', ['id' => $id]);
@@ -1006,7 +1207,7 @@ class HomeController
     {
         $id = (int)($_POST['officer_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_officers', [
+            $this->updateImported('sld_officers', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Officer profile #{$id} archived successfully.");
@@ -1019,10 +1220,10 @@ class HomeController
      * ========================================================================= */
     public function leadershipHistory(): void
     {
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
-        $positions = Database::fetchAll("SELECT id, position_name FROM `sld_leadership_positions` WHERE deleted_at IS NULL ORDER BY position_name ASC");
-        $terms = Database::fetchAll("SELECT id, organization_id, term_name FROM `sld_leadership_terms` WHERE deleted_at IS NULL ORDER BY start_date DESC");
-        $officers = Database::fetchAll("
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $positions = $this->fetchImportedAll("SELECT id, position_name FROM `sld_leadership_positions` WHERE deleted_at IS NULL ORDER BY position_name ASC");
+        $terms = $this->fetchImportedAll("SELECT id, organization_id, term_name FROM `sld_leadership_terms` WHERE deleted_at IS NULL ORDER BY start_date DESC");
+        $officers = $this->fetchImportedAll("
             SELECT o.id, o.student_id, o.organization_id, s.first_name, s.last_name, org.acronym as org_acronym
             FROM `sld_officers` o
             LEFT JOIN `students` s ON o.student_id = s.student_number
@@ -1062,7 +1263,7 @@ class HomeController
         }
         $sql .= " ORDER BY oa.start_date DESC, oa.id DESC";
 
-        $appointments = Database::fetchAll($sql, $params);
+        $appointments = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/leadership-history', [
             'title'         => 'Leadership History Records',
@@ -1100,7 +1301,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_officer_appointments', [
+            $this->insertImported('sld_officer_appointments', [
                 'officer_id'      => $officerId,
                 'position_id'     => $positionId,
                 'organization_id' => $organizationId,
@@ -1132,7 +1333,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_officer_appointments', [
+            $this->updateImported('sld_officer_appointments', [
                 'position_id' => $positionId,
                 'term_id'     => $termId,
                 'start_date'  => $startDate,
@@ -1151,7 +1352,7 @@ class HomeController
     {
         $id = (int)($_POST['appointment_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_officer_appointments', [
+            $this->updateImported('sld_officer_appointments', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Appointment record #{$id} archived successfully.");
@@ -1164,7 +1365,7 @@ class HomeController
      * ========================================================================= */
     public function trainingDevelopment(): void
     {
-        $officers = Database::fetchAll("
+        $officers = $this->fetchImportedAll("
             SELECT o.id, o.student_id, o.organization_id, s.first_name, s.last_name, org.acronym as org_acronym, lp.position_name
             FROM `sld_officers` o
             LEFT JOIN `students` s ON o.student_id = s.student_number
@@ -1200,7 +1401,7 @@ class HomeController
         }
         $sql .= " ORDER BY lt.training_date DESC, lt.id DESC";
 
-        $trainings = Database::fetchAll($sql, $params);
+        $trainings = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/training-development', [
             'title'            => 'Training and Development Tracking',
@@ -1234,7 +1435,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_leadership_trainings', [
+            $this->insertImported('sld_leadership_trainings', [
                 'officer_id'        => $officerId,
                 'training_title'    => $title,
                 'training_date'     => $date,
@@ -1266,7 +1467,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_leadership_trainings', [
+            $this->updateImported('sld_leadership_trainings', [
                 'officer_id'        => $officerId,
                 'training_title'    => $title,
                 'training_date'     => $date,
@@ -1294,7 +1495,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_leadership_trainings', [
+            $this->updateImported('sld_leadership_trainings', [
                 'completion_status' => $status,
                 'updated_at'        => date('Y-m-d H:i:s')
             ], 'id = :id AND deleted_at IS NULL', ['id' => $id]);
@@ -1310,7 +1511,7 @@ class HomeController
     {
         $id = (int)($_POST['training_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_leadership_trainings', [
+            $this->updateImported('sld_leadership_trainings', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Training record #{$id} archived successfully.");
@@ -1327,8 +1528,8 @@ class HomeController
 
     public function activityProposals(): void
     {
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
-        $students = Database::fetchAll("SELECT student_number, first_name, last_name FROM `students` ORDER BY last_name ASC LIMIT 200");
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $students = $this->fetchImportedAll("SELECT student_number, first_name, last_name FROM `students` ORDER BY last_name ASC LIMIT 200");
 
         $orgFilter = (int)($_GET['organization_id'] ?? 0);
         $statusFilter = trim($_GET['status'] ?? '');
@@ -1353,7 +1554,7 @@ class HomeController
         }
         $sql .= " ORDER BY p.submitted_at DESC, p.id DESC";
 
-        $proposals = Database::fetchAll($sql, $params);
+        $proposals = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/activity-proposals', [
             'title'            => 'Activity Proposal Submission',
@@ -1390,7 +1591,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_activity_proposals', [
+            $this->insertImported('sld_activity_proposals', [
                 'organization_id'          => $orgId,
                 'submitted_by_student_id'  => $studentId,
                 'activity_title'           => $title,
@@ -1440,7 +1641,7 @@ class HomeController
                 $data['proposal_status'] = $status;
             }
 
-            Database::update('sld_activity_proposals', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
+            $this->updateImported('sld_activity_proposals', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
             Session::flash('success', "Proposal \"{$title}\" updated successfully.");
         } catch (\Exception $e) {
             Session::flash('error', 'Could not update proposal: ' . $e->getMessage());
@@ -1453,7 +1654,7 @@ class HomeController
     {
         $id = (int)($_POST['proposal_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_activity_proposals', [
+            $this->updateImported('sld_activity_proposals', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Proposal #{$id} archived successfully.");
@@ -1466,14 +1667,14 @@ class HomeController
      * ========================================================================= */
     public function eventApprovals(): void
     {
-        $proposals = Database::fetchAll("
+        $proposals = $this->fetchImportedAll("
             SELECT p.id, p.activity_title, org.name as organization_name
             FROM `sld_activity_proposals` p
             LEFT JOIN `sld_organizations` org ON p.organization_id = org.id
             WHERE p.deleted_at IS NULL
             ORDER BY p.submitted_at DESC
         ");
-        $students = Database::fetchAll("SELECT student_number, first_name, last_name FROM `students` ORDER BY last_name ASC LIMIT 200");
+        $students = $this->fetchImportedAll("SELECT student_number, first_name, last_name FROM `students` ORDER BY last_name ASC LIMIT 200");
 
         $decisionFilter = trim($_GET['decision'] ?? '');
 
@@ -1496,7 +1697,7 @@ class HomeController
         }
         $sql .= " ORDER BY ea.created_at DESC";
 
-        $approvals = Database::fetchAll($sql, $params);
+        $approvals = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/event-approvals', [
             'title'          => 'Event Approval Workflow',
@@ -1530,7 +1731,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_event_approvals', [
+            $this->insertImported('sld_event_approvals', [
                 'proposal_id'        => $proposalId,
                 'approver_student_id' => $approverStudentId !== '' ? $approverStudentId : null,
                 'approval_step'      => $step,
@@ -1542,12 +1743,12 @@ class HomeController
 
             // Update proposal status based on decision
             if ($decision === 'Approved') {
-                Database::update('sld_activity_proposals', [
+                $this->updateImported('sld_activity_proposals', [
                     'proposal_status' => 'Approved',
                     'updated_at' => date('Y-m-d H:i:s')
                 ], 'id = :id', ['id' => $proposalId]);
             } elseif ($decision === 'Rejected') {
-                Database::update('sld_activity_proposals', [
+                $this->updateImported('sld_activity_proposals', [
                     'proposal_status' => 'Rejected',
                     'updated_at' => date('Y-m-d H:i:s')
                 ], 'id = :id', ['id' => $proposalId]);
@@ -1575,7 +1776,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_event_approvals', [
+            $this->updateImported('sld_event_approvals', [
                 'decision'      => $decision,
                 'decision_at'   => $decision !== 'Pending' ? date('Y-m-d H:i:s') : null,
                 'approval_step' => $step,
@@ -1594,7 +1795,7 @@ class HomeController
     {
         $id = (int)($_POST['approval_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_event_approvals', [
+            $this->updateImported('sld_event_approvals', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Approval #{$id} archived.");
@@ -1607,25 +1808,27 @@ class HomeController
      * ========================================================================= */
     public function activityCalendar(): void
     {
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
-        $venues = Database::fetchAll("SELECT id, venue_name, venue_status FROM `sld_venues` WHERE deleted_at IS NULL ORDER BY venue_name ASC");
-        $proposals = Database::fetchAll("SELECT id, activity_title FROM `sld_activity_proposals` WHERE proposal_status = 'Approved' AND deleted_at IS NULL ORDER BY activity_title ASC");
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $venues = $this->fetchImportedAll("SELECT id, venue_name, venue_status FROM `sld_venues` WHERE deleted_at IS NULL ORDER BY venue_name ASC");
+        $proposals = $this->fetchImportedAll("SELECT id, organization_id, activity_title FROM `sld_activity_proposals` WHERE proposal_status = 'Approved' AND deleted_at IS NULL ORDER BY activity_title ASC");
 
         $orgFilter = (int)($_GET['organization_id'] ?? 0);
         $monthFilter = trim($_GET['month'] ?? '');
 
         $sql = "
             SELECT ac.*,
+                   p.organization_id,
                    org.name as organization_name, org.acronym as organization_acronym,
                    v.venue_name
             FROM `sld_activity_calendar` ac
-            LEFT JOIN `sld_organizations` org ON ac.organization_id = org.id
+            INNER JOIN `sld_activity_proposals` p ON ac.proposal_id = p.id
+            LEFT JOIN `sld_organizations` org ON p.organization_id = org.id
             LEFT JOIN `sld_venues` v ON ac.venue_id = v.id
             WHERE ac.deleted_at IS NULL
         ";
         $params = [];
         if ($orgFilter > 0) {
-            $sql .= " AND ac.organization_id = :org_id";
+            $sql .= " AND p.organization_id = :org_id";
             $params['org_id'] = $orgFilter;
         }
         if ($monthFilter !== '' && preg_match('/^\d{4}-\d{2}$/', $monthFilter)) {
@@ -1634,7 +1837,7 @@ class HomeController
         }
         $sql .= " ORDER BY ac.start_datetime DESC";
 
-        $events = Database::fetchAll($sql, $params);
+        $events = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/activity-calendar', [
             'title'         => 'Activity Calendar',
@@ -1661,24 +1864,34 @@ class HomeController
         $proposalId = (int)($_POST['proposal_id'] ?? 0);
         $venueId = (int)($_POST['venue_id'] ?? 0);
         $title = trim($_POST['activity_title'] ?? '');
-        $startDatetime = trim($_POST['start_datetime'] ?? '');
-        $endDatetime = trim($_POST['end_datetime'] ?? '');
+        $startInput = trim($_POST['start_datetime'] ?? '');
+        $endInput = trim($_POST['end_datetime'] ?? '');
+        $startDatetime = $startInput !== '' ? $this->normalizeDateTimeInput($startInput) : null;
+        $endDatetime = $endInput !== '' ? $this->normalizeDateTimeInput($endInput) : null;
         $status = trim($_POST['status'] ?? 'Scheduled');
 
-        if ($orgId < 1 || $title === '' || $startDatetime === '') {
-            Session::flash('error', 'Organization, activity title, and start date/time are required.');
+        if ($orgId < 1 || $proposalId < 1 || $title === '' || $startDatetime === null || $endDatetime === null || $endDatetime <= $startDatetime) {
+            Session::flash('error', 'Choose an organization and approved proposal, enter an activity title, and provide a valid start and end time.');
             redirect(url('orgleadership/activity-calendar'));
             return;
         }
 
         try {
-            Database::insert('sld_activity_calendar', [
-                'organization_id' => $orgId,
-                'proposal_id'     => $proposalId > 0 ? $proposalId : null,
+            $proposal = $this->fetchImportedOne(
+                "SELECT id, organization_id FROM `sld_activity_proposals` WHERE id = :id AND proposal_status = 'Approved' AND deleted_at IS NULL",
+                ['id' => $proposalId]
+            );
+            if (!$proposal || (int)$proposal['organization_id'] !== $orgId) {
+                Session::flash('error', 'The selected proposal must be approved and belong to the selected organization.');
+                redirect(url('orgleadership/activity-calendar'));
+                return;
+            }
+            $this->insertImported('sld_activity_calendar', [
+                'proposal_id'     => $proposalId,
                 'venue_id'        => $venueId > 0 ? $venueId : null,
                 'activity_title'  => $title,
                 'start_datetime'  => $startDatetime,
-                'end_datetime'    => $endDatetime !== '' ? $endDatetime : null,
+                'end_datetime'    => $endDatetime,
                 'status'          => in_array($status, self::CALENDAR_STATUSES, true) ? $status : 'Scheduled',
                 'created_at'      => date('Y-m-d H:i:s')
             ]);
@@ -1694,32 +1907,44 @@ class HomeController
     {
         $id = (int)($_POST['calendar_id'] ?? $_POST['id'] ?? 0);
         $orgId = (int)($_POST['organization_id'] ?? 0);
+        $proposalId = (int)($_POST['proposal_id'] ?? 0);
         $venueId = (int)($_POST['venue_id'] ?? 0);
         $title = trim($_POST['activity_title'] ?? '');
-        $startDatetime = trim($_POST['start_datetime'] ?? '');
-        $endDatetime = trim($_POST['end_datetime'] ?? '');
+        $startInput = trim($_POST['start_datetime'] ?? '');
+        $endInput = trim($_POST['end_datetime'] ?? '');
+        $startDatetime = $startInput !== '' ? $this->normalizeDateTimeInput($startInput) : null;
+        $endDatetime = $endInput !== '' ? $this->normalizeDateTimeInput($endInput) : null;
         $status = trim($_POST['status'] ?? '');
 
-        if ($id < 1 || $title === '') {
-            Session::flash('error', 'Valid event ID and activity title are required.');
+        if ($id < 1 || $orgId < 1 || $proposalId < 1 || $title === '' || $startDatetime === null || $endDatetime === null || $endDatetime <= $startDatetime) {
+            Session::flash('error', 'Choose an organization and approved proposal, enter an activity title, and provide a valid start and end time.');
             redirect(url('orgleadership/activity-calendar'));
             return;
         }
 
         try {
+            $proposal = $this->fetchImportedOne(
+                "SELECT id, organization_id FROM `sld_activity_proposals` WHERE id = :id AND proposal_status = 'Approved' AND deleted_at IS NULL",
+                ['id' => $proposalId]
+            );
+            if (!$proposal || (int)$proposal['organization_id'] !== $orgId) {
+                Session::flash('error', 'The selected proposal must be approved and belong to the selected organization.');
+                redirect(url('orgleadership/activity-calendar'));
+                return;
+            }
             $data = [
+                'proposal_id'     => $proposalId,
                 'activity_title'  => $title,
                 'start_datetime'  => $startDatetime,
-                'end_datetime'    => $endDatetime !== '' ? $endDatetime : null,
+                'end_datetime'    => $endDatetime,
                 'updated_at'      => date('Y-m-d H:i:s')
             ];
-            if ($orgId > 0) $data['organization_id'] = $orgId;
-            if ($venueId > 0) $data['venue_id'] = $venueId;
+            $data['venue_id'] = $venueId > 0 ? $venueId : null;
             if ($status !== '' && in_array($status, self::CALENDAR_STATUSES, true)) {
                 $data['status'] = $status;
             }
 
-            Database::update('sld_activity_calendar', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
+            $this->updateImported('sld_activity_calendar', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
             Session::flash('success', "Calendar event \"{$title}\" updated successfully.");
         } catch (\Exception $e) {
             Session::flash('error', 'Could not update event: ' . $e->getMessage());
@@ -1732,7 +1957,7 @@ class HomeController
     {
         $id = (int)($_POST['calendar_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_activity_calendar', [
+            $this->updateImported('sld_activity_calendar', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Calendar event #{$id} archived.");
@@ -1752,7 +1977,7 @@ class HomeController
             WHERE v.deleted_at IS NULL
             ORDER BY v.venue_name ASC
         ";
-        $venues = Database::fetchAll($sql);
+        $venues = $this->fetchImportedAll($sql);
 
         View::render('orgleadership/Views/venue-schedules', [
             'title'         => 'Venue and Schedule Management',
@@ -1781,7 +2006,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_venues', [
+            $this->insertImported('sld_venues', [
                 'venue_name'   => $name,
                 'venue_status' => in_array($status, self::VENUE_STATUSES, true) ? $status : 'Available',
                 'created_at'   => date('Y-m-d H:i:s')
@@ -1807,7 +2032,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_venues', [
+            $this->updateImported('sld_venues', [
                 'venue_name'   => $name,
                 'venue_status' => in_array($status, self::VENUE_STATUSES, true) ? $status : 'Available',
                 'updated_at'   => date('Y-m-d H:i:s')
@@ -1824,7 +2049,7 @@ class HomeController
     {
         $id = (int)($_POST['venue_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_venues', [
+            $this->updateImported('sld_venues', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Venue #{$id} archived.");
@@ -1837,10 +2062,11 @@ class HomeController
      * ========================================================================= */
     public function eventDocumentation(): void
     {
-        $events = Database::fetchAll("
+        $events = $this->fetchImportedAll("
             SELECT ac.id, ac.activity_title, org.name as organization_name
             FROM `sld_activity_calendar` ac
-            LEFT JOIN `sld_organizations` org ON ac.organization_id = org.id
+            INNER JOIN `sld_activity_proposals` p ON ac.proposal_id = p.id
+            LEFT JOIN `sld_organizations` org ON p.organization_id = org.id
             WHERE ac.deleted_at IS NULL
             ORDER BY ac.start_datetime DESC
         ");
@@ -1852,7 +2078,8 @@ class HomeController
                    ac.activity_title, org.name as organization_name
             FROM `sld_event_documentations` ed
             LEFT JOIN `sld_activity_calendar` ac ON ed.calendar_id = ac.id
-            LEFT JOIN `sld_organizations` org ON ac.organization_id = org.id
+            LEFT JOIN `sld_activity_proposals` p ON ac.proposal_id = p.id
+            LEFT JOIN `sld_organizations` org ON p.organization_id = org.id
             WHERE ed.deleted_at IS NULL
         ";
         $params = [];
@@ -1862,7 +2089,7 @@ class HomeController
         }
         $sql .= " ORDER BY ed.uploaded_at DESC";
 
-        $documents = Database::fetchAll($sql, $params);
+        $documents = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/event-documentation', [
             'title'          => 'Event Documentation',
@@ -1944,7 +2171,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_event_documentations', [
+            $this->insertImported('sld_event_documentations', [
                 'calendar_id'   => $calendarId,
                 'document_type' => $documentType,
                 'file_name'     => $originalName,
@@ -1964,7 +2191,7 @@ class HomeController
     public function downloadDocument(): void
     {
         $id = (int)($_GET['id'] ?? 0);
-        $document = $id > 0 ? Database::fetchOne(
+        $document = $id > 0 ? $this->fetchImportedOne(
             'SELECT file_name, file_path FROM `sld_event_documentations` WHERE id = :id AND deleted_at IS NULL',
             ['id' => $id]
         ) : null;
@@ -1993,7 +2220,7 @@ class HomeController
     {
         $id = (int)($_POST['document_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_event_documentations', [
+            $this->updateImported('sld_event_documentations', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Document #{$id} archived.");
@@ -2006,10 +2233,11 @@ class HomeController
      * ========================================================================= */
     public function attendanceMonitoring(): void
     {
-        $events = Database::fetchAll("
+        $events = $this->fetchImportedAll("
             SELECT ac.id, ac.activity_title, org.name as organization_name
             FROM `sld_activity_calendar` ac
-            LEFT JOIN `sld_organizations` org ON ac.organization_id = org.id
+            INNER JOIN `sld_activity_proposals` p ON ac.proposal_id = p.id
+            LEFT JOIN `sld_organizations` org ON p.organization_id = org.id
             WHERE ac.deleted_at IS NULL
             ORDER BY ac.start_datetime DESC
         ");
@@ -2022,7 +2250,8 @@ class HomeController
                    s.first_name, s.last_name
             FROM `sld_activity_attendances` att
             LEFT JOIN `sld_activity_calendar` ac ON att.calendar_id = ac.id
-            LEFT JOIN `sld_organizations` org ON ac.organization_id = org.id
+            LEFT JOIN `sld_activity_proposals` p ON ac.proposal_id = p.id
+            LEFT JOIN `sld_organizations` org ON p.organization_id = org.id
             LEFT JOIN `students` s ON att.student_id = s.student_number
             WHERE att.deleted_at IS NULL
         ";
@@ -2033,7 +2262,7 @@ class HomeController
         }
         $sql .= " ORDER BY att.created_at DESC";
 
-        $attendances = Database::fetchAll($sql, $params);
+        $attendances = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/attendance-monitoring', [
             'title'              => 'Attendance Monitoring',
@@ -2067,7 +2296,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_activity_attendances', [
+            $this->insertImported('sld_activity_attendances', [
                 'calendar_id'       => $calendarId,
                 'student_id'        => $studentId,
                 'attendance_status' => in_array($status, self::ATTENDANCE_STATUSES, true) ? $status : 'Present',
@@ -2098,7 +2327,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_activity_attendances', [
+            $this->updateImported('sld_activity_attendances', [
                 'attendance_status' => in_array($status, self::ATTENDANCE_STATUSES, true) ? $status : 'Present',
                 'time_in'           => $timeIn !== '' ? $timeIn : null,
                 'time_out'          => $timeOut !== '' ? $timeOut : null,
@@ -2117,7 +2346,7 @@ class HomeController
         $id = (int)($_POST['attendance_id'] ?? $_POST['id'] ?? 0);
         $calendarId = (int)($_POST['calendar_id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_activity_attendances', [
+            $this->updateImported('sld_activity_attendances', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Attendance #{$id} archived.");
@@ -2130,10 +2359,11 @@ class HomeController
      * ========================================================================= */
     public function participationTracking(): void
     {
-        $events = Database::fetchAll("
+        $events = $this->fetchImportedAll("
             SELECT ac.id, ac.activity_title, org.name as organization_name
             FROM `sld_activity_calendar` ac
-            LEFT JOIN `sld_organizations` org ON ac.organization_id = org.id
+            INNER JOIN `sld_activity_proposals` p ON ac.proposal_id = p.id
+            LEFT JOIN `sld_organizations` org ON p.organization_id = org.id
             WHERE ac.deleted_at IS NULL
             ORDER BY ac.start_datetime DESC
         ");
@@ -2146,7 +2376,8 @@ class HomeController
                    s.first_name, s.last_name
             FROM `sld_student_participations` sp
             LEFT JOIN `sld_activity_calendar` ac ON sp.calendar_id = ac.id
-            LEFT JOIN `sld_organizations` org ON ac.organization_id = org.id
+            LEFT JOIN `sld_activity_proposals` p ON ac.proposal_id = p.id
+            LEFT JOIN `sld_organizations` org ON p.organization_id = org.id
             LEFT JOIN `students` s ON sp.student_id = s.student_number
             WHERE sp.deleted_at IS NULL
         ";
@@ -2157,7 +2388,7 @@ class HomeController
         }
         $sql .= " ORDER BY sp.created_at DESC";
 
-        $participations = Database::fetchAll($sql, $params);
+        $participations = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/participation-tracking', [
             'title'          => 'Participation Tracking',
@@ -2189,7 +2420,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_student_participations', [
+            $this->insertImported('sld_student_participations', [
                 'calendar_id'          => $calendarId,
                 'student_id'           => $studentId,
                 'participation_role'   => $role !== '' ? $role : null,
@@ -2218,7 +2449,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_student_participations', [
+            $this->updateImported('sld_student_participations', [
                 'participation_role'   => $role !== '' ? $role : null,
                 'contribution_details' => $details !== '' ? $details : null,
                 'updated_at'           => date('Y-m-d H:i:s')
@@ -2236,7 +2467,7 @@ class HomeController
         $id = (int)($_POST['participation_id'] ?? $_POST['id'] ?? 0);
         $calendarId = (int)($_POST['calendar_id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_student_participations', [
+            $this->updateImported('sld_student_participations', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Participation #{$id} archived.");
@@ -2273,7 +2504,7 @@ class HomeController
         $sql .= " HAVING (total_activities > 0 OR total_participations > 0 OR total_credits > 0)";
         $sql .= " ORDER BY total_credits DESC, total_activities DESC LIMIT 200";
 
-        $involvements = Database::fetchAll($sql, $params);
+        $involvements = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/involvement-history', [
             'title'        => 'Student Involvement History',
@@ -2295,7 +2526,7 @@ class HomeController
      * ========================================================================= */
     public function engagementPoints(): void
     {
-        $events = Database::fetchAll("SELECT id, activity_title FROM `sld_activity_calendar` WHERE deleted_at IS NULL ORDER BY start_datetime DESC");
+        $events = $this->fetchImportedAll("SELECT id, activity_title FROM `sld_activity_calendar` WHERE deleted_at IS NULL ORDER BY start_datetime DESC");
         $searchQuery = trim($_GET['q'] ?? '');
 
         $sql = "
@@ -2316,7 +2547,7 @@ class HomeController
         }
         $sql .= " ORDER BY ec.awarded_at DESC";
 
-        $credits = Database::fetchAll($sql, $params);
+        $credits = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/engagement-points', [
             'title'       => 'Engagement Points and Credits',
@@ -2349,7 +2580,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_engagement_credits', [
+            $this->insertImported('sld_engagement_credits', [
                 'student_id'  => $studentId,
                 'calendar_id' => $calendarId > 0 ? $calendarId : null,
                 'points'      => $points,
@@ -2390,7 +2621,7 @@ class HomeController
             if ($calendarId > 0) $data['calendar_id'] = $calendarId;
             if ($awardedAt !== '') $data['awarded_at'] = $awardedAt;
 
-            Database::update('sld_engagement_credits', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
+            $this->updateImported('sld_engagement_credits', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
             Session::flash('success', 'Engagement credit updated successfully.');
         } catch (\Exception $e) {
             Session::flash('error', 'Could not update credit: ' . $e->getMessage());
@@ -2403,7 +2634,7 @@ class HomeController
     {
         $id = (int)($_POST['credit_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_engagement_credits', [
+            $this->updateImported('sld_engagement_credits', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Credit #{$id} archived.");
@@ -2435,7 +2666,7 @@ class HomeController
         }
         $sql .= " ORDER BY sr.recognition_date DESC";
 
-        $recognitions = Database::fetchAll($sql, $params);
+        $recognitions = $this->fetchImportedAll($sql, $params);
 
         View::render('orgleadership/Views/recognition-records', [
             'title'        => 'Recognition Records',
@@ -2466,7 +2697,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_student_recognitions', [
+            $this->insertImported('sld_student_recognitions', [
                 'student_id'        => $studentId,
                 'recognition_title' => $title,
                 'recognition_date'  => $date,
@@ -2504,7 +2735,7 @@ class HomeController
             ];
             if ($studentId !== '') $data['student_id'] = $studentId;
 
-            Database::update('sld_student_recognitions', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
+            $this->updateImported('sld_student_recognitions', $data, 'id = :id AND deleted_at IS NULL', ['id' => $id]);
             Session::flash('success', "Recognition \"{$title}\" updated successfully.");
         } catch (\Exception $e) {
             Session::flash('error', 'Could not update recognition: ' . $e->getMessage());
@@ -2517,7 +2748,7 @@ class HomeController
     {
         $id = (int)($_POST['recognition_id'] ?? $_POST['id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_student_recognitions', [
+            $this->updateImported('sld_student_recognitions', [
                 'deleted_at' => date('Y-m-d H:i:s')
             ], 'id = :id', ['id' => $id]);
             Session::flash('success', "Recognition #{$id} archived.");
@@ -2604,8 +2835,8 @@ class HomeController
 
     public function announcements(): void
     {
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
-        $students = Database::fetchAll("SELECT student_number, first_name, last_name FROM `students` ORDER BY last_name ASC LIMIT 500");
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $students = $this->fetchImportedAll("SELECT student_number, first_name, last_name FROM `students` ORDER BY last_name ASC LIMIT 500");
         $organizationFilter = (int)($_GET['organization_id'] ?? 0);
         $statusFilter = trim((string)($_GET['status'] ?? ''));
         $statuses = ['Draft', 'Published', 'Archived'];
@@ -2630,7 +2861,7 @@ class HomeController
         $sql .= " ORDER BY a.published_at DESC, a.id DESC";
 
         $this->renderOperationalView('announcements', 'Announcements', 'Communication and Notification', [
-            'announcements' => Database::fetchAll($sql, $params),
+            'announcements' => $this->fetchImportedAll($sql, $params),
             'organizations' => $organizations,
             'students' => $students,
             'announcementStatuses' => $statuses,
@@ -2655,7 +2886,7 @@ class HomeController
         }
 
         try {
-            Database::insert('sld_announcements', [
+            $this->insertImported('sld_announcements', [
                 'organization_id' => $organizationId > 0 ? $organizationId : null,
                 'title' => $title,
                 'message' => $message,
@@ -2688,7 +2919,7 @@ class HomeController
         }
 
         try {
-            Database::update('sld_announcements', [
+            $this->updateImported('sld_announcements', [
                 'organization_id' => $organizationId > 0 ? $organizationId : null,
                 'title' => $title,
                 'message' => $message,
@@ -2708,7 +2939,7 @@ class HomeController
     {
         $id = (int)($_POST['announcement_id'] ?? 0);
         if ($id > 0) {
-            Database::update('sld_announcements', [
+            $this->updateImported('sld_announcements', [
                 'deleted_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ], 'id = :id AND deleted_at IS NULL', ['id' => $id]);
@@ -2719,7 +2950,7 @@ class HomeController
 
     public function organizationUpdates(): void
     {
-        $updates = Database::fetchAll("SELECT a.id, a.title, a.message, a.published_at, org.name AS organization_name,
+        $updates = $this->fetchImportedAll("SELECT a.id, a.title, a.message, a.published_at, org.name AS organization_name,
                                               org.acronym AS organization_acronym,
                                               s.first_name AS publisher_first_name, s.last_name AS publisher_last_name
                                        FROM `sld_announcements` a
@@ -2735,11 +2966,12 @@ class HomeController
 
     public function activityReminders(): void
     {
-        $reminders = Database::fetchAll("SELECT ac.id, ac.activity_title, ac.start_datetime, ac.end_datetime, ac.status,
+        $reminders = $this->fetchImportedAll("SELECT ac.id, ac.activity_title, ac.start_datetime, ac.end_datetime, ac.status,
                                                 org.name AS organization_name, org.acronym AS organization_acronym,
                                                 v.venue_name
                                          FROM `sld_activity_calendar` ac
-                                         LEFT JOIN `sld_organizations` org ON ac.organization_id = org.id
+                                         INNER JOIN `sld_activity_proposals` p ON ac.proposal_id = p.id
+                                         LEFT JOIN `sld_organizations` org ON p.organization_id = org.id
                                          LEFT JOIN `sld_venues` v ON ac.venue_id = v.id
                                          WHERE ac.deleted_at IS NULL
                                            AND ac.status IN ('Scheduled', 'Ongoing')
@@ -2753,7 +2985,7 @@ class HomeController
 
     public function approvalNotifications(): void
     {
-        $notifications = Database::fetchAll("SELECT ea.id, ea.decision, ea.approval_step, ea.decision_at, ea.created_at,
+        $notifications = $this->fetchImportedAll("SELECT ea.id, ea.decision, ea.approval_step, ea.decision_at, ea.created_at,
                                                     ea.comments, p.id AS proposal_id, p.activity_title, p.proposal_status,
                                                     org.name AS organization_name, org.acronym AS organization_acronym
                                              FROM `sld_event_approvals` ea
@@ -2770,20 +3002,22 @@ class HomeController
     public function organizationPerformance(): void
     {
         $organizationFilter = (int)($_GET['organization_id'] ?? 0);
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
-        $sql = "SELECT o.id, o.name, o.acronym, o.category, o.status,
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $sql = "SELECT o.id, o.name, o.acronym, c.classification_name AS category, o.status,
                        (SELECT COUNT(*) FROM `sld_members` m WHERE m.organization_id = o.id AND m.deleted_at IS NULL AND m.status = 'Active') AS active_members,
-                       (SELECT COUNT(*) FROM `sld_activity_calendar` ac WHERE ac.organization_id = o.id AND ac.deleted_at IS NULL) AS activities,
-                       (SELECT COUNT(*) FROM `sld_activity_calendar` ac WHERE ac.organization_id = o.id AND ac.deleted_at IS NULL AND ac.status = 'Completed') AS completed_activities,
+                       (SELECT COUNT(*) FROM `sld_activity_calendar` ac INNER JOIN `sld_activity_proposals` p ON p.id = ac.proposal_id WHERE p.organization_id = o.id AND p.deleted_at IS NULL AND ac.deleted_at IS NULL) AS activities,
+                       (SELECT COUNT(*) FROM `sld_activity_calendar` ac INNER JOIN `sld_activity_proposals` p ON p.id = ac.proposal_id WHERE p.organization_id = o.id AND p.deleted_at IS NULL AND ac.deleted_at IS NULL AND ac.status = 'Completed') AS completed_activities,
                        (SELECT COUNT(*) FROM `sld_organization_accreditations` oa WHERE oa.organization_id = o.id AND oa.deleted_at IS NULL) AS accreditations
-                FROM `sld_organizations` o WHERE o.deleted_at IS NULL";
+                FROM `sld_organizations` o
+                LEFT JOIN `sld_organization_classifications` c ON c.id = o.classification_id
+                WHERE o.deleted_at IS NULL";
         $params = [];
         if ($organizationFilter > 0) {
             $sql .= " AND o.id = :organization_id";
             $params['organization_id'] = $organizationFilter;
         }
         $sql .= " ORDER BY o.name ASC";
-        $rows = Database::fetchAll($sql, $params);
+        $rows = $this->fetchImportedAll($sql, $params);
         $columns = [
             'name' => 'Organization', 'acronym' => 'Acronym', 'category' => 'Category', 'status' => 'Status',
             'active_members' => 'Active members', 'activities' => 'Activities',
@@ -2814,20 +3048,21 @@ class HomeController
         $organizationFilter = (int)($_GET['organization_id'] ?? 0);
         $from = $this->normalizeDateFilter((string)($_GET['from'] ?? ''));
         $to = $this->normalizeDateFilter((string)($_GET['to'] ?? ''));
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
         $sql = "SELECT ac.id, ac.activity_title, ac.start_datetime, ac.status,
                        org.name AS organization_name, org.acronym AS organization_acronym,
                        COUNT(DISTINCT aa.student_id) AS attendees,
                        COUNT(DISTINCT CASE WHEN aa.attendance_status = 'Present' THEN aa.student_id END) AS present,
                        COUNT(DISTINCT sp.id) AS participation_records
                 FROM `sld_activity_calendar` ac
-                INNER JOIN `sld_organizations` org ON ac.organization_id = org.id
+                INNER JOIN `sld_activity_proposals` p ON p.id = ac.proposal_id AND p.deleted_at IS NULL
+                INNER JOIN `sld_organizations` org ON p.organization_id = org.id
                 LEFT JOIN `sld_activity_attendances` aa ON aa.calendar_id = ac.id AND aa.deleted_at IS NULL
                 LEFT JOIN `sld_student_participations` sp ON sp.calendar_id = ac.id AND sp.deleted_at IS NULL
                 WHERE ac.deleted_at IS NULL";
         $params = [];
         if ($organizationFilter > 0) {
-            $sql .= " AND ac.organization_id = :organization_id";
+            $sql .= " AND p.organization_id = :organization_id";
             $params['organization_id'] = $organizationFilter;
         }
         if ($from !== null) {
@@ -2839,7 +3074,7 @@ class HomeController
             $params['to_date'] = $to;
         }
         $sql .= " GROUP BY ac.id, ac.activity_title, ac.start_datetime, ac.status, org.name, org.acronym ORDER BY ac.start_datetime DESC";
-        $rows = Database::fetchAll($sql, $params);
+        $rows = $this->fetchImportedAll($sql, $params);
         $columns = [
             'activity_title' => 'Activity', 'organization_name' => 'Organization', 'start_datetime' => 'Date and time',
             'status' => 'Status', 'attendees' => 'Students recorded', 'present' => 'Present',
@@ -2872,7 +3107,7 @@ class HomeController
     public function leadershipReports(): void
     {
         $organizationFilter = (int)($_GET['organization_id'] ?? 0);
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
         $sql = "SELECT o.id, o.name, o.acronym, o.status,
                        (SELECT COUNT(*) FROM `sld_officers` so WHERE so.organization_id = o.id AND so.deleted_at IS NULL AND so.officers_status = 'Active') AS active_officers,
                        (SELECT COUNT(*) FROM `sld_officer_appointments` ap WHERE ap.organization_id = o.id AND ap.deleted_at IS NULL AND ap.start_date <= CURDATE() AND (ap.end_date IS NULL OR ap.end_date >= CURDATE())) AS current_appointments,
@@ -2885,7 +3120,7 @@ class HomeController
             $params['organization_id'] = $organizationFilter;
         }
         $sql .= " ORDER BY o.name ASC";
-        $rows = Database::fetchAll($sql, $params);
+        $rows = $this->fetchImportedAll($sql, $params);
         $columns = [
             'name' => 'Organization', 'acronym' => 'Acronym', 'status' => 'Status',
             'active_officers' => 'Active officers', 'current_appointments' => 'Current appointments',
@@ -2916,21 +3151,22 @@ class HomeController
         $organizationFilter = (int)($_GET['organization_id'] ?? 0);
         $from = $this->normalizeDateFilter((string)($_GET['from'] ?? ''));
         $to = $this->normalizeDateFilter((string)($_GET['to'] ?? ''));
-        $organizations = Database::fetchAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $organizations = $this->fetchImportedAll("SELECT id, name, acronym FROM `sld_organizations` WHERE deleted_at IS NULL ORDER BY name ASC");
         $sql = "SELECT ac.id, ac.activity_title, ac.start_datetime, ac.status,
                        org.name AS organization_name, org.acronym AS organization_acronym,
                        COUNT(DISTINCT aa.student_id) AS attendance_records,
                        COUNT(DISTINCT sp.id) AS participation_records,
                        COUNT(DISTINCT ed.id) AS documents
                 FROM `sld_activity_calendar` ac
-                INNER JOIN `sld_organizations` org ON ac.organization_id = org.id
+                INNER JOIN `sld_activity_proposals` p ON p.id = ac.proposal_id AND p.deleted_at IS NULL
+                INNER JOIN `sld_organizations` org ON p.organization_id = org.id
                 LEFT JOIN `sld_activity_attendances` aa ON aa.calendar_id = ac.id AND aa.deleted_at IS NULL
                 LEFT JOIN `sld_student_participations` sp ON sp.calendar_id = ac.id AND sp.deleted_at IS NULL
                 LEFT JOIN `sld_event_documentations` ed ON ed.calendar_id = ac.id AND ed.deleted_at IS NULL
                 WHERE ac.deleted_at IS NULL";
         $params = [];
         if ($organizationFilter > 0) {
-            $sql .= " AND ac.organization_id = :organization_id";
+            $sql .= " AND p.organization_id = :organization_id";
             $params['organization_id'] = $organizationFilter;
         }
         if ($from !== null) {
@@ -2942,7 +3178,7 @@ class HomeController
             $params['to_date'] = $to;
         }
         $sql .= " GROUP BY ac.id, ac.activity_title, ac.start_datetime, ac.status, org.name, org.acronym ORDER BY ac.start_datetime DESC";
-        $rows = Database::fetchAll($sql, $params);
+        $rows = $this->fetchImportedAll($sql, $params);
         $columns = [
             'activity_title' => 'Activity', 'organization_name' => 'Organization', 'start_datetime' => 'Date and time',
             'status' => 'Status', 'attendance_records' => 'Students recorded',

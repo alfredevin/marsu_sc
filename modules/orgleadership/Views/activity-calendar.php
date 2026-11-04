@@ -228,13 +228,13 @@ $statusBadge = [
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <!-- Proposal (optional) -->
+                        <!-- Proposal -->
                         <div class="col-md-6">
-                            <label for="createProposalId" class="form-label">Linked Proposal</label>
-                            <select id="createProposalId" name="proposal_id" class="form-select">
-                                <option value="">— None —</option>
+                            <label for="createProposalId" class="form-label">Approved Proposal <span class="text-danger">*</span></label>
+                            <select id="createProposalId" name="proposal_id" class="form-select" required>
+                                <option value="">Select proposal</option>
                                 <?php foreach ($proposals as $prop): ?>
-                                    <option value="<?= (int)$prop['id'] ?>"><?= e($prop['activity_title']) ?></option>
+                                    <option value="<?= (int)$prop['id'] ?>" data-organization-id="<?= (int)$prop['organization_id'] ?>"><?= e($prop['activity_title']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -311,13 +311,13 @@ $statusBadge = [
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <!-- Proposal (optional) -->
+                        <!-- Proposal -->
                         <div class="col-md-6">
-                            <label for="editProposalId" class="form-label">Linked Proposal</label>
-                            <select id="editProposalId" name="proposal_id" class="form-select">
-                                <option value="">— None —</option>
+                            <label for="editProposalId" class="form-label">Approved Proposal <span class="text-danger">*</span></label>
+                            <select id="editProposalId" name="proposal_id" class="form-select" required>
+                                <option value="">Select proposal</option>
                                 <?php foreach ($proposals as $prop): ?>
-                                    <option value="<?= (int)$prop['id'] ?>"><?= e($prop['activity_title']) ?></option>
+                                    <option value="<?= (int)$prop['id'] ?>" data-organization-id="<?= (int)$prop['organization_id'] ?>"><?= e($prop['activity_title']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -415,10 +415,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ---- Edit Modal Population ----
+    function filterProposals(select, organizationId) {
+        if (!select) return;
+        Array.from(select.options).forEach(function (option) {
+            if (!option.value) {
+                option.hidden = false;
+                return;
+            }
+            option.hidden = option.dataset.organizationId !== String(organizationId);
+        });
+        if (select.selectedOptions.length && select.selectedOptions[0].hidden) {
+            select.value = '';
+        }
+    }
+
+    const createOrg = document.getElementById('createOrgId');
+    const createProposal = document.getElementById('createProposalId');
+    createOrg?.addEventListener('change', function () {
+        filterProposals(createProposal, this.value);
+    });
+    const editOrg = document.getElementById('editOrgId');
+    const editProposal = document.getElementById('editProposalId');
+    editOrg?.addEventListener('change', function () {
+        filterProposals(editProposal, this.value);
+    });
+
     document.querySelectorAll('.btn-edit-activity').forEach(function (btn) {
         btn.addEventListener('click', function () {
             document.getElementById('editCalendarId').value   = this.dataset.id;
             document.getElementById('editOrgId').value        = this.dataset.organization_id;
+            filterProposals(editProposal, this.dataset.organization_id);
             document.getElementById('editProposalId').value   = this.dataset.proposal_id || '';
             document.getElementById('editVenueId').value      = this.dataset.venue_id || '';
             document.getElementById('editTitle').value        = this.dataset.activity_title;

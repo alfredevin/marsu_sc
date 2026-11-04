@@ -8,6 +8,7 @@ use Modules\Orgleadership\Controllers\HomeController;
 
 // Module Dashboard & Records
 $router->get('/orgleadership', [HomeController::class, 'index'], ['auth', 'permission:orgleadership.view']);
+$router->get('/orgleadership/organization-registration', [HomeController::class, 'organizationRegistration'], ['auth', 'permission:orgleadership.view']);
 $router->get('/orgleadership/show', [HomeController::class, 'show'], ['auth', 'permission:orgleadership.view']);
 $router->post('/orgleadership/create', [HomeController::class, 'store'], ['auth', 'permission:orgleadership.create', 'csrf']);
 $router->post('/orgleadership/update', [HomeController::class, 'update'], ['auth', 'permission:orgleadership.view', 'csrf']);

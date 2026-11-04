@@ -22,7 +22,6 @@
                         <th>#</th>
                         <th>Organization name / acronym</th>
                         <th>Category</th>
-                        <th>Faculty adviser</th>
                         <th>Classification / status</th>
                         <th>Accreditation date</th>
                         <th>Date registered</th>
@@ -31,14 +30,13 @@
                 </thead>
                 <tbody>
                 <?php if (!$organizations): ?>
-                    <tr><td colspan="8" class="text-center text-muted py-5"><i class="bi bi-inbox fs-2 d-block mb-2"></i>No organization profiles found.</td></tr>
+                    <tr><td colspan="7" class="text-center text-muted py-5"><i class="bi bi-inbox fs-2 d-block mb-2"></i>No organization profiles found.</td></tr>
                 <?php endif; ?>
                 <?php foreach ($organizations as $index => $item): ?>
                     <tr>
                         <td><?= $index + 1 ?></td>
                         <td><strong><?= e($item['name']) ?></strong><small class="d-block text-muted"><?= e($item['acronym']) ?></small></td>
                         <td><?= e($item['category']) ?></td>
-                        <td><?= e($item['adviser']) ?></td>
                         <td><span class="badge <?= $item['status'] === 'Active' ? 'bg-success' : ($item['status'] === 'Inactive' ? 'bg-secondary' : 'bg-warning text-dark') ?>"><?= e($item['status']) ?></span></td>
                         <td><?= e($item['accreditation_date'] ? date('M d, Y', strtotime($item['accreditation_date'])) : '-') ?></td>
                         <td><?= e(date('M d, Y', strtotime($item['created_at']))) ?></td>
@@ -83,8 +81,7 @@
             <div class="modal-body"><div class="row g-3">
                 <div class="col-md-8"><label class="form-label" for="profile-name-<?= (int)$item['id'] ?>">Organization name <span class="text-danger">*</span></label><input class="form-control" id="profile-name-<?= (int)$item['id'] ?>" name="name" value="<?= e($item['name']) ?>" maxlength="191" required></div>
                 <div class="col-md-4"><label class="form-label" for="profile-acronym-<?= (int)$item['id'] ?>">Acronym <span class="text-danger">*</span></label><input class="form-control text-uppercase" id="profile-acronym-<?= (int)$item['id'] ?>" name="acronym" value="<?= e($item['acronym']) ?>" maxlength="50" required></div>
-                <div class="col-md-6"><label class="form-label" for="profile-category-<?= (int)$item['id'] ?>">Category <span class="text-danger">*</span></label><input class="form-control" id="profile-category-<?= (int)$item['id'] ?>" name="category" value="<?= e($item['category']) ?>" maxlength="100" required></div>
-                <div class="col-md-6"><label class="form-label" for="profile-adviser-<?= (int)$item['id'] ?>">Faculty adviser <span class="text-danger">*</span></label><input class="form-control" id="profile-adviser-<?= (int)$item['id'] ?>" name="adviser" value="<?= e($item['adviser']) ?>" maxlength="191" required></div>
+                <div class="col-md-6"><label class="form-label" for="profile-category-<?= (int)$item['id'] ?>">Classification <span class="text-danger">*</span></label><select class="form-select" id="profile-category-<?= (int)$item['id'] ?>" name="classification_id" required><option value="">Select classification</option><?php foreach ($classifications as $classification): ?><option value="<?= (int)$classification['id'] ?>" <?= (int)$item['classification_id'] === (int)$classification['id'] ? 'selected' : '' ?>><?= e($classification['classification_name']) ?></option><?php endforeach; ?></select></div>
                 <div class="col-md-6"><label class="form-label" for="profile-status-<?= (int)$item['id'] ?>">Classification / status <span class="text-danger">*</span></label><select class="form-select" id="profile-status-<?= (int)$item['id'] ?>" name="status" required><?php foreach ($statuses as $status): ?><option value="<?= e($status) ?>" <?= $item['status'] === $status ? 'selected' : '' ?>><?= e($status) ?></option><?php endforeach; ?></select></div>
                 <div class="col-12"><label class="form-label" for="profile-description-<?= (int)$item['id'] ?>">Description</label><textarea class="form-control" id="profile-description-<?= (int)$item['id'] ?>" name="description" rows="4" maxlength="5000"><?= e($item['description'] ?? '') ?></textarea></div>
             </div></div>
@@ -100,8 +97,8 @@
         <form method="post" action="<?= e(url('orgleadership/organizations/store')) ?>"><?= csrf_field() ?><div class="modal-body"><p class="small text-muted">New organizations are created with <strong>Pending Accreditation</strong> status.</p><div class="row g-3">
             <div class="col-md-8"><label class="form-label" for="registration-name">Organization name <span class="text-danger">*</span></label><input class="form-control" id="registration-name" name="name" maxlength="191" required></div>
             <div class="col-md-4"><label class="form-label" for="registration-acronym">Acronym <span class="text-danger">*</span></label><input class="form-control text-uppercase" id="registration-acronym" name="acronym" maxlength="50" required></div>
-            <div class="col-md-6"><label class="form-label" for="registration-category">Category <span class="text-danger">*</span></label><select class="form-select" id="registration-category" name="category" required><option value="">Select category</option><option>Academic</option><option>College-based</option><option>Special interest</option><option>Student governance</option><option>Socio-cultural</option><option>Sports</option></select></div>
-            <div class="col-md-6"><label class="form-label" for="registration-adviser">Faculty adviser <span class="text-danger">*</span></label><input class="form-control" id="registration-adviser" name="adviser" maxlength="191" required></div>
+            <div class="col-md-6"><label class="form-label" for="registration-category">Classification <span class="text-danger">*</span></label><select class="form-select" id="registration-category" name="classification_id" required><option value="">Select classification</option><?php foreach ($classifications as $classification): ?><option value="<?= (int)$classification['id'] ?>"><?= e($classification['classification_name']) ?></option><?php endforeach; ?></select></div>
+            <div class="col-md-6"><label class="form-label" for="registration-school-year">School year</label><input class="form-control" id="registration-school-year" name="school_year" maxlength="9" placeholder="2026-2027"></div>
             <div class="col-12"><label class="form-label" for="registration-description">Description</label><textarea class="form-control" id="registration-description" name="description" rows="4" maxlength="5000"></textarea></div>
         </div></div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-marsu" type="submit"><i class="bi bi-send me-1"></i>Submit for accreditation</button></div></form>
     </div></div>

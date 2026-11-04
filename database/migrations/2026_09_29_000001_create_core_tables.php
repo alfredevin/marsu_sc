@@ -9,7 +9,7 @@ return new class {
         $db->exec("CREATE TABLE IF NOT EXISTS `roles` (
             `id` INT AUTO_INCREMENT PRIMARY KEY,
             `name` VARCHAR(100) NOT NULL,
-            `slug` VARCHAR(64) NOT NULL UNIQUE,
+            `slug` VARCHAR(64) NOT NULL UNIQUE, 
             `description` VARCHAR(255) NULL,
             `created_at` DATETIME NOT NULL,
             `updated_at` DATETIME NULL
@@ -33,6 +33,7 @@ return new class {
             FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
+        
         // 4. Users table
         $db->exec("CREATE TABLE IF NOT EXISTS `users` (
             `id` INT AUTO_INCREMENT PRIMARY KEY,

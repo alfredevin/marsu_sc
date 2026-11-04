@@ -10,13 +10,23 @@ return new class {
         $count = (int)Database::fetchColumn("SELECT COUNT(*) FROM sample_items");
         if ($count === 0) {
             Database::insert('sample_items', [
-                'title'      => 'Sample Item 1',
+                'title'      => 'HDMI to VGA Projector Cable',
+                'category'   => 'Equipment',
+                'created_at' => $now
+            ]);
+            Database::insert('sample_items', [
+                'title'      => 'Curriculum Checklist Handbook',
                 'category'   => 'Academic',
                 'created_at' => $now
             ]);
             Database::insert('sample_items', [
-                'title'      => 'Sample Item 2',
+                'title'      => 'RFID Tap Card Reader',
                 'category'   => 'Administrative',
+                'created_at' => $now
+            ]);
+            Database::insert('sample_items', [
+                'title'      => 'Whiteboard Marker Set',
+                'category'   => 'Facilities',
                 'created_at' => $now
             ]);
         }

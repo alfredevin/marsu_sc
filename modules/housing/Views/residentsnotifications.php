@@ -46,31 +46,82 @@
 <!-- Notification KPI Summary Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Active Notices</div>
-            <div class="h3 font-weight-bold mb-0 text-gold">8 Dispatched</div>
-            <div class="small text-muted mt-1">Sent within the last 30 days</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Active Notices</div>
+                    <div class="kpi-value text-gold">
+                        8
+                        <span class="kpi-unit">Dispatched</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Active Notices">
+                    <i class="bi bi-megaphone-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-send-check text-gold-dark"></i>
+                <span>Sent within the last 30 days</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-success p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">SMS Delivery Rate</div>
-            <div class="h3 font-weight-bold mb-0 text-success">98.5%</div>
-            <div class="small text-muted mt-1">Telco gateway confirmed</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">SMS Delivery Rate</div>
+                    <div class="kpi-value text-success">
+                        98.5%
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="SMS Delivery Rate">
+                    <i class="bi bi-chat-left-dots-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check-all text-success"></i>
+                <span>Telco gateway confirmed</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Overdue Reminders</div>
-            <div class="h3 font-weight-bold mb-0 text-marsu-burgundy">14 Alerts</div>
-            <div class="small text-muted mt-1">Automated balance notices</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Overdue Reminders</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        14
+                        <span class="kpi-unit">Alerts</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Overdue Reminders">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-exclamation-circle text-marsu-burgundy"></i>
+                <span>Automated balance notices</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-warning p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Safety / Curfew Advisories</div>
-            <div class="h3 font-weight-bold mb-0 text-warning">4 Alerts</div>
-            <div class="small text-muted mt-1">Weather & campus protocol</div>
+        <div class="card card-kpi border-warning h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Safety & Advisories</div>
+                    <div class="kpi-value text-warning">
+                        4
+                        <span class="kpi-unit">Bulletins</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Safety & Advisories">
+                    <i class="bi bi-shield-exclamation"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-info-circle text-warning"></i>
+                <span>Weather & campus protocol</span>
+            </div>
         </div>
     </div>
 </div>

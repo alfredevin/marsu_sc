@@ -138,7 +138,7 @@
 <div class="modal fade" id="newBedModal" tabindex="-1" aria-labelledby="newBedModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-white">
+            <div class="modal-header bg-marsu text-primary">
                 <h5 class="modal-title font-weight-bold" id="newBedModalLabel">
                     <i class="bi bi-layout-split me-2 text-gold"></i>Allocate Bed Space to Student
                 </h5>

@@ -51,34 +51,85 @@
 <!-- Occupancy Metric Progress Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Overall University Occupancy</div>
-            <div class="h3 font-weight-bold mb-0 text-marsu-burgundy">78.0%</div>
-            <div class="small text-muted mt-1">64 of 82 beds occupied</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">University Occupancy</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        78.0%
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Overall Occupancy">
+                    <i class="bi bi-pie-chart-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-people-fill text-marsu-burgundy"></i>
+                <span>64 of 82 beds occupied</span>
+            </div>
             <div class="progress mt-2" style="height: 6px;">
                 <div class="progress-bar bg-marsu" style="width: 78%;"></div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Female Residents</div>
-            <div class="h3 font-weight-bold mb-0 text-success">38 Students</div>
-            <div class="small text-muted mt-1">59.4% of total population</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Female Residents</div>
+                    <div class="kpi-value text-success">
+                        38
+                        <span class="kpi-unit">Students</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Female Residents">
+                    <i class="bi bi-gender-female"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-pie-chart text-success"></i>
+                <span>59.4% of total population</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Male Residents</div>
-            <div class="h3 font-weight-bold mb-0 text-gold">26 Students</div>
-            <div class="small text-muted mt-1">40.6% of total population</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Male Residents</div>
+                    <div class="kpi-value text-gold">
+                        26
+                        <span class="kpi-unit">Students</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Male Residents">
+                    <i class="bi bi-gender-male"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-pie-chart text-gold-dark"></i>
+                <span>40.6% of total population</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Critical Thresholds</div>
-            <div class="h3 font-weight-bold mb-0 text-danger">0 Overcrowded</div>
-            <div class="small text-muted mt-1">100% within fire code limits</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Critical Thresholds</div>
+                    <div class="kpi-value text-success">
+                        0
+                        <span class="kpi-unit">Overcrowded</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Critical Safety Thresholds">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-patch-check-fill text-success"></i>
+                <span>100% within fire code limits</span>
+            </div>
         </div>
     </div>
 </div>

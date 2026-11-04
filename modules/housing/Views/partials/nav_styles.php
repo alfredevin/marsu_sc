@@ -224,13 +224,230 @@
     box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25) !important;
 }
 
-/* Card KPI Polish */
+/* ==========================================================================
+   4. EXECUTIVE KPI & STAT CARDS (High Contrast, Crisp Typography, Accessible)
+   ========================================================================== */
 .card-kpi {
-    border-radius: 10px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    border-radius: 12px !important;
+    border: 1px solid #e9ecef !important;
+    border-left: 4.5px solid #800020 !important;
+    background: #ffffff !important;
+    padding: 1.15rem 1.25rem !important;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    overflow: hidden;
 }
+
 .card-kpi:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Border Accent Variants */
+.card-kpi.border-burgundy,
+.card-kpi.kpi-burgundy {
+    border-color: #e9ecef !important;
+    border-left-color: #800020 !important;
+}
+
+.card-kpi.border-gold,
+.card-kpi.kpi-gold {
+    border-color: #e9ecef !important;
+    border-left-color: #D4AF37 !important;
+}
+
+.card-kpi.border-success,
+.card-kpi.kpi-success {
+    border-color: #e9ecef !important;
+    border-left-color: #198754 !important;
+}
+
+.card-kpi.border-info,
+.card-kpi.kpi-info {
+    border-color: #e9ecef !important;
+    border-left-color: #0d6efd !important;
+}
+
+/* KPI Typography - Crisp, legible, modern */
+.kpi-label,
+.card-kpi .text-muted.small.text-uppercase {
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.055em !important;
+    color: #475569 !important;
+    margin-bottom: 0.35rem !important;
+    line-height: 1.25 !important;
+}
+
+.kpi-value,
+.card-kpi .h3,
+.card-kpi .h2 {
+    font-size: 1.85rem !important;
+    font-weight: 800 !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.025em !important;
+    color: #0f172a !important;
+    margin-bottom: 0.35rem !important;
+    margin-top: 0 !important;
+}
+
+/* Accessible, high-contrast readable color classes for values (WCAG AA compliant) */
+.kpi-value.text-marsu-burgundy,
+.card-kpi .text-marsu-burgundy {
+    color: #800020 !important;
+}
+
+/* Rich, high-contrast gold/amber (contrast ratio 5.6:1 against white, unlike pale #D4AF37) */
+.kpi-value.text-gold,
+.card-kpi .text-gold,
+.text-gold-readable {
+    color: #855700 !important;
+}
+
+.kpi-value.text-success,
+.card-kpi .text-success,
+.text-success-readable {
+    color: #15803d !important;
+}
+
+.kpi-value.text-info,
+.card-kpi .text-info,
+.text-info-readable {
+    color: #0369a1 !important;
+}
+
+/* Unit/Suffix inside KPI value */
+.kpi-unit {
+    font-size: 0.885rem !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    margin-left: 0.3rem;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+/* Subtext / helper line */
+.kpi-subtext,
+.card-kpi .small.text-muted {
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    line-height: 1.35 !important;
+    margin-top: 0.35rem !important;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* Soft Icon Badges */
+.kpi-icon-badge {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: transform 0.22s ease;
+}
+
+.card-kpi:hover .kpi-icon-badge {
+    transform: scale(1.08);
+}
+
+.kpi-icon-badge.badge-burgundy {
+    background-color: #f8e9ec;
+    color: #800020;
+}
+
+.kpi-icon-badge.badge-gold {
+    background-color: #fbf3d5;
+    color: #855700;
+}
+
+.kpi-icon-badge.badge-success {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.kpi-icon-badge.badge-info {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+/* Dark Mode Overrides for KPI cards */
+[data-bs-theme="dark"] .card-kpi {
+    background: #24040a !important;
+    border-color: rgba(212, 175, 55, 0.22) !important;
+}
+
+[data-bs-theme="dark"] .card-kpi.border-burgundy,
+[data-bs-theme="dark"] .card-kpi.kpi-burgundy {
+    border-color: rgba(212, 175, 55, 0.22) !important;
+    border-left-color: #ff859d !important;
+}
+
+[data-bs-theme="dark"] .card-kpi.border-gold,
+[data-bs-theme="dark"] .card-kpi.kpi-gold {
+    border-color: rgba(212, 175, 55, 0.22) !important;
+    border-left-color: #fde047 !important;
+}
+
+[data-bs-theme="dark"] .card-kpi.border-success,
+[data-bs-theme="dark"] .card-kpi.kpi-success {
+    border-color: rgba(212, 175, 55, 0.22) !important;
+    border-left-color: #4ade80 !important;
+}
+
+[data-bs-theme="dark"] .kpi-label,
+[data-bs-theme="dark"] .card-kpi .text-muted.small.text-uppercase {
+    color: #e2d9dc !important;
+}
+
+[data-bs-theme="dark"] .kpi-value,
+[data-bs-theme="dark"] .card-kpi .h3,
+[data-bs-theme="dark"] .card-kpi .h2 {
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .kpi-value.text-marsu-burgundy,
+[data-bs-theme="dark"] .card-kpi .text-marsu-burgundy {
+    color: #ff94a8 !important;
+}
+
+[data-bs-theme="dark"] .kpi-value.text-gold,
+[data-bs-theme="dark"] .card-kpi .text-gold,
+[data-bs-theme="dark"] .text-gold-readable {
+    color: #fde047 !important;
+}
+
+[data-bs-theme="dark"] .kpi-value.text-success,
+[data-bs-theme="dark"] .card-kpi .text-success,
+[data-bs-theme="dark"] .text-success-readable {
+    color: #4ade80 !important;
+}
+
+[data-bs-theme="dark"] .kpi-unit,
+[data-bs-theme="dark"] .kpi-subtext,
+[data-bs-theme="dark"] .card-kpi .small.text-muted {
+    color: #c9b6bb !important;
+}
+
+[data-bs-theme="dark"] .kpi-icon-badge.badge-burgundy {
+    background-color: rgba(128, 0, 32, 0.35);
+    color: #ff94a8;
+}
+
+[data-bs-theme="dark"] .kpi-icon-badge.badge-gold {
+    background-color: rgba(212, 175, 55, 0.22);
+    color: #fde047;
+}
+
+[data-bs-theme="dark"] .kpi-icon-badge.badge-success {
+    background-color: rgba(22, 163, 74, 0.22);
+    color: #4ade80;
 }
 </style>

@@ -59,38 +59,86 @@
     </ul>
 </div>
 
-<!-- KPI Cards -->
+<!-- KPI Cards (Modern, High-Contrast & User-Friendly) -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Total Active Tenants</div>
-            <div class="h3 font-weight-bold mb-0 text-marsu-burgundy">
-                <?= count(array_filter($tenants ?? [], fn($t) => ($t['status'] ?? '') === 'Active')) ?>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Total Active Tenants</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        <?= count(array_filter($tenants ?? [], fn($t) => ($t['status'] ?? '') === 'Active')) ?>
+                        <span class="kpi-unit">Residents</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Active Tenants">
+                    <i class="bi bi-people-fill"></i>
+                </div>
             </div>
-            <div class="small text-muted mt-1">Enrolled MarSU student residents</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Accredited Houses</div>
-            <div class="h3 font-weight-bold mb-0 text-gold"><?= count($boardingHouses ?? []) ?> Facilities</div>
-            <div class="small text-muted mt-1">Boac campus certified</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">CICS Residents</div>
-            <div class="h3 font-weight-bold mb-0 text-gold">
-                <?= count(array_filter($tenants ?? [], fn($t) => ($t['college'] ?? '') === 'CICS' || strpos($t['program'] ?? '', 'IT') !== false || strpos($t['program'] ?? '', 'Computer') !== false)) ?>
+            <div class="kpi-subtext">
+                <i class="bi bi-person-check-fill text-marsu-burgundy"></i>
+                <span>Enrolled MarSU student residents</span>
             </div>
-            <div class="small text-muted mt-1">IT, CS & IS student majors</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Compliance Status</div>
-            <div class="h3 font-weight-bold mb-0 text-success">100%</div>
-            <div class="small text-muted mt-1">Emergency contact verified</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Accredited Houses</div>
+                    <div class="kpi-value text-gold">
+                        <?= count($boardingHouses ?? []) ?>
+                        <span class="kpi-unit">Facilities</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Accredited Houses">
+                    <i class="bi bi-buildings-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-patch-check-fill text-gold-dark"></i>
+                <span>Boac campus certified</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">CICS Residents</div>
+                    <div class="kpi-value text-gold">
+                        <?= count(array_filter($tenants ?? [], fn($t) => ($t['college'] ?? '') === 'CICS' || strpos($t['program'] ?? '', 'IT') !== false || strpos($t['program'] ?? '', 'Computer') !== false)) ?>
+                        <span class="kpi-unit">Majors</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="CICS Enrollees">
+                    <i class="bi bi-laptop-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-code-slash text-gold-dark"></i>
+                <span>IT, CS & IS student majors</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Compliance Status</div>
+                    <div class="kpi-value text-success">
+                        100%
+                        <span class="badge bg-success-subtle text-success border border-success-subtle fs-7 fw-semibold ms-1">Passed</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Verified Compliance">
+                    <i class="bi bi-shield-fill-check"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <span>Emergency contact verified</span>
+            </div>
         </div>
     </div>
 </div>
@@ -201,7 +249,7 @@
 <div class="modal fade" id="newTenantModal" tabindex="-1" aria-labelledby="newTenantModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-white">
+            <div class="modal-header bg-marsu text-primary">
                 <h5 class="modal-title font-weight-bold" id="newTenantModalLabel">
                     <i class="bi bi-person-plus-fill me-2 text-gold"></i>Register New Student Tenant
                 </h5>

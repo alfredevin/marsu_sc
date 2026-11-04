@@ -46,31 +46,80 @@
 <!-- Report Summary Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Overall Occupancy</div>
-            <div class="h2 font-weight-bold mb-0 text-marsu-burgundy">85.4%</div>
-            <div class="small text-muted mt-1">32/40 beds currently taken</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Overall Occupancy</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        85.4%
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Overall Occupancy">
+                    <i class="bi bi-pie-chart-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-people-fill text-marsu-burgundy"></i>
+                <span>32/40 beds currently taken</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-gold p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Safety Compliance</div>
-            <div class="h2 font-weight-bold mb-0 text-success">100%</div>
-            <div class="small text-muted mt-1">All passed BFP fire audit</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Safety Compliance</div>
+                    <div class="kpi-value text-success">
+                        100%
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Safety Compliance">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-patch-check-fill text-success"></i>
+                <span>All passed BFP fire audit</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Active Facilities</div>
-            <div class="h2 font-weight-bold mb-0 text-secondary">3 Units</div>
-            <div class="small text-muted mt-1">Accredited by MarSU OSAS</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Active Facilities</div>
+                    <div class="kpi-value text-gold">
+                        3
+                        <span class="kpi-unit">Houses</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Active Facilities">
+                    <i class="bi bi-buildings-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check-circle text-gold-dark"></i>
+                <span>Accredited by MarSU OSAS</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Avg Monthly Rent</div>
-            <div class="h2 font-weight-bold mb-0 text-dark">₱1,650</div>
-            <div class="small text-muted mt-1">Student-friendly ceiling</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Avg Monthly Rent</div>
+                    <div class="kpi-value text-gold">
+                        ₱1,650
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Average Rent">
+                    <i class="bi bi-tag-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-cash-coin text-gold-dark"></i>
+                <span>Student-friendly ceiling</span>
+            </div>
         </div>
     </div>
 </div>

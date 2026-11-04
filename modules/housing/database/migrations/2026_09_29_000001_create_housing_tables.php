@@ -21,6 +21,8 @@ return new class {
             `deleted_at` DATETIME NULL,
             FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        
+        
     }
 
     public function down(): void {

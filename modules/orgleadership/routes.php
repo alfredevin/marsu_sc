@@ -85,5 +85,51 @@ foreach ($submenuRoutes as $path => $action) {
     $router->get('/orgleadership/' . $path, [HomeController::class, $action], ['auth', 'permission:orgleadership.view']);
 }
 
+// Keep the shorter action URLs used by the activity and engagement workspaces.
+$workspaceGetRoutes = [
+    'proposals' => 'activityProposals',
+    'calendar' => 'activityCalendar',
+    'credits' => 'engagementPoints',
+];
+foreach ($workspaceGetRoutes as $path => $action) {
+    $router->get('/orgleadership/' . $path, [HomeController::class, $action], ['auth', 'permission:orgleadership.view']);
+}
+$router->get('/orgleadership/documents/download', [HomeController::class, 'downloadDocument'], ['auth', 'permission:orgleadership.view']);
+
+$workspacePostRoutes = [
+    'proposals/store' => 'storeProposal',
+    'proposals/update' => 'updateProposal',
+    'proposals/delete' => 'deleteProposal',
+    'approvals/store' => 'storeApproval',
+    'approvals/update' => 'updateApproval',
+    'approvals/delete' => 'deleteApproval',
+    'calendar/store' => 'storeCalendarEvent',
+    'calendar/update' => 'updateCalendarEvent',
+    'calendar/delete' => 'deleteCalendarEvent',
+    'venues/store' => 'storeVenue',
+    'venues/update' => 'updateVenue',
+    'venues/delete' => 'deleteVenue',
+    'documents/store' => 'storeDocument',
+    'documents/delete' => 'deleteDocument',
+    'attendances/store' => 'storeAttendance',
+    'attendances/update' => 'updateAttendance',
+    'attendances/delete' => 'deleteAttendance',
+    'participations/store' => 'storeParticipation',
+    'participations/update' => 'updateParticipation',
+    'participations/delete' => 'deleteParticipation',
+    'credits/store' => 'storeCredit',
+    'credits/update' => 'updateCredit',
+    'credits/delete' => 'deleteCredit',
+    'recognitions/store' => 'storeRecognition',
+    'recognitions/update' => 'updateRecognition',
+    'recognitions/delete' => 'deleteRecognition',
+    'announcements/store' => 'storeAnnouncement',
+    'announcements/update' => 'updateAnnouncement',
+    'announcements/delete' => 'deleteAnnouncement',
+];
+foreach ($workspacePostRoutes as $path => $action) {
+    $router->post('/orgleadership/' . $path, [HomeController::class, $action], ['auth', 'permission:orgleadership.view', 'csrf']);
+}
+
 // Backward-compatible spelling for existing links that used "registraion".
 $router->get('/orgleadership/organization-registraion', [HomeController::class, 'organizationRegistration'], ['auth', 'permission:orgleadership.view']);

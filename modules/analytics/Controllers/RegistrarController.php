@@ -8,16 +8,17 @@ use Modules\Analytics\Support\AnalyticsAccess;
 use Modules\Analytics\Support\ChangeLog;
 use Modules\Analytics\Support\ClassRecord;
 use Modules\Analytics\Support\Csv;
-use Modules\Analytics\Support\Notifier;
 use Modules\Analytics\Support\Ui;
 
 /**
- * Registrar workspace: official term enrollment is the source of truth for class rosters.
- * Students are never created here; only existing `students` rows are enrolled.
+ * Registrar workspace. SPAMS is not an enrollment system: the Registrar imports the official
+ * enrollment records from the school's enrollment system, and those records build class rosters.
+ * Students are never created here, and records are never encoded or edited by hand.
  */
 class RegistrarController
 {
     private const STATUSES = ['pending', 'enrolled', 'withdrawn', 'cancelled'];
+    private const IMPORT_STATUSES = ['enrolled', 'withdrawn'];
 
     private function crumbs(string $label): array
     {
@@ -41,16 +42,6 @@ class RegistrarController
     {
         $id = (int) ($_POST['semester_id'] ?? 0);
         return $id > 0 ? AnalyticsAccess::findTerm($id) : AnalyticsAccess::activeTerm();
-    }
-
-    private function validSubjectIds(array $ids): array
-    {
-        $ids = array_values(array_unique(array_filter(array_map('intval', $ids))));
-        if (!$ids) {
-            return [];
-        }
-        $rows = Database::fetchAll("SELECT id FROM `subjects` WHERE deleted_at IS NULL AND id IN (" . implode(',', $ids) . ")");
-        return array_map('intval', array_column($rows, 'id'));
     }
 
     /**
@@ -79,11 +70,6 @@ class RegistrarController
         }
         ChangeLog::record('enrollment', $id, 'create', 'status', null, $status, "Enrolled {$student['student_number']} for {$term['label']} with " . count($subjectIds) . ' subject(s)');
         return $id;
-    }
-
-    private function enrollmentExists(int $studentId, int $semesterId): bool
-    {
-        return Database::fetchOne("SELECT id FROM `ana_enrollments` WHERE student_id = :s AND semester_id = :t", ['s' => $studentId, 't' => $semesterId]) !== null;
     }
 
     // ------------------------------------------------------------------
@@ -215,115 +201,26 @@ class RegistrarController
     }
 
     // ------------------------------------------------------------------
-    // Enroll (single, bulk, CSV)
+    // Import official enrollment records (CSV from the school's enrollment system)
     // ------------------------------------------------------------------
 
-    public function create(): void
+    public function importForm(): void
     {
-        $q = trim((string) ($_GET['q'] ?? ''));
-        $results = [];
-        if ($q !== '') {
-            $results = Database::fetchAll(
-                "SELECT s.id, s.student_number, s.first_name, s.middle_name, s.last_name, s.year_level, s.program_id, s.section_id, p.code AS program_code, sec.name AS section_name
-                 FROM `students` s LEFT JOIN `programs` p ON p.id = s.program_id LEFT JOIN `sections` sec ON sec.id = s.section_id
-                 WHERE s.deleted_at IS NULL AND (s.student_number LIKE :q1 OR CONCAT(s.first_name, ' ', s.last_name) LIKE :q2 OR CONCAT(s.last_name, ', ', s.first_name) LIKE :q3)
-                 ORDER BY s.last_name, s.first_name LIMIT 25",
-                ['q1' => '%' . $q . '%', 'q2' => '%' . $q . '%', 'q3' => '%' . $q . '%']
-            );
-        }
-        $selected = null;
-        if (($sid = (int) ($_GET['student_id'] ?? 0)) > 0) {
-            $selected = Database::fetchOne(
-                "SELECT s.*, p.code AS program_code, sec.name AS section_name FROM `students` s LEFT JOIN `programs` p ON p.id = s.program_id LEFT JOIN `sections` sec ON sec.id = s.section_id
-                 WHERE s.id = :id AND s.deleted_at IS NULL", ['id' => $sid]);
-        }
-        View::render('analytics/Views/registrar/create', array_merge($this->lookups(), [
-            'activeTerm' => AnalyticsAccess::activeTerm(), 'q' => $q, 'results' => $results, 'selected' => $selected,
-            'title' => 'Enroll Students', 'crumbs' => $this->crumbs('Enroll'),
-        ]));
-    }
-
-    public function store(): void
-    {
-        $term = $this->postedTerm();
-        $back = url('analytics/registrar/enrollments/create', ['student_id' => (int) ($_POST['student_id'] ?? 0)]);
-        if (!$term) {
-            redirect($back, 'error', 'Choose a valid term. No term is active.');
-        }
-        $student = Database::fetchOne("SELECT * FROM `students` WHERE id = :id AND deleted_at IS NULL", ['id' => (int) ($_POST['student_id'] ?? 0)]);
-        $programId = (int) ($_POST['program_id'] ?? 0);
-        $program = Database::fetchOne("SELECT id FROM `programs` WHERE id = :id AND deleted_at IS NULL", ['id' => $programId]);
-        $sectionId = (int) ($_POST['section_id'] ?? 0);
-        $status = in_array($_POST['status'] ?? '', ['pending', 'enrolled'], true) ? $_POST['status'] : 'pending';
-        $subjects = $this->validSubjectIds((array) ($_POST['subjects'] ?? []));
-
-        if (!$student || !$program) {
-            redirect($back, 'error', 'Choose an existing student and program.');
-        }
-        if ($sectionId && !Database::fetchOne("SELECT id FROM `sections` WHERE id = :id AND deleted_at IS NULL", ['id' => $sectionId])) {
-            redirect($back, 'error', 'The selected section does not exist.');
-        }
-        if (!$subjects) {
-            redirect($back, 'error', 'Select at least one subject for the subject load.');
-        }
-        if ($this->enrollmentExists((int) $student['id'], (int) $term['semester_id'])) {
-            redirect($back, 'error', "{$student['student_number']} already has an enrollment for {$term['label']}. Edit it instead.");
-        }
-
-        Database::beginTransaction();
-        try {
-            $id = $this->createEnrollment($student, $term, $programId, (int) ($_POST['year_level'] ?? $student['year_level']), $sectionId ?: null, $subjects, $status, trim((string) ($_POST['remarks'] ?? '')) ?: null);
-            Database::commit();
-        } catch (\Throwable $e) {
-            Database::rollBack();
-            throw $e;
-        }
-        Notifier::student((int) $student['id'], "Enrollment {$status}: {$term['label']}", count($subjects) . ' subject(s) in your load.', 'analytics/my');
-        redirect(url('analytics/registrar/enrollments/' . $id), 'success', "{$student['student_number']} recorded as {$status} for {$term['label']}.");
-    }
-
-    public function bulk(): void
-    {
-        $term = $this->postedTerm();
-        $back = url('analytics/registrar/enrollments/create');
-        $sectionId = (int) ($_POST['section_id'] ?? 0);
-        $section = Database::fetchOne("SELECT * FROM `sections` WHERE id = :id AND deleted_at IS NULL", ['id' => $sectionId]);
-        $subjects = $this->validSubjectIds((array) ($_POST['subjects'] ?? []));
-        $status = in_array($_POST['status'] ?? '', ['pending', 'enrolled'], true) ? $_POST['status'] : 'pending';
-        if (!$term || !$section || !$subjects) {
-            redirect($back, 'error', 'Choose a term, a section and at least one subject.');
-        }
-        $students = Database::fetchAll("SELECT * FROM `students` WHERE section_id = :sec AND deleted_at IS NULL ORDER BY last_name", ['sec' => $sectionId]);
-        if (!$students) {
-            redirect($back, 'error', "No student master records are assigned to {$section['name']}.");
-        }
-        $created = $skipped = 0;
-        Database::beginTransaction();
-        try {
-            foreach ($students as $st) {
-                if ($this->enrollmentExists((int) $st['id'], (int) $term['semester_id'])) {
-                    $skipped++;
-                    continue;
-                }
-                $this->createEnrollment($st, $term, (int) $section['program_id'], (int) $section['year_level'], $sectionId, $subjects, $status, 'Bulk section enrollment');
-                $created++;
-            }
-            Database::commit();
-        } catch (\Throwable $e) {
-            Database::rollBack();
-            throw $e;
-        }
-        redirect(url('analytics/registrar/enrollments', ['term' => (int) $term['semester_id'], 'section' => $sectionId]), 'success',
-            "Bulk enrollment for {$section['name']}: {$created} created, {$skipped} skipped (already enrolled this term).");
+        View::render('analytics/Views/registrar/import', [
+            'terms' => AnalyticsAccess::terms(), 'activeTerm' => AnalyticsAccess::activeTerm(),
+            'title' => 'Import Enrollment Records', 'crumbs' => $this->crumbs('Import'),
+        ]);
     }
 
     /**
-     * CSV: student_number[, subject codes separated by ; or |][, status]. Unknown numbers are reported, never created.
+     * CSV: student_number, subject codes separated by ; or |, optional status (enrolled / withdrawn).
+     * Enrollment itself happens in the school's enrollment system; this only copies its records.
+     * Unknown numbers are reported, never created. Re-importing a record only syncs its status.
      */
     public function import(): void
     {
         $term = $this->postedTerm();
-        $back = url('analytics/registrar/enrollments/create');
+        $back = url('analytics/registrar/import');
         if (!$term) {
             redirect($back, 'error', 'Choose a valid term.');
         }
@@ -332,8 +229,6 @@ class RegistrarController
         } catch (\RuntimeException $e) {
             redirect($back, 'error', $e->getMessage());
         }
-        $defaultSubjects = $this->validSubjectIds((array) ($_POST['subjects'] ?? []));
-        $defaultStatus = in_array($_POST['status'] ?? '', ['pending', 'enrolled'], true) ? $_POST['status'] : 'pending';
 
         $subjectByCode = [];
         foreach (Database::fetchAll("SELECT id, code FROM `subjects` WHERE deleted_at IS NULL") as $s) {
@@ -341,6 +236,7 @@ class RegistrarController
         }
 
         $created = [];
+        $updated = [];
         $errors = [];
         $line = 0;
         Database::beginTransaction();
@@ -356,28 +252,34 @@ class RegistrarController
                     $errors[] = "Line {$line}: student number '{$number}' does not exist in the student registry.";
                     continue;
                 }
-                $subjects = $defaultSubjects;
-                if (!empty($cols[1])) {
-                    $subjects = [];
-                    foreach (preg_split('/[;|]/', $cols[1]) as $code) {
-                        $code = strtoupper(trim($code));
-                        if ($code === '') {
-                            continue;
-                        }
-                        if (!isset($subjectByCode[$code])) {
-                            $errors[] = "Line {$line}: subject code '{$code}' does not exist.";
-                            continue 2;
-                        }
-                        $subjects[] = $subjectByCode[$code];
+                $status = strtolower(trim((string) ($cols[2] ?? '')));
+                $status = in_array($status, self::IMPORT_STATUSES, true) ? $status : 'enrolled';
+                $existing = Database::fetchOne(
+                    "SELECT id, status FROM `ana_enrollments` WHERE student_id = :s AND semester_id = :t",
+                    ['s' => (int) $student['id'], 't' => (int) $term['semester_id']]
+                );
+                if ($existing) {
+                    if ($existing['status'] !== $status) {
+                        Database::update('ana_enrollments', ['status' => $status, 'remarks' => 'CSV import sync', 'updated_at' => date('Y-m-d H:i:s')], 'id = :id', ['id' => (int) $existing['id']]);
+                        ChangeLog::record('enrollment', (int) $existing['id'], 'status_change', 'status', $existing['status'], $status, 'Synced from official enrollment records');
+                        $updated[] = "{$number}: {$existing['status']} → {$status}";
                     }
-                }
-                if (!$subjects) {
-                    $errors[] = "Line {$line}: no subjects given for {$number}.";
                     continue;
                 }
-                $status = in_array(strtolower($cols[2] ?? ''), ['pending', 'enrolled'], true) ? strtolower($cols[2]) : $defaultStatus;
-                if ($this->enrollmentExists((int) $student['id'], (int) $term['semester_id'])) {
-                    $errors[] = "Line {$line}: {$number} is already enrolled for {$term['label']}.";
+                $subjects = [];
+                foreach (preg_split('/[;|]/', (string) ($cols[1] ?? '')) as $code) {
+                    $code = strtoupper(trim($code));
+                    if ($code === '') {
+                        continue;
+                    }
+                    if (!isset($subjectByCode[$code])) {
+                        $errors[] = "Line {$line}: subject code '{$code}' does not exist.";
+                        continue 2;
+                    }
+                    $subjects[] = $subjectByCode[$code];
+                }
+                if (!$subjects) {
+                    $errors[] = "Line {$line}: no subject codes given for {$number}.";
                     continue;
                 }
                 $this->createEnrollment($student, $term, (int) $student['program_id'], (int) $student['year_level'], $student['section_id'] ? (int) $student['section_id'] : null, array_unique($subjects), $status, 'CSV import');
@@ -389,84 +291,13 @@ class RegistrarController
             throw $e;
         }
         View::render('analytics/Views/registrar/import_result', [
-            'term' => $term, 'created' => $created, 'errors' => $errors,
+            'term' => $term, 'created' => $created, 'updated' => $updated, 'errors' => $errors,
             'title' => 'CSV Import Result', 'crumbs' => $this->crumbs('CSV import'),
         ]);
     }
 
     // ------------------------------------------------------------------
-    // Status and subject load changes
-    // ------------------------------------------------------------------
-
-    public function updateStatus(string $id): void
-    {
-        $e = $this->findEnrollment($id);
-        $back = url('analytics/registrar/enrollments/' . (int) $e['id']);
-        $status = (string) ($_POST['status'] ?? '');
-        $reason = trim((string) ($_POST['reason'] ?? ''));
-        if (!in_array($status, self::STATUSES, true) || $status === $e['status']) {
-            redirect($back, 'error', 'Choose a different, valid status.');
-        }
-        if (mb_strlen($reason) < 5) {
-            redirect($back, 'error', 'A reason of at least 5 characters is required.');
-        }
-        $data = ['status' => $status, 'remarks' => mb_substr($reason, 0, 255), 'updated_at' => date('Y-m-d H:i:s')];
-        if ($status === 'enrolled' && !$e['enrolled_at']) {
-            $data['enrolled_at'] = date('Y-m-d H:i:s');
-            $data['enrolled_by'] = (int) Auth::id();
-        }
-        Database::update('ana_enrollments', $data, 'id = :id', ['id' => (int) $e['id']]);
-        ChangeLog::record('enrollment', (int) $e['id'], 'status_change', 'status', $e['status'], $status, $reason);
-        Notifier::student((int) $e['student_id'], "Enrollment status: " . ucfirst($status), "{$e['term_label']} — {$reason}", 'analytics/my');
-        redirect($back, 'success', 'Enrollment status updated to ' . $status . '.');
-    }
-
-    public function updateSubjects(string $id): void
-    {
-        $e = $this->findEnrollment($id);
-        $back = url('analytics/registrar/enrollments/' . (int) $e['id']);
-        $wanted = $this->validSubjectIds((array) ($_POST['subjects'] ?? []));
-        $reason = trim((string) ($_POST['reason'] ?? ''));
-        if (!$wanted) {
-            redirect($back, 'error', 'Keep at least one subject; withdraw the enrollment instead to remove all.');
-        }
-        if (mb_strlen($reason) < 5) {
-            redirect($back, 'error', 'A reason of at least 5 characters is required.');
-        }
-        $current = [];
-        foreach ($e['subjects'] as $s) {
-            $current[(int) $s['subject_id']] = $s['status'];
-        }
-        $added = $dropped = [];
-        $now = date('Y-m-d H:i:s');
-        Database::beginTransaction();
-        try {
-            foreach ($wanted as $subId) {
-                if (!isset($current[$subId])) {
-                    Database::insert('ana_enrollment_subjects', ['enrollment_id' => (int) $e['id'], 'subject_id' => $subId, 'section_id' => $e['section_id'], 'status' => 'enrolled', 'created_at' => $now]);
-                    $added[] = $subId;
-                } elseif ($current[$subId] === 'dropped') {
-                    Database::update('ana_enrollment_subjects', ['status' => 'enrolled', 'updated_at' => $now], 'enrollment_id = :e AND subject_id = :s', ['e' => (int) $e['id'], 's' => $subId]);
-                    $added[] = $subId;
-                }
-            }
-            foreach ($current as $subId => $st) {
-                if ($st === 'enrolled' && !in_array($subId, $wanted, true)) {
-                    Database::update('ana_enrollment_subjects', ['status' => 'dropped', 'updated_at' => $now], 'enrollment_id = :e AND subject_id = :s', ['e' => (int) $e['id'], 's' => $subId]);
-                    $dropped[] = $subId;
-                }
-            }
-            ChangeLog::record('enrollment', (int) $e['id'], 'subject_load', 'subjects', 'dropped:' . implode(',', $dropped), 'added:' . implode(',', $added), $reason);
-            Database::commit();
-        } catch (\Throwable $ex) {
-            Database::rollBack();
-            throw $ex;
-        }
-        redirect($back, 'success', count($added) . ' subject(s) added, ' . count($dropped) . ' dropped.');
-    }
-
-    // ------------------------------------------------------------------
-    // Masterlist, COR, posted grades, discrepancies
+    // Masterlist, posted grades, discrepancies
     // ------------------------------------------------------------------
 
     public function masterlist(): void
@@ -478,12 +309,6 @@ class RegistrarController
             'filters' => Ui::queryParams(['term', 'program', 'section', 'subject', 'q']),
             'title' => 'Masterlist', 'crumbs' => $this->crumbs('Masterlist'),
         ]));
-    }
-
-    public function cor(string $id): void
-    {
-        $e = $this->findEnrollment($id);
-        View::render('analytics/Views/registrar/cor', ['e' => $e, 'title' => 'Certificate of Registration'], null);
     }
 
     private function postedClasses(?array $term): array

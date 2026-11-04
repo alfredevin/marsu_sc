@@ -14,7 +14,7 @@
     <!-- Header & Action Row -->
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
         <div class="d-flex align-items-center gap-2">
-            <a href="<?= url('analytics/students/' . (int) $student['id']) ?>" class="btn btn-sm btn-outline-secondary me-1">
+            <a href="<?= url('analytics/profile?student_id=' . (int) $student['id']) ?>" class="btn btn-sm btn-outline-secondary me-1">
                 <i class="bi bi-arrow-left me-1"></i> Student Profile
             </a>
             <div class="rounded p-2 text-white d-flex align-items-center justify-content-center" style="background-color: #800020; width: 42px; height: 42px;">
@@ -166,7 +166,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                            <a href="<?= url('analytics/students/' . (int) $student['id']) ?>" class="btn btn-sm btn-outline-secondary">
+                            <a href="<?= url('analytics/profile?student_id=' . (int) $student['id']) ?>" class="btn btn-sm btn-outline-secondary">
                                 Cancel
                             </a>
                             <button type="submit" class="btn btn-sm btn-primary px-4" style="background-color: #800020; border-color: #800020;">

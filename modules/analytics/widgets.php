@@ -16,7 +16,7 @@ return [
         'title'      => 'Students in Monitoring Scope',
         'icon'       => 'bi-people-fill',
         'permission' => 'analytics.view',
-        'link'       => 'analytics/overview',
+        'link'       => 'analytics',
         'data'       => function () {
             return (int) Database::fetchColumn(
                 "SELECT COUNT(*) FROM `students` s WHERE s.deleted_at IS NULL" . AnalyticsAccess::studentScopeSql('s')

@@ -15,8 +15,7 @@ use Core\View;
  */
 class AnalyticsAccess
 {
-    public const ADMIN_ROLES     = ['super_admin', 'lead_analytics', 'admin'];
-    public const OVERSIGHT_ROLES = ['dean', 'vpaa'];
+    public const ADMIN_ROLES = ['super_admin', 'lead_analytics', 'admin'];
 
     private const PERSONA_SESSION_KEY = 'analytics.persona';
 
@@ -26,6 +25,7 @@ class AnalyticsAccess
     private static ?array $programScope = null;
     private static bool $programScopeLoaded = false;
     private static ?array $facultyStudentIds = null;
+    private static ?bool $facultyScope = null;
     private static bool $termLoaded = false;
     private static ?array $term = null;
 
@@ -69,11 +69,6 @@ class AnalyticsAccess
         return self::hasRole('program_head') && can('analytics.view');
     }
 
-    public static function isOversightOnly(): bool
-    {
-        return !self::isAdmin() && self::hasRole(...self::OVERSIGHT_ROLES) && can('analytics.view');
-    }
-
     public static function isRegistrar(): bool
     {
         return can('analytics.registrar.view') || can('analytics.registrar.enrollment');
@@ -105,11 +100,9 @@ class AnalyticsAccess
             $list['registrar'] = ['label' => 'Registrar', 'icon' => 'bi-person-badge', 'url' => 'analytics/registrar'];
         }
         if (self::isAdmin()) {
-            $list['admin'] = ['label' => 'Administrator', 'icon' => 'bi-shield-lock', 'url' => 'analytics/overview'];
+            $list['admin'] = ['label' => 'Administrator', 'icon' => 'bi-shield-lock', 'url' => 'analytics'];
         } elseif (self::isProgramHead()) {
-            $list['program_head'] = ['label' => 'Program Head', 'icon' => 'bi-diagram-3', 'url' => 'analytics/overview'];
-        } elseif (self::isOversightOnly()) {
-            $list['oversight'] = ['label' => 'Oversight (Read-only)', 'icon' => 'bi-binoculars', 'url' => 'analytics/overview'];
+            $list['program_head'] = ['label' => 'Program Head', 'icon' => 'bi-diagram-3', 'url' => 'analytics'];
         }
         return $list;
     }
@@ -129,7 +122,7 @@ class AnalyticsAccess
         if (isset($p['registrar']) && !self::isAdmin()) {
             return 'registrar';
         }
-        foreach (['admin', 'program_head', 'oversight', 'faculty', 'registrar'] as $key) {
+        foreach (['admin', 'program_head', 'faculty', 'registrar'] as $key) {
             if (isset($p[$key])) {
                 return $key;
             }
@@ -201,7 +194,7 @@ class AnalyticsAccess
         }
         self::$programScopeLoaded = true;
 
-        if (self::isAdmin() || self::isOversightOnly()) {
+        if (self::isAdmin()) {
             return self::$programScope = null;
         }
         if (self::hasRole('program_head')) {
@@ -220,6 +213,9 @@ class AnalyticsAccess
      */
     public static function programScopeSql(string $column): string
     {
+        if (self::isFacultyScope()) {
+            return ' AND ' . $column . ' IN (SELECT fps.program_id FROM `students` fps WHERE fps.id IN (' . self::facultyRosterSql() . '))';
+        }
         $ids = self::scopedProgramIds();
         if ($ids === null) {
             return '';
@@ -230,9 +226,68 @@ class AnalyticsAccess
         return ' AND ' . $column . ' IN (' . implode(',', array_map('intval', $ids)) . ')';
     }
 
+    /**
+     * Faculty viewing the monitoring pages: data is limited to their own classes,
+     * and students to those on their class rosters (each class is one section).
+     */
+    public static function isFacultyScope(): bool
+    {
+        return self::$facultyScope ??= (self::persona() === 'faculty' && can('analytics.view'));
+    }
+
+    /**
+     * Subquery of student ids on the current faculty member's rosters (user id cast to int).
+     */
+    private static function facultyRosterSql(): string
+    {
+        $uid = (int) Auth::id();
+        return "SELECT fcs.student_id FROM `ana_class_students` fcs JOIN `ana_classes` fc ON fc.id = fcs.class_id"
+             . " WHERE fc.faculty_user_id = {$uid} AND fc.deleted_at IS NULL AND fcs.status = 'enrolled'";
+    }
+
     public static function studentScopeSql(string $alias = 's'): string
     {
+        if (self::isFacultyScope()) {
+            return " AND {$alias}.id IN (" . self::facultyRosterSql() . ')';
+        }
         return self::programScopeSql("{$alias}.program_id");
+    }
+
+    /**
+     * Student Profiles scope. Faculty see every student the Registrar enrolled in the
+     * subjects of their classes (all sections) plus their rostered students.
+     */
+    public static function profileStudentScopeSql(string $alias = 's'): string
+    {
+        if (!self::isFacultyScope()) {
+            return self::studentScopeSql($alias);
+        }
+        $uid = (int) Auth::id();
+        return " AND ({$alias}.id IN (" . self::facultyRosterSql() . ")"
+             . " OR {$alias}.id IN (SELECT pe.student_id FROM `ana_enrollments` pe"
+             . " JOIN `ana_enrollment_subjects` pes ON pes.enrollment_id = pe.id AND pes.status = 'enrolled'"
+             . " JOIN `ana_classes` pc ON pc.subject_id = pes.subject_id AND pc.semester_id = pe.semester_id"
+             . " AND pc.faculty_user_id = {$uid} AND pc.deleted_at IS NULL"
+             . " WHERE pe.status = 'enrolled'))";
+    }
+
+    /**
+     * Section scope for filter dropdowns: faculty only get the sections of their own classes.
+     */
+    public static function sectionScopeSql(string $alias = 'sx'): string
+    {
+        if (self::isFacultyScope()) {
+            return " AND {$alias}.id IN (SELECT fsc.section_id FROM `ana_classes` fsc WHERE fsc.faculty_user_id = " . (int) Auth::id() . " AND fsc.deleted_at IS NULL)";
+        }
+        return self::programScopeSql("{$alias}.program_id");
+    }
+
+    /**
+     * Extra class restriction applied only for faculty scope (own classes).
+     */
+    public static function facultyClassSql(string $alias = 'c'): string
+    {
+        return self::isFacultyScope() ? " AND {$alias}.faculty_user_id = " . (int) Auth::id() : '';
     }
 
     /**
@@ -246,6 +301,9 @@ class AnalyticsAccess
 
     public static function classScopeSql(string $alias = 'c'): string
     {
+        if (self::isFacultyScope()) {
+            return " AND {$alias}.faculty_user_id = " . (int) Auth::id();
+        }
         return self::programScopeSql(self::classProgramExpr($alias));
     }
 
@@ -339,6 +397,19 @@ class AnalyticsAccess
     public static function facultyHasStudent(int $studentId): bool
     {
         return in_array($studentId, self::facultyStudentIds(), true);
+    }
+
+    /**
+     * Self, a faculty member's own roster, or program-scoped monitoring.
+     */
+    public static function canSeeStudent(int $studentId): bool
+    {
+        if ($studentId <= 0) {
+            return false;
+        }
+        return self::currentStudentId() === $studentId
+            || self::facultyHasStudent($studentId)
+            || self::canMonitorStudent($studentId);
     }
 
     // ------------------------------------------------------------------

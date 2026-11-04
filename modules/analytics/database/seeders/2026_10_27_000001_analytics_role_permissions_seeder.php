@@ -39,12 +39,10 @@ return new class {
             'core.academics.view',
         ];
         $grants = [
-            'student'        => ['analytics.student.portal'],
-            'faculty'        => ['analytics.faculty.classes', 'analytics.faculty.attendance', 'analytics.faculty.behavior'],
+            'student'        => ['analytics.student.portal', 'core.dashboard.view'],
+            'faculty'        => ['analytics.faculty.classes', 'analytics.faculty.attendance', 'analytics.faculty.behavior', 'analytics.view', 'core.dashboard.view'],
             'registrar'      => array_merge(['analytics.registrar.enrollment', 'analytics.registrar.view'], $coreRegistrarPerms),
             'program_head'   => ['analytics.view', 'analytics.export', 'core.dashboard.view'],
-            'dean'           => ['analytics.view', 'analytics.export'],
-            'vpaa'           => ['analytics.view', 'analytics.export'],
             'lead_analytics' => [self::ALL_ANALYTICS],
             'admin'          => [self::ALL_ANALYTICS],
         ];

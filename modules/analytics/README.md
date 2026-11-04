@@ -9,19 +9,19 @@ Every number, list and chart in this module comes from a database query. When th
 1. **Registrar** enrolls existing students for a term with a subject load (`ana_enrollments`, `ana_enrollment_subjects`).
 2. **Faculty** create a class (subject, section, active term, grading template). The class gets a unique code. Faculty add students the Registrar enrolled in that subject, or approve join requests made with the class code.
 3. **Faculty** post announcements and materials, encode scores, take roll-call, mark INC/DRP, and post grades. Posting locks the record.
+   In Grades Tracking, only the owning faculty sees Customize Scheme and can edit a draft record. The **Manage Columns** button above the table opens one panel listing every component. Each component has Add column / Edit / Remove for its items. The component that records attendance lists its dates, with Add attendance date and remove. Attendance counts toward exactly one non-exam component, chosen in Customize Scheme: once one component has Attendance ticked, the box is locked on the others until it is unticked. Exam components (`isExam`: Midterm / Finals) keep fixed columns and show a lock icon. Attendance counts only the sessions recorded for a student: (Present + Excused + Late × late weight) ÷ recorded sessions.
 4. **Students** see their classes and stream. They see their own task scores only if the faculty enabled it, and only posted grades with their term GWA.
-5. **Admin / Program Head / Dean / VPAA** monitor read-only. Admin also governs: correction approvals, INC extensions, term closure, program-head mapping.
+5. **Admin / Program Head** monitor read-only. Admin also governs: correction approvals, INC extensions, term closure, program-head mapping.
 
 ## 2. Personas and landing
 
-`GET /analytics` (auth only) dispatches by persona: student → `/analytics/my`, faculty (not admin) → `/analytics/faculty`, registrar → `/analytics/registrar`, admin / program head / dean / VPAA → `/analytics/overview`. Users with several personas get a workspace switcher in the module header. Data scopes are never merged.
+`GET /analytics` (auth only) dispatches by persona: student → `/analytics/my`, faculty (not admin) → `/analytics/faculty`, registrar → `/analytics/registrar`, admin / program head → `/analytics/overview`. Users with several personas get a workspace switcher in the module header. Data scopes are never merged.
 
 | Persona | Roles | Scope |
 |---|---|---|
 | Admin | `super_admin`, `lead_analytics`, `admin` | All programs |
 | Program Head | `program_head` | Programs mapped in `ana_program_heads` |
-| Oversight | `dean`, `vpaa` | All programs, read-only |
-| Registrar | `registrar` | All students; manages enrollment |
+| Registrar | `registrar` | All students; imports the official enrollment records (SPAMS is not an enrollment system) |
 | Faculty | `faculty` | Own classes (`ana_classes.faculty_user_id`) and their rosters |
 | Student | `student` | Own record (`students.user_id`) |
 
@@ -31,7 +31,7 @@ Every number, list and chart in this module comes from a database query. When th
 
 | Key | Granted to |
 |---|---|
-| `analytics.view`, `analytics.export` | program_head, dean, vpaa, lead_analytics |
+| `analytics.view`, `analytics.export` | program_head, lead_analytics |
 | `analytics.student.portal` | student |
 | `analytics.registrar.enrollment`, `analytics.registrar.view` | registrar |
 | `analytics.faculty.classes` (also covers the class stream), `.attendance`, `.behavior` | faculty |

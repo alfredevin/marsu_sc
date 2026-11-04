@@ -76,6 +76,18 @@ $other = array_values(array_filter($candidates, fn($c) => (int) $c['same_section
                     <?php foreach ($record['roster'] as $r): ?>
                         <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2">
                             <div><span class="fw-semibold"><?= e(Ui::fullName($r)) ?></span> <span class="text-secondary"><?= e($r['student_number']) ?> · <?= e($r['student_section'] ?? '') ?></span></div>
+                            <?php if ($class['grade_status'] === 'draft'): ?>
+                                <form method="POST" action="<?= url($base . '/roster/mark') ?>" class="d-flex align-items-center gap-1" title="Applied when grades are posted">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="student_id" value="<?= (int) $r['student_id'] ?>">
+                                    <span class="text-secondary">Mark</span>
+                                    <select name="mark" class="form-select form-select-sm" style="width:80px" onchange="this.form.submit()" aria-label="Grade mark">
+                                        <option value="">—</option>
+                                        <option value="INC" <?= $r['grade_mark'] === 'INC' ? 'selected' : '' ?>>INC</option>
+                                        <option value="DRP" <?= $r['grade_mark'] === 'DRP' ? 'selected' : '' ?>>DRP</option>
+                                    </select>
+                                </form>
+                            <?php endif; ?>
                             <?php if (!$locked): ?>
                                 <form method="POST" action="<?= url($base . '/roster/remove') ?>" class="d-flex gap-1" data-confirm="Drop <?= e($r['first_name'] . ' ' . $r['last_name']) ?> from this class? Recorded scores are kept.">
                                     <?= csrf_field() ?>

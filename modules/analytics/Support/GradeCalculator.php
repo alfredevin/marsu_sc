@@ -8,6 +8,7 @@ namespace Modules\Analytics\Support;
  * Group share:        average(transmuted components) * weight / 100
  * Final grade:        sum of group shares, PASSED when <= passing cutoff
  * Excused items and groups with no recorded attendance sessions are left out of the average.
+ * Exam groups (isExam: Midterm / Finals) keep a fixed set of columns in the Grades Tracking matrix.
  * INC / DRP are faculty-assigned marks that replace the numeric result when posting.
  */
 class GradeCalculator
@@ -35,11 +36,13 @@ class GradeCalculator
                     'dueDate'  => $it['dueDate'] ?? null,
                 ];
             }
+            $title = (string) ($g['title'] ?? $g['name'] ?? ('Group ' . ($i + 1)));
             $groups[] = [
                 'id'            => (string) ($g['id'] ?? ('grp_' . $i)),
-                'title'         => (string) ($g['title'] ?? $g['name'] ?? ('Group ' . ($i + 1))),
+                'title'         => $title,
                 'weight'        => (float) ($g['weight'] ?? 0),
                 'hasAttendance' => !empty($g['hasAttendance']),
+                'isExam'        => array_key_exists('isExam', $g) ? !empty($g['isExam']) : (bool) preg_match('/\bexam|midterm|final/i', $title),
                 'items'         => $items,
             ];
         }

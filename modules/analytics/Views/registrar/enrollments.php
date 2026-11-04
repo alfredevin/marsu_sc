@@ -4,16 +4,16 @@ use Modules\Analytics\Support\Ui;
 $showFilters = true;
 $showStatus = true;
 $exportType = 'enrollments';
-$actions = can('analytics.registrar.enrollment') ? '<a href="' . e(url('analytics/registrar/enrollments/create')) . '" class="btn btn-sm btn-marsu"><i class="bi bi-person-plus me-1"></i>Enroll students</a>' : '';
+$actions = can('analytics.registrar.enrollment') ? '<a href="' . e(url('analytics/registrar/import')) . '" class="btn btn-sm btn-marsu"><i class="bi bi-file-earmark-arrow-up me-1"></i>Import records</a>' : '';
 ?>
 <div class="container-fluid px-3 py-3">
-    <?= Ui::header('Term Enrollments', 'Official enrollment records. Faculty rosters are built from enrolled students only.', 'bi-card-list', $actions) ?>
+    <?= Ui::header('Term Enrollments', 'Read-only copy of the official enrollment records. Faculty rosters are built from enrolled students only.', 'bi-card-list', $actions) ?>
     <?= Ui::privacyNotice() ?>
     <?php include __DIR__ . '/filters.php'; ?>
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-transparent small text-secondary"><?= number_format($pagination['total']) ?> record(s)</div>
         <?php if (empty($rows)): ?>
-            <?= Ui::emptyState('No enrollments match', 'Change the filters or enroll students for this term.', 'bi-card-list') ?>
+            <?= Ui::emptyState('No enrollments match', 'Change the filters or import the official records for this term.', 'bi-card-list') ?>
         <?php else: ?>
             <div class="table-responsive"><table class="table table-hover align-middle mb-0 small">
                 <thead class="table-light"><tr><th>Student</th><th>Program</th><th>Year</th><th>Section</th><th class="text-center">Subjects</th><th class="text-center">Units</th><th>Status</th><th></th></tr></thead>
@@ -25,7 +25,6 @@ $actions = can('analytics.registrar.enrollment') ? '<a href="' . e(url('analytic
                         <td><?= Ui::enrollmentBadge($r['status']) ?></td>
                         <td class="text-end text-nowrap">
                             <a class="btn btn-sm btn-outline-secondary" href="<?= url('analytics/registrar/enrollments/' . (int) $r['id']) ?>">Open</a>
-                            <a class="btn btn-sm btn-outline-secondary" target="_blank" href="<?= url('analytics/registrar/cor/' . (int) $r['id']) ?>" title="Certificate of Registration"><i class="bi bi-printer"></i></a>
                         </td>
                     </tr>
                 <?php endforeach; ?></tbody>

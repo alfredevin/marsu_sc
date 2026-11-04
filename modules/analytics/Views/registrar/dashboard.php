@@ -1,10 +1,10 @@
 <?php
 use Modules\Analytics\Support\Ui;
 
-$actions = can('analytics.registrar.enrollment') ? '<a href="' . e(url('analytics/registrar/enrollments/create')) . '" class="btn btn-sm btn-marsu"><i class="bi bi-person-plus me-1"></i>Enroll students</a>' : '';
+$actions = can('analytics.registrar.enrollment') ? '<a href="' . e(url('analytics/registrar/import')) . '" class="btn btn-sm btn-marsu"><i class="bi bi-file-earmark-arrow-up me-1"></i>Import records</a>' : '';
 ?>
 <div class="container-fluid px-3 py-3">
-    <?= Ui::header('Enrollment Dashboard', $term ? $term['label'] : 'No active term', 'bi-person-badge', $actions) ?>
+    <?= Ui::header('Enrollment Records', ($term ? $term['label'] : 'No active term') . ' · imported from the official enrollment system', 'bi-person-badge', $actions) ?>
     <?php include __DIR__ . '/filters.php'; ?>
     <div class="row g-3 mb-3">
         <?php foreach ($counts as $status => $n): ?>

@@ -8,7 +8,8 @@ use Core\Database;
 use Core\ModuleLoader;
 
 return new class {
-    public function run(): void {
+    public function run(): void
+    {
         // 1. Sync declared permissions from module.json into permissions table
         if (class_exists(ModuleLoader::class) && method_exists(ModuleLoader::class, 'syncPermissions')) {
             ModuleLoader::syncPermissions();

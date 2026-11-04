@@ -8,6 +8,7 @@ use Core\Session;
 use Modules\Analytics\Support\AnalyticsAccess;
 use Modules\Analytics\Support\AnalyticsSettings;
 use Modules\Analytics\Support\ChangeLog;
+use Modules\Analytics\Support\ClassRecord;
 use Modules\Analytics\Support\Classroom;
 use Modules\Analytics\Support\Notifier;
 
@@ -642,7 +643,21 @@ class AdminController
 
     public function changeLog(): void
     {
-        $logs = ChangeLog::recent(100);
+        if (AnalyticsAccess::isFacultyScope()) {
+            // Faculty: only their own actions and entries about their own classes
+            $uid = (int) Auth::id();
+            $logs = Database::fetchAll(
+                "SELECT cl.*, CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email
+                 FROM `ana_change_log` cl
+                 LEFT JOIN `users` u ON cl.changed_by = u.id
+                 WHERE cl.changed_by = :uid
+                    OR (cl.entity IN ('class', 'class_roster') AND cl.entity_id IN (SELECT id FROM `ana_classes` WHERE faculty_user_id = :fid))
+                 ORDER BY cl.id DESC LIMIT 100",
+                ['uid' => $uid, 'fid' => $uid]
+            );
+        } else {
+            $logs = ChangeLog::recent(100);
+        }
         View::render('analytics/Views/admin/change_log', [
             'logs'   => $logs,
             'title'  => 'Governance Change Log - Analytics Admin',
@@ -656,41 +671,60 @@ class AdminController
 
     public function storeNote(): void
     {
-        $note = trim((string) ($_POST['note'] ?? ''));
-        if ($note === '' || mb_strlen($note) > 500) {
-            Session::flash('error', 'Write a note of up to 500 characters.');
-            redirect(url('analytics/overview'));
+        $title = trim($_POST['title'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+
+        if (!$title) {
+            Session::flash('error', 'Note title is required.');
+            redirect(url('analytics'));
             return;
         }
 
-        $noteId = Database::insert('ana_dashboard_notes', [
-            'note'       => $note,
-            'created_by' => (int) Auth::id(),
-            'status'     => 'active',
-            'created_at' => date('Y-m-d H:i:s'),
+        $noteId = Database::insert('ana_records', [
+            'title'       => mb_substr($title, 0, 191),
+            'description' => $description,
+            'status'      => 'active',
+            'created_by'  => (int) Auth::id(),
+            'created_at'  => date('Y-m-d H:i:s'),
         ]);
 
-        ChangeLog::record('note', (int) $noteId, 'create', 'note', null, $note, 'Dashboard note created');
+        ChangeLog::record(
+            'note',
+            (int) $noteId,
+            'create',
+            'title',
+            null,
+            $title,
+            'Manual dashboard note created'
+        );
 
-        Session::flash('success', 'Note added.');
-        redirect(url('analytics/overview'));
+        Session::flash('success', 'Dashboard note added successfully.');
+        redirect(url('analytics'));
     }
 
     public function archiveNote(string $id): void
     {
         $noteId = (int) $id;
+        $userId = (int) Auth::id();
+
+        // Admins can only archive manual notes created by themselves (E10)
         $note = Database::fetchOne(
-            "SELECT * FROM `ana_dashboard_notes` WHERE `id` = :id AND `created_by` = :uid AND `status` = 'active' LIMIT 1",
-            ['id' => $noteId, 'uid' => (int) Auth::id()]
+            "SELECT * FROM `ana_records` WHERE `id` = :id AND `created_by` = :uid AND `deleted_at` IS NULL LIMIT 1",
+            ['id' => $noteId, 'uid' => $userId]
         );
 
         if (!$note) {
-            Session::flash('error', 'Only the author can archive a note.');
-            redirect(url('analytics/overview'));
+            Session::flash('error', 'Note not found or system-generated entries cannot be archived.');
+            redirect(url('analytics'));
             return;
         }
 
-        Database::update('ana_dashboard_notes', ['status' => 'archived', 'updated_at' => date('Y-m-d H:i:s')], 'id = :id', ['id' => $noteId]);
+        Database::update(
+            'ana_records',
+            ['status' => 'archived', 'deleted_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')],
+            'id = :id',
+            ['id' => $noteId]
+        );
 
         ChangeLog::record(
             'note',
@@ -702,8 +736,8 @@ class AdminController
             'Manual dashboard note archived'
         );
 
-        Session::flash('success', 'Note archived.');
-        redirect(url('analytics/overview'));
+        Session::flash('success', 'Note archived successfully.');
+        redirect(url('analytics'));
     }
 
     // ========================================================================
@@ -712,7 +746,70 @@ class AdminController
 
     public function classRecordView(string $id): void
     {
-        redirect(url('analytics/class-records/' . (int) $id));
+        $classId = (int) $id;
+        if (!AnalyticsAccess::canSeeClass($classId)) {
+            AnalyticsAccess::notFound();
+        }
+        $class = Database::fetchOne("
+            SELECT c.*,
+                   COALESCE(c.subject_code, s.code) AS subject_code,
+                   COALESCE(c.subject_title, s.title) AS subject_title,
+                   COALESCE(c.units, s.units) AS subject_units,
+                   COALESCE(c.section_name, sec.name) AS section_name,
+                   sec.year_level,
+                   CONCAT(u.first_name, ' ', u.last_name) AS faculty_name,
+                   u.email AS faculty_email,
+                   sem.name AS semester_name,
+                   ay.label AS academic_year_label
+            FROM `ana_classes` c
+            LEFT JOIN `subjects` s ON c.subject_id = s.id
+            LEFT JOIN `sections` sec ON c.section_id = sec.id
+            LEFT JOIN `users` u ON c.faculty_user_id = u.id
+            LEFT JOIN `semesters` sem ON c.semester_id = sem.id
+            LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
+            WHERE c.id = :id AND c.deleted_at IS NULL LIMIT 1
+        ", ['id' => $classId]);
+
+        if (!$class) {
+            Session::flash('error', 'Class offering not found.');
+            redirect(url('analytics/admin/classes'));
+            return;
+        }
+
+        $scheme = ClassRecord::scheme($class);
+
+        $students = Database::fetchAll("
+            SELECT cs.student_id, st.student_number, st.first_name, st.last_name, p.code AS program_code
+            FROM `ana_class_students` cs
+            JOIN `students` st ON cs.student_id = st.id
+            LEFT JOIN `programs` p ON st.program_id = p.id
+            WHERE cs.class_id = :cid AND cs.status = 'enrolled' AND st.deleted_at IS NULL
+            ORDER BY st.last_name ASC, st.first_name ASC
+        ", ['cid' => $classId]);
+
+        $rawScores = Database::fetchAll("SELECT student_id, item_code, score, submission_status FROM `ana_class_scores` WHERE class_id = :cid", ['cid' => $classId]);
+        $scoresMap = [];
+        foreach ($rawScores as $rs) {
+            $scoresMap[(int) $rs['student_id']][$rs['item_code']] = (float) $rs['score'];
+        }
+
+        // Grade rows of a class returned to draft (approved correction) are not official until re-posted
+        $postedMap = [];
+        if (ClassRecord::isPublished($class)) {
+            foreach (Database::fetchAll("SELECT * FROM `ana_class_grades` WHERE class_id = :cid", ['cid' => $classId]) as $pg) {
+                $postedMap[(int) $pg['student_id']] = $pg;
+            }
+        }
+
+        View::render('analytics/Views/admin/class_record_view', [
+            'class'     => $class,
+            'scheme'    => $scheme,
+            'students'  => $students,
+            'scoresMap' => $scoresMap,
+            'postedMap' => $postedMap,
+            'title'     => "Oversight: {$class['subject_code']} - {$class['section_name']} (Read-Only)",
+            'crumbs'    => ['Analytics Admin' => url('analytics/admin/classes'), 'Class Record Oversight' => ''],
+        ]);
     }
     // ========================================================================
     // 7. Grade Correction Requests (Part E5)
@@ -1003,6 +1100,9 @@ class AdminController
         }
 
         $status = $_POST['status'] ?? '';
+        if ($status === 'Under Investigation') {
+            $status = 'Investigating';
+        }
         if (!in_array($status, ['Reported', 'Investigating', 'Resolved', 'Dismissed'], true)) {
             Session::flash('error', 'Invalid conduct case status.');
             redirect(url('analytics/behaviorrecords'));
@@ -1176,7 +1276,7 @@ class AdminController
         );
 
         Session::flash('success', 'Supplementary retention profile updated successfully.');
-        redirect(url('analytics/students/' . $sid));
+        redirect(url('analytics/profile?student_id=' . $sid));
     }
 
     // ========================================================================

@@ -14,7 +14,6 @@ use Modules\Analytics\Controllers\StudentPortalController;
 use Modules\Analytics\Controllers\NotificationController;
 
 $view   = ['auth', 'permission:analytics.view'];
-$export = ['auth', 'permission:analytics.export'];
 $fac    = ['auth', 'permission:analytics.faculty.classes'];
 $facW   = ['auth', 'permission:analytics.faculty.classes', 'csrf'];
 $me     = ['auth', 'permission:analytics.student.portal'];
@@ -27,6 +26,9 @@ $regW   = ['auth', 'permission:analytics.registrar.enrollment', 'csrf'];
 // ============================================================================
 $router->get('/analytics', [HomeController::class, 'index'], ['auth']);
 $router->get('/analytics/index', [HomeController::class, 'index'], ['auth']);
+$router->get('/analytics/overview', [HomeController::class, 'index'], ['auth']);
+$router->get('/analytics/show', [HomeController::class, 'show'], $view);
+$router->post('/analytics/create', [HomeController::class, 'store'], ['auth', 'permission:analytics.view', 'csrf']);
 $router->post('/analytics/persona', [HomeController::class, 'switchPersona'], ['auth', 'csrf']);
 
 $router->get('/analytics/notifications', [NotificationController::class, 'index'], ['auth']);
@@ -38,29 +40,23 @@ $router->get('/analytics/classes/{id}/posts/{postId}/file', [FacultyController::
 // ============================================================================
 // 2. Monitoring & Oversight (read-only, program-scoped)
 // ============================================================================
-$router->get('/analytics/overview', [HomeController::class, 'overview'], $view);
-$router->get('/analytics/students/export', [HomeController::class, 'exportStudents'], $export);
-$router->get('/analytics/students', [HomeController::class, 'students'], $view);
-$router->get('/analytics/students/{id}', [HomeController::class, 'studentDossier'], $view);
-$router->get('/analytics/class-records', [HomeController::class, 'classRecords'], $view);
-$router->get('/analytics/class-records/{id}', [HomeController::class, 'classRecordView'], $view);
-$router->get('/analytics/subjectperformance', [HomeController::class, 'subjectPerformance'], $view);
-$router->get('/analytics/failedincompletemonitoring', [HomeController::class, 'failedIncomplete'], $view);
-$router->get('/analytics/attendancerecords', [HomeController::class, 'attendanceRecords'], $view);
-$router->get('/analytics/participationtracking', [HomeController::class, 'participation'], $view);
-$router->get('/analytics/studentengagement', [HomeController::class, 'engagement'], $view);
-$router->get('/analytics/behaviorrecords', [HomeController::class, 'behaviorRecords'], $view);
-$router->get('/analytics/export/{type}', [HomeController::class, 'export'], $export);
+// 1. Student Information Management
+$router->get('/analytics/profile', [HomeController::class, 'profile'], $view);
+$router->get('/analytics/academichistory', [HomeController::class, 'academichistory'], $view);
+$router->get('/analytics/enrollmentrecords', [HomeController::class, 'enrollmentrecords'], $view);
+$router->get('/analytics/demographicinfo', [HomeController::class, 'demographicinfo'], $view);
 
-// Original sidebar routes (menu unchanged) rendered from real data
-$router->get('/analytics/profile', [HomeController::class, 'studentProfiles'], $view);
-$router->get('/analytics/gradestracking', [HomeController::class, 'gradesTracking'], $view);
-$router->get('/analytics/progressreports', [HomeController::class, 'progressReports'], $view);
+// 2. Academic Monitoring
+$router->get('/analytics/gradestracking', [HomeController::class, 'gradestracking'], $view);
+$router->get('/analytics/subjectperformance', [HomeController::class, 'subjectperformance'], $view);
+$router->get('/analytics/progressreports', [HomeController::class, 'progressreports'], $view);
+$router->get('/analytics/failedincompletemonitoring', [HomeController::class, 'failedincompletemonitoring'], $view);
 
-// Old URLs no longer in the menu
-$router->get('/analytics/academichistory', [HomeController::class, 'legacyStudents'], $view);
-$router->get('/analytics/enrollmentrecords', [HomeController::class, 'legacyStudents'], $view);
-$router->get('/analytics/demographicinfo', [HomeController::class, 'legacyStudents'], $view);
+// 3. Attendance and Engagement Monitoring
+$router->get('/analytics/attendancerecords', [HomeController::class, 'attendancerecords'], $view);
+$router->get('/analytics/participationtracking', [HomeController::class, 'participationtracking'], $view);
+$router->get('/analytics/studentengagement', [HomeController::class, 'studentengagement'], $view);
+$router->get('/analytics/behaviorrecords', [HomeController::class, 'behaviorrecords'], $view);
 
 // ============================================================================
 // 3. Student Portal (own record only)
@@ -81,15 +77,10 @@ $router->post('/analytics/my/join', [StudentPortalController::class, 'join'], ['
 // ============================================================================
 $router->get('/analytics/registrar', [RegistrarController::class, 'dashboard'], $regV);
 $router->get('/analytics/registrar/enrollments', [RegistrarController::class, 'enrollments'], $regV);
-$router->get('/analytics/registrar/enrollments/create', [RegistrarController::class, 'create'], $regE);
-$router->post('/analytics/registrar/enrollments/store', [RegistrarController::class, 'store'], $regW);
-$router->post('/analytics/registrar/enrollments/bulk', [RegistrarController::class, 'bulk'], $regW);
-$router->post('/analytics/registrar/enrollments/import', [RegistrarController::class, 'import'], $regW);
-$router->post('/analytics/registrar/enrollments/{id}/status', [RegistrarController::class, 'updateStatus'], $regW);
-$router->post('/analytics/registrar/enrollments/{id}/subjects', [RegistrarController::class, 'updateSubjects'], $regW);
+$router->get('/analytics/registrar/import', [RegistrarController::class, 'importForm'], $regE);
+$router->post('/analytics/registrar/import', [RegistrarController::class, 'import'], $regW);
 $router->get('/analytics/registrar/enrollments/{id}', [RegistrarController::class, 'show'], $regV);
 $router->get('/analytics/registrar/masterlist', [RegistrarController::class, 'masterlist'], $regV);
-$router->get('/analytics/registrar/cor/{id}', [RegistrarController::class, 'cor'], $regV);
 $router->get('/analytics/registrar/grades', [RegistrarController::class, 'grades'], $regV);
 $router->get('/analytics/registrar/grades/{id}', [RegistrarController::class, 'gradeSheet'], $regV);
 $router->get('/analytics/registrar/discrepancies', [RegistrarController::class, 'discrepancies'], $regV);
@@ -109,6 +100,10 @@ $router->get('/analytics/faculty/students/{id}', [FacultyController::class, 'stu
 
 $router->post('/analytics/faculty/classes/{id}/update', [FacultyController::class, 'updateClass'], $facW);
 $router->post('/analytics/faculty/classes/{id}/scheme', [FacultyController::class, 'saveScheme'], $facW);
+$router->post('/analytics/faculty/gradestracking/create', [FacultyController::class, 'matrixCreateClass'], $facW);
+$router->post('/analytics/faculty/classes/{id}/matrix', [FacultyController::class, 'matrixAction'], $facW);
+$router->post('/analytics/faculty/classes/{id}/roster/pull-section', [FacultyController::class, 'pullSection'], $facW);
+$router->post('/analytics/faculty/classes/{id}/roster/add', [FacultyController::class, 'addStudent'], $facW);
 $router->post('/analytics/faculty/classes/{id}/roster/add-enrolled', [FacultyController::class, 'addEnrolled'], $facW);
 $router->post('/analytics/faculty/classes/{id}/roster/remove', [FacultyController::class, 'removeStudent'], $facW);
 $router->post('/analytics/faculty/classes/{id}/roster/mark', [FacultyController::class, 'setGradeMark'], $facW);
@@ -123,8 +118,7 @@ $router->post('/analytics/faculty/classes/{id}/post', [FacultyController::class,
 $router->post('/analytics/faculty/classes/{id}/inc/resolve', [FacultyController::class, 'resolveInc'], $facW);
 $router->post('/analytics/faculty/classes/{id}/task-exception', [FacultyController::class, 'saveTaskException'], $facW);
 $router->post('/analytics/faculty/classes/{id}/correction-request', [FacultyController::class, 'requestCorrection'], $facW);
-$router->get('/analytics/faculty/classes/{id}/roster/candidates', [FacultyController::class, 'rosterCandidates'], $fac);
-$router->get('/analytics/faculty/classes/{id}/stream', [FacultyController::class, 'stream'], $fac);
+$router->get('/analytics/faculty/classes/{id}/classroom', [FacultyController::class, 'classroom'], $fac);
 $router->get('/analytics/faculty/classes/{id}', [FacultyController::class, 'classRecord'], $fac);
 
 $router->get('/analytics/faculty/attendance', [FacultyController::class, 'attendance'], ['auth', 'permission:analytics.faculty.attendance']);

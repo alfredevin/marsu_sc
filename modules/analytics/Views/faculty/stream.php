@@ -12,7 +12,7 @@ use Modules\Analytics\Support\Ui;
                 <?php else: ?>
                     <div class="list-group list-group-flush small">
                         <?php foreach ($classes as $c): ?>
-                            <a class="list-group-item list-group-item-action" href="<?= url('analytics/faculty/classes/' . (int) $c['id'], ['tab' => 'stream']) ?>"><?= e($c['subject_code'] . ' — ' . $c['section_name']) ?></a>
+                            <a class="list-group-item list-group-item-action" href="<?= url('analytics/faculty/classes/' . (int) $c['id'] . '/classroom', ['tab' => 'stream']) ?>"><?= e($c['subject_code'] . ' — ' . $c['section_name']) ?></a>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
@@ -31,7 +31,7 @@ use Modules\Analytics\Support\Ui;
                             <span class="fw-semibold"><?= e($p['title']) ?></span>
                             <div class="text-secondary"><?= e($p['subject_code'] . ' · ' . $p['section_name']) ?> · <?= e(date('M j, Y g:i A', strtotime($p['created_at']))) ?></div>
                         </div>
-                        <a class="btn btn-sm btn-outline-secondary align-self-start" href="<?= url('analytics/faculty/classes/' . (int) $p['class_id'], ['tab' => 'stream']) ?>">Open</a>
+                        <a class="btn btn-sm btn-outline-secondary align-self-start" href="<?= url('analytics/faculty/classes/' . (int) $p['class_id'] . '/classroom', ['tab' => 'stream']) ?>">Open</a>
                     </div>
                     <?php if ($p['body']): ?><div class="mt-2" style="white-space:pre-wrap"><?= e($p['body']) ?></div><?php endif; ?>
                     <?php if ($p['attachment_path']): ?><a class="d-inline-block mt-2" href="<?= url('analytics/classes/' . (int) $p['class_id'] . '/posts/' . (int) $p['id'] . '/file') ?>"><i class="bi bi-paperclip me-1"></i><?= e($p['attachment_name']) ?></a><?php endif; ?>

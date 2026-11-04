@@ -109,8 +109,6 @@ $matrix = [
     'faculty'      => ['analytics.faculty.classes', 'analytics.faculty.attendance', 'analytics.faculty.behavior'],
     'registrar'    => ['analytics.registrar.enrollment', 'analytics.registrar.view'],
     'program_head' => ['analytics.view', 'analytics.export'],
-    'dean'         => ['analytics.view', 'analytics.export'],
-    'vpaa'         => ['analytics.view', 'analytics.export'],
     'lead_analytics' => $declared,
 ];
 foreach ($matrix as $role => $perms) {
@@ -123,9 +121,9 @@ foreach ($matrix as $role => $perms) {
 }
 $leaks = Database::fetchAll(
     "SELECT r.slug, p.name FROM `role_permissions` rp JOIN `roles` r ON r.id = rp.role_id JOIN `permissions` p ON p.id = rp.permission_id
-     WHERE r.slug IN ('student', 'program_head', 'dean', 'vpaa', 'registrar') AND p.name LIKE 'analytics.admin.%'"
+     WHERE r.slug IN ('student', 'program_head', 'registrar') AND p.name LIKE 'analytics.admin.%'"
 );
-check('no admin analytics permission granted to student / program head / dean / vpaa / registrar', empty($leaks),
+check('no admin analytics permission granted to student / program head / registrar', empty($leaks),
     implode(', ', array_map(fn($l) => $l['slug'] . ':' . $l['name'], $leaks)));
 
 // 5. Demo accounts

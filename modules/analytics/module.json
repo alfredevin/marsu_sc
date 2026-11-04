@@ -27,18 +27,6 @@
                         "permission": "analytics.faculty.classes"
                     },
                     {
-                        "label": "Roll-Call",
-                        "icon": "bi-calendar-check",
-                        "route": "analytics/faculty/attendance",
-                        "permission": "analytics.faculty.attendance"
-                    },
-                    {
-                        "label": "My Students",
-                        "icon": "bi-people",
-                        "route": "analytics/faculty/students",
-                        "permission": "analytics.faculty.classes"
-                    },
-                    {
                         "label": "Conduct Reports",
                         "icon": "bi-flag",
                         "route": "analytics/faculty/conduct",
@@ -231,7 +219,7 @@
                 "permission": "analytics.registrar.view",
                 "children": [
                     {
-                        "label": "Enrollment Dashboard",
+                        "label": "Enrollment Records",
                         "icon": "bi-speedometer",
                         "route": "analytics/registrar",
                         "permission": "analytics.registrar.view"
@@ -243,9 +231,9 @@
                         "permission": "analytics.registrar.view"
                     },
                     {
-                        "label": "Enroll Students",
-                        "icon": "bi-person-plus",
-                        "route": "analytics/registrar/enrollments/create",
+                        "label": "Import Records",
+                        "icon": "bi-file-earmark-arrow-up",
+                        "route": "analytics/registrar/import",
                         "permission": "analytics.registrar.enrollment"
                     },
                     {
@@ -267,6 +255,19 @@
                         "permission": "analytics.registrar.view"
                     }
                 ]
+            },
+            {
+                "label": "Oversight Setup",
+                "icon": "bi-diagram-3",
+                "permission": "analytics.admin.settings",
+                "children": [
+                    {
+                        "label": "Program Heads",
+                        "icon": "bi-person-badge",
+                        "route": "analytics/admin/program-heads",
+                        "permission": "analytics.admin.settings"
+                    }
+                ]
             }
         ]
     },
@@ -274,8 +275,8 @@
         "analytics.view": "View Academic Monitoring Dashboards (scoped by program for Program Heads)",
         "analytics.export": "Export Academic Monitoring Data to CSV",
         "analytics.student.portal": "Access Own Student Academic Portal",
-        "analytics.registrar.enrollment": "Manage Term Enrollments and Subject Loads",
-        "analytics.registrar.view": "View Masterlists, Registration Forms and Posted Grade Sheets",
+        "analytics.registrar.enrollment": "Import Official Enrollment Records",
+        "analytics.registrar.view": "View Enrollment Records, Masterlists and Posted Grade Sheets",
         "analytics.faculty.classes": "Create and Manage Own Classes, Rosters, Class Stream and Class Records",
         "analytics.faculty.attendance": "Take Roll-Call Attendance for Own Classes",
         "analytics.faculty.behavior": "Report Conduct Incidents for Own Class Students",

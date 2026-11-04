@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.removeGroup = function(gIdx) {
         if (scheme.groups.length <= 1) {
-            Swal.fire({ icon: 'warning', title: 'Cannot remove', text: 'A template must have at least one assessment group.' });
+            Swal.fire({ icon: 'warning', text: 'A template must have at least one assessment group.' });
             return;
         }
         scheme.groups.splice(gIdx, 1);

@@ -153,8 +153,109 @@ class ClassRecord
         ];
     }
 
+    /**
+     * Data for the Grades Tracking matrix (students keyed by student number, as the page expects).
+     * `can_edit` is true only for the owning faculty while the record is in draft.
+     */
+    public static function matrixPayload(array $class): array
+    {
+        $rec = self::load($class);
+        $published = self::isPublished($class);
+        $dateMap = [];
+        foreach ($rec['dates'] as $d) {
+            $dateMap[self::dateLabel($d)] = $d;
+        }
+        $scheme = $rec['scheme'];
+        $used = self::usedItemCodes((int) $class['id'], $scheme);
+        foreach ($scheme['groups'] as &$g) {
+            $g['attendanceDates'] = $g['hasAttendance'] ? array_keys($dateMap) : [];
+            $g['nextCode'] = $g['isExam'] ? null : self::nextItemCode($g, $used);
+        }
+        unset($g);
+
+        $students = [];
+        $scores = [];
+        foreach ($rec['roster'] as $r) {
+            $sid = (int) $r['student_id'];
+            $num = $r['student_number'];
+            $students[] = [
+                'student_id' => $num,
+                'pk' => $sid,
+                'full_name' => trim($r['last_name'] . ', ' . $r['first_name'] . (!empty($r['middle_name']) ? ' ' . mb_substr($r['middle_name'], 0, 1) . '.' : '')),
+                'department' => $r['program_code'] ?? '',
+            ];
+            $att = [];
+            foreach (($rec['attendance'][$sid]['dates'] ?? []) as $d => $status) {
+                $att[self::dateLabel($d)] = ['Absent' => 'A', 'Excused' => 'E', 'Late' => 'L'][$status] ?? 'P';
+            }
+            $posted = $published ? ($rec['posted'][$sid] ?? null) : null;
+            $scores[$num] = [
+                'rawScores' => $rec['scores'][$sid] ?? (object) [],
+                'attendance' => $att ?: (object) [],
+                'posted' => $posted ? ['final_grade' => $posted['final_grade'], 'remarks' => $posted['remarks']] : null,
+            ];
+        }
+
+        return [
+            'id' => (string) $class['id'],
+            'course_code' => $class['subject_code'],
+            'course_title' => $class['subject_title'],
+            'section' => $class['section_name'],
+            'school_year' => $class['academic_year_label'] ?? '',
+            'semester' => $class['semester_name'] ?? '',
+            'faculty_name' => $class['faculty_name'] ?? '',
+            'grade_status' => $class['grade_status'],
+            'can_edit' => $class['grade_status'] === 'draft' && AnalyticsAccess::ownsClass((int) $class['id']),
+            'is_owner' => AnalyticsAccess::ownsClass((int) $class['id']),
+            'student_count' => count($students),
+            'late_weight' => GradeCalculator::lateWeight(),
+            'passing_cutoff' => $scheme['passingCutoff'],
+            'scheme_name' => $scheme['name'],
+            'scheme' => $scheme,
+            'date_map' => $dateMap ?: (object) [],
+            'students' => $students,
+            'scores' => $scores ?: (object) [],
+        ];
+    }
+
     public static function isPublished(array $class): bool
     {
         return in_array($class['grade_status'] ?? '', ['posted', 'locked'], true);
+    }
+
+    /** Column label of an attendance session, e.g. 2026-09-09 -> 9-Sep. */
+    public static function dateLabel(string $date): string
+    {
+        return date('j-M', strtotime($date));
+    }
+
+    /**
+     * Upper-cased item codes in the scheme plus codes that still have stored scores,
+     * so a new column never picks up scores of a column that was removed earlier.
+     */
+    public static function usedItemCodes(int $classId, array $scheme): array
+    {
+        $used = array_map('strtoupper', array_keys(GradeCalculator::items($scheme)));
+        foreach (Database::fetchAll("SELECT DISTINCT item_code FROM `ana_class_scores` WHERE class_id = :cid", ['cid' => $classId]) as $r) {
+            $used[] = strtoupper($r['item_code']);
+        }
+        return array_values(array_unique($used));
+    }
+
+    /** Next column code of a group: Q2 -> Q3, ACT6 -> ACT7, P -> P2, empty group -> first letter of its title + 1. */
+    public static function nextItemCode(array $group, array $usedUpper): string
+    {
+        $last = $group['items'] ? (string) end($group['items'])['code'] : '';
+        if (preg_match('/^(.*?)(\d+)$/', $last, $m)) {
+            [$prefix, $n] = [$m[1], (int) $m[2] + 1];
+        } elseif ($last !== '') {
+            [$prefix, $n] = [$last, 2];
+        } else {
+            [$prefix, $n] = [strtoupper(substr((string) preg_replace('/[^A-Za-z]/', '', $group['title']), 0, 1)) ?: 'T', 1];
+        }
+        while (in_array(strtoupper($prefix . $n), $usedUpper, true)) {
+            $n++;
+        }
+        return $prefix . $n;
     }
 }

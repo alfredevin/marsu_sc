@@ -1,3 +1,27 @@
+<style>
+@media print {
+    body, .main, #main {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .sidebar, .navbar, .pagetitle, .btn, .breadcrumb, footer, .card-header .btn, .card-body .row, .alert, .nav-tabs, .no-print {
+        display: none !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+    table {
+        width: 100% !important;
+        font-size: 8.5pt !important;
+    }
+}
+</style>
+
 <!-- Consolidated APP — Procurement Management Information System (SPMS Consolidation) -->
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
@@ -162,9 +186,9 @@ foreach ($approved ?? [] as $a) {
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
                 <h6 class="mb-0 fw-bold text-success"><i class="bi bi-check-circle me-2"></i>Consolidated APP Approved Plans</h6>
-                <button class="btn btn-sm btn-outline-danger" onclick="window.print();">
+                <a href="<?= url('procurement/print/app') ?>" target="_blank" class="btn btn-sm btn-outline-danger">
                     <i class="bi bi-printer me-1"></i>Print APP Report
-                </button>
+                </a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">

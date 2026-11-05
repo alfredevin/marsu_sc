@@ -1,4 +1,5 @@
 <!-- Receipt Generation View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -14,6 +15,32 @@
             <i class="bi bi-printer me-1"></i>Print Official Receipt
         </button>
     </div>
+</div>
+
+<!-- Sub-navigation Pills -->
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/boardingfees') ?>">
+                <i class="bi bi-cash-coin me-1"></i>Fee Schedule
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/paymentrecords') ?>">
+                <i class="bi bi-wallet2 me-1"></i>Payment Records
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/balancemonitoring') ?>">
+                <i class="bi bi-exclamation-diamond me-1"></i>Balance Monitoring
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?= url('housing/receiptgeneration') ?>">
+                <i class="bi bi-printer me-1"></i>Receipt Generation
+            </a>
+        </li>
+    </ul>
 </div>
 
 <!-- Receipt Paper Card (Print Styled) -->

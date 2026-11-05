@@ -1,4 +1,5 @@
 <!-- Reservation Management View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -55,7 +56,7 @@
                         <td><span class="text-danger small fw-bold">Oct 15, 2026 (In 6 days)</span></td>
                         <td><span class="badge bg-success">Confirmed</span></td>
                         <td class="text-end pe-3">
-                            <button class="btn btn-sm btn-outline-primary me-1" title="Convert to Check-in"><i class="bi bi-box-arrow-in-right"></i> Move In</button>
+                            <button class="btn btn-sm btn-accent me-1" title="Convert to Check-in"><i class="bi bi-box-arrow-in-right me-1"></i>Move In</button>
                             <button class="btn btn-sm btn-outline-danger" title="Cancel"><i class="bi bi-x-circle"></i></button>
                         </td>
                     </tr>

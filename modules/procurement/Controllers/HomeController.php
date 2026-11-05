@@ -17,8 +17,7 @@ class HomeController {
      */
     private static function ensureSchema(): void {
         try {
-            $db = Database::pdo();
-            $tableCheck = Database::fetchOne("SHOW TABLES LIKE 'prc_inventory'");
+            $tableCheck = Database::fetchOne("SHOW TABLES LIKE 'prc_purchase_requests'");
             if (!$tableCheck) {
                 $migrationFile = dirname(__DIR__) . '/database/migrations/2026_10_10_000001_create_procurement_tables.php';
                 if (file_exists($migrationFile)) {
@@ -200,50 +199,84 @@ class HomeController {
     }
 
     public function storePR(): void {
+        self::ensureSchema();
         $prNumber   = trim($_POST['pr_number'] ?? '');
         $office     = trim($_POST['requesting_office'] ?? '');
         $fundSource = trim($_POST['fund_source'] ?? 'General Fund (GAA)');
         $purpose    = trim($_POST['purpose'] ?? '');
         $priority   = trim($_POST['priority'] ?? 'Regular');
-        $dateNeeded = trim($_POST['date_needed'] ?? '') ?: null;
-        $estTotal   = (float)($_POST['estimated_amount'] ?? 0.00);
+        $priority   = in_array($priority, ['Regular', 'High', 'Urgent']) ? $priority : 'Regular';
+
+        // Safe Date Parsing
+        $rawDate    = trim($_POST['date_needed'] ?? '');
+        $dateNeeded = null;
+        if (!empty($rawDate)) {
+            $parsedDate = strtotime($rawDate);
+            $dateNeeded = $parsedDate ? date('Y-m-d', $parsedDate) : null;
+        }
+
+        // Safe Currency & Decimal Parsing
+        $rawAmount  = trim($_POST['estimated_amount'] ?? '0');
+        $rawAmount  = str_replace(['₱', 'Php', 'PHP', ' '], '', $rawAmount);
+        if (substr_count($rawAmount, ',') > 0 && substr_count($rawAmount, '.') > 0) {
+            $rawAmount = str_replace(',', '', $rawAmount);
+        } elseif (substr_count($rawAmount, '.') > 1) {
+            $parts = explode('.', $rawAmount);
+            $last = array_pop($parts);
+            $rawAmount = implode('', $parts) . '.' . $last;
+        } elseif (substr_count($rawAmount, ',') > 0) {
+            $rawAmount = str_replace(',', '', $rawAmount);
+        }
+        $estTotal   = max(0.00, (float)$rawAmount);
         $desc       = trim($_POST['description'] ?? '');
 
         if (empty($prNumber) || empty($office) || empty($desc)) {
-            Session::flash('error', 'Please fill in all required fields (PR Number, Office, and Description).');
+            Session::flash('error', 'Please fill in all required fields (PR Number, Requesting Office, and Item Specification).');
             redirect(url('procurement/pr-filling'));
             return;
         }
 
-        $now = date('Y-m-d H:i:s');
-        $user = Auth::user();
-        $requestedBy = $user['first_name'] ? ($user['first_name'] . ' ' . $user['last_name']) : 'Faculty Requester';
+        try {
+            // Prevent duplicate PR numbers by appending random suffix
+            $existingPR = Database::fetchOne("SELECT id FROM `prc_purchase_requests` WHERE pr_number = :pr", ['pr' => $prNumber]);
+            if ($existingPR) {
+                $prNumber .= '-' . rand(10, 99);
+            }
 
-        Database::insert('prc_purchase_requests', [
-            'pr_number'         => $prNumber,
-            'requesting_office' => $office,
-            'fund_source'       => $fundSource,
-            'purpose'           => $purpose ?: $desc,
-            'requested_by'      => $requestedBy,
-            'priority'          => $priority,
-            'status'            => 'Submitted',
-            'estimated_total'   => $estTotal,
-            'date_needed'       => $dateNeeded,
-            'created_at'        => $now
-        ]);
-        $prId = (int)Database::lastInsertId();
+            $now = date('Y-m-d H:i:s');
+            $user = Auth::user();
+            $requestedBy = (!empty($user) && !empty($user['first_name'])) 
+                ? ($user['first_name'] . ' ' . ($user['last_name'] ?? '')) 
+                : 'Faculty Requester';
 
-        Database::insert('prc_pr_items', [
-            'pr_id'               => $prId,
-            'item_description'    => $desc,
-            'quantity'            => 1,
-            'unit'                => 'lot',
-            'estimated_unit_cost' => $estTotal,
-            'total_cost'          => $estTotal,
-            'created_at'          => $now
-        ]);
+            $prId = Database::insert('prc_purchase_requests', [
+                'pr_number'         => $prNumber,
+                'requesting_office' => $office,
+                'fund_source'       => $fundSource,
+                'purpose'           => $purpose ?: $desc,
+                'requested_by'      => $requestedBy,
+                'priority'          => $priority,
+                'status'            => 'Submitted',
+                'estimated_total'   => $estTotal,
+                'date_needed'       => $dateNeeded,
+                'created_at'        => $now
+            ]);
 
-        Session::flash('success', "Purchase Request {$prNumber} has been successfully submitted!");
+            Database::insert('prc_pr_items', [
+                'pr_id'               => $prId,
+                'item_description'    => $desc,
+                'quantity'            => 1,
+                'unit'                => 'lot',
+                'estimated_unit_cost' => $estTotal,
+                'total_cost'          => $estTotal,
+                'created_at'          => $now
+            ]);
+
+            Session::flash('success', "Purchase Request {$prNumber} has been successfully submitted!");
+        } catch (\Throwable $e) {
+            Session::flash('error', "Database error saving Purchase Request: " . $e->getMessage());
+        }
+
         redirect(url('procurement/pr-filling'));
     }
 
@@ -264,6 +297,7 @@ class HomeController {
     }
 
     public function storeRIS(): void {
+        self::ensureSchema();
         $trackingNo = 'RIS-' . date('Y') . '-' . rand(1000, 9999);
         $issuedTo   = trim($_POST['issued_to_name'] ?? '');
         $department = trim($_POST['department_name'] ?? 'General Services');
@@ -286,10 +320,12 @@ class HomeController {
 
         $now = date('Y-m-d H:i:s');
         $user = Auth::user();
-        $issuedBy = $user['first_name'] ? ($user['first_name'] . ' ' . $user['last_name']) : 'Supply Officer';
+        $issuedBy = (!empty($user) && !empty($user['first_name'])) 
+            ? ($user['first_name'] . ' ' . ($user['last_name'] ?? '')) 
+            : 'Supply Officer III';
 
         // 1. Create RIS Header
-        Database::insert('prc_issuances', [
+        $risId = Database::insert('prc_issuances', [
             'tracking_no'     => $trackingNo,
             'issued_to_name'  => $issuedTo,
             'department_name' => $department,
@@ -299,7 +335,6 @@ class HomeController {
             'purpose'         => $purpose,
             'created_at'      => $now
         ]);
-        $risId = (int)Database::lastInsertId();
 
         // 2. Insert Issuance Item
         $propNo = 'RIS-' . date('Ymd') . '-' . rand(100, 999);
@@ -397,6 +432,7 @@ class HomeController {
     }
 
     public function storePPMP(): void {
+        self::ensureSchema();
         $year        = (int)($_POST['year'] ?? date('Y'));
         $deptName    = trim($_POST['department_name'] ?? '');
         $requestedBy = trim($_POST['requested_by'] ?? '');
@@ -434,7 +470,6 @@ class HomeController {
             }
         }
 
-        // Fallback default item if none specified
         if (empty($processedItems)) {
             $grandTotal = 45000.00;
             $processedItems[] = [
@@ -445,7 +480,7 @@ class HomeController {
             ];
         }
 
-        Database::insert('prc_ppmp', [
+        $ppmpId = Database::insert('prc_ppmp', [
             'ppmp_code'       => $code,
             'year'            => $year,
             'department_name' => $deptName,
@@ -455,7 +490,6 @@ class HomeController {
             'reason'          => $reason,
             'created_at'      => $now
         ]);
-        $ppmpId = (int)Database::lastInsertId();
 
         foreach ($processedItems as $p) {
             Database::insert('prc_ppmp_items', [
@@ -525,6 +559,7 @@ class HomeController {
     }
 
     public function storeAllocatedFund(): void {
+        self::ensureSchema();
         $deptName = trim($_POST['department_name'] ?? '');
         $year     = (int)($_POST['year'] ?? date('Y'));
         $amount   = (float)($_POST['amount'] ?? 0.00);
@@ -582,6 +617,7 @@ class HomeController {
     }
 
     public function storePO(): void {
+        self::ensureSchema();
         $poNumber    = trim($_POST['po_number'] ?? '');
         $supplierId  = (int)($_POST['supplier_id'] ?? 0);
         $totalAmount = (float)($_POST['total_amount'] ?? 0.00);
@@ -678,6 +714,7 @@ class HomeController {
     }
 
     public function inspectDelivery(): void {
+        self::ensureSchema();
         $poId          = (int)($_POST['po_id'] ?? 0);
         $iarNo         = 'IAR-' . date('Y') . '-' . rand(1000, 9999);
         $invoiceNo     = trim($_POST['invoice_number'] ?? '');
@@ -699,7 +736,7 @@ class HomeController {
         $status = ($rejectedQty > 0) ? 'Partially Accepted' : 'Inspected & Accepted';
 
         // 1. Create IAR Header
-        Database::insert('prc_inspection_acceptance', [
+        $iarId = Database::insert('prc_inspection_acceptance', [
             'iar_number'         => $iarNo,
             'po_id'              => $poId,
             'invoice_number'     => $invoiceNo,
@@ -710,7 +747,6 @@ class HomeController {
             'remarks'            => $remarks,
             'created_at'         => $now
         ]);
-        $iarId = (int)Database::lastInsertId();
 
         // 2. Insert Line Item
         Database::insert('prc_inspection_items', [
@@ -799,6 +835,7 @@ class HomeController {
     }
 
     public function issueProperty(): void {
+        self::ensureSchema();
         $trackingNo  = 'PAR-' . date('Y') . '-' . rand(1000, 9999);
         $issuedTo    = trim($_POST['issued_to_name'] ?? '');
         $department  = trim($_POST['department_name'] ?? 'College of Information & Computing Sciences');
@@ -821,10 +858,12 @@ class HomeController {
 
         $now = date('Y-m-d H:i:s');
         $user = Auth::user();
-        $issuedBy = $user['first_name'] ? ($user['first_name'] . ' ' . $user['last_name']) : 'Supply & Property Officer';
+        $issuedBy = (!empty($user) && !empty($user['first_name'])) 
+            ? ($user['first_name'] . ' ' . ($user['last_name'] ?? '')) 
+            : 'Supply & Property Officer III';
 
         // 1. Create PAR Header
-        Database::insert('prc_issuances', [
+        $issId = Database::insert('prc_issuances', [
             'tracking_no'     => $trackingNo,
             'issued_to_name'  => $issuedTo,
             'department_name' => $department,
@@ -834,7 +873,6 @@ class HomeController {
             'purpose'         => $purpose,
             'created_at'      => $now
         ]);
-        $issId = (int)Database::lastInsertId();
 
         // 2. Insert Issued Item
         Database::insert('prc_issuance_items', [
@@ -873,6 +911,7 @@ class HomeController {
     }
 
     public function storeSupplier(): void {
+        self::ensureSchema();
         $code    = 'SUP-' . date('Y') . '-' . str_pad((string)rand(1, 999), 3, '0', STR_PAD_LEFT);
         $name    = trim($_POST['company_name'] ?? '');
         $person  = trim($_POST['contact_person'] ?? '');
@@ -907,6 +946,7 @@ class HomeController {
     }
 
     public function storeCatalogItem(): void {
+        self::ensureSchema();
         $name  = trim($_POST['equipment_name'] ?? '');
         $price = (float)($_POST['price'] ?? 0.00);
         $unit  = trim($_POST['unit'] ?? 'unit');
@@ -982,6 +1022,7 @@ class HomeController {
     }
 
     public function reportPropertyIssue(): void {
+        self::ensureSchema();
         $itemId    = (int)($_POST['issuance_item_id'] ?? 0);
         $propNo    = trim($_POST['property_number'] ?? '');
         $itemName  = trim($_POST['item_name'] ?? '');
@@ -1016,7 +1057,6 @@ class HomeController {
             'created_at'       => $now
         ]);
 
-        // Also update item status in issuance table
         if ($itemId > 0) {
             Database::update('prc_issuance_items', [
                 'status'  => $issueType,
@@ -1026,5 +1066,201 @@ class HomeController {
 
         Session::flash('success', "Incident recorded for Tag {$propNo} as {$issueType}. Forwarded to COA Audit Trail.");
         redirect(url('procurement/coa-audit-trail'));
+    }
+
+    // ─── 6. Dedicated Clean Print Views (Government Standard A4 Forms) ────────
+    public function printPR(): void {
+        self::ensureSchema();
+        $id = (int)($_GET['id'] ?? 0);
+        $pr = null;
+        if ($id > 0) {
+            $pr = Database::fetchOne("SELECT * FROM `prc_purchase_requests` WHERE id = :id", ['id' => $id]);
+        }
+        if (!$pr) {
+            $pr = Database::fetchOne("SELECT * FROM `prc_purchase_requests` ORDER BY id DESC LIMIT 1");
+        }
+
+        $items = [];
+        if ($pr) {
+            $items = Database::fetchAll("SELECT * FROM `prc_pr_items` WHERE pr_id = :pr_id", ['pr_id' => $pr['id']]);
+        }
+
+        View::render('procurement/Views/print_pr', [
+            'pr'    => $pr,
+            'items' => $items
+        ], null);
+    }
+
+    public function printPO(): void {
+        self::ensureSchema();
+        $id = (int)($_GET['id'] ?? 0);
+        $order = null;
+        if ($id > 0) {
+            $order = Database::fetchOne(
+                "SELECT po.*, s.company_name, s.address, s.tin_number, s.contact_phone 
+                 FROM `prc_purchase_orders` po 
+                 LEFT JOIN `prc_suppliers` s ON po.supplier_id = s.id 
+                 WHERE po.id = :id",
+                ['id' => $id]
+            );
+        }
+        if (!$order) {
+            $order = Database::fetchOne(
+                "SELECT po.*, s.company_name, s.address, s.tin_number, s.contact_phone 
+                 FROM `prc_purchase_orders` po 
+                 LEFT JOIN `prc_suppliers` s ON po.supplier_id = s.id 
+                 ORDER BY po.id DESC LIMIT 1"
+            );
+        }
+
+        View::render('procurement/Views/print_po', [
+            'order' => $order
+        ], null);
+    }
+
+    public function printPAR(): void {
+        self::ensureSchema();
+        $id = (int)($_GET['id'] ?? 0);
+        $issuance = null;
+        if ($id > 0) {
+            $issuance = Database::fetchOne("SELECT * FROM `prc_issuances` WHERE id = :id", ['id' => $id]);
+        }
+        if (!$issuance) {
+            $issuance = Database::fetchOne("SELECT * FROM `prc_issuances` WHERE type = 'PAR' ORDER BY id DESC LIMIT 1");
+        }
+
+        $items = [];
+        if ($issuance) {
+            $items = Database::fetchAll("SELECT * FROM `prc_issuance_items` WHERE issuance_id = :id", ['id' => $issuance['id']]);
+        }
+
+        View::render('procurement/Views/print_par', [
+            'issuance' => $issuance,
+            'items'    => $items
+        ], null);
+    }
+
+    public function printRIS(): void {
+        self::ensureSchema();
+        $id = (int)($_GET['id'] ?? 0);
+        $issuance = null;
+        if ($id > 0) {
+            $issuance = Database::fetchOne("SELECT * FROM `prc_issuances` WHERE id = :id", ['id' => $id]);
+        }
+        if (!$issuance) {
+            $issuance = Database::fetchOne("SELECT * FROM `prc_issuances` WHERE type = 'RIS' ORDER BY id DESC LIMIT 1");
+        }
+
+        $items = [];
+        if ($issuance) {
+            $items = Database::fetchAll("SELECT * FROM `prc_issuance_items` WHERE issuance_id = :id", ['id' => $issuance['id']]);
+        }
+
+        View::render('procurement/Views/print_ris', [
+            'issuance' => $issuance,
+            'items'    => $items
+        ], null);
+    }
+
+    public function printIAR(): void {
+        self::ensureSchema();
+        $id = (int)($_GET['id'] ?? 0);
+        $iar = null;
+        if ($id > 0) {
+            $iar = Database::fetchOne(
+                "SELECT iar.*, po.po_number, s.company_name 
+                 FROM `prc_inspection_acceptance` iar 
+                 JOIN `prc_purchase_orders` po ON iar.po_id = po.id 
+                 JOIN `prc_suppliers` s ON po.supplier_id = s.id 
+                 WHERE iar.id = :id",
+                ['id' => $id]
+            );
+        }
+        if (!$iar) {
+            $iar = Database::fetchOne(
+                "SELECT iar.*, po.po_number, s.company_name 
+                 FROM `prc_inspection_acceptance` iar 
+                 JOIN `prc_purchase_orders` po ON iar.po_id = po.id 
+                 JOIN `prc_suppliers` s ON po.supplier_id = s.id 
+                 ORDER BY iar.id DESC LIMIT 1"
+            );
+        }
+
+        $items = [];
+        if ($iar) {
+            $items = Database::fetchAll("SELECT * FROM `prc_inspection_items` WHERE iar_id = :id", ['id' => $iar['id']]);
+        }
+
+        View::render('procurement/Views/print_iar', [
+            'iar'   => $iar,
+            'items' => $items
+        ], null);
+    }
+
+    public function printAPP(): void {
+        self::ensureSchema();
+        $year = (int)($_GET['year'] ?? date('Y'));
+        
+        $items = [];
+        try {
+            $items = Database::fetchAll(
+                "SELECT pi.item_name, pi.price, SUM(pi.quantity) as total_qty, SUM(pi.total_amount) as total_cost, p.department_name
+                 FROM `prc_ppmp_items` pi
+                 JOIN `prc_ppmp` p ON pi.ppmp_id = p.id
+                 WHERE p.year = :year
+                 GROUP BY pi.item_name, pi.price, p.department_name
+                 ORDER BY pi.item_name ASC",
+                ['year' => $year]
+            );
+        } catch (\Throwable $e) {}
+
+        if (empty($items)) {
+            try {
+                $items = Database::fetchAll(
+                    "SELECT pi.item_name, pi.price, SUM(pi.quantity) as total_qty, SUM(pi.total_amount) as total_cost, p.department_name
+                     FROM `prc_ppmp_items` pi
+                     JOIN `prc_ppmp` p ON pi.ppmp_id = p.id
+                     GROUP BY pi.item_name, pi.price, p.department_name
+                     ORDER BY pi.item_name ASC"
+                );
+            } catch (\Throwable $e) {}
+        }
+
+        View::render('procurement/Views/print_app', [
+            'year'  => $year,
+            'items' => $items
+        ], null);
+    }
+
+    public function printReturnSlip(): void {
+        self::ensureSchema();
+        $id = (int)($_GET['id'] ?? 0);
+        $item = null;
+        if ($id > 0) {
+            $item = Database::fetchOne(
+                "SELECT ii.*, iar.iar_number, po.po_number, s.company_name, s.address as supplier_address, s.contact_phone
+                 FROM `prc_inspection_items` ii
+                 JOIN `prc_inspection_acceptance` iar ON ii.iar_id = iar.id
+                 JOIN `prc_purchase_orders` po ON iar.po_id = po.id
+                 JOIN `prc_suppliers` s ON po.supplier_id = s.id
+                 WHERE ii.id = :id",
+                ['id' => $id]
+            );
+        }
+        if (!$item) {
+            $item = Database::fetchOne(
+                "SELECT ii.*, iar.iar_number, po.po_number, s.company_name, s.address as supplier_address, s.contact_phone
+                 FROM `prc_inspection_items` ii
+                 JOIN `prc_inspection_acceptance` iar ON ii.iar_id = iar.id
+                 JOIN `prc_purchase_orders` po ON iar.po_id = po.id
+                 JOIN `prc_suppliers` s ON po.supplier_id = s.id
+                 WHERE ii.inspection_status IN ('Rejected', 'Defective')
+                 ORDER BY ii.id DESC LIMIT 1"
+            );
+        }
+
+        View::render('procurement/Views/print_return_slip', [
+            'item' => $item
+        ], null);
     }
 }

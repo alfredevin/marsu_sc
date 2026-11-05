@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Health\Controllers;
 
 use Core\View;
@@ -7,53 +8,68 @@ use Core\Database;
 use Core\Session;
 
 /**
- * Controller for University Health & Medical Consultation Clinic
+ * Controller for Smart Student Health Monitoring and Clinic Management System
  */
-class HomeController {
-    public function index(): void {
-        $user = Auth::user();
-        
-        // Fetch demo / module records
-        $records = [];
+class HomeController
+{
+
+    private function getRecords(): array
+    {
         try {
-            $records = Database::fetchAll("SELECT * FROM `hth_records` WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 50");
+            return Database::fetchAll("SELECT * FROM `hth_records` WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 50");
         } catch (\Exception $e) {
-            // Table might be pending migration
+            return [];
         }
+    }
+
+    public function index(): void
+    {
+        $user = Auth::user();
+        $records = $this->getRecords();
 
         View::render('health/Views/index', [
-            'title'       => 'University Health & Medical Consultation Clinic',
-            'moduleName'  => 'University Health & Medical Consultation Clinic',
-            'slug'        => 'health',
-            'records'     => $records,
-            'user'        => $user,
-            'crumbs'      => [
+            'title'          => 'Student Health Profile',
+            'moduleName'     => 'Student Health Profile',
+            'slug'           => 'health',
+            'records'        => $records,
+            'user'           => $user,
+            'activeSection'  => 'dashboard',
+            'sectionTitle'   => 'Student Health Profile',
+            'crumbs'         => [
                 'Student Welfare & Clinic' => '',
-                'University Health & Medical Consultation Clinic' => ''
+                'Student Health Profile' => ''
             ]
         ]);
     }
 
-    public function show(): void {
+    public function show(): void
+    {
         $id = (int)($_GET['id'] ?? 0);
-        $record = Database::fetchOne("SELECT * FROM `hth_records` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]);
-        
+        $record = null;
+        try {
+            $record = Database::fetchOne("SELECT * FROM `hth_records` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]);
+        } catch (\Exception $e) {
+        }
+
         if (!$record) {
             Session::flash('error', 'Record not found.');
             redirect(url('health'));
         }
 
         View::render('health/Views/index', [
-            'title'       => 'View Record #{$id}',
-            'moduleName'  => 'University Health & Medical Consultation Clinic',
-            'slug'        => 'health',
-            'record'      => $record,
-            'records'     => [],
-            'crumbs'      => ['University Health & Medical Consultation Clinic' => url('health'), 'View' => '']
+            'title'          => "View Record #{$id}",
+            'moduleName'     => 'Smart Student Health Monitoring and Clinic Management System',
+            'slug'           => 'health',
+            'record'         => $record,
+            'records'        => [],
+            'activeSection'  => 'records',
+            'sectionTitle'   => "Record Details #{$id}",
+            'crumbs'         => ['Clinic Management' => url('health'), 'View' => '']
         ]);
     }
 
-    public function store(): void {
+    public function store(): void
+    {
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
 
@@ -76,5 +92,70 @@ class HomeController {
         }
 
         redirect(url('health'));
+    }
+
+
+    public function patientRegistration(): void
+    {
+        $user = Auth::user();
+        View::render('health/Views/patient-registration', [
+            'title'       => 'Patient Registration',
+            'moduleName'  => 'Smart Student Health Monitoring and Clinic Management System',
+            'slug'        => 'health',
+            'user'        => $user,
+            'crumbs'      => [
+                'Clinic Management'      => url('health'),
+                'Student Health Profile' => '',
+                'Patient Registration'   => ''
+            ]
+        ]);
+    }
+
+    public function studentInfoHub(): void
+    {
+        $user = Auth::user();
+        View::render('health/Views/student-info-hub', [
+            'title'       => 'Student Information & Health Hub',
+            'moduleName'  => 'Smart Student Health Monitoring and Clinic Management System',
+            'slug'        => 'health',
+            'user'        => $user,
+            'crumbs'      => [
+                'Clinic Management'      => url('health'),
+                'Student Health Profile' => '',
+                'Student Info Hub'       => ''
+            ]
+        ]);
+    }
+
+    public function HealthStatistics(): void
+    {
+        $user = Auth::user();
+        View::render('health/Views/student-health-statistics', [
+            'title'       => 'Student Health Statistics',
+            'moduleName'  => 'Smart Student Health Monitoring and Clinic Management System',
+            'slug'        => 'health',
+            'user'        => $user,
+            'crumbs'      => [
+                'Clinic Management'         => url('health'),
+                'Student Health Profile'    => '',
+                'Student Health Statistics' => ''
+            ]
+        ]);
+    }
+
+    public function MedicalAssessment(): void
+    {
+        $user = Auth::user();
+        View::render('health/Views/medical-assessment', [
+            'title'       => 'Medical Assessment',
+            'moduleName'  => 'Smart Student Health Monitoring and Clinic Management System',
+            'slug'        => 'health',
+            'user'        => $user,
+            'crumbs'      => [
+                'Clinic Management'   => url('health'),
+                'Consultation Mgmt'   => '',
+                'Medical Assessment'  => ''
+            ]
+        ]);
     }
 }

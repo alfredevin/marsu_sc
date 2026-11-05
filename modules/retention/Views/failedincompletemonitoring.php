@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 2 - Academic Monitoring
+ * View: Failed & Incomplete (INC) Grades Monitoring (failedincompletemonitoring.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -23,14 +34,13 @@
         }
     </style>
 
-    <!-- 1. CONCISE HEADER & SINGLE-LINE FILTER BAR -->
+    <!-- 1. HEADER AND FILTERS -->
     <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom flex-wrap gap-2">
         <div>
             <h6 class="fw-bold marsu-maroon-text mb-0 text-nowrap">
-                <i class="bi bi-exclamation-octagon-fill me-1"></i> Failed & Incomplete Subject Watchlist
+                <i class="bi bi-exclamation-octagon-fill me-1"></i> Failed and Incomplete Subject Watchlist
             </h6>
-            <small class="text-muted">Institutional tracking of course failures (5.00), Incomplete (INC) marks, and
-                removal examination compliance.</small>
+            <small class="text-muted">Track failed marks (5.00), incomplete grades (INC), and removal deadlines.</small>
         </div>
 
         <form method="GET" action="" class="d-flex align-items-center gap-2 flex-wrap ms-auto">
@@ -87,78 +97,25 @@
         </form>
     </div>
 
-    <!-- 2. STRATEGIC DEFICIENCY KPI CARDS -->
-    <div class="row g-3 mb-4">
-        <!-- Total Deficiencies -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">Total Deficiencies</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= $totalDeficiencies ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Active Watchlist</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Total active failing (5.00) or incomplete records</small>
-            </div>
-        </div>
 
-        <!-- Incomplete Marks (INC) -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Incomplete (INC) Marks</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= $totalInc ?></h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">1-Year Window</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Pending final examination or major requirement</small>
-            </div>
-        </div>
-
-        <!-- Course Failures (5.00) -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">Course Failures (5.00)</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= $totalFailed ?></h3>
-                    <span class="badge bg-light text-danger border border-danger">Retake Mandatory</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Requires curricular re-enrollment & advising</small>
-            </div>
-        </div>
-
-        <!-- Pending Removal Examinations -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Pending Resolutions</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= $totalPendingRem ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">In-Progress</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Scheduled removal exams or pending completions</small>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. DEFICIENCY & REMOVAL TRACKING LEDGER TABLE -->
+    <!-- 3. DEFICIENCY LEDGER TABLE -->
     <div class="card border rounded-3 shadow-sm bg-white mb-3">
-        <div
-            class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="m-0 fw-bold marsu-maroon-text">
-                <i class="bi bi-clipboard2-x-fill me-1"></i> Active Deficiencies & Removal Tracking Ledger
+                <i class="bi bi-clipboard2-x-fill me-1"></i> Active Deficiency Records
             </h6>
 
             <div class="d-flex align-items-center gap-2">
                 <!-- Filter Status Buttons -->
                 <div class="btn-group btn-group-sm" role="group">
-                    <button type="button" class="btn btn-outline-secondary active quick-filter-btn"
-                        data-filter="all">All</button>
-                    <button type="button" class="btn btn-outline-danger quick-filter-btn"
-                        data-filter="Failed (5.00)">5.00 Failures</button>
-                    <button type="button" class="btn btn-outline-warning text-dark quick-filter-btn"
-                        data-filter="Incomplete (INC)">INC Marks</button>
+                    <button type="button" class="btn btn-outline-secondary active quick-filter-btn" data-filter="all">All</button>
+                    <button type="button" class="btn btn-outline-danger quick-filter-btn" data-filter="Failed (5.00)">5.00 Failures</button>
+                    <button type="button" class="btn btn-outline-warning text-dark quick-filter-btn" data-filter="Incomplete (INC)">INC Marks</button>
                 </div>
 
-                <input type="text" id="defSearchInput" class="form-control form-control-sm"
-                    placeholder="Search ID, Name, or Course..." style="width: 210px;" onkeyup="filterDeficiencyTable()">
+                    <input type="text" id="defSearchInput" class="form-control form-control-sm"
+                        placeholder="Search ID, Name, or Subject..." style="width: 250px;">
+                </div>
             </div>
         </div>
 
@@ -168,11 +125,11 @@
                     <tr>
                         <th class="ps-3 py-3">Student ID</th>
                         <th class="py-3">Student Name</th>
-                        <th class="py-3">Subject & Course</th>
-                        <th class="py-3 text-center">Mark</th>
+                        <th class="py-3">Subject</th>
+                        <th class="py-3 text-center">Grade</th>
                         <th class="py-3 text-center">Deficiency Type</th>
                         <th class="py-3">Term Recorded</th>
-                        <th class="py-3">Faculty In-Charge</th>
+                        <th class="py-3">Instructor</th>
                         <th class="py-3 text-center">Resolution Status</th>
                         <th class="py-3 text-end pe-3">Actions</th>
                     </tr>
@@ -204,8 +161,7 @@
                                     <div class="fw-bold text-dark"><?= htmlspecialchars($row['course_code']) ?></div>
                                     <small class="text-muted"><?= htmlspecialchars($row['course_title']) ?></small>
                                 </td>
-                                <td
-                                    class="text-center fw-bold fs-6 <?= $isFail ? 'text-danger' : ($isInc ? 'text-warning' : 'text-secondary') ?>">
+                                <td class="text-center fw-bold fs-6 <?= $isFail ? 'text-danger' : ($isInc ? 'text-warning' : 'text-secondary') ?>">
                                     <?= htmlspecialchars($row['grade']) ?>
                                 </td>
                                 <td class="text-center">
@@ -240,7 +196,7 @@
                                             <li>
                                                 <a class="dropdown-item small"
                                                     href="academicsupportprograms?course_code=<?= urlencode($row['course_code']) ?>&student_id=<?= urlencode($row['student_id']) ?>">
-                                                    <i class="bi bi-mortarboard me-2 text-success"></i> Endorse to Peer Tutoring
+                                                    <i class="bi bi-mortarboard me-2 text-success"></i> Study Support
                                                 </a>
                                             </li>
                                             <li>
@@ -252,61 +208,85 @@
                                                     <i class="bi bi-person-exclamation me-2"></i> Refer to Guidance
                                                 </a>
                                             </li>
+                                            <?php if ($isInc && can('retention.admin.grades') && !empty($row['grade_id'])): ?>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="dropdown-item small text-warning"
+                                                        onclick="openExtendIncModal(<?= (int) $row['grade_id'] ?>, '<?= e(addslashes($row['full_name'])) ?>', '<?= e(addslashes($row['course_code'])) ?>', '<?= e($row['removal_deadline'] ?? '') ?>')">
+                                                        <i class="bi bi-calendar-plus me-2 text-warning"></i> Extend INC Deadline
+                                                    </button>
+                                                </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <!-- Standard MarSU Empty State Box -->
                         <tr>
                             <td colspan="9" class="text-center py-5 text-muted">
                                 <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
                                 <p class="mb-0 fw-semibold">No active failing or incomplete records found</p>
-                                <small>All evaluated students are in good academic standing, or records have not yet synced
-                                    from the central database.</small>
+                                <small>All evaluated students are in good academic standing, or no records matched the selected filters.</small>
                             </td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
-        </div>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
     </div>
 
 </div>
 
-<!-- Instant Search & Quick Filter Script -->
+<!-- Modal: Extend INC Deadline (Part E6) -->
+<div class="modal fade" id="extendIncModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form id="extendIncForm" method="POST" action="">
+                <?= csrf_field() ?>
+                <div class="modal-header bg-warning text-dark">
+                    <h6 class="modal-title fw-bold mb-0">
+                        <i class="bi bi-calendar-plus me-1"></i> Extend Incomplete (INC) Deadline
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <div class="mb-3">
+                        <span class="text-muted d-block small" style="font-size: 11px;">STUDENT & SUBJECT</span>
+                        <div class="fw-bold text-dark" id="incStudentSubjectLabel"></div>
+                        <small class="text-secondary">Current Deadline: <span class="fw-semibold text-danger" id="incCurrentDeadlineLabel"></span></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="incNewDeadline" class="form-label small fw-bold text-dark">New Extension Deadline <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control form-control-sm" id="incNewDeadline" name="new_deadline" required min="<?= date('Y-m-d') ?>">
+                        <small class="text-muted" style="font-size: 11px;">New removal completion deadline granted by academic administration.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="incReason" class="form-label small fw-bold text-dark">Administrative Justification <span class="text-danger">*</span></label>
+                        <textarea class="form-control form-control-sm" id="incReason" name="reason" rows="3" required minlength="10" placeholder="State official basis for extension (e.g., medical hospitalization certificate, thesis laboratory extension)..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-warning text-dark px-3 fw-semibold">
+                        <i class="bi bi-calendar-check me-1"></i> Save Extension
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
-    function filterDeficiencyTable() {
-        const input = document.getElementById('defSearchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('.def-row');
-
-        rows.forEach(row => {
-            const idText = row.querySelector('.id-cell')?.innerText.toLowerCase() || '';
-            const nameText = row.querySelector('.name-cell')?.innerText.toLowerCase() || '';
-            const courseText = row.querySelector('.course-cell')?.innerText.toLowerCase() || '';
-            if (idText.includes(input) || nameText.includes(input) || courseText.includes(input)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
-
-    // Quick Button Filters (All, 5.00, INC)
-    document.querySelectorAll('.quick-filter-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            document.querySelectorAll('.quick-filter-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            const filter = this.dataset.filter;
-
-            document.querySelectorAll('.def-row').forEach(row => {
-                if (filter === 'all' || row.dataset.type === filter) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    });
+window.openExtendIncModal = function(gradeId, studentName, courseCode, currentDeadline) {
+    document.getElementById('incStudentSubjectLabel').textContent = studentName + ' (' + courseCode + ')';
+    document.getElementById('incCurrentDeadlineLabel').textContent = currentDeadline || 'Not Set';
+    document.getElementById('extendIncForm').action = '<?= url('retention/admin/grades') ?>/' + gradeId + '/extend-inc';
+    new bootstrap.Modal(document.getElementById('extendIncModal')).show();
+};
 </script>

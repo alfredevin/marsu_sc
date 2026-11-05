@@ -1,3 +1,27 @@
+<style>
+@media print {
+    body, .main, #main {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .sidebar, .navbar, .pagetitle, .btn, .breadcrumb, footer, .card-header .btn, .card-body .row, .alert, .no-print {
+        display: none !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+    table {
+        width: 100% !important;
+        font-size: 8.5pt !important;
+    }
+}
+</style>
+
 <!-- Discrepancy Management — Procurement Management Information System (SPMS Return Orders) -->
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
@@ -10,9 +34,9 @@
         <a href="<?= url('procurement') ?>" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
         </a>
-        <button class="btn btn-marsu btn-sm" onclick="window.print();">
+        <a href="<?= url('procurement/print/return-slip') ?>" target="_blank" class="btn btn-marsu btn-sm">
             <i class="bi bi-printer me-1"></i>Print Return Slips
-        </button>
+        </a>
     </div>
 </div>
 
@@ -70,6 +94,7 @@
                         <th>Inspection Date</th>
                         <th>Defect / Non-Compliance Reason</th>
                         <th class="text-center">Return Status</th>
+                        <th class="text-end pe-3">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,11 +110,16 @@
                                 <td class="text-center">
                                     <span class="badge bg-warning text-dark">For Supplier Replacement</span>
                                 </td>
+                                <td class="text-end pe-3">
+                                    <a href="<?= url('procurement/print/return-slip?id=' . (int)$rej['id']) ?>" target="_blank" class="btn btn-sm btn-outline-danger" title="Print Return Slip">
+                                        <i class="bi bi-printer me-1"></i>Print Slip
+                                    </a>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-5">
+                            <td colspan="8" class="text-center text-muted py-5">
                                 <i class="bi bi-check-circle fs-2 text-success d-block mb-2"></i>
                                 No item discrepancies recorded. All delivered goods were compliant and accepted.
                             </td>

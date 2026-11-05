@@ -1,4 +1,5 @@
 <!-- Balance Monitoring View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -17,25 +18,25 @@
 </div>
 
 <!-- Sub-navigation Pills -->
-<div class="mb-4">
-    <ul class="nav nav-pills custom-nav-pills gap-1">
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/boardingfees') ?>">
+            <a class="nav-link" href="<?= url('housing/boardingfees') ?>">
                 <i class="bi bi-cash-coin me-1"></i>Fee Schedule
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/paymentrecords') ?>">
+            <a class="nav-link" href="<?= url('housing/paymentrecords') ?>">
                 <i class="bi bi-wallet2 me-1"></i>Payment Records
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 active bg-marsu text-white fw-semibold" href="<?= url('housing/balancemonitoring') ?>">
-                <i class="bi bi-exclamation-diamond me-1 text-gold"></i>Balance Monitoring
+            <a class="nav-link active" href="<?= url('housing/balancemonitoring') ?>">
+                <i class="bi bi-exclamation-diamond me-1"></i>Balance Monitoring
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link px-3 py-1 text-muted" href="<?= url('housing/receiptgeneration') ?>">
+            <a class="nav-link" href="<?= url('housing/receiptgeneration') ?>">
                 <i class="bi bi-printer me-1"></i>Receipt Generation
             </a>
         </li>
@@ -45,31 +46,80 @@
 <!-- Balance Aging Summary Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-warning p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">1 — 15 Days Overdue</div>
-            <div class="h3 font-weight-bold mb-0 text-warning">₱6,000.00</div>
-            <div class="small text-muted mt-1">4 residents (Grace period)</div>
+        <div class="card card-kpi border-warning h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">1 — 15 Days Overdue</div>
+                    <div class="kpi-value text-warning">
+                        ₱6,000
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Grace Period Overdue">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-person-exclamation text-warning"></i>
+                <span>4 residents (Grace period)</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-danger p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">16 — 30 Days Overdue</div>
-            <div class="h3 font-weight-bold mb-0 text-danger">₱5,400.00</div>
-            <div class="small text-muted mt-1">2 residents (First warning)</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">16 — 30 Days Overdue</div>
+                    <div class="kpi-value text-danger">
+                        ₱5,400
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="First Warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-bell-fill text-danger"></i>
+                <span>2 residents (First warning)</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">> 30 Days Critical</div>
-            <div class="h3 font-weight-bold mb-0 text-dark">₱3,400.00</div>
-            <div class="small text-muted mt-1">1 resident (Refer to OSAS)</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">> 30 Days Critical</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        ₱3,400
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Refer to OSAS">
+                    <i class="bi bi-shield-exclamation"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-send-exclamation-fill text-marsu-burgundy"></i>
+                <span>1 resident (Refer to OSAS)</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-success p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Fully Settled</div>
-            <div class="h3 font-weight-bold mb-0 text-success">56 Students</div>
-            <div class="small text-muted mt-1">Zero balance accounts</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Fully Settled</div>
+                    <div class="kpi-value text-success">
+                        56
+                        <span class="kpi-unit">Students</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Fully Settled Accounts">
+                    <i class="bi bi-patch-check-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <span>Zero balance accounts</span>
+            </div>
         </div>
     </div>
 </div>
@@ -108,7 +158,7 @@
                         <td><span class="badge bg-warning text-dark">12 Days</span></td>
                         <td><span class="badge bg-warning-subtle text-warning border">SMS Reminder Sent</span></td>
                         <td class="text-end pe-3">
-                            <button class="btn btn-sm btn-outline-primary" title="Post Payment"><i class="bi bi-credit-card"></i> Pay</button>
+                            <a href="<?= url('housing/paymentrecords') ?>" class="btn btn-sm btn-accent" title="Post Payment"><i class="bi bi-credit-card me-1"></i> Pay</a>
                         </td>
                     </tr>
                     <tr>
@@ -122,7 +172,7 @@
                         <td><span class="badge bg-danger">34 Days</span></td>
                         <td><span class="badge bg-danger-subtle text-danger border">Parent Contacted</span></td>
                         <td class="text-end pe-3">
-                            <button class="btn btn-sm btn-outline-primary" title="Post Payment"><i class="bi bi-credit-card"></i> Pay</button>
+                            <a href="<?= url('housing/paymentrecords') ?>" class="btn btn-sm btn-accent" title="Post Payment"><i class="bi bi-credit-card me-1"></i> Pay</a>
                         </td>
                     </tr>
                 </tbody>

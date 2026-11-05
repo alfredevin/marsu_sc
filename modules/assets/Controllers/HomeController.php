@@ -171,7 +171,7 @@ class HomeController {
     }
     public function insuanceandreturntracking(): void {
         $user = Auth::user();
-        View::render('assets/Views/InsuanceAndReturnTracking', [
+        View::render('assets/Views/insuanceandreturntracking', [
             'title'       => 'InsuanceAndReturnTracking',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
@@ -221,7 +221,7 @@ class HomeController {
             ]
         ]);
     }
-    public function assignedpersonnelunitTracking(): void {
+    public function assignedpersonnelunittracking(): void {
         $user = Auth::user();
         View::render('assets/Views/assignedpersonnelunittracking', [
             'title'       => 'Assigned Personnel Unit Tracking',
@@ -316,7 +316,7 @@ class HomeController {
     }
     public function servicehistory(): void {
         $user = Auth::user();
-        View::render('assets/Views/repairrequest', [
+        View::render('assets/Views/servicehistory', [
             'title'       => 'Service History',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',
@@ -433,7 +433,7 @@ class HomeController {
     }
     public function auditreadydocumentation(): void {
         $user = Auth::user();
-        View::render('assets/Views/maintenanceperformancereports', [
+        View::render('assets/Views/auditreadydocumentation', [
             'title'       => 'Audit Ready Documentation',
             'moduleName'  => 'University Equipment & IT Asset Management',
             'slug'        => 'assets',

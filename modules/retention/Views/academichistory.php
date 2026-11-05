@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 1 - Student Information Management
+ * View: Student Academic History & Progression (academichistory.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -225,7 +236,7 @@
                 <!-- Search Box na may Automatic Backspace Clear -->
                 <div class="input-group input-group-sm" style="width: 220px;">
                     <input type="search" id="searchInput" name="q" class="form-control" placeholder="Search ID / Name..."
-                        value="<?= htmlspecialchars($search ?? '') ?>" oninput="handleSearch(this)" autocomplete="off">
+                        value="<?= htmlspecialchars($search ?? '') ?>" autocomplete="off">
                     <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                 </div>
 
@@ -312,7 +323,7 @@
                                     </span>
                                 </td>
                                 <td class="text-end pe-3">
-                                    <!-- PINDUTIN PARA BUMUKAS ANG TERM-BY-TERM TRANSCRIPT -->
+                                    <!-- Click to view term-by-term transcript -->
                                     <a href="academichistory?student_id=<?= urlencode($row['student_number'] ?? $row['id']) ?>"
                                         class="btn btn-sm btn-outline-primary fw-semibold">
                                         View Transcript
@@ -332,40 +343,8 @@
                 </tbody>
             </table>
         </div>
-
-        <script>
-            const hadQuery = <?= !empty($search) ? 'true' : 'false' ?>;
-
-            function handleSearch(input) {
-                const query = input.value.trim().toLowerCase();
-                const rows = document.querySelectorAll('.student-row');
-
-                // Live filter sa table habang nagta-type
-                rows.forEach(row => {
-                    const text = row.innerText.toLowerCase();
-                    row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
-                });
-
-                // Kusa mag-reload kapag binura gamit ang backspace
-                if (query === '' && hadQuery) {
-                    const url = new URL(window.location.href);
-                    url.searchParams.delete('q');
-                    window.location.href = url.toString();
-                }
-            }
-
-            // Kapag pinindot ang (x) icon sa search box
-            const sBox = document.getElementById('searchInput');
-            if (sBox) {
-                sBox.addEventListener('search', function () {
-                    if (this.value === '' && hadQuery) {
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete('q');
-                        window.location.href = url.toString();
-                    }
-                });
-            }
-        </script>
+        <!-- Academic History Table Pagination Container -->
+        <?= $pagination['html'] ?? '' ?>
 
     <?php endif; ?>
 

@@ -103,7 +103,8 @@
                     <option value="group5_lead">Group 5: Student Organizations Financial Management (orf_)</option>
                     <option value="group6_lead">Group 6: Student Leadership Development (sld_)</option>
                     <option value="group7_lead">Group 7: Boarding House Management &amp; Directory (hsg_)</option>
-                    <option value="group8_lead">Group 8: Student Retention Predictor &amp; Analytics (ret_)</option>
+                    <option value="group8a_lead">Group 8A: Academic Analytics &amp; Student Monitoring (ana_)</option>
+                    <option value="group8b_lead">Group 8B: Student Retention Predictor &amp; Early Warning System (ret_)</option>
                     <option value="group9_lead">Group 9: University Equipment &amp; IT Asset Management (ast_)</option>
                     <option value="group10_lead">Group 10: Student Welfare Services Management (wlf_)</option>
                     <option value="group11_lead">Group 11: Guidance &amp; Counseling Records System (gdc_)</option>

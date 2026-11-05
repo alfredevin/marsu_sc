@@ -43,62 +43,19 @@
         </div>
     </div>
 
-    <!-- KPI Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">High Risk (Critical)</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= $highRiskCount ?? 0 ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">Urgent Intervention</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Retention danger / dropout risk</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Moderate Risk</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= $moderateRiskCount ?? 0 ?></h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">Monitored</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Academic performance decline</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Under Intervention</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-info"><?= $underInterventionCount ?? 0 ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">In Progress</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Assigned to guidance or tutoring</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">Total Evaluated Cohort</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= $totalRiskEvaluated ?? count($riskList ?? []) ?></h3>
-                    <span class="badge bg-success-subtle text-success border border-success">Audited</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Students screened for risk factors</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Table -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">
-        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="m-0 fw-bold marsu-maroon-text">
                 <i class="bi bi-shield-lock me-1"></i> Early Warning Watchlist & Risk Score Matrix
             </h6>
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" id="riskSearchInput" class="form-control form-control-sm" placeholder="Search ID, Name, or Risk..." style="width: 250px;">
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+            <table class="table table-hover align-middle mb-0" id="riskTable" style="font-size: 13px;">
                 <thead class="table-light text-uppercase small text-muted">
                     <tr>
                         <th class="ps-3 py-3">Student Details</th>
@@ -113,7 +70,7 @@
                 <tbody>
                     <?php if (!empty($riskList)): ?>
                         <?php foreach ($riskList as $row): ?>
-                            <tr>
+                            <tr class="risk-row">
                                 <td class="ps-3 fw-semibold text-dark">
                                     <div><?= htmlspecialchars($row['full_name'] ?? 'N/A') ?></div>
                                     <small class="text-muted"><?= htmlspecialchars($row['student_id'] ?? '') ?></small>
@@ -180,6 +137,8 @@
                 </tbody>
             </table>
         </div>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
     </div>
 </div>
 
@@ -224,3 +183,4 @@
         </div>
     </div>
 </div>
+

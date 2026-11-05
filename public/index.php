@@ -155,6 +155,12 @@ $router->post('/modules/toggle', [\App\Controllers\ModuleManagerController::clas
 // UI Kit Styleguide
 $router->get('/ui-kit', [\App\Controllers\UiKitController::class, 'index'], ['auth']);
 
+// Sample 2-Field CRUD Demo (Student Reference)
+$router->get('/sample-crud', [\App\Controllers\SampleCrudController::class, 'index'], ['auth']);
+$router->post('/sample-crud/create', [\App\Controllers\SampleCrudController::class, 'store'], ['auth', 'csrf']);
+$router->post('/sample-crud/update', [\App\Controllers\SampleCrudController::class, 'update'], ['auth', 'csrf']);
+$router->post('/sample-crud/delete', [\App\Controllers\SampleCrudController::class, 'delete'], ['auth', 'csrf']);
+
 // ============================================================================
 // DYNAMIC STUDENT GROUP MODULE REGISTRATIONS
 // ============================================================================

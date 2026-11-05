@@ -1,3 +1,27 @@
+<style>
+@media print {
+    body, .main, #main {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .sidebar, .navbar, .pagetitle, .btn, .breadcrumb, footer, .card-header .btn, .card-body .row, .alert, .no-print {
+        display: none !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+    table {
+        width: 100% !important;
+        font-size: 8.5pt !important;
+    }
+}
+</style>
+
 <!-- COA Audit Trail — Procurement Management Information System (SPMS Equipment Incident & Condemnation Reports) -->
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>

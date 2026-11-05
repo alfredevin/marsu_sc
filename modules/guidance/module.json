@@ -10,109 +10,85 @@
         "icon": "bi-person-heart",
         "items": [
             {
+                "label": "Dashboard",
+                "icon": "bi-grid-1x2-fill",
+                "route": "guidance/dashboard",
+                "permission": "guidance.view"
+            },
+            {
                 "label": "Student Information Management",
                 "icon": "bi-person-vcard",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Student Profile",
-                        "route": "guidance/student-profile",
+                        "label": "Student Directory",
+                        "route": "guidance/student_directory",
                         "permission": "guidance.view"
                     },
                     {
                         "label": "Student History",
-                        "route": "guidance/student-history",
+                        "route": "guidance/student_history",
                         "permission": "guidance.view"
                     }
                 ]
             },
             {
-                "label": "Guidance Services",
-                "icon": "bi-people",
+                "label": "Appointments",
+                "icon": "bi-calendar-check",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Appointments",
-                        "route": "guidance/appointments",
+                        "label": "Appointment Lists",
+                        "route": "guidance/appointment_lists",
                         "permission": "guidance.view"
                     },
                     {
                         "label": "Session Calendar",
-                        "route": "guidance/session-calendar",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Case Monitoring",
-                        "route": "guidance/case-monitoring",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Counseling",
-                        "route": "guidance/counseling",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Career Counseling",
-                        "route": "guidance/career-counseling",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Psychological Support",
-                        "route": "guidance/psychological-support",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Exit Interviews",
-                        "route": "guidance/exit-interviews",
+                        "route": "guidance/session_calendar",
                         "permission": "guidance.view"
                     }
                 ]
             },
             {
-                "label": "Records Management",
-                "icon": "bi-folder",
+                "label": "Case Management",
+                "icon": "bi-journal-medical",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Counseling Records",
-                        "route": "guidance/counseling-records",
+                        "label": "Concerns",
+                        "route": "guidance/concerns",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Career Assessments",
-                        "route": "guidance/career-assessments",
+                        "label": "Cases",
+                        "route": "guidance/cases",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Service Records",
-                        "route": "guidance/service-records",
+                        "label": "Case Registration",
+                        "route": "guidance/case_registration",
+                        "permission": "guidance.view"
+                    },
+                    {
+                        "label": "Referrals",
+                        "route": "guidance/referrals",
                         "permission": "guidance.view"
                     }
                 ]
             },
             {
-                "label": "Reports",
+                "label": "Reports & Audits",
                 "icon": "bi-bar-chart-line",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "Counseling Utilization",
-                        "route": "guidance/counseling-utilization",
+                        "label": "Analytics Reports",
+                        "route": "guidance/analytics_reports",
                         "permission": "guidance.view"
                     },
                     {
-                        "label": "Student Concerns",
-                        "route": "guidance/student-concerns",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Career Readiness",
-                        "route": "guidance/career-readiness",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Exit Interview Summary",
-                        "route": "guidance/exit-interview-summary",
+                        "label": "Feedbacks",
+                        "route": "guidance/feedbacks",
                         "permission": "guidance.view"
                     }
                 ]
@@ -124,24 +100,19 @@
                 "children": [
                     {
                         "label": "Student Concern Types",
-                        "route": "guidance/student-concern-types",
+                        "route": "guidance/student_concern_types",
                         "permission": "guidance.view"
                     }
                 ]
             },
             {
-                "label": "System Management",
+                "label": "User Management",
                 "icon": "bi-gear-fill",
                 "permission": "guidance.view",
                 "children": [
                     {
-                        "label": "User Accounts",
-                        "route": "guidance/user-accounts",
-                        "permission": "guidance.view"
-                    },
-                    {
-                        "label": "Settings",
-                        "route": "guidance/settings",
+                        "label": "Audit Security Logs",
+                        "route": "guidance/audit_security_logs",
                         "permission": "guidance.view"
                     }
                 ]
@@ -150,6 +121,7 @@
     },
     "permissions": {
         "guidance.view": "Access Counseling Schedules & Appointment Bookings",
+        "guidance.create": "Create Intake Records & Appointment Bookings",
         "guidance.counsel": "Conduct Intake Interviews & Routine Assessments",
         "guidance.confidential": "Access Restricted Clinical Case Notes (Counselors Only)",
         "guidance.refer": "Endorse Students for Academic/Medical Referrals"

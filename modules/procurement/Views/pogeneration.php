@@ -1,3 +1,27 @@
+<style>
+@media print {
+    body, .main, #main {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .sidebar, .navbar, .pagetitle, .btn, .breadcrumb, footer, .card-header .btn, .card-body .row, .alert, .no-print {
+        display: none !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+    table {
+        width: 100% !important;
+        font-size: 8.5pt !important;
+    }
+}
+</style>
+
 <!-- PO Generation — Procurement Management Information System (SPMS Purchase Orders) -->
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
@@ -145,9 +169,9 @@ foreach ($orders ?? [] as $o) {
                                     <span class="badge <?= $badge ?>"><?= e($st) ?></span>
                                 </td>
                                 <td class="text-end pe-3">
-                                    <button class="btn btn-sm btn-outline-danger" onclick="window.print();" title="Print Purchase Order">
+                                    <a href="<?= url('procurement/print/po?id=' . (int)$po['id']) ?>" target="_blank" class="btn btn-sm btn-outline-danger" title="Print Purchase Order">
                                         <i class="bi bi-printer me-1"></i>Print PO
-                                    </button>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

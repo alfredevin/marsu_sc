@@ -1,3 +1,27 @@
+<style>
+@media print {
+    body, .main, #main {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .sidebar, .navbar, .pagetitle, .btn, .breadcrumb, footer, .card-header .btn, .card-body .row, .alert, .nav-tabs, .no-print {
+        display: none !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+    table {
+        width: 100% !important;
+        font-size: 8.5pt !important;
+    }
+}
+</style>
+
 <!-- Property Turn-Over — Procurement Management Information System (SPMS PAR & Issuance) -->
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
@@ -147,9 +171,9 @@
                                         <td><small class="text-muted"><?= e($iss['purpose'] ?? 'Official Assignment') ?></small></td>
                                         <td><small class="text-muted"><?= e($iss['issued_by']) ?></small></td>
                                         <td class="text-end pe-3">
-                                            <button class="btn btn-sm btn-outline-danger" onclick="window.print();" title="Print PAR Slip">
+                                            <a href="<?= url('procurement/print/par?id=' . (int)$iss['id']) ?>" target="_blank" class="btn btn-sm btn-outline-danger" title="Print PAR Slip">
                                                 <i class="bi bi-printer me-1"></i>Print PAR
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

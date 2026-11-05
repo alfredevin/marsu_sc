@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 2 - Academic Monitoring
+ * View: Grades Tracking & Class Records (gradestracking.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -238,12 +249,11 @@
                 <tbody id="matrixTableBody"></tbody>
             </table>
         </div>
-
     </div>
 
 </div>
 
-<!-- MODAL 1: CREATE NEW CLASS (DYNAMIC SECTIONS MULA SA DATABASE) -->
+<!-- MODAL 1: CREATE NEW CLASS (DYNAMIC SECTIONS FROM DATABASE) -->
 <div class="modal fade" id="createClassModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -427,35 +437,35 @@
     }
 
     // =========================================================================
-    // SMART ROSTER PULL ENGINE (AUTOMATIC MATCHING SA DATABASE SECTIONS)
+    // SMART ROSTER PULL ENGINE (AUTOMATIC MATCHING FROM DATABASE SECTIONS)
     // =========================================================================
     function pullStudentsFromSectionMasterlist() {
         if (!activeClass) return;
 
-        // Kunin ang active class section name at course code
+        // Get active class section name and course code
         const classSecRaw = (activeClass.section || '').trim().toLowerCase();
         const classCourse = (activeClass.course_code || '').trim().toLowerCase();
 
-        // Alamin ang Year Number mula sa section name (e.g. 'BSIS 1A' -> 1, '1st Year' -> 1)
+        // Extract year number from section name (e.g. 'BSIS 1A' -> 1, '1st Year' -> 1)
         let classYearNum = null;
         const yMatch = classSecRaw.match(/([1-4])/);
         if (yMatch) {
             classYearNum = parseInt(yMatch[1], 10);
         }
 
-        // Salain mula sa masterlist
+        // Filter from student masterlist
         const matched = masterStudentsDB.filter(s => {
             const sSecName = (s.section_name || '').trim().toLowerCase();
             const sYear = parseInt(s.year_level, 10);
             const sDept = (s.department || '').trim().toLowerCase();
 
-            // 1. Direct match sa section name (e.g., 'BSIS 1A' === 'BSIS 1A' o 'BSIS 1st Year')
+            // 1. Direct match with section name
             if (sSecName === classSecRaw) return true;
 
-            // 2. Fuzzy match kung naglalaman ng pangalan
+            // 2. Fuzzy match with section name
             if (classSecRaw.includes(sSecName) || (sSecName && sSecName.includes(classSecRaw))) return true;
 
-            // 3. Fallback: Parehong Year Level at Program
+            // 3. Fallback: Matching year level and program
             if (classYearNum !== null && sYear === classYearNum) {
                 if (classCourse.startsWith('is') || classCourse.startsWith('it')) {
                     if (sDept === 'bsis' || sSecName.includes('bsis')) return true;
@@ -780,6 +790,10 @@
             row.innerHTML = html;
             tbody.appendChild(row);
         });
+
+        if (window.matrixPaginator) {
+            window.matrixPaginator.refresh();
+        }
     }
 
     function computeTransmutation(score, maxScore) {
@@ -861,13 +875,19 @@
         alert("Success: All computed grades and criteria for " + activeClass.course_code + " (" + activeClass.section + ") have been securely saved!");
     }
 
+    let matrixStatusFilter = 'all';
+
     document.querySelectorAll('.filter-status-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             document.querySelectorAll('.filter-status-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            const f = this.dataset.filter;
-            document.querySelectorAll('.student-row').forEach(row => {
-                row.style.display = (f === 'all' || row.dataset.status === f) ? '' : 'none';
+            matrixStatusFilter = this.dataset.filter;
+            document.querySelectorAll('#matrixTableBody tr').forEach(row => {
+                if (matrixStatusFilter === 'all' || row.dataset.status === matrixStatusFilter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         });
     });
@@ -875,6 +895,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         initStores();
         renderClassesGrid();
+
         <?php if (!empty($selectedClassId)): ?>
             openClassMatrix("<?= htmlspecialchars($selectedClassId) ?>");
         <?php endif; ?>

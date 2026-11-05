@@ -6,6 +6,10 @@
 
 use Modules\Housing\Controllers\HomeController;
 use Modules\Housing\Controllers\SampleRoomController;
+use Modules\Housing\Controllers\DataTableDemoController;
+
+// DataTable Demo (shared modules/_shared/datatable.php)
+$router->get('/housing/datatable-demo', [DataTableDemoController::class, 'index'], ['auth', 'permission:housing.view']);
 
 // Student Demo & Sample CRUD Route
 $router->get('/housing/sample-room', [SampleRoomController::class, 'index'], ['auth', 'permission:housing.view']);

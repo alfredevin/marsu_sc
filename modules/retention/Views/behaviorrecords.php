@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 3 - Attendance and Engagement Monitoring
+ * View: Student Conduct & Behavioral Incident Roster (behaviorrecords.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -29,68 +40,27 @@
                 </select>
             </form>
 
+            <?php if (can('retention.faculty.behavior')): ?>
             <button type="button" class="btn btn-sm btn-warning fw-semibold text-dark" data-bs-toggle="modal" data-bs-target="#newIncidentModal">
                 <i class="bi bi-exclamation-octagon me-1"></i> Log Behavior Incident
             </button>
+            <?php endif; ?>
         </div>
     </div>
 
-    <!-- KPI Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Total Behavior Logs</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= $totalIncidents ?? count($behaviorList ?? []) ?></h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">Recorded</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Reported conduct incidents</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
-                <span class="text-muted small fw-semibold text-uppercase">Severe Violations</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-danger"><?= $severeCount ?? 0 ?></h3>
-                    <span class="badge bg-danger-subtle text-danger border border-danger">OSA Escalation</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Requires Student Affairs review</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Under Investigation</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-info"><?= $investigationCount ?? 0 ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">In Review</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Pending fact-finding session</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">Resolved / Counseling</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= $resolvedCount ?? 0 ?></h3>
-                    <span class="badge bg-success-subtle text-success border border-success">Closed</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Rehabilitation plan completed</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Table -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">
-        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="m-0 fw-bold marsu-maroon-text">
                 <i class="bi bi-file-earmark-person me-1"></i> Behavioral Incident & Conduct Roster
             </h6>
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" id="behaviorSearchInput" class="form-control form-control-sm" placeholder="Search ID, Name, or Incident..." style="width: 250px;">
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+            <table class="table table-hover align-middle mb-0" id="behaviorTable" style="font-size: 13px;">
                 <thead class="table-light text-uppercase small text-muted">
                     <tr>
                         <th class="ps-3 py-3">Student Details</th>
@@ -105,7 +75,7 @@
                 <tbody>
                     <?php if (!empty($behaviorList)): ?>
                         <?php foreach ($behaviorList as $row): ?>
-                            <tr>
+                            <tr class="behavior-row">
                                 <td class="ps-3 fw-semibold text-dark">
                                     <div><?= htmlspecialchars($row['full_name'] ?? 'N/A') ?></div>
                                     <small class="text-muted"><?= htmlspecialchars($row['student_id'] ?? '') ?></small>
@@ -135,9 +105,21 @@
                                     <span class="badge <?= $stBadge ?>"><?= htmlspecialchars($st) ?></span>
                                 </td>
                                 <td class="text-end pe-3">
-                                    <a href="profile?student_id=<?= urlencode($row['student_id'] ?? '') ?>" class="btn btn-sm btn-outline-primary">
-                                        Profile
-                                    </a>
+                                    <div class="d-flex justify-content-end align-items-center gap-1">
+                                        <a href="profile?student_id=<?= urlencode($row['student_id'] ?? '') ?>" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11.5px;">
+                                            Profile
+                                        </a>
+                                        <?php if (can('retention.admin.conduct')): ?>
+                                            <button type="button" class="btn btn-sm btn-outline-dark py-0 px-2" style="font-size: 11.5px;" 
+                                                    onclick="openConductStatusModal(<?= (int) $row['id'] ?>, '<?= e(addslashes($row['full_name'] ?? 'Student')) ?>', '<?= e($row['status'] ?? 'Reported') ?>')">
+                                                Status
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-warning py-0 px-2 text-dark" style="font-size: 11.5px;" 
+                                                    onclick="openConductSeverityModal(<?= (int) $row['id'] ?>, '<?= e(addslashes($row['full_name'] ?? 'Student')) ?>', '<?= e($row['severity'] ?? 'Minor') ?>')">
+                                                Severity
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -153,9 +135,12 @@
                 </tbody>
             </table>
         </div>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
     </div>
 </div>
 
+<?php if (can('retention.faculty.behavior')): ?>
 <!-- Modal: New Incident Log -->
 <div class="modal fade" id="newIncidentModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -207,3 +192,98 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
+
+<!-- Modal: Update Conduct Case Status (Part E9) -->
+<div class="modal fade" id="conductStatusModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form id="conductStatusForm" method="POST" action="">
+                <?= csrf_field() ?>
+                <div class="modal-header bg-dark text-white">
+                    <h6 class="modal-title fw-bold mb-0">
+                        <i class="bi bi-arrow-repeat me-1"></i> Update Case Status
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <p class="small text-secondary mb-3">
+                        Updating status for student incident: <strong class="text-dark" id="statusStudentName"></strong>
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Case Status <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" name="status" id="conductStatusSelect" required>
+                            <option value="Reported">Reported</option>
+                            <option value="Under Investigation">Under Investigation</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Dismissed">Dismissed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Resolution / Investigation Notes</label>
+                        <textarea class="form-control form-control-sm" name="resolution_notes" rows="3" placeholder="Document counseling outcome, disciplinary action, or dismissal grounds..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-dark px-3">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Reclassify Incident Severity (Part E9) -->
+<div class="modal fade" id="conductSeverityModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form id="conductSeverityForm" method="POST" action="">
+                <?= csrf_field() ?>
+                <div class="modal-header bg-warning text-dark">
+                    <h6 class="modal-title fw-bold mb-0">
+                        <i class="bi bi-shield-exclamation me-1"></i> Reclassify Incident Severity
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <p class="small text-secondary mb-3">
+                        Reclassifying incident severity for student: <strong class="text-dark" id="severityStudentName"></strong>
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">New Severity Level <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" name="severity" id="conductSeveritySelect" required>
+                            <option value="Minor">Minor (First Warning)</option>
+                            <option value="Moderate">Moderate (Repeated Disruption)</option>
+                            <option value="Severe">Severe (Major Misconduct)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Administrative Justification <span class="text-danger">*</span></label>
+                        <textarea class="form-control form-control-sm" name="reason" rows="3" required minlength="10" placeholder="Provide institutional basis for reclassifying severity (min 10 characters)..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-warning text-dark px-3 fw-semibold">Confirm Reclassification</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+window.openConductStatusModal = function(id, studentName, currentStatus) {
+    document.getElementById('statusStudentName').textContent = studentName;
+    document.getElementById('conductStatusSelect').value = currentStatus;
+    document.getElementById('conductStatusForm').action = '<?= url('retention/admin/conduct') ?>/' + id + '/status';
+    new bootstrap.Modal(document.getElementById('conductStatusModal')).show();
+};
+
+window.openConductSeverityModal = function(id, studentName, currentSeverity) {
+    document.getElementById('severityStudentName').textContent = studentName;
+    document.getElementById('conductSeveritySelect').value = currentSeverity;
+    document.getElementById('conductSeverityForm').action = '<?= url('retention/admin/conduct') ?>/' + id + '/severity';
+    new bootstrap.Modal(document.getElementById('conductSeverityModal')).show();
+};
+</script>
+

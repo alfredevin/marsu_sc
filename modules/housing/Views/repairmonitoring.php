@@ -1,4 +1,5 @@
 <!-- Repair Monitoring View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -13,34 +14,111 @@
     </div>
 </div>
 
+<!-- Sub-navigation Pills -->
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/maintenancerequest') ?>">
+                <i class="bi bi-tools me-1"></i>Requests
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?= url('housing/repairmonitoring') ?>">
+                <i class="bi bi-speedometer2 me-1"></i>Repair Monitoring
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/conditionreports') ?>">
+                <i class="bi bi-clipboard2-check me-1"></i>Condition Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/servicehistory') ?>">
+                <i class="bi bi-clock-history me-1"></i>Service History
+            </a>
+        </li>
+    </ul>
+</div>
+
 <!-- SLA Metrics KPI Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card card-kpi border-success p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Avg. Resolution Speed</div>
-            <div class="h3 font-weight-bold mb-0 text-success">18.4 Hours</div>
-            <div class="small text-muted mt-1">Faster than 48-hr university SLA</div>
+        <div class="card card-kpi border-success h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Avg. Resolution Speed</div>
+                    <div class="kpi-value text-success">
+                        18.4
+                        <span class="kpi-unit">Hours</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-success" title="Resolution Speed">
+                    <i class="bi bi-stopwatch-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-lightning-charge-fill text-success"></i>
+                <span>Faster than 48-hr university SLA</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-burgundy p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Resolved This Month</div>
-            <div class="h3 font-weight-bold mb-0 text-marsu-burgundy">23 Repairs</div>
-            <div class="small text-muted mt-1">Inspected & cleared by residents</div>
+        <div class="card card-kpi border-burgundy h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Resolved This Month</div>
+                    <div class="kpi-value text-marsu-burgundy">
+                        23
+                        <span class="kpi-unit">Repairs</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-burgundy" title="Resolved Work Orders">
+                    <i class="bi bi-tools"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-check2-circle text-marsu-burgundy"></i>
+                <span>Inspected & cleared by residents</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi border-warning p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Pending Contractor Work</div>
-            <div class="h3 font-weight-bold mb-0 text-warning">2 Tickets</div>
-            <div class="small text-muted mt-1">Awaiting replacement parts</div>
+        <div class="card card-kpi border-warning h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Pending Contractor Work</div>
+                    <div class="kpi-value text-warning">
+                        2
+                        <span class="kpi-unit">Tickets</span>
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Pending Contractor Work">
+                    <i class="bi bi-wrench-adjustable-circle"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-hourglass-split text-warning"></i>
+                <span>Awaiting replacement parts</span>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-kpi p-3 h-100 shadow-sm">
-            <div class="text-muted small text-uppercase fw-bold">Resident Satisfaction</div>
-            <div class="h3 font-weight-bold mb-0 text-primary">94.8%</div>
-            <div class="small text-muted mt-1">Positive repair feedback rating</div>
+        <div class="card card-kpi border-gold h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Resident Satisfaction</div>
+                    <div class="kpi-value text-gold">
+                        94.8%
+                    </div>
+                </div>
+                <div class="kpi-icon-badge badge-gold" title="Resident Satisfaction">
+                    <i class="bi bi-emoji-smile-fill"></i>
+                </div>
+            </div>
+            <div class="kpi-subtext">
+                <i class="bi bi-star-fill text-gold-dark"></i>
+                <span>Positive repair feedback rating</span>
+            </div>
         </div>
     </div>
 </div>

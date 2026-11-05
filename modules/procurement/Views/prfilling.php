@@ -1,3 +1,27 @@
+<style>
+@media print {
+    body, .main, #main {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .sidebar, .navbar, .pagetitle, .btn, .breadcrumb, footer, .card-header .btn, .card-body .row, .alert, .no-print {
+        display: none !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+    table {
+        width: 100% !important;
+        font-size: 8.5pt !important;
+    }
+}
+</style>
+
 <!-- PR Filling — Procurement Management Information System -->
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
@@ -115,9 +139,9 @@
                                     <span class="badge <?= $badge ?>"><?= e($st) ?></span>
                                 </td>
                                 <td class="text-end pe-3">
-                                    <button class="btn btn-sm btn-outline-danger" onclick="window.print();" title="Print PR Form">
+                                    <a href="<?= url('procurement/print/pr?id=' . (int)$pr['id']) ?>" target="_blank" class="btn btn-sm btn-outline-danger" title="Print Official PR Form">
                                         <i class="bi bi-printer me-1"></i>Print
-                                    </button>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -161,6 +185,7 @@
                             <label for="prRequestingOffice" class="form-label fw-semibold">Requesting Office / College <span class="text-danger">*</span></label>
                             <select class="form-select" id="prRequestingOffice" name="requesting_office" required>
                                 <option value="">— Select Office —</option>
+                                <option value="College of Information and Computing Science">College of Information and Computing Science</option>
                                 <option value="College of Information and Computing Sciences (CICS)">College of Information and Computing Sciences (CICS)</option>
                                 <option value="College of Engineering and Technology (CET)">College of Engineering and Technology (CET)</option>
                                 <option value="College of Arts and Sciences (CAS)">College of Arts and Sciences (CAS)</option>
@@ -169,6 +194,11 @@
                                 <option value="Office of Student Affairs and Services (OSAS)">Office of Student Affairs and Services (OSAS)</option>
                                 <option value="University Library System">University Library System</option>
                                 <option value="Administration & General Services">Administration & General Services</option>
+                                <?php if (!empty($offices)): ?>
+                                    <?php foreach ($offices as $off): ?>
+                                        <option value="<?= e($off['name']) ?>"><?= e($off['name']) ?></option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -176,21 +206,21 @@
                             <select class="form-select" id="prFundSource" name="fund_source">
                                 <option value="General Fund (GAA)">General Fund (GAA)</option>
                                 <option value="Special Trust Fund (STF)">Special Trust Fund (STF)</option>
-                                <option value="Fiduciary Fund">Fiduciary Fund</option>
+                                <option value="Fiduciary Fund" selected>Fiduciary Fund</option>
                                 <option value="Income Generating Project (IGP)">IGP Fund</option>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label for="prPriority" class="form-label fw-semibold">Priority</label>
                             <select class="form-select" id="prPriority" name="priority">
-                                <option value="Regular">Regular</option>
+                                <option value="Regular" selected>Regular</option>
                                 <option value="High">High</option>
                                 <option value="Urgent">Urgent</option>
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label for="prEstAmount" class="form-label fw-semibold">Estimated Total Amount (&#8369;) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" min="0" class="form-control" id="prEstAmount" name="estimated_amount" placeholder="0.00" required>
+                            <input type="text" inputmode="decimal" class="form-control" id="prEstAmount" name="estimated_amount" placeholder="e.g. 10,000.00" required>
                         </div>
                         <div class="col-12">
                             <label for="prDescription" class="form-label fw-semibold">Item Specification & Description <span class="text-danger">*</span></label>

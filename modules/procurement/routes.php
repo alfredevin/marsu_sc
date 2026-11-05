@@ -49,3 +49,12 @@ $router->get('/procurement/periodic-summaries',          [HomeController::class,
 $router->post('/procurement/periodicsummaries/reconcile', [HomeController::class, 'reconcileInventory'],    ['auth', 'csrf']);
 $router->get('/procurement/coa-audit-trail',             [HomeController::class, 'coaaudittrail'],           ['auth', 'permission:procurement.view']);
 $router->post('/procurement/coaaudittrail/report-issue', [HomeController::class, 'reportPropertyIssue'],     ['auth', 'csrf']);
+
+// 6. Dedicated Official Print Views (Non-Clipping A4 Standard Forms)
+$router->get('/procurement/print/pr',          [HomeController::class, 'printPR'],          ['auth', 'permission:procurement.view']);
+$router->get('/procurement/print/po',          [HomeController::class, 'printPO'],          ['auth', 'permission:procurement.view']);
+$router->get('/procurement/print/par',         [HomeController::class, 'printPAR'],         ['auth', 'permission:procurement.view']);
+$router->get('/procurement/print/ris',         [HomeController::class, 'printRIS'],         ['auth', 'permission:procurement.view']);
+$router->get('/procurement/print/iar',         [HomeController::class, 'printIAR'],         ['auth', 'permission:procurement.view']);
+$router->get('/procurement/print/app',         [HomeController::class, 'printAPP'],         ['auth', 'permission:procurement.view']);
+$router->get('/procurement/print/return-slip', [HomeController::class, 'printReturnSlip'], ['auth', 'permission:procurement.view']);

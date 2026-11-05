@@ -1,4 +1,5 @@
 <!-- Service History View -->
+<?php include __DIR__ . '/partials/nav_styles.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 font-weight-bold text-marsu-burgundy mb-1">
@@ -14,6 +15,32 @@
             <i class="bi bi-plus-lg me-1"></i>Log Service Activity
         </button>
     </div>
+</div>
+
+<!-- Sub-navigation Pills -->
+<div class="custom-nav-pills-wrapper mb-4">
+    <ul class="nav nav-pills custom-nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/maintenancerequest') ?>">
+                <i class="bi bi-tools me-1"></i>Requests
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/repairmonitoring') ?>">
+                <i class="bi bi-speedometer2 me-1"></i>Repair Monitoring
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?= url('housing/conditionreports') ?>">
+                <i class="bi bi-clipboard2-check me-1"></i>Condition Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?= url('housing/servicehistory') ?>">
+                <i class="bi bi-clock-history me-1"></i>Service History
+            </a>
+        </li>
+    </ul>
 </div>
 
 <!-- Service History Table Card -->

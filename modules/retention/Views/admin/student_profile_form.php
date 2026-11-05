@@ -25,12 +25,6 @@
                 <small class="text-muted" style="font-size: 12px;">Manage contextual non-academic retention risk indicators (Part E8)</small>
             </div>
         </div>
-
-        <div>
-            <a href="<?= url('retention/admin/preview-student/' . (int) $student['id']) ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-                <i class="bi bi-eye me-1"></i> Preview as Student
-            </a>
-        </div>
     </div>
 
     <!-- Statutory Privacy Notice -->

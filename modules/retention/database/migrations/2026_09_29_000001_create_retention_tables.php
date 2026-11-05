@@ -8,7 +8,8 @@
 use Core\Database;
 
 return new class {
-    public function up(): void {
+    public function up(): void
+    {
         $db = Database::pdo();
 
         // 1. General Retention Records & Audit Trail Logs
@@ -24,7 +25,7 @@ return new class {
             FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
-        // 2. Behavioral & Conduct Incident Records (Module 3: Attendance, Engagement & Behavior Monitoring)
+        // 2. Behavioral & Conduct Incident Records (Module 1 & 2 Profiling)
         $db->exec("CREATE TABLE IF NOT EXISTS `ret_behavior_records` (
             `id` INT AUTO_INCREMENT PRIMARY KEY,
             `student_id` VARCHAR(64) NOT NULL,
@@ -62,10 +63,5 @@ return new class {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
     }
 
-    public function down(): void {
-        $db = Database::pdo();
-        $db->exec("DROP TABLE IF EXISTS `ret_attendance_records`;");
-        $db->exec("DROP TABLE IF EXISTS `ret_behavior_records`;");
-        $db->exec("DROP TABLE IF EXISTS `ret_records`;");
-    }
+
 };

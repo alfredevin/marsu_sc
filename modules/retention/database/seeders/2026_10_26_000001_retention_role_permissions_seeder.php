@@ -8,7 +8,8 @@ use Core\Database;
 use Core\ModuleLoader;
 
 return new class {
-    public function run(): void {
+    public function run(): void
+    {
         // 1. Sync declared permissions from module.json into permissions table
         if (class_exists(ModuleLoader::class) && method_exists(ModuleLoader::class, 'syncPermissions')) {
             ModuleLoader::syncPermissions();
@@ -18,9 +19,6 @@ return new class {
 
         // 2. Map role slugs to desired retention permission keys
         $rolePermissionMap = [
-            'student' => [
-                'retention.student.portal',
-            ],
             'faculty' => [
                 'retention.faculty.classes',
                 'retention.faculty.attendance',
@@ -35,7 +33,6 @@ return new class {
                 'retention.export',
             ],
             'lead_retention' => [
-                'retention.student.portal',
                 'retention.faculty.classes',
                 'retention.faculty.attendance',
                 'retention.faculty.behavior',

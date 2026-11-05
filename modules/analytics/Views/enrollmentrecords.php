@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 1 - Student Information Management
+ * View: Enrollment Records & Status (enrollmentrecords.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3">
 
     <!-- Header Title & Inline Auto-submit Filter Bar -->
@@ -84,7 +95,7 @@
 
     <!-- Roster Table Display -->
     <div class="table-responsive bg-white rounded border">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle mb-0" id="enrollmentTable">
             <thead class="table-light text-uppercase small text-muted">
                 <tr>
                     <th class="ps-3 py-3">Student ID</th>
@@ -99,7 +110,7 @@
             <tbody>
                 <?php if (!empty($enrollmentList)): ?>
                     <?php foreach ($enrollmentList as $row): ?>
-                        <tr>
+                        <tr class="enrollment-row">
                             <td class="ps-3 fw-semibold text-secondary">
                                 <?= htmlspecialchars($row['student_id'] ?? $row['id']) ?>
                             </td>
@@ -142,5 +153,7 @@
             </tbody>
         </table>
     </div>
+    <!-- Server-Side Table Pagination -->
+    <?= $pagination['html'] ?? '' ?>
 
 </div>

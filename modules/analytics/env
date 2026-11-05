@@ -1,0 +1,56 @@
+# ============================================================================
+# Academic Analytics (Group 8A) — sample login accounts, one per role
+# DEMO / LOCAL TESTING ONLY. Do not reuse these passwords on a real server.
+# Login page: http://localhost/marsu_sc/login
+# ============================================================================
+
+# ---------------------------------------------------------------------------
+# 1. PROGRAM HEAD  (your module admin)
+# ---------------------------------------------------------------------------
+PROGRAM_HEAD_USERNAME=programhead
+PROGRAM_HEAD_EMAIL=programhead@marsu.edu.ph
+PROGRAM_HEAD_PASSWORD=Password123!
+PROGRAM_HEAD_ROLE=program_head
+PROGRAM_HEAD_MAPPED_PROGRAM=ACT
+# Note: mapped to ACT, changed on 2026-11-04 via Oversight Setup -> Program Heads
+# (the seeder originally mapped BSIS). The test data (CC111, students 26S0227,
+# 26S0169, 26S0052) is BSIS, so remap to BSIS to see it.
+PROGRAM_HEAD_LANDS_ON=/analytics  (EWS dashboard)
+PROGRAM_HEAD_SIDEBAR=Student Information Management, Academic Monitoring, Attendance and Engagement Monitoring, Academic Administration (Change Log only)
+PROGRAM_HEAD_ACCESS=Read-only, limited to the mapped program(s); cannot edit scores or grades
+
+# ---------------------------------------------------------------------------
+# 2. REGISTRAR
+# ---------------------------------------------------------------------------
+REGISTRAR_USERNAME=registrar
+REGISTRAR_EMAIL=registrar@marsu.edu.ph
+REGISTRAR_PASSWORD=Password123!
+REGISTRAR_ROLE=registrar
+REGISTRAR_LANDS_ON=/analytics/registrar
+REGISTRAR_SIDEBAR=Master Data (core Students), Registrar (Enrollment Dashboard, Term Enrollments, Enroll Students, Masterlist, Posted Grades, Roster Discrepancies)
+REGISTRAR_ACCESS=All students; enrollment and subject loads only; posted grades read-only
+
+# ---------------------------------------------------------------------------
+# 3. FACULTY
+# ---------------------------------------------------------------------------
+FACULTY_USERNAME=faculty
+FACULTY_EMAIL=faculty@marsu.edu.ph
+FACULTY_PASSWORD=Password123!
+FACULTY_ROLE=faculty
+FACULTY_NAME=Prof. Juan Dela Cruz
+FACULTY_LANDS_ON=/analytics/faculty
+FACULTY_SIDEBAR=Faculty Workspace (Dashboard, My Classes, Roll-Call, My Students, Conduct Reports, Create Class, Class Stream, Join Requests)
+# The second "Faculty Workspace" group in the sidebar belongs to the Retention module, not Analytics.
+FACULTY_ACCESS=Own classes and rosters only; scores, attendance, grade posting, class stream
+
+# ---------------------------------------------------------------------------
+# 4. STUDENT
+# ---------------------------------------------------------------------------
+STUDENT_USERNAME=student
+STUDENT_EMAIL=student@marsu.edu.ph
+STUDENT_PASSWORD=Password123!
+STUDENT_ROLE=student
+STUDENT_LINKED_RECORD=26S0227 (Jake Louis Almonte, BSIS)
+STUDENT_LANDS_ON=/analytics/my  (the core /dashboard sends students to /portal; open /analytics/my directly)
+STUDENT_SIDEBAR=My Academics (Dashboard, My Classes, My Grades, Attendance, INC Deficiencies, Conduct, My Profile)
+STUDENT_ACCESS=Own record only; posted grades only; joins classes with a class code

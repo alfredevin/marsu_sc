@@ -1,14 +1,57 @@
 {
     "name": "Academic Analytics & Student Monitoring System",
     "slug": "analytics",
-    "version": "1.0.0",
-    "description": "Student information management, continuous academic tracking, attendance, participation, and classroom engagement monitoring.",
+    "version": "2.0.0",
+    "description": "Term enrollment, faculty classrooms and class records, student academic portal, and read-only academic monitoring for program heads and administrators.",
     "author": "MarSU CICS Student Development Group 8A",
     "default_enabled": true,
     "section": "Academic Analytics",
     "menu": {
-        "icon": "bi-graph-up",
+        "icon": "bi-graph-up-arrow",
         "items": [
+            {
+                "label": "Faculty Workspace",
+                "icon": "bi-person-workspace",
+                "permission": "analytics.faculty.classes",
+                "children": [
+                    {
+                        "label": "Dashboard",
+                        "icon": "bi-speedometer",
+                        "route": "analytics/faculty",
+                        "permission": "analytics.faculty.classes"
+                    },
+                    {
+                        "label": "My Classes",
+                        "icon": "bi-collection",
+                        "route": "analytics/faculty/classes",
+                        "permission": "analytics.faculty.classes"
+                    },
+                    {
+                        "label": "Conduct Reports",
+                        "icon": "bi-flag",
+                        "route": "analytics/faculty/conduct",
+                        "permission": "analytics.faculty.behavior"
+                    },
+                    {
+                        "label": "Create Class",
+                        "icon": "bi-plus-square",
+                        "route": "analytics/faculty/classes/create",
+                        "permission": "analytics.faculty.classes"
+                    },
+                    {
+                        "label": "Class Stream",
+                        "icon": "bi-megaphone",
+                        "route": "analytics/faculty/stream",
+                        "permission": "analytics.faculty.classes"
+                    },
+                    {
+                        "label": "Join Requests",
+                        "icon": "bi-person-plus",
+                        "route": "analytics/faculty/join-requests",
+                        "permission": "analytics.faculty.classes"
+                    }
+                ]
+            },
             {
                 "label": "Student Information Management",
                 "icon": "bi-people",
@@ -19,24 +62,6 @@
                         "icon": "bi-person-circle",
                         "route": "analytics/profile",
                         "permission": "analytics.view"
-                    },
-                    {
-                        "label": "Academic History",
-                        "icon": "bi-clock-history",
-                        "route": "analytics/academichistory",
-                        "permission": "analytics.view"
-                    },
-                    {
-                        "label": "Enrollment Records",
-                        "icon": "bi-card-list",
-                        "route": "analytics/enrollmentrecords",
-                        "permission": "analytics.view"
-                    },
-                    {
-                        "label": "Demographic Info",
-                        "icon": "bi-pie-chart",
-                        "route": "analytics/demographicinfo",
-                        "permission": "analytics.view"
                     }
                 ]
             },
@@ -46,7 +71,7 @@
                 "permission": "analytics.view",
                 "children": [
                     {
-                        "label": "Grades Tracking (Class Record)",
+                        "label": "Class Records (Read-only)",
                         "icon": "bi-pencil-square",
                         "route": "analytics/gradestracking",
                         "permission": "analytics.view"
@@ -101,13 +126,165 @@
                         "permission": "analytics.view"
                     }
                 ]
+            },
+            {
+                "label": "Academic Administration",
+                "icon": "bi-sliders",
+                "permission": "analytics.view",
+                "children": [
+                    {
+                        "label": "Class Offerings",
+                        "icon": "bi-mortarboard",
+                        "route": "analytics/admin/classes",
+                        "permission": "analytics.admin.classes"
+                    },
+                    {
+                        "label": "Correction Requests",
+                        "icon": "bi-check2-circle",
+                        "route": "analytics/admin/corrections",
+                        "permission": "analytics.admin.grades"
+                    },
+                    {
+                        "label": "Policy Settings",
+                        "icon": "bi-gear",
+                        "route": "analytics/admin/settings",
+                        "permission": "analytics.admin.settings"
+                    },
+                    {
+                        "label": "Grading Templates",
+                        "icon": "bi-file-earmark-ruled",
+                        "route": "analytics/admin/templates",
+                        "permission": "analytics.admin.settings"
+                    },
+                    {
+                        "label": "Change Log",
+                        "icon": "bi-clock-history",
+                        "route": "analytics/admin/change-log",
+                        "permission": "analytics.view"
+                    }
+                ]
+            },
+            {
+                "label": "My Academics",
+                "icon": "bi-mortarboard",
+                "permission": "analytics.student.portal",
+                "children": [
+                    {
+                        "label": "Dashboard",
+                        "icon": "bi-speedometer",
+                        "route": "analytics/my",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "My Classes",
+                        "icon": "bi-collection",
+                        "route": "analytics/my/classes",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "My Grades",
+                        "icon": "bi-journal-check",
+                        "route": "analytics/my/grades",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "Attendance",
+                        "icon": "bi-calendar-check",
+                        "route": "analytics/my/attendance",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "INC Deficiencies",
+                        "icon": "bi-hourglass-split",
+                        "route": "analytics/my/deficiencies",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "Conduct",
+                        "icon": "bi-flag",
+                        "route": "analytics/my/conduct",
+                        "permission": "analytics.student.portal"
+                    },
+                    {
+                        "label": "My Profile",
+                        "icon": "bi-person-vcard",
+                        "route": "analytics/my/profile",
+                        "permission": "analytics.student.portal"
+                    }
+                ]
+            },
+            {
+                "label": "Registrar",
+                "icon": "bi-person-badge",
+                "permission": "analytics.registrar.view",
+                "children": [
+                    {
+                        "label": "Enrollment Records",
+                        "icon": "bi-speedometer",
+                        "route": "analytics/registrar",
+                        "permission": "analytics.registrar.view"
+                    },
+                    {
+                        "label": "Term Enrollments",
+                        "icon": "bi-card-list",
+                        "route": "analytics/registrar/enrollments",
+                        "permission": "analytics.registrar.view"
+                    },
+                    {
+                        "label": "Import Records",
+                        "icon": "bi-file-earmark-arrow-up",
+                        "route": "analytics/registrar/import",
+                        "permission": "analytics.registrar.enrollment"
+                    },
+                    {
+                        "label": "Masterlist",
+                        "icon": "bi-list-ol",
+                        "route": "analytics/registrar/masterlist",
+                        "permission": "analytics.registrar.view"
+                    },
+                    {
+                        "label": "Posted Grades",
+                        "icon": "bi-journal-text",
+                        "route": "analytics/registrar/grades",
+                        "permission": "analytics.registrar.view"
+                    },
+                    {
+                        "label": "Roster Discrepancies",
+                        "icon": "bi-exclamation-diamond",
+                        "route": "analytics/registrar/discrepancies",
+                        "permission": "analytics.registrar.view"
+                    }
+                ]
+            },
+            {
+                "label": "Oversight Setup",
+                "icon": "bi-diagram-3",
+                "permission": "analytics.admin.settings",
+                "children": [
+                    {
+                        "label": "Program Heads",
+                        "icon": "bi-person-badge",
+                        "route": "analytics/admin/program-heads",
+                        "permission": "analytics.admin.settings"
+                    }
+                ]
             }
         ]
     },
     "permissions": {
-        "analytics.view": "View Academic Analytics & Student Monitoring Records",
-        "analytics.create": "Log Student Academic & Attendance Entries",
-        "analytics.edit": "Modify Academic Monitoring & Grades Data",
-        "analytics.export": "Export Student Monitoring and Engagement Records"
+        "analytics.view": "View Academic Monitoring Dashboards (scoped by program for Program Heads)",
+        "analytics.export": "Export Academic Monitoring Data to CSV",
+        "analytics.student.portal": "Access Own Student Academic Portal",
+        "analytics.registrar.enrollment": "Import Official Enrollment Records",
+        "analytics.registrar.view": "View Enrollment Records, Masterlists and Posted Grade Sheets",
+        "analytics.faculty.classes": "Create and Manage Own Classes, Rosters, Class Stream and Class Records",
+        "analytics.faculty.attendance": "Take Roll-Call Attendance for Own Classes",
+        "analytics.faculty.behavior": "Report Conduct Incidents for Own Class Students",
+        "analytics.admin.settings": "Manage Policy Settings, Grading Templates and Program Head Mapping",
+        "analytics.admin.classes": "Oversee Class Offerings, Faculty Reassignment and Term Closure",
+        "analytics.admin.grades": "Review Grade Correction Requests and INC Extensions",
+        "analytics.admin.attendance": "Void Erroneous Attendance Records",
+        "analytics.admin.conduct": "Manage Conduct Case Status and Severity",
+        "analytics.admin.profiles": "Manage Student Supplementary Profiles"
     }
 }

@@ -9,26 +9,32 @@ use Core\Database;
  */
 class ClassRecord
 {
+    /**
+     * `ana_classes` keeps only ids for subject, section, term and room; their names come
+     * live from the core tables. Use as "SELECT " . CLASS_COLUMNS . " FROM `ana_classes` c" . CLASS_JOINS
+     * (aliases sub, sec, sem and rm are taken by these joins).
+     */
+    public const CLASS_COLUMNS = "c.*, sub.code AS subject_code, sub.title AS subject_title, sub.units AS units,
+        sec.name AS section_name, sem.academic_year_id, rm.room_number AS room, rm.name AS room_name";
+    public const CLASS_JOINS = " LEFT JOIN `subjects` sub ON sub.id = c.subject_id
+        LEFT JOIN `sections` sec ON sec.id = c.section_id
+        LEFT JOIN `semesters` sem ON sem.id = c.semester_id
+        LEFT JOIN `rooms` rm ON rm.id = c.room_id";
+
     public static function details(int $classId): ?array
     {
         return Database::fetchOne(
-            "SELECT c.*,
-                    COALESCE(c.subject_code, s.code) AS subject_code,
-                    COALESCE(c.subject_title, s.title) AS subject_title,
-                    COALESCE(c.units, s.units) AS subject_units,
-                    COALESCE(c.section_name, sec.name) AS section_name,
+            "SELECT " . self::CLASS_COLUMNS . ",
+                    sub.units AS subject_units, sub.units AS units,
                     sec.year_level, sec.program_id AS section_program_id,
                     p.code AS program_code,
                     CONCAT(u.first_name, ' ', u.last_name) AS faculty_name,
                     ay.label AS academic_year_label,
                     sem.name AS semester_name
-             FROM `ana_classes` c
-             LEFT JOIN `subjects` s ON c.subject_id = s.id
-             LEFT JOIN `sections` sec ON c.section_id = sec.id
-             LEFT JOIN `programs` p ON p.id = COALESCE(sec.program_id, s.program_id)
+             FROM `ana_classes` c" . self::CLASS_JOINS . "
+             LEFT JOIN `programs` p ON p.id = COALESCE(sec.program_id, sub.program_id)
              LEFT JOIN `users` u ON u.id = c.faculty_user_id
-             LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
-             LEFT JOIN `semesters` sem ON c.semester_id = sem.id
+             LEFT JOIN `academic_years` ay ON sem.academic_year_id = ay.id
              WHERE c.id = :id AND c.deleted_at IS NULL
              LIMIT 1",
             ['id' => $classId]

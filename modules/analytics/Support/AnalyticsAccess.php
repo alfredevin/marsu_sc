@@ -365,7 +365,8 @@ class AnalyticsAccess
         $class = null;
         if ($classId > 0 && self::isFaculty()) {
             $class = Database::fetchOne(
-                "SELECT * FROM `ana_classes` WHERE id = :id AND faculty_user_id = :uid AND deleted_at IS NULL",
+                "SELECT " . ClassRecord::CLASS_COLUMNS . " FROM `ana_classes` c" . ClassRecord::CLASS_JOINS . "
+                 WHERE c.id = :id AND c.faculty_user_id = :uid AND c.deleted_at IS NULL",
                 ['id' => $classId, 'uid' => (int) Auth::id()]
             );
         }
@@ -447,11 +448,11 @@ class AnalyticsAccess
     public static function terms(): array
     {
         $rows = Database::fetchAll(
-            "SELECT MIN(sem.id) AS semester_id, sem.code AS semester_code, MIN(sem.name) AS semester_name,
+            "SELECT sem.id AS semester_id, sem.code AS semester_code, sem.name AS semester_name,
                     ay.id AS academic_year_id, ay.label AS academic_year_label
              FROM `semesters` sem
              JOIN `academic_years` ay ON ay.id = sem.academic_year_id
-             GROUP BY ay.id, ay.label, ay.start_date, sem.code
+             WHERE sem.id IN (SELECT MIN(id) FROM `semesters` GROUP BY academic_year_id, code)
              ORDER BY ay.start_date DESC, ay.id DESC, FIELD(sem.code, 'summer', '2', '1')"
         );
         foreach ($rows as &$r) {
@@ -462,10 +463,14 @@ class AnalyticsAccess
 
     public static function findTerm(int $semesterId): ?array
     {
+        // Re-seeding can repeat a semester row; always resolve to the first row of that
+        // academic year + semester code so every record of one term shares one semester_id.
         $row = Database::fetchOne(
-            "SELECT sem.id AS semester_id, sem.code AS semester_code, sem.name AS semester_name,
+            "SELECT canon.id AS semester_id, canon.code AS semester_code, canon.name AS semester_name,
                     ay.id AS academic_year_id, ay.label AS academic_year_label
-             FROM `semesters` sem JOIN `academic_years` ay ON ay.id = sem.academic_year_id
+             FROM `semesters` sem
+             JOIN `semesters` canon ON canon.id = (SELECT MIN(s2.id) FROM `semesters` s2 WHERE s2.academic_year_id = sem.academic_year_id AND s2.code = sem.code)
+             JOIN `academic_years` ay ON ay.id = sem.academic_year_id
              WHERE sem.id = :id",
             ['id' => $semesterId]
         );

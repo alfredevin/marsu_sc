@@ -30,7 +30,7 @@
 1. [AnalyticsAccess.php](file:///c:/xampp/htdocs/marsu_sc/modules/analytics/Support/AnalyticsAccess.php): Persona and scoping resolution (`facultyUserId()`, `ownsClass()`, `facultyStudentIds()`, `canSeeStudent()`, `isOversightOnly()`).
 2. [AnalyticsSettings.php](file:///c:/xampp/htdocs/marsu_sc/modules/analytics/Support/AnalyticsSettings.php): Centralized policy configuration resolver (`get()`, `set()`, `passingThreshold()`, `incDays()`).
 3. [GradeCalculator.php](file:///c:/xampp/htdocs/marsu_sc/modules/analytics/Support/GradeCalculator.php): Official MarSU 1.00–5.00 grading scale converter, percentage weighting engine, and INC/DRP remark evaluator.
-4. [ChangeLog.php](file:///c:/xampp/htdocs/marsu_sc/modules/analytics/Support/ChangeLog.php): Tamper-evident audit trail service recording administrative and faculty state transitions into `ana_change_logs`.
+4. [ChangeLog.php](file:///c:/xampp/htdocs/marsu_sc/modules/analytics/Support/ChangeLog.php): Tamper-evident audit trail service recording administrative and faculty state transitions into the core `audit_logs` table (actions `analytics.*`).
 
 ---
 

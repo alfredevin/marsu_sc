@@ -74,10 +74,10 @@ class FacultyController
         // Recent teaching classes
         $recentClasses = Database::fetchAll(
             "SELECT c.*, 
-                    COALESCE(c.subject_code, s.code) AS subject_code,
-                    COALESCE(c.subject_title, s.title) AS subject_title,
-                    COALESCE(c.units, s.units) AS subject_units,
-                    COALESCE(c.section_name, sec.name) AS section_name,
+                    s.code AS subject_code,
+                    s.title AS subject_title,
+                    s.units AS subject_units, s.units AS units,
+                    sec.name AS section_name,
                     sec.year_level,
                     ay.label AS academic_year_label,
                     sem.name AS semester_name,
@@ -85,7 +85,7 @@ class FacultyController
              FROM `ana_classes` c
              LEFT JOIN `subjects` s ON c.subject_id = s.id
              LEFT JOIN `sections` sec ON c.section_id = sec.id
-             LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
+             LEFT JOIN `semesters` sem_ay ON sem_ay.id = c.semester_id LEFT JOIN `academic_years` ay ON ay.id = sem_ay.academic_year_id
              LEFT JOIN `semesters` sem ON c.semester_id = sem.id
              WHERE c.faculty_user_id = :fid AND c.deleted_at IS NULL
              ORDER BY c.id DESC
@@ -95,11 +95,12 @@ class FacultyController
 
         // Recent attendance entries logged by this faculty member
         $recentAttendance = Database::fetchAll(
-            "SELECT a.session_date, a.status, a.student_id, a.subject_code,
-                    COALESCE(c.section_name, sec.name) AS section_name,
+            "SELECT a.session_date, a.status, a.student_id, sub.code AS subject_code,
+                    sec.name AS section_name,
                     st.first_name, st.last_name
              FROM `ana_attendance_records` a
              JOIN `ana_classes` c ON a.class_id = c.id
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
              LEFT JOIN `sections` sec ON c.section_id = sec.id
              LEFT JOIN `students` st ON a.student_id = st.id
              WHERE (a.recorded_by = :fid1 OR c.faculty_user_id = :fid2) AND a.voided_at IS NULL
@@ -111,9 +112,11 @@ class FacultyController
         // Pending INC records for quick resolution
         $pendingIncs = Database::fetchAll(
             "SELECT g.*, st.student_number, st.first_name, st.last_name,
-                    c.subject_code, c.section_name
+                    sub.code AS subject_code, sec.name AS section_name
              FROM `ana_class_grades` g
              JOIN `ana_classes` c ON g.class_id = c.id
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
+             LEFT JOIN `sections` sec ON sec.id = c.section_id
              JOIN `students` st ON g.student_id = st.id
              WHERE c.faculty_user_id = :fid 
                AND (g.final_grade = 'INC' OR g.remarks = 'INC')
@@ -150,10 +153,10 @@ class FacultyController
         if ($facultyId) {
             $classes = Database::fetchAll(
                 "SELECT c.*, 
-                        COALESCE(c.subject_code, s.code) AS subject_code,
-                        COALESCE(c.subject_title, s.title) AS subject_title,
-                        COALESCE(c.units, s.units) AS subject_units,
-                        COALESCE(c.section_name, sec.name) AS section_name,
+                        s.code AS subject_code,
+                        s.title AS subject_title,
+                        s.units AS subject_units, s.units AS units,
+                        sec.name AS section_name,
                         sec.year_level,
                         ay.label AS academic_year_label,
                         sem.name AS semester_name,
@@ -161,7 +164,7 @@ class FacultyController
                  FROM `ana_classes` c
                  LEFT JOIN `subjects` s ON c.subject_id = s.id
                  LEFT JOIN `sections` sec ON c.section_id = sec.id
-                 LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
+                 LEFT JOIN `semesters` sem_ay ON sem_ay.id = c.semester_id LEFT JOIN `academic_years` ay ON ay.id = sem_ay.academic_year_id
                  LEFT JOIN `semesters` sem ON c.semester_id = sem.id
                  WHERE c.faculty_user_id = :fid AND c.deleted_at IS NULL
                  ORDER BY c.id DESC",
@@ -187,17 +190,17 @@ class FacultyController
         // Fetch detailed offering information
         $classDetails = Database::fetchOne(
             "SELECT c.*, 
-                    COALESCE(c.subject_code, s.code) AS subject_code,
-                    COALESCE(c.subject_title, s.title) AS subject_title,
-                    COALESCE(c.units, s.units) AS subject_units,
-                    COALESCE(c.section_name, sec.name) AS section_name,
+                    s.code AS subject_code,
+                    s.title AS subject_title,
+                    s.units AS subject_units, s.units AS units,
+                    sec.name AS section_name,
                     sec.year_level, sec.id AS sec_id,
                     ay.label AS academic_year_label,
                     sem.name AS semester_name
              FROM `ana_classes` c
              LEFT JOIN `subjects` s ON c.subject_id = s.id
              LEFT JOIN `sections` sec ON c.section_id = sec.id
-             LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
+             LEFT JOIN `semesters` sem_ay ON sem_ay.id = c.semester_id LEFT JOIN `academic_years` ay ON ay.id = sem_ay.academic_year_id
              LEFT JOIN `semesters` sem ON c.semester_id = sem.id
              WHERE c.id = :id AND c.deleted_at IS NULL LIMIT 1",
             ['id' => $classId]
@@ -521,13 +524,13 @@ class FacultyController
             return;
         }
 
-        // Check if student has recorded scores
-        $scoreCount = (int) Database::fetchColumn(
-            "SELECT COUNT(*) FROM `ana_class_scores` WHERE class_id = :cid AND student_id = :sid",
-            ['cid' => $classId, 'sid' => $studentId]
-        );
+        if (!Classroom::isRostered($classId, $studentId)) {
+            Session::flash('error', 'That student is not on this roster.');
+            redirect(url('analytics/faculty/classes/' . $classId));
+            return;
+        }
 
-        if ($scoreCount > 0) {
+        if (Classroom::hasClassRecords($classId, $studentId)) {
             // Soft drop on roster
             Database::update(
                 'ana_class_students',
@@ -535,7 +538,7 @@ class FacultyController
                 '`class_id` = :cid AND `student_id` = :sid',
                 ['cid' => $classId, 'sid' => $studentId]
             );
-            Session::flash('info', 'Student has recorded scores and has been marked as Dropped on the roster.');
+            Session::flash('info', 'Student has recorded scores, attendance or grades and has been marked as Dropped on the roster.');
         } else {
             // Delete clean un-scored roster entry
             Database::delete(
@@ -569,35 +572,24 @@ class FacultyController
             return;
         }
 
-        $schemeJson = $_POST['scheme_json'] ?? '';
-        $schemeData = json_decode($schemeJson, true);
-
-        if (!$schemeData || !isset($schemeData['groups']) || !is_array($schemeData['groups'])) {
-            Session::flash('error', 'Invalid grading scheme structure.');
+        $current = ClassRecord::scheme($class);
+        $checked = GradeCalculator::validateScheme(json_decode((string) ($_POST['scheme_json'] ?? ''), true), $current['passingCutoff']);
+        if (isset($checked['error'])) {
+            Session::flash('error', $checked['error']);
             redirect(url('analytics/faculty/classes/' . $classId));
             return;
         }
+        $schemeData = $checked['scheme'];
+        $schemeData['name'] = $current['name'];
 
-        // Validate weights sum to 100
-        $totalWeight = 0;
-        foreach ($schemeData['groups'] as $grp) {
-            $totalWeight += (float) ($grp['weight'] ?? 0);
-        }
-
-        if (abs($totalWeight - 100.0) > 0.01) {
-            Session::flash('error', "Component weights must total exactly 100%. Current total: {$totalWeight}%.");
-            redirect(url('analytics/faculty/classes/' . $classId));
-            return;
-        }
-
-        $passingCutoff = isset($_POST['passing_cutoff']) ? (float) $_POST['passing_cutoff'] : (float) ($schemeData['passingCutoff'] ?? 3.04);
+        $passingCutoff = isset($_POST['passing_cutoff']) && is_numeric($_POST['passing_cutoff']) ? (float) $_POST['passing_cutoff'] : $schemeData['passingCutoff'];
         $passingCutoff = max(1.00, min(5.00, $passingCutoff));
         $schemeData['passingCutoff'] = $passingCutoff;
 
         Database::update(
             'ana_classes',
             [
-                'grading_scheme' => json_encode($schemeData),
+                'grading_scheme' => json_encode($schemeData, JSON_UNESCAPED_UNICODE),
                 'passing_cutoff' => $passingCutoff,
                 'updated_at'     => date('Y-m-d H:i:s'),
             ],
@@ -719,26 +711,32 @@ class FacultyController
         $classId = (int) $id;
         $class = AnalyticsAccess::findOwnClassOr404($classId);
 
-        if ($class['grade_status'] === 'locked') {
-            Session::flash('error', 'Cannot log task exceptions for locked classes.');
+        // Submission status feeds the computed grade, so it follows the same draft-only rule as scores
+        if ($class['grade_status'] !== 'draft') {
+            Session::flash('error', 'Task exceptions can only change while the class record is in draft. File a correction request first.');
             redirect(url('analytics/faculty/classes/' . $classId));
             return;
         }
 
         $studentId = (int) ($_POST['student_id'] ?? 0);
         $itemCode = trim($_POST['item_code'] ?? '');
-        $status = $_POST['submission_status'] ?? 'submitted';
+        $status = $_POST['submission_status'] ?? '';
 
-        if (!in_array($status, ['submitted', 'late', 'missing', 'excused'], true)) {
-            $status = 'submitted';
+        $items = GradeCalculator::items(ClassRecord::scheme($class));
+        if (!Classroom::isRostered($classId, $studentId) || !isset($items[$itemCode])
+            || !in_array($status, ['submitted', 'late', 'missing', 'excused'], true)) {
+            Session::flash('error', 'Choose a student on this roster, a task column of this class and a valid submission status.');
+            redirect(url('analytics/faculty/classes/' . $classId));
+            return;
         }
 
         $uid = (int) Auth::id();
         $pdo = Database::pdo();
+        // A new row has no score yet; an existing score is kept and only its status changes
         $stmt = $pdo->prepare("
             INSERT INTO `ana_class_scores` (`class_id`, `student_id`, `item_code`, `score`, `submission_status`, `updated_by`, `created_at`, `updated_at`)
-            VALUES (:cid, :sid, :code, 0.0, :st, :uid, NOW(), NOW())
-            ON DUPLICATE KEY UPDATE 
+            VALUES (:cid, :sid, :code, NULL, :st, :uid, NOW(), NOW())
+            ON DUPLICATE KEY UPDATE
                 `submission_status` = VALUES(`submission_status`),
                 `updated_by` = VALUES(`updated_by`),
                 `updated_at` = NOW()
@@ -750,6 +748,8 @@ class FacultyController
             'st'   => $status,
             'uid'  => $uid,
         ]);
+        $notes = mb_substr(trim((string) ($_POST['notes'] ?? '')), 0, 500);
+        ChangeLog::record('class_score', $classId, 'task_exception', $itemCode, null, $status, "Submission status for student #{$studentId}" . ($notes !== '' ? ": {$notes}" : ''));
 
         Session::flash('success', "Task exception for {$itemCode} updated to " . ucfirst($status) . ".");
         redirect(url('analytics/faculty/classes/' . $classId));
@@ -826,7 +826,7 @@ class FacultyController
                 "SELECT s.id, s.student_number, s.first_name, s.middle_name, s.last_name, s.year_level, s.enrollment_status,
                         p.code AS program_code, p.name AS program_name,
                         sec.name AS section_name,
-                        GROUP_CONCAT(DISTINCT CONCAT(COALESCE(c.subject_code, sub.code), ' (', COALESCE(c.section_name, sec2.name), ')') SEPARATOR ', ') AS enrolled_classes
+                        GROUP_CONCAT(DISTINCT CONCAT(sub.code, ' (', sec2.name, ')') SEPARATOR ', ') AS enrolled_classes
                  FROM `students` s
                  JOIN `ana_class_students` cs ON s.id = cs.student_id AND cs.status = 'enrolled'
                  JOIN `ana_classes` c ON cs.class_id = c.id AND c.faculty_user_id = :fid AND c.deleted_at IS NULL
@@ -883,10 +883,10 @@ class FacultyController
         // Load student enrollments and grades strictly from this faculty's classes
         $classes = Database::fetchAll(
             "SELECT c.id AS class_id, c.grade_status, c.passing_cutoff,
-                    COALESCE(c.subject_code, sub.code) AS subject_code,
-                    COALESCE(c.subject_title, sub.title) AS subject_title,
-                    COALESCE(c.units, sub.units) AS units,
-                    COALESCE(c.section_name, sec.name) AS section_name,
+                    sub.code AS subject_code,
+                    sub.title AS subject_title,
+                    sub.units AS units,
+                    sec.name AS section_name,
                     g.computed_grade, g.final_grade, g.remarks, g.inc_deadline, g.inc_resolved_at, g.posted_at
              FROM `ana_class_students` cs
              JOIN `ana_classes` c ON cs.class_id = c.id
@@ -900,7 +900,7 @@ class FacultyController
 
         // Load scores and task exceptions in this faculty's classes
         $scores = Database::fetchAll(
-            "SELECT sc.*, NULL AS notes, COALESCE(c.subject_code, sub.code) AS subject_code, c.id AS class_id
+            "SELECT sc.*, NULL AS notes, sub.code AS subject_code, c.id AS class_id
              FROM `ana_class_scores` sc
              JOIN `ana_classes` c ON sc.class_id = c.id
              LEFT JOIN `subjects` sub ON c.subject_id = sub.id
@@ -911,9 +911,10 @@ class FacultyController
 
         // Load attendance logs in this faculty's classes
         $attendance = Database::fetchAll(
-            "SELECT a.*, COALESCE(a.subject_code, c.subject_code) AS subject_code 
+            "SELECT a.*, sub.code AS subject_code
              FROM `ana_attendance_records` a
              JOIN `ana_classes` c ON a.class_id = c.id
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
              WHERE a.student_id = :snum AND c.faculty_user_id = :fid AND a.voided_at IS NULL
              ORDER BY a.session_date DESC",
             ['snum' => $studentId, 'fid' => $facultyId]
@@ -957,9 +958,9 @@ class FacultyController
         // List faculty classes for selection
         $classes = Database::fetchAll(
             "SELECT c.id, 
-                    COALESCE(c.subject_code, s.code) AS subject_code,
-                    COALESCE(c.subject_title, s.title) AS subject_title,
-                    COALESCE(c.section_name, sec.name) AS section_name
+                    s.code AS subject_code,
+                    s.title AS subject_title,
+                    sec.name AS section_name
              FROM `ana_classes` c
              LEFT JOIN `subjects` s ON c.subject_id = s.id
              LEFT JOIN `sections` sec ON c.section_id = sec.id
@@ -1035,16 +1036,21 @@ class FacultyController
         $classId = (int) ($_POST['class_id'] ?? 0);
         $class = AnalyticsAccess::findOwnClassOr404($classId);
 
-        $sessionDate = $_POST['session_date'] ?? date('Y-m-d');
-        $validDate = \DateTime::createFromFormat('Y-m-d', (string) $sessionDate);
+        $sessionDate = (string) ($_POST['session_date'] ?? date('Y-m-d'));
+        $validDate = \DateTime::createFromFormat('!Y-m-d', $sessionDate);
         if (!$validDate || $validDate->format('Y-m-d') !== $sessionDate || $sessionDate > date('Y-m-d')) {
-            Session::flash('error', 'Cannot record attendance for future dates.');
+            Session::flash('error', 'Enter a valid session date that is not in the future.');
+            redirect(url('analytics/faculty/attendance?class_id=' . $classId));
+            return;
+        }
+        if ($class['grade_status'] === 'locked') {
+            Session::flash('error', 'The term of this class is closed, so its attendance can no longer change.');
             redirect(url('analytics/faculty/attendance?class_id=' . $classId . '&date=' . $sessionDate));
             return;
         }
 
         $classInfo = Database::fetchOne(
-            "SELECT c.*, COALESCE(c.subject_code, s.code) AS subject_code 
+            "SELECT c.*, s.code AS subject_code 
              FROM `ana_classes` c 
              LEFT JOIN `subjects` s ON c.subject_id = s.id 
              WHERE c.id = :cid",
@@ -1073,9 +1079,9 @@ class FacultyController
 
         $insertStmt = $pdo->prepare("
             INSERT INTO `ana_attendance_records` 
-                (`class_id`, `student_id`, `subject_code`, `session_date`, `status`, `remarks`, `recorded_by`, `created_at`, `updated_at`)
+                (`class_id`, `student_id`, `session_date`, `status`, `remarks`, `recorded_by`, `created_at`, `updated_at`)
             VALUES 
-                (:cid, :snum, :code, :sdate, :st, :rem, :uid, NOW(), NOW())
+                (:cid, :snum, :sdate, :st, :rem, :uid, NOW(), NOW())
         ");
 
         $updateStmt = $pdo->prepare("
@@ -1090,9 +1096,10 @@ class FacultyController
                 continue;
             }
             if (!in_array($st, ['Present', 'Absent', 'Excused', 'Late'], true)) {
-                $st = 'Present';
+                continue;
             }
-            $rem = trim($remarks[$snum] ?? '');
+            $rem = mb_substr(trim((string) ($remarks[$snum] ?? '')), 0, 255);
+            $rem = $rem === '' ? null : $rem;
 
             $selectStmt->execute(['cid' => $classId, 'snum' => (int) $rosterMap[$snum], 'sdate' => $sessionDate]);
             $existing = $selectStmt->fetch();
@@ -1103,7 +1110,6 @@ class FacultyController
                 $insertStmt->execute([
                     'cid'    => $classId,
                     'snum'   => (int) $rosterMap[$snum],
-                    'code'   => $classInfo['subject_code'],
                     'sdate'  => $sessionDate,
                     'st'     => $st,
                     'rem'    => $rem,
@@ -1123,21 +1129,16 @@ class FacultyController
                     ['cid' => $classId, 'snum' => (int) $rosterMap[$snum]]
                 );
                 if ($totalAbsences >= $warningCount) {
-                    // Log the warning once in the module logbook (ana_records)
-                    $existingWarning = Database::fetchOne(
-                        "SELECT id FROM `ana_records`
-                         WHERE title = :title AND deleted_at IS NULL LIMIT 1",
-                        ['title' => "Absence Warning: {$snum} in {$classInfo['subject_code']}"]
+                    // Warn the student once per class when the absence threshold is reached
+                    $title = "Absence warning: {$classInfo['subject_code']}";
+                    $warned = Database::fetchColumn(
+                        "SELECT COUNT(*) FROM `ana_notifications` n JOIN `students` s ON s.user_id = n.user_id
+                         WHERE s.id = :sid AND n.title = :title",
+                        ['sid' => (int) $rosterMap[$snum], 'title' => $title]
                     );
-                    if (!$existingWarning) {
-                        Database::insert('ana_records', [
-                            'title'       => "Absence Warning: {$snum} in {$classInfo['subject_code']}",
-                            'description' => "Student {$snum} has reached {$totalAbsences} unexcused absences in {$classInfo['subject_code']}.",
-                            'status'      => 'pending',
-                            'created_by'  => $uid,
-                            'created_at'  => date('Y-m-d H:i:s'),
-                            'updated_at'  => date('Y-m-d H:i:s'),
-                        ]);
+                    if (!$warned) {
+                        Notifier::student((int) $rosterMap[$snum], $title,
+                            "You have {$totalAbsences} absences in {$classInfo['subject_code']}. Please see your instructor.", 'analytics/my/attendance');
                     }
                 }
             }
@@ -1162,9 +1163,9 @@ class FacultyController
         // List faculty classes for selection
         $classes = Database::fetchAll(
             "SELECT c.id, 
-                    COALESCE(c.subject_code, s.code) AS subject_code,
-                    COALESCE(c.subject_title, s.title) AS subject_title,
-                    COALESCE(c.section_name, sec.name) AS section_name
+                    s.code AS subject_code,
+                    s.title AS subject_title,
+                    sec.name AS section_name
              FROM `ana_classes` c
              LEFT JOIN `subjects` s ON c.subject_id = s.id
              LEFT JOIN `sections` sec ON c.section_id = sec.id
@@ -1191,8 +1192,8 @@ class FacultyController
         $reports = Database::fetchAll(
             "SELECT b.*, st.first_name, st.last_name, st.student_number AS student_id,
                     IF(b.status = 'Investigating', 'Under Investigation', b.status) AS status,
-                    COALESCE(c.subject_code, sub.code) AS subject_code,
-                    COALESCE(c.section_name, sec.name) AS section_name
+                    sub.code AS subject_code,
+                    sec.name AS section_name
              FROM `ana_behavior_records` b
              JOIN `students` st ON b.student_id = st.id
              LEFT JOIN `ana_classes` c ON b.class_id = c.id
@@ -1224,10 +1225,11 @@ class FacultyController
         $incidentType = trim($_POST['incident_type'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $severity = $_POST['severity'] ?? 'Minor';
-        $incidentDate = $_POST['incident_date'] ?? date('Y-m-d');
+        $incidentDate = (string) ($_POST['incident_date'] ?? date('Y-m-d'));
 
-        if ($incidentDate > date('Y-m-d')) {
-            Session::flash('error', 'Incident date cannot be in the future.');
+        $validDate = \DateTime::createFromFormat('!Y-m-d', $incidentDate);
+        if (!$validDate || $validDate->format('Y-m-d') !== $incidentDate || $incidentDate > date('Y-m-d')) {
+            Session::flash('error', 'Enter a valid incident date that is not in the future.');
             redirect(url('analytics/faculty/conduct'));
             return;
         }
@@ -1236,8 +1238,8 @@ class FacultyController
             $severity = 'Minor';
         }
 
-        if ($studentNumber === '' || $incidentType === '' || strlen($description) < 10) {
-            Session::flash('error', 'Please provide student, incident type, and a descriptive narrative (min 10 characters).');
+        if ($studentNumber === '' || $incidentType === '' || mb_strlen($description) < 10 || mb_strlen($description) > 5000) {
+            Session::flash('error', 'Please provide student, incident type, and a descriptive narrative (10 to 5,000 characters).');
             redirect(url('analytics/faculty/conduct'));
             return;
         }
@@ -1335,6 +1337,7 @@ class FacultyController
             'correctionHistory'  => Database::fetchAll("SELECT * FROM `ana_grade_change_requests` WHERE class_id = :cid ORDER BY id DESC LIMIT 5", ['cid' => $classId]),
             'allowCustomWeights' => (bool) AnalyticsSettings::get('grading.allow_faculty_custom_weights'),
             'incWindowDays'      => AnalyticsSettings::get('grading.inc_removal_days'),
+            'rooms'              => Classroom::rooms(),
             'title'              => "Classroom: {$class['subject_code']} ({$class['section_name']})",
             'crumbs'             => ['Faculty Workspace' => url('analytics/faculty'), 'My Classes' => url('analytics/faculty/classes'), $class['subject_code'] => ''],
         ]);
@@ -1346,6 +1349,7 @@ class FacultyController
             'subjects'  => Database::fetchAll("SELECT s.id, s.code, s.title, s.units, p.code AS program_code FROM `subjects` s LEFT JOIN `programs` p ON p.id = s.program_id WHERE s.deleted_at IS NULL AND s.status = 'active' ORDER BY s.code"),
             'sections'  => Database::fetchAll("SELECT sec.id, sec.name, sec.year_level, p.code AS program_code FROM `sections` sec JOIN `programs` p ON p.id = sec.program_id WHERE sec.deleted_at IS NULL ORDER BY p.code, sec.year_level, sec.name"),
             'templates' => Database::fetchAll("SELECT id, name, passing_cutoff, is_default FROM `ana_grading_templates` WHERE is_active = 1 AND deleted_at IS NULL ORDER BY is_default DESC, name"),
+            'rooms'     => Classroom::rooms(),
             'title'     => 'Create Class',
             'crumbs'    => ['Faculty Workspace' => url('analytics/faculty'), 'Create Class' => ''],
         ]);
@@ -1367,7 +1371,7 @@ class FacultyController
         Database::update('ana_classes', [
             'description' => Classroom::nullable($_POST['description'] ?? null, 2000),
             'schedule'    => Classroom::nullable($_POST['schedule'] ?? null, 128),
-            'room'        => Classroom::nullable($_POST['room'] ?? null, 64),
+            'room_id'     => Classroom::roomId($_POST['room_id'] ?? null),
             'updated_at'  => date('Y-m-d H:i:s'),
         ], 'id = :id', ['id' => (int) $class['id']]);
         redirect($this->back((int) $class['id'], 'settings'), 'success', 'Class details updated.');
@@ -1565,8 +1569,10 @@ class FacultyController
     public function streamOverview(): void
     {
         $posts = Database::fetchAll(
-            "SELECT p.*, c.subject_code, c.section_name
+            "SELECT p.*, sub.code AS subject_code, sec.name AS section_name
              FROM `ana_class_posts` p JOIN `ana_classes` c ON c.id = p.class_id
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
+             LEFT JOIN `sections` sec ON sec.id = c.section_id
              WHERE c.faculty_user_id = :fid AND c.deleted_at IS NULL AND p.deleted_at IS NULL
              ORDER BY p.created_at DESC LIMIT 50",
             ['fid' => (int) Auth::id()]
@@ -1583,9 +1589,11 @@ class FacultyController
     {
         $rows = Database::fetchAll(
             "SELECT j.*, s.student_number, s.first_name, s.last_name, p.code AS program_code,
-                    c.id AS class_id, c.subject_code, c.section_name, c.subject_id, c.semester_id
+                    c.id AS class_id, sub.code AS subject_code, sec.name AS section_name, c.subject_id, c.semester_id
              FROM `ana_class_join_requests` j
              JOIN `ana_classes` c ON c.id = j.class_id AND c.faculty_user_id = :fid AND c.deleted_at IS NULL
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
+             LEFT JOIN `sections` sec ON sec.id = c.section_id
              JOIN `students` s ON s.id = j.student_id
              LEFT JOIN `programs` p ON p.id = s.program_id
              ORDER BY j.status = 'pending' DESC, j.created_at DESC
@@ -1606,8 +1614,11 @@ class FacultyController
     private function ownClassOptions(): array
     {
         return Database::fetchAll(
-            "SELECT c.id, c.subject_code, c.subject_title, c.section_name, c.semester_id
-             FROM `ana_classes` c WHERE c.faculty_user_id = :fid AND c.deleted_at IS NULL ORDER BY c.semester_id DESC, c.subject_code",
+            "SELECT c.id, sub.code AS subject_code, sub.title AS subject_title, sec.name AS section_name, c.semester_id
+             FROM `ana_classes` c
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
+             LEFT JOIN `sections` sec ON sec.id = c.section_id
+             WHERE c.faculty_user_id = :fid AND c.deleted_at IS NULL ORDER BY c.semester_id DESC, sub.code",
             ['fid' => (int) Auth::id()]
         );
     }
@@ -1689,7 +1700,7 @@ class FacultyController
                     $this->matrixReply($class, 'That student is not on this roster.', 404, 'error');
                 }
                 $sid = $rosterIds[$num];
-                $hasScores = (int) Database::fetchColumn("SELECT COUNT(*) FROM `ana_class_scores` WHERE class_id = :cid AND student_id = :sid", ['cid' => $classId, 'sid' => $sid]) > 0;
+                $hasScores = Classroom::hasClassRecords($classId, $sid);
                 if ($hasScores) {
                     Database::update('ana_class_students', ['status' => 'dropped', 'drop_reason' => 'Removed in Grades Tracking', 'updated_at' => date('Y-m-d H:i:s')],
                         'class_id = :cid AND student_id = :sid', ['cid' => $classId, 'sid' => $sid]);
@@ -1697,7 +1708,7 @@ class FacultyController
                     Database::delete('ana_class_students', 'class_id = :cid AND student_id = :sid', ['cid' => $classId, 'sid' => $sid]);
                 }
                 ChangeLog::record('class_roster', $classId, 'drop_student', 'student_id', (string) $sid, $hasScores ? 'dropped' : 'removed', 'Removed in Grades Tracking');
-                $this->matrixReply($class, $hasScores ? 'Student marked as dropped (recorded scores are kept).' : 'Student removed from the roster.');
+                $this->matrixReply($class, $hasScores ? 'Student marked as dropped (recorded scores and attendance are kept).' : 'Student removed from the roster.');
 
             case 'scores':
                 $items = GradeCalculator::items(ClassRecord::scheme($class));
@@ -1739,7 +1750,7 @@ class FacultyController
                     Database::update('ana_attendance_records', ['status' => $status, 'updated_at' => date('Y-m-d H:i:s')], 'id = :id', ['id' => (int) $row['id']]);
                 } else {
                     Database::insert('ana_attendance_records', [
-                        'class_id' => $classId, 'student_id' => $rosterIds[$num], 'subject_code' => $class['subject_code'], 'session_date' => $date,
+                        'class_id' => $classId, 'student_id' => $rosterIds[$num], 'session_date' => $date,
                         'status' => $status, 'recorded_by' => (int) Auth::id(), 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'),
                     ]);
                 }
@@ -1782,7 +1793,7 @@ class FacultyController
                 $now = date('Y-m-d H:i:s');
                 foreach ($rosterIds as $sid) {
                     Database::insert('ana_attendance_records', [
-                        'class_id' => $classId, 'student_id' => $sid, 'subject_code' => $class['subject_code'], 'session_date' => $date,
+                        'class_id' => $classId, 'student_id' => $sid, 'session_date' => $date,
                         'status' => $status, 'recorded_by' => (int) Auth::id(), 'created_at' => $now, 'updated_at' => $now,
                     ]);
                 }
@@ -1864,34 +1875,14 @@ class FacultyController
 
             case 'scheme':
                 $current = ClassRecord::scheme($class);
-                $scheme = GradeCalculator::normalizeScheme(is_array($in['scheme'] ?? null) ? $in['scheme'] : [], $current['passingCutoff']);
-                if (!$scheme['groups']) {
-                    $this->matrixReply($class, 'Add at least one assessment component.', 422, 'error');
-                }
                 if (!AnalyticsSettings::get('grading.allow_faculty_custom_weights')) {
                     $this->matrixReply($class, 'Customizing assessment weights per class is disabled by university policy.', 403, 'error');
                 }
-                $total = array_sum(array_column($scheme['groups'], 'weight'));
-                if (abs($total - 100.0) > 0.01) {
-                    $this->matrixReply($class, "Component weights must total 100%. Current total: {$total}%.", 422, 'error');
+                $checked = GradeCalculator::validateScheme(is_array($in['scheme'] ?? null) ? $in['scheme'] : [], $current['passingCutoff']);
+                if (isset($checked['error'])) {
+                    $this->matrixReply($class, $checked['error'], 422, 'error');
                 }
-                $attGroups = array_filter($scheme['groups'], fn($g) => $g['hasAttendance']);
-                if (count($attGroups) > 1) {
-                    $this->matrixReply($class, 'Attendance can count toward one component only.', 422, 'error');
-                }
-                if (array_filter($attGroups, fn($g) => $g['isExam'])) {
-                    $this->matrixReply($class, 'Attendance cannot count toward an exam component.', 422, 'error');
-                }
-                $codes = [];
-                foreach ($scheme['groups'] as $g) {
-                    foreach ($g['items'] as $it) {
-                        $key = strtoupper($it['code']);
-                        if (!preg_match('/^[A-Za-z0-9_\-]{1,32}$/', $it['code']) || isset($codes[$key])) {
-                            $this->matrixReply($class, "Task code '{$it['code']}' is invalid or used twice.", 422, 'error');
-                        }
-                        $codes[$key] = true;
-                    }
-                }
+                $scheme = $checked['scheme'];
                 $cutoff = isset($in['passing_cutoff']) && is_numeric($in['passing_cutoff']) ? max(1.0, min(5.0, (float) $in['passing_cutoff'])) : $current['passingCutoff'];
                 $scheme['name'] = $current['name'];
                 $scheme['passingCutoff'] = $cutoff;

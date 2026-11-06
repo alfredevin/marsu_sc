@@ -47,14 +47,12 @@ class RegistrarController
     /**
      * Create one enrollment + subject load inside the caller's transaction.
      */
-    private function createEnrollment(array $student, array $term, int $programId, int $yearLevel, ?int $sectionId, array $subjectIds, string $status, ?string $remarks): int
+    private function createEnrollment(array $student, array $term, int $yearLevel, ?int $sectionId, array $subjectIds, string $status, ?string $remarks): int
     {
         $now = date('Y-m-d H:i:s');
         $id = Database::insert('ana_enrollments', [
             'student_id'       => (int) $student['id'],
-            'academic_year_id' => (int) $term['academic_year_id'],
             'semester_id'      => (int) $term['semester_id'],
-            'program_id'       => $programId,
             'year_level'       => max(1, min(6, $yearLevel)),
             'section_id'       => $sectionId ?: null,
             'status'           => $status,
@@ -88,10 +86,10 @@ class RegistrarController
             }
             $byProgram = Database::fetchAll(
                 "SELECT p.code, SUM(e.status = 'enrolled') AS enrolled, SUM(e.status = 'pending') AS pending, SUM(e.status IN ('withdrawn', 'cancelled')) AS withdrawn
-                 FROM `ana_enrollments` e JOIN `programs` p ON p.id = e.program_id WHERE e.semester_id = :sem GROUP BY p.code ORDER BY p.code", $p);
+                 FROM `ana_enrollments` e JOIN `students` s ON s.id = e.student_id JOIN `programs` p ON p.id = s.program_id WHERE e.semester_id = :sem GROUP BY p.code ORDER BY p.code", $p);
             $bySection = Database::fetchAll(
                 "SELECT COALESCE(sec.name, 'No section') AS section_name, p.code AS program_code, SUM(e.status = 'enrolled') AS enrolled, SUM(e.status = 'pending') AS pending
-                 FROM `ana_enrollments` e JOIN `programs` p ON p.id = e.program_id LEFT JOIN `sections` sec ON sec.id = e.section_id
+                 FROM `ana_enrollments` e JOIN `students` s ON s.id = e.student_id JOIN `programs` p ON p.id = s.program_id LEFT JOIN `sections` sec ON sec.id = e.section_id
                  WHERE e.semester_id = :sem GROUP BY sec.name, p.code ORDER BY p.code, sec.name", $p);
             $noAccount = Database::fetchAll(
                 "SELECT s.id, s.student_number, s.first_name, s.last_name, p.code AS program_code
@@ -118,7 +116,7 @@ class RegistrarController
             $params['st'] = $status;
         }
         if (($prog = (int) ($_GET['program'] ?? 0)) > 0) {
-            $where .= ' AND e.program_id = :prog';
+            $where .= ' AND s.program_id = :prog';
             $params['prog'] = $prog;
         }
         if (($sec = (int) ($_GET['section'] ?? 0)) > 0) {
@@ -135,7 +133,7 @@ class RegistrarController
             $params['q1'] = $params['q2'] = $params['q3'] = '%' . $q . '%';
         }
         $from = "FROM `ana_enrollments` e JOIN `students` s ON s.id = e.student_id
-                 LEFT JOIN `programs` p ON p.id = e.program_id LEFT JOIN `sections` sec ON sec.id = e.section_id
+                 LEFT JOIN `programs` p ON p.id = s.program_id LEFT JOIN `sections` sec ON sec.id = e.section_id
                  WHERE {$where}";
         if ($count) {
             return (int) Database::fetchColumn("SELECT COUNT(*) {$from}", $params);
@@ -170,10 +168,10 @@ class RegistrarController
                     CONCAT(u.first_name, ' ', u.last_name) AS enrolled_by_name
              FROM `ana_enrollments` e
              JOIN `students` s ON s.id = e.student_id
-             LEFT JOIN `programs` p ON p.id = e.program_id
+             LEFT JOIN `programs` p ON p.id = s.program_id
              LEFT JOIN `sections` sec ON sec.id = e.section_id
              JOIN `semesters` sem ON sem.id = e.semester_id
-             JOIN `academic_years` ay ON ay.id = e.academic_year_id
+             JOIN `academic_years` ay ON ay.id = sem.academic_year_id
              LEFT JOIN `users` u ON u.id = e.enrolled_by
              WHERE e.id = :id",
             ['id' => (int) $id]
@@ -258,14 +256,6 @@ class RegistrarController
                     "SELECT id, status FROM `ana_enrollments` WHERE student_id = :s AND semester_id = :t",
                     ['s' => (int) $student['id'], 't' => (int) $term['semester_id']]
                 );
-                if ($existing) {
-                    if ($existing['status'] !== $status) {
-                        Database::update('ana_enrollments', ['status' => $status, 'remarks' => 'CSV import sync', 'updated_at' => date('Y-m-d H:i:s')], 'id = :id', ['id' => (int) $existing['id']]);
-                        ChangeLog::record('enrollment', (int) $existing['id'], 'status_change', 'status', $existing['status'], $status, 'Synced from official enrollment records');
-                        $updated[] = "{$number}: {$existing['status']} → {$status}";
-                    }
-                    continue;
-                }
                 $subjects = [];
                 foreach (preg_split('/[;|]/', (string) ($cols[1] ?? '')) as $code) {
                     $code = strtoupper(trim($code));
@@ -278,11 +268,49 @@ class RegistrarController
                     }
                     $subjects[] = $subjectByCode[$code];
                 }
+                if ($existing) {
+                    $changes = [];
+                    if ($existing['status'] !== $status) {
+                        $sync = ['status' => $status, 'remarks' => 'CSV import sync', 'updated_at' => date('Y-m-d H:i:s')];
+                        if ($status === 'enrolled') {
+                            $sync['enrolled_at'] = date('Y-m-d H:i:s');
+                        }
+                        Database::update('ana_enrollments', $sync, 'id = :id', ['id' => (int) $existing['id']]);
+                        ChangeLog::record('enrollment', (int) $existing['id'], 'status_change', 'status', $existing['status'], $status, 'Synced from official enrollment records');
+                        $changes[] = "{$existing['status']} → {$status}";
+                    }
+                    // Subjects listed in the official record but missing from the load are added (or re-enrolled)
+                    $load = [];
+                    foreach (Database::fetchAll("SELECT subject_id, status FROM `ana_enrollment_subjects` WHERE enrollment_id = :e", ['e' => (int) $existing['id']]) as $es) {
+                        $load[(int) $es['subject_id']] = $es['status'];
+                    }
+                    $addedSubjects = 0;
+                    foreach (array_unique($subjects) as $subId) {
+                        if (($load[$subId] ?? null) === 'enrolled') {
+                            continue;
+                        }
+                        Database::query(
+                            "INSERT INTO `ana_enrollment_subjects` (`enrollment_id`, `subject_id`, `section_id`, `status`, `created_at`)
+                             VALUES (:e, :s, :sec, 'enrolled', NOW())
+                             ON DUPLICATE KEY UPDATE `status` = 'enrolled', `updated_at` = NOW()",
+                            ['e' => (int) $existing['id'], 's' => $subId, 'sec' => $student['section_id'] ? (int) $student['section_id'] : null]
+                        );
+                        $addedSubjects++;
+                    }
+                    if ($addedSubjects) {
+                        ChangeLog::record('enrollment', (int) $existing['id'], 'subjects_added', 'subject_id', null, (string) $addedSubjects, 'Subjects synced from official enrollment records');
+                        $changes[] = "+{$addedSubjects} subject(s)";
+                    }
+                    if ($changes) {
+                        $updated[] = "{$number}: " . implode(', ', $changes);
+                    }
+                    continue;
+                }
                 if (!$subjects) {
                     $errors[] = "Line {$line}: no subject codes given for {$number}.";
                     continue;
                 }
-                $this->createEnrollment($student, $term, (int) $student['program_id'], (int) $student['year_level'], $student['section_id'] ? (int) $student['section_id'] : null, array_unique($subjects), $status, 'CSV import');
+                $this->createEnrollment($student, $term, (int) $student['year_level'], $student['section_id'] ? (int) $student['section_id'] : null, array_unique($subjects), $status, 'CSV import');
                 $created[] = $number;
             }
             Database::commit();
@@ -317,12 +345,14 @@ class RegistrarController
             return [];
         }
         return Database::fetchAll(
-            "SELECT c.id, c.subject_code, c.subject_title, c.section_name, c.units, c.grade_status, c.posted_at,
+            "SELECT c.id, sub.code AS subject_code, sub.title AS subject_title, sec.name AS section_name, sub.units, c.grade_status, c.posted_at,
                     CONCAT(u.first_name, ' ', u.last_name) AS faculty_name,
                     (SELECT COUNT(*) FROM `ana_class_grades` g WHERE g.class_id = c.id) AS graded
              FROM `ana_classes` c LEFT JOIN `users` u ON u.id = c.faculty_user_id
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
+             LEFT JOIN `sections` sec ON sec.id = c.section_id
              WHERE c.deleted_at IS NULL AND c.grade_status IN ('posted', 'locked') AND c.semester_id = :sem
-             ORDER BY c.subject_code, c.section_name",
+             ORDER BY sub.code, sec.name",
             ['sem' => (int) $term['semester_id']]
         );
     }
@@ -385,17 +415,19 @@ class RegistrarController
             ['sem1' => $sem]
         );
         $notEnrolled = Database::fetchAll(
-            "SELECT s.id AS student_id, s.student_number, s.first_name, s.last_name, c.id AS class_id, c.subject_code, c.section_name,
+            "SELECT s.id AS student_id, s.student_number, s.first_name, s.last_name, c.id AS class_id, csub.code AS subject_code, csec.name AS section_name,
                     CONCAT(u.first_name, ' ', u.last_name) AS faculty_name
              FROM `ana_class_students` cs
              JOIN `ana_classes` c ON c.id = cs.class_id AND c.deleted_at IS NULL AND c.semester_id = :sem2
+             LEFT JOIN `subjects` csub ON csub.id = c.subject_id
+             LEFT JOIN `sections` csec ON csec.id = c.section_id
              JOIN `students` s ON s.id = cs.student_id
              LEFT JOIN `users` u ON u.id = c.faculty_user_id
              WHERE cs.status = 'enrolled'
                AND NOT EXISTS (SELECT 1 FROM `ana_enrollment_subjects` es JOIN `ana_enrollments` e ON e.id = es.enrollment_id
                                WHERE e.student_id = cs.student_id AND e.semester_id = c.semester_id AND e.status = 'enrolled'
                                  AND es.subject_id = c.subject_id AND es.status = 'enrolled')
-             ORDER BY c.subject_code, s.last_name",
+             ORDER BY csub.code, s.last_name",
             ['sem2' => $sem]
         );
         return [$noRoster, $notEnrolled];

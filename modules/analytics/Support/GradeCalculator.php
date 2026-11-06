@@ -53,6 +53,62 @@ class GradeCalculator
         ];
     }
 
+    /**
+     * Validate a submitted scheme (template, class form or Grades Tracking) before it is stored.
+     * Returns ['scheme' => normalized] or ['error' => message].
+     */
+    public static function validateScheme(?array $raw, float $fallbackCutoff): array
+    {
+        $raw = is_array($raw) ? $raw : [];
+        foreach (($raw['groups'] ?? []) as $g) {
+            if (!is_numeric($g['weight'] ?? null) || (float) $g['weight'] <= 0 || (float) $g['weight'] > 100) {
+                return ['error' => 'Every component weight must be a number above 0 and at most 100.'];
+            }
+            foreach (($g['items'] ?? []) as $it) {
+                $max = $it['maxScore'] ?? null;
+                if (!is_numeric($max) || (float) $max <= 0 || (float) $max > 1000) {
+                    return ['error' => "Max score of '" . ($it['code'] ?? '?') . "' must be more than 0 and at most 1000."];
+                }
+            }
+        }
+
+        $scheme = self::normalizeScheme($raw, $fallbackCutoff);
+        if (!$scheme['groups']) {
+            return ['error' => 'Add at least one assessment component.'];
+        }
+        $total = array_sum(array_column($scheme['groups'], 'weight'));
+        if (abs($total - 100.0) > 0.01) {
+            return ['error' => "Component weights must total 100%. Current total: {$total}%."];
+        }
+        $attGroups = array_filter($scheme['groups'], fn($g) => $g['hasAttendance']);
+        if (count($attGroups) > 1) {
+            return ['error' => 'Attendance can count toward one component only.'];
+        }
+        if (array_filter($attGroups, fn($g) => $g['isExam'])) {
+            return ['error' => 'Attendance cannot count toward an exam component.'];
+        }
+        $codes = [];
+        foreach ($scheme['groups'] as $g) {
+            if (trim($g['title']) === '' || mb_strlen($g['title']) > 100) {
+                return ['error' => 'Each component needs a title of up to 100 characters.'];
+            }
+            if (!$g['items'] && !$g['hasAttendance']) {
+                return ['error' => "{$g['title']} needs at least one task column."];
+            }
+            foreach ($g['items'] as $it) {
+                $key = strtoupper($it['code']);
+                if (!preg_match('/^[A-Za-z0-9_\-]{1,32}$/', $it['code']) || isset($codes[$key])) {
+                    return ['error' => "Task code '{$it['code']}' is invalid or used twice."];
+                }
+                $codes[$key] = true;
+            }
+        }
+        if ($scheme['passingCutoff'] < 1.0 || $scheme['passingCutoff'] > 5.0) {
+            return ['error' => 'The passing cutoff must be between 1.00 and 5.00.'];
+        }
+        return ['scheme' => $scheme];
+    }
+
     public static function items(array $scheme): array
     {
         $items = [];

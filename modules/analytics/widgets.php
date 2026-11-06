@@ -126,9 +126,10 @@ return [
         'link'       => 'analytics/admin/change-log',
         'data'       => function () {
             $rows = Database::fetchAll(
-                "SELECT cl.entity, cl.action, cl.created_at, CONCAT(u.first_name, ' ', u.last_name) AS user_name
-                 FROM `ana_change_log` cl LEFT JOIN `users` u ON u.id = cl.changed_by
-                 ORDER BY cl.id DESC LIMIT 5"
+                "SELECT al.entity, SUBSTRING(al.action, 11) AS action, al.created_at, CONCAT(u.first_name, ' ', u.last_name) AS user_name
+                 FROM `audit_logs` al LEFT JOIN `users` u ON u.id = al.user_id
+                 WHERE al.action LIKE 'analytics.%'
+                 ORDER BY al.id DESC LIMIT 5"
             );
             return array_map(fn($r) => [
                 'primary_text' => ucwords(str_replace('_', ' ', $r['entity'] . ' ' . $r['action'])),

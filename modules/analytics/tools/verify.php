@@ -46,6 +46,10 @@ echo "Academic Analytics module verification" . PHP_EOL;
 echo PHP_EOL . "1. Tables" . PHP_EOL;
 $referenced = [];
 foreach (moduleFiles($moduleDir) as $file) {
+    // Migrations describe the schema history, including tables that were later dropped
+    if (str_contains($file, DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR)) {
+        continue;
+    }
     if (preg_match_all('/[`\'"](ana_[a-z_]+)[`\'"]/', (string) file_get_contents($file), $m)) {
         foreach ($m[1] as $t) {
             $referenced[$t] = true;
@@ -145,11 +149,33 @@ echo '  [INFO] demo account "student" is linked to ' . ($studentLink ? $studentL
 
 // 6. Seeders only write configuration tables
 echo PHP_EOL . "6. Seeders" . PHP_EOL;
-$allowed = ['ana_settings', 'ana_grading_templates', 'ana_program_heads'];
+$allowed = ['ana_grading_templates', 'ana_program_heads'];
 foreach (glob($moduleDir . '/database/seeders/*.php') as $file) {
     preg_match_all('/(?:INSERT\s+(?:IGNORE\s+)?INTO\s+`?|insert\(\s*[\'"])(ana_[a-z_]+)/i', (string) file_get_contents($file), $m);
     $bad = array_diff(array_unique($m[1]), $allowed);
     check('seeder ' . basename($file) . ' writes only configuration tables', empty($bad), implode(', ', $bad));
+}
+
+// 7. No table or column repeats what a core table already holds
+echo PHP_EOL . "7. Core tables are the source" . PHP_EOL;
+$dropped = ['ana_student_profiles' => 'students', 'ana_settings' => 'settings', 'ana_change_log' => 'audit_logs', 'ana_records' => 'audit_logs / ana_dashboard_notes'];
+foreach ($dropped as $table => $core) {
+    $exists = (int) Database::fetchColumn("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :t", ['t' => $table]) > 0;
+    check("{$table} is gone (data lives in {$core})", !$exists);
+}
+$copied = [
+    'ana_classes'            => ['subject_code', 'subject_title', 'units', 'section_name', 'academic_year_id', 'room'],
+    'ana_attendance_records' => ['subject_code'],
+    'ana_enrollments'        => ['program_id', 'academic_year_id'],
+];
+foreach ($copied as $table => $columns) {
+    foreach ($columns as $column) {
+        $exists = (int) Database::fetchColumn(
+            "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :t AND COLUMN_NAME = :c",
+            ['t' => $table, 'c' => $column]
+        ) > 0;
+        check("{$table}.{$column} is not stored (read from the core table)", !$exists);
+    }
 }
 
 echo PHP_EOL . ($failures === 0 ? 'All checks passed.' : "{$failures} check(s) failed.") . PHP_EOL;

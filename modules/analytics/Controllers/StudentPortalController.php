@@ -50,17 +50,20 @@ class StudentPortalController
             $params['sem'] = $semesterId;
         }
         return Database::fetchAll(
-            "SELECT c.id, c.class_code, c.subject_code, c.subject_title, c.units, c.section_name, c.schedule, c.room,
+            "SELECT c.id, c.class_code, sub.code AS subject_code, sub.title AS subject_title, sub.units, sec.name AS section_name, c.schedule, rm.room_number AS room,
                     c.grade_status, c.scores_visible, c.semester_id,
                     sem.name AS semester_name, ay.label AS academic_year_label,
                     CONCAT(u.first_name, ' ', u.last_name) AS faculty_name
              FROM `ana_class_students` cs
              JOIN `ana_classes` c ON c.id = cs.class_id AND c.deleted_at IS NULL
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
+             LEFT JOIN `sections` sec ON sec.id = c.section_id
+             LEFT JOIN `rooms` rm ON rm.id = c.room_id
              LEFT JOIN `semesters` sem ON sem.id = c.semester_id
-             LEFT JOIN `academic_years` ay ON ay.id = c.academic_year_id
+             LEFT JOIN `academic_years` ay ON ay.id = sem.academic_year_id
              LEFT JOIN `users` u ON u.id = c.faculty_user_id
              WHERE cs.student_id = :sid AND cs.status = 'enrolled'{$termSql}
-             ORDER BY c.semester_id DESC, c.subject_code",
+             ORDER BY c.semester_id DESC, sub.code",
             $params
         );
     }
@@ -72,7 +75,8 @@ class StudentPortalController
         }
         $e = Database::fetchOne(
             "SELECT e.*, p.code AS program_code, sec.name AS section_name
-             FROM `ana_enrollments` e LEFT JOIN `programs` p ON p.id = e.program_id LEFT JOIN `sections` sec ON sec.id = e.section_id
+             FROM `ana_enrollments` e JOIN `students` st ON st.id = e.student_id
+             LEFT JOIN `programs` p ON p.id = st.program_id LEFT JOIN `sections` sec ON sec.id = e.section_id
              WHERE e.student_id = :sid AND e.semester_id = :sem",
             ['sid' => $sid, 'sem' => (int) $term['semester_id']]
         );
@@ -109,9 +113,11 @@ class StudentPortalController
     {
         return Database::fetchAll(
             "SELECT g.inc_deadline, DATEDIFF(g.inc_deadline, CURDATE()) AS days_left, g.posted_at,
-                    c.id AS class_id, c.subject_code, c.subject_title, c.section_name, CONCAT(u.first_name, ' ', u.last_name) AS faculty_name
+                    c.id AS class_id, sub.code AS subject_code, sub.title AS subject_title, sec.name AS section_name, CONCAT(u.first_name, ' ', u.last_name) AS faculty_name
              FROM `ana_class_grades` g
              JOIN `ana_classes` c ON c.id = g.class_id AND c.deleted_at IS NULL
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
+             LEFT JOIN `sections` sec ON sec.id = c.section_id
              LEFT JOIN `users` u ON u.id = c.faculty_user_id
              WHERE g.student_id = :sid AND g.remarks = 'INC' AND g.inc_resolved_at IS NULL AND c.grade_status IN ('posted', 'locked')
              ORDER BY g.inc_deadline IS NULL, g.inc_deadline",
@@ -130,8 +136,9 @@ class StudentPortalController
         $posts = [];
         if ($classIds) {
             $posts = Database::fetchAll(
-                "SELECT p.id, p.class_id, p.type, p.title, p.created_at, c.subject_code
+                "SELECT p.id, p.class_id, p.type, p.title, p.created_at, sub.code AS subject_code
                  FROM `ana_class_posts` p JOIN `ana_classes` c ON c.id = p.class_id
+                 LEFT JOIN `subjects` sub ON sub.id = c.subject_id
                  WHERE p.deleted_at IS NULL AND p.class_id IN (" . implode(',', $classIds) . ")
                  ORDER BY p.created_at DESC LIMIT 6"
             );
@@ -154,8 +161,10 @@ class StudentPortalController
         $student = $this->student();
         $sid = (int) $student['id'];
         $requests = Database::fetchAll(
-            "SELECT j.status, j.created_at, c.subject_code, c.section_name
+            "SELECT j.status, j.created_at, sub.code AS subject_code, sec.name AS section_name
              FROM `ana_class_join_requests` j JOIN `ana_classes` c ON c.id = j.class_id
+             LEFT JOIN `subjects` sub ON sub.id = c.subject_id
+             LEFT JOIN `sections` sec ON sec.id = c.section_id
              WHERE j.student_id = :sid AND j.status <> 'approved' ORDER BY j.created_at DESC",
             ['sid' => $sid]
         );
@@ -324,7 +333,7 @@ class StudentPortalController
         if ($code === '' || strlen($code) > 8) {
             redirect($back, 'error', 'Enter the class code your instructor shared.');
         }
-        $class = Database::fetchOne("SELECT * FROM `ana_classes` WHERE class_code = :c AND deleted_at IS NULL", ['c' => $code]);
+        $class = Database::fetchOne("SELECT " . ClassRecord::CLASS_COLUMNS . " FROM `ana_classes` c" . ClassRecord::CLASS_JOINS . " WHERE c.class_code = :c AND c.deleted_at IS NULL", ['c' => $code]);
         if (!$class) {
             redirect($back, 'error', 'No class uses that code.');
         }

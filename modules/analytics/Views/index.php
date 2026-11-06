@@ -85,9 +85,11 @@
         <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
             <i class="bi bi-printer me-1"></i>Print Telemetry
         </button>
+        <?php if (can('analytics.admin.settings')): ?>
         <button class="btn btn-marsu btn-sm" data-bs-toggle="modal" data-bs-target="#newRecordModal">
-            <i class="bi bi-plus-lg me-1"></i>New Entry
+            <i class="bi bi-plus-lg me-1"></i>New Note
         </button>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -440,12 +442,12 @@
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-header card-header-accent d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="m-0 font-weight-bold text-marsu-burgundy">
-            <i class="bi bi-table me-2"></i><?= e($moduleName) ?> Records Directory
+            <i class="bi bi-journal-text me-2"></i>Dashboard Notes
         </h6>
         <div class="input-group input-group-sm w-auto">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
             <input type="text" class="form-control border-start-0" id="tableFilterInput"
-                placeholder="Quick search records...">
+                placeholder="Quick search notes...">
         </div>
     </div>
     <div class="card-body p-0">
@@ -454,9 +456,8 @@
                 <thead class="table-marsu">
                     <tr>
                         <th style="width: 60px;">#</th>
-                        <th>Title / Subject</th>
-                        <th>Description / Remarks</th>
-                        <th>Status</th>
+                        <th>Note</th>
+                        <th>Written by</th>
                         <th>Created Date</th>
                         <th class="text-end" style="width: 120px;">Actions</th>
                     </tr>
@@ -464,31 +465,25 @@
                 <tbody>
                     <?php if (empty($records)): ?>
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
+                            <td colspan="5" class="text-center py-4 text-muted">
                                 <i class="bi bi-inbox fs-2 d-block mb-1 text-gold"></i>
-                                No records found in <code>ana_records</code>. Click "New Entry" to add one.
+                                No dashboard notes yet.
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($records as $i => $r): ?>
                             <tr>
                                 <td><?= $i + 1 ?></td>
-                                <td class="fw-bold text-marsu-burgundy"><?= e($r['title']) ?></td>
-                                <td class="small text-muted"><?= e($r['description'] ?? 'No description') ?></td>
-                                <td>
-                                    <?php if (($r['status'] ?? '') === 'active'): ?>
-                                        <span class="badge bg-success">Active</span>
-                                    <?php else: ?>
-                                        <span class="badge bg-secondary"><?= e(ucfirst($r['status'] ?? 'pending')) ?></span>
-                                    <?php endif; ?>
-                                </td>
+                                <td class="small" style="white-space: pre-line;"><?= e($r['note']) ?></td>
+                                <td class="small text-muted"><?= e($r['author'] ?? '—') ?></td>
                                 <td class="small text-muted"><?= e(date('M d, Y h:i A', strtotime($r['created_at']))) ?></td>
                                 <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-secondary"
-                                        data-entry-title="<?= e($r['title']) ?>" data-entry-body="<?= e($r['description'] ?? '') ?>"
-                                        onclick="Swal.fire({ title: 'Entry #<?= (int) $r['id'] ?>', html: '<strong>' + this.dataset.entryTitle.replace(/</g, '&lt;') + '</strong><br>' + this.dataset.entryBody.replace(/</g, '&lt;'), icon: 'info' })">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
+                                    <?php if ((int) $r['created_by'] === (int) \Core\Auth::id() && can('analytics.admin.settings')): ?>
+                                        <form method="POST" action="<?= url('analytics/admin/notes/' . (int) $r['id'] . '/archive') ?>" class="d-inline">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Archive note"><i class="bi bi-archive"></i></button>
+                                        </form>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -499,40 +494,32 @@
     </div>
 </div>
 
-<!-- Modal: New Entry -->
+<?php if (can('analytics.admin.settings')): ?>
+<!-- Modal: New Note -->
 <div class="modal fade" id="newRecordModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-marsu-burgundy text-white">
-                <h5 class="modal-title fs-6"><i class="bi bi-plus-circle me-2"></i>Create New <?= e($moduleName) ?>
-                    Entry</h5>
+                <h5 class="modal-title fs-6"><i class="bi bi-plus-circle me-2"></i>New Dashboard Note</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <form method="POST" action="<?= url('analytics/create') ?>">
+            <form method="POST" action="<?= url('analytics/admin/notes') ?>">
                 <?= csrf_field() ?>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Title / Designation <span
-                                class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control form-control-sm" required
-                            placeholder="e.g. Assessment Report / Transaction / Case Reference">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Description / Observations</label>
-                        <textarea name="description" class="form-control form-control-sm" rows="3"
-                            placeholder="Enter specific details, remarks, or notes..."></textarea>
-                    </div>
+                    <label class="form-label small fw-bold">Note <span class="text-danger">*</span></label>
+                    <textarea name="note" class="form-control form-control-sm" rows="4" maxlength="5000" required
+                        placeholder="e.g. Midterm monitoring meeting — reviewed CC111 results."></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-marsu btn-sm"><i class="bi bi-check-lg me-1"></i>Save
-                        Entry</button>
+                    <button type="submit" class="btn btn-marsu btn-sm"><i class="bi bi-check-lg me-1"></i>Save Note</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <!-- 6. DASHBOARD CHART INITIALIZATION SCRIPT -->
 <script>

@@ -98,17 +98,19 @@ class RiskSignals
      */
     public static function retentionTrend(): array
     {
-        $scope = AnalyticsAccess::programScopeSql('e.program_id');
+        // Program comes from the student record, the academic year from the enrollment's semester
+        $scope = AnalyticsAccess::programScopeSql('(SELECT rs.program_id FROM `students` rs WHERE rs.id = e.student_id)');
         $years = Database::fetchAll(
             "SELECT DISTINCT ay.id, ay.label, ay.start_date
-             FROM `ana_enrollments` e JOIN `academic_years` ay ON ay.id = e.academic_year_id
+             FROM `ana_enrollments` e JOIN `semesters` sem ON sem.id = e.semester_id JOIN `academic_years` ay ON ay.id = sem.academic_year_id
              WHERE e.status = 'enrolled'{$scope}
              ORDER BY ay.start_date, ay.id"
         );
         $sets = [];
         foreach ($years as $y) {
             $sets[(int) $y['id']] = array_map('intval', array_column(Database::fetchAll(
-                "SELECT DISTINCT e.student_id FROM `ana_enrollments` e WHERE e.academic_year_id = :ay AND e.status = 'enrolled'{$scope}",
+                "SELECT DISTINCT e.student_id FROM `ana_enrollments` e JOIN `semesters` sem ON sem.id = e.semester_id
+                 WHERE sem.academic_year_id = :ay AND e.status = 'enrolled'{$scope}",
                 ['ay' => (int) $y['id']]
             ), 'student_id'));
         }
@@ -123,7 +125,8 @@ class RiskSignals
                 $gwa = Database::fetchColumn(
                     "SELECT AVG(CAST(g.final_grade AS DECIMAL(5,2))) FROM `ana_class_grades` g
                      JOIN `ana_classes` c ON c.id = g.class_id AND c.deleted_at IS NULL AND c.grade_status IN ('posted', 'locked')
-                     WHERE c.academic_year_id = :ay AND g.remarks IN ('PASSED', 'FAILED')" . AnalyticsAccess::classScopeSql('c'),
+                     JOIN `semesters` sem ON sem.id = c.semester_id
+                     WHERE sem.academic_year_id = :ay AND g.remarks IN ('PASSED', 'FAILED')" . AnalyticsAccess::classScopeSql('c'),
                     ['ay' => $id]
                 );
                 $out['years'][] = $y['label'];

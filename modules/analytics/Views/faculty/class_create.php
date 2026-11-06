@@ -39,7 +39,14 @@ use Modules\Analytics\Support\Ui;
                     </select>
                 </div>
                 <div class="col-md-3"><label class="form-label">Schedule</label><input name="schedule" maxlength="128" value="<?= e(old('schedule')) ?>" class="form-control form-control-sm" placeholder="MWF 9–10 AM"></div>
-                <div class="col-md-3"><label class="form-label">Room</label><input name="room" maxlength="64" value="<?= e(old('room')) ?>" class="form-control form-control-sm"></div>
+                <div class="col-md-3"><label class="form-label">Room</label>
+                    <select name="room_id" class="form-select form-select-sm">
+                        <option value="">No room assigned</option>
+                        <?php foreach ($rooms as $r): ?>
+                            <option value="<?= (int) $r['id'] ?>" <?= (string) old('room_id') === (string) $r['id'] ? 'selected' : '' ?>><?= e($r['room_number'] . ' — ' . $r['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
                 <div class="col-12"><label class="form-label">Description</label><textarea name="description" rows="3" maxlength="2000" class="form-control form-control-sm"><?= e(old('description')) ?></textarea></div>
             </div>
             <div class="card-footer bg-transparent d-flex gap-2">

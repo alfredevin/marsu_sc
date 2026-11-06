@@ -284,7 +284,6 @@
         "analytics.admin.classes": "Oversee Class Offerings, Faculty Reassignment and Term Closure",
         "analytics.admin.grades": "Review Grade Correction Requests and INC Extensions",
         "analytics.admin.attendance": "Void Erroneous Attendance Records",
-        "analytics.admin.conduct": "Manage Conduct Case Status and Severity",
-        "analytics.admin.profiles": "Manage Student Supplementary Profiles"
+        "analytics.admin.conduct": "Manage Conduct Case Status and Severity"
     }
 }

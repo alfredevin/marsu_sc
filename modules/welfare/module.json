@@ -169,18 +169,13 @@
                 ]
             },
             {
-                "label": "maintenance",
-                "icon": "bi-calendar-check",
+                "label": "Maintenance",
+                "icon": "bi-tools",
                 "permission": "welfare.view",
                 "children": [
                     {
-                        "label": "Appointments",
-                        "route": "welfare/maintenance",
-                        "permission": "welfare.view"
-                    },
-                    {
-                        "label": "Advisories",
-                        "route": "welfare/maintenance",
+                        "label": "Concern Types",
+                        "route": "welfare/concern-types",
                         "permission": "welfare.view"
                     }
                 ]

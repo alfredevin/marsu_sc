@@ -42,3 +42,8 @@ nbproject/
 # Ensure public offline vendor assets are always tracked
 !public/assets/vendor/
 !public/assets/vendor/**
+
+# Thesis papers, documents, and DFD diagrams
+*.docx
+*.pdf
+SPAMS_DFD/

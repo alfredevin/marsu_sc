@@ -9,7 +9,7 @@ return new class {
         $db = Database::pdo();
         $db->exec("CREATE TABLE IF NOT EXISTS `sample_items` (
             `id` INT AUTO_INCREMENT PRIMARY KEY,
-            `title` VARCHAR(100) NOT NULL,
+            `title` VARCHAR(191) NOT NULL,
             `category` VARCHAR(100) NOT NULL,
             `created_at` DATETIME NOT NULL,
             `updated_at` DATETIME NULL,

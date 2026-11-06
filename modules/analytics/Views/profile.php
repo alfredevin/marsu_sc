@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 1 - Student Information Management
+ * View: Comprehensive Student Profile (profile.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -208,9 +219,13 @@
                             class="bi bi-geo-alt-fill text-danger me-1"></i><?= htmlspecialchars($demographics['address'] ?? 'Marinduque') ?>
                     </span>
                     <span class="badge badge-burgundy px-3 py-2 rounded-pill shadow-sm">
-                        <i
-                            class="bi bi-mortarboard-fill text-gold me-1"></i><?= htmlspecialchars($selectedStudent['program_code'] ?? 'N/A') ?>
+                        <i class="bi bi-mortarboard-fill text-gold me-1"></i><?= htmlspecialchars($selectedStudent['program_code'] ?? 'N/A') ?>
                     </span>
+                    <?php if (can('analytics.admin.profiles')): ?>
+                        <a href="<?= url('analytics/admin/profiles/' . (int) $selectedStudent['id']) ?>" class="btn btn-sm btn-outline-marsu rounded-pill shadow-sm">
+                            <i class="bi bi-pencil-square me-1"></i> Supplementary Profile
+                        </a>
+                    <?php endif; ?>
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
                         <i class="bi bi-printer me-1"></i> Print Record
                     </button>
@@ -307,11 +322,11 @@
                             <div class="mt-3 pt-3 border-top d-flex flex-column gap-2">
                                 <div class="d-flex justify-content-center gap-2">
                                     <button type="button" class="btn btn-outline-marsu btn-sm rounded-pill px-3"
-                                        onclick="alert('Student photo management is linked with MarSU Official University Registrar records.')">
+                                        onclick="Swal.fire({ icon: 'info', text: 'Student photo management is linked with MarSU Official University Registrar records.' })">
                                         <i class="bi bi-cloud-arrow-up-fill me-1"></i>Upload Photo
                                     </button>
                                     <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3"
-                                        onclick="alert('Default institutional student identity initials active.')">
+                                        onclick="Swal.fire({ icon: 'info', text: 'Default institutional student identity initials active.' })">
                                         <i class="bi bi-trash-fill me-1"></i>Remove
                                     </button>
                                 </div>
@@ -359,6 +374,12 @@
                                         class="btn btn-outline-secondary btn-sm rounded-pill w-100 fw-semibold text-start px-3">
                                         <i class="bi bi-journal-check me-2 text-primary"></i>Log Faculty Advising Session
                                     </a>
+                                    <?php if (can('analytics.admin.profiles')): ?>
+                                        <a href="<?= url('analytics/admin/profiles/' . (int) $selectedStudent['id']) ?>"
+                                            class="btn btn-outline-dark btn-sm rounded-pill w-100 fw-semibold text-start px-3">
+                                            <i class="bi bi-person-lines-fill me-2 text-gold"></i>Edit Supplementary Profile
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -673,10 +694,15 @@
                                                 </div>
                                                 <div>
                                                     <?php
-                                                    $cumGwa = $academicHistory['cumulativeGwa'] ?? 2.00;
+                                                    $cumGwa = $academicHistory['cumulativeGwa'] ?? null;
                                                     $failUnits = $academicHistory['totalFailedUnits'] ?? 0;
                                                     ?>
-                                                    <?php if ($cumGwa <= 1.75 && $failUnits == 0): ?>
+                                                    <?php if ($cumGwa === null): ?>
+                                                        <span
+                                                            class="badge bg-secondary text-white px-3 py-2 rounded-pill shadow-xs">
+                                                            <i class="bi bi-hourglass me-1"></i> No Posted Grades Yet
+                                                        </span>
+                                                    <?php elseif ($cumGwa <= 1.75 && $failUnits == 0): ?>
                                                         <span
                                                             class="badge bg-success text-white px-3 py-2 rounded-pill shadow-xs">
                                                             <i class="bi bi-award-fill me-1"></i> Dean's Lister Tier (Honor)
@@ -701,8 +727,8 @@
                                                 <div class="col-sm-3 col-6">
                                                     <small class="text-muted d-block">Cumulative GWA</small>
                                                     <h4
-                                                        class="fw-bold mb-0 <?= ($cumGwa > 3.00) ? 'text-danger' : 'text-primary' ?>">
-                                                        <?= number_format($cumGwa, 2) ?>
+                                                        class="fw-bold mb-0 <?= ($cumGwa !== null && $cumGwa > 3.00) ? 'text-danger' : 'text-primary' ?>">
+                                                        <?= $cumGwa === null ? '—' : number_format($cumGwa, 2) ?>
                                                     </h4>
                                                 </div>
                                                 <div class="col-sm-3 col-6">
@@ -888,7 +914,7 @@
                                                             class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                                             <span class="text-muted">Active Academic Year:</span>
                                                             <strong
-                                                                class="text-primary"><?= htmlspecialchars($enrollmentRecord['academic_year'] ?? 'A.Y. 2026-2027') ?></strong>
+                                                                class="text-primary"><?= htmlspecialchars($enrollmentRecord['academic_year'] ?? '—') ?></strong>
                                                         </li>
                                                         <li
                                                             class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
@@ -1024,7 +1050,7 @@
                 <!-- Search Input na may Instant Filter & Clear Support -->
                 <div class="input-group input-group-sm" style="width: 220px;">
                     <input type="search" id="searchInput" name="q" class="form-control" placeholder="Search ID / Name..."
-                        value="<?= htmlspecialchars($search ?? '') ?>" oninput="handleSearchInput(this)" autocomplete="off">
+                        value="<?= htmlspecialchars($search ?? '') ?>" autocomplete="off">
                     <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                 </div>
 
@@ -1138,37 +1164,8 @@
                 </tbody>
             </table>
         </div>
-
-        <script>
-            const hadServerQuery = <?= !empty($search) ? 'true' : 'false' ?>;
-
-            function handleSearchInput(input) {
-                const query = input.value.trim().toLowerCase();
-                const rows = document.querySelectorAll('.student-row');
-
-                rows.forEach(row => {
-                    const text = row.innerText.toLowerCase();
-                    row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
-                });
-
-                if (query === '' && hadServerQuery) {
-                    const url = new URL(window.location.href);
-                    url.searchParams.delete('q');
-                    window.location.href = url.toString();
-                }
-            }
-
-            const searchBox = document.getElementById('searchInput');
-            if (searchBox) {
-                searchBox.addEventListener('search', function () {
-                    if (this.value === '' && hadServerQuery) {
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete('q');
-                        window.location.href = url.toString();
-                    }
-                });
-            }
-        </script>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
 
     <?php endif; ?>
 

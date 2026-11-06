@@ -7,7 +7,8 @@
 use Core\Database;
 
 return new class {
-    public function up(): void {
+    public function up(): void
+    {
         $db = Database::pdo();
 
         // 1. General Welfare Baseline Records
@@ -344,7 +345,8 @@ return new class {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         $db = Database::pdo();
         $db->exec("DROP TABLE IF EXISTS `wlf_student_concerns`;");
         $db->exec("DROP TABLE IF EXISTS `wlf_advisories`;");

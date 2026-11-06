@@ -1,1 +1,1 @@
-<?php require __DIR__ . '/submenu-template.php'; ?>
+<?php require __DIR__ . '/report-template.php'; ?>

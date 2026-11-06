@@ -8,7 +8,14 @@ $schemeJson = json_encode($scheme, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS |
             <form method="POST" action="<?= url($base . '/update') ?>" class="card-body small">
                 <?= csrf_field() ?>
                 <div class="mb-2"><label class="form-label mb-1">Schedule</label><input name="schedule" maxlength="128" value="<?= e($class['schedule'] ?? '') ?>" class="form-control form-control-sm" placeholder="e.g. MWF 9:00–10:00"></div>
-                <div class="mb-2"><label class="form-label mb-1">Room</label><input name="room" maxlength="64" value="<?= e($class['room'] ?? '') ?>" class="form-control form-control-sm"></div>
+                <div class="mb-2"><label class="form-label mb-1">Room</label>
+                    <select name="room_id" class="form-select form-select-sm">
+                        <option value="">No room assigned</option>
+                        <?php foreach ($rooms ?? [] as $r): ?>
+                            <option value="<?= (int) $r['id'] ?>" <?= (int) ($class['room_id'] ?? 0) === (int) $r['id'] ? 'selected' : '' ?>><?= e($r['room_number'] . ' — ' . $r['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
                 <div class="mb-2"><label class="form-label mb-1">Description</label><textarea name="description" rows="3" maxlength="2000" class="form-control form-control-sm"><?= e($class['description'] ?? '') ?></textarea></div>
                 <button class="btn btn-sm btn-marsu" type="submit">Save details</button>
             </form>

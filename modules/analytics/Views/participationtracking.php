@@ -33,9 +33,11 @@
             <a href="<?= url('analytics/gradestracking') ?>" class="btn btn-sm btn-outline-primary">
                 <i class="bi bi-table me-1"></i> Open Grades Matrix
             </a>
+            <?php if (\Modules\Analytics\Support\AnalyticsAccess::isFacultyScope()): ?>
             <button type="button" class="btn btn-sm marsu-maroon-bg text-white fw-semibold" data-bs-toggle="modal" data-bs-target="#logTaskExceptionModal">
                 <i class="bi bi-plus-lg me-1"></i> Log Task Exception
             </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -189,7 +191,8 @@
     </div>
 </div>
 
-<!-- Modal: Log Task Exception -->
+<?php if (\Modules\Analytics\Support\AnalyticsAccess::isFacultyScope()): ?>
+<!-- Modal: Log Task Exception (writes the submission status of one task in the faculty's own class record) -->
 <div class="modal fade" id="logTaskExceptionModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content border-0 shadow">
@@ -215,27 +218,21 @@
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-secondary">ASSESSMENT CATEGORY</label>
-                            <select name="assessment_type" class="form-select form-select-sm" required>
-                                <option value="Quiz" selected>Major Quiz</option>
-                                <option value="Lab Activity">Laboratory Activity</option>
-                                <option value="Assignment">Assignment / Problem Set</option>
-                                <option value="Term Project">Midterm / Final Project</option>
-                                <option value="Recitation">Graded Recitation</option>
-                            </select>
+                            <label class="form-label small fw-semibold text-secondary">TASK COLUMN CODE</label>
+                            <input type="text" name="item_code" class="form-control form-control-sm" maxlength="32" placeholder="e.g. Q1 (as shown in the class record)" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-secondary">EXCEPTION STATUS</label>
-                            <select name="exception_status" class="form-select form-select-sm" required>
-                                <option value="Unexcused Missed">Unexcused Missed Task (Score 0)</option>
-                                <option value="Excused / Makeup Pending">Excused (Make-up Granted)</option>
-                                <option value="Late Submission">Late Submission (Penalty Applied)</option>
+                            <label class="form-label small fw-semibold text-secondary">SUBMISSION STATUS</label>
+                            <select name="submission_status" class="form-select form-select-sm" required>
+                                <option value="missing">Missing / Unsubmitted</option>
+                                <option value="excused">Excused (left out of the grade)</option>
+                                <option value="late">Late Submission</option>
                             </select>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-secondary">REASON & REMEDIATION PLAN</label>
-                        <textarea name="remediation_notes" class="form-control form-control-sm" rows="2" placeholder="Specify explanation provided by student and rescheduled submission date..."></textarea>
+                        <textarea name="remediation_notes" class="form-control form-control-sm" rows="2" maxlength="500" placeholder="Specify explanation provided by student and rescheduled submission date..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer bg-white border-top">
@@ -246,3 +243,4 @@
         </div>
     </div>
 </div>
+<?php endif; ?>

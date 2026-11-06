@@ -10,6 +10,7 @@ use Modules\Analytics\Support\AnalyticsSettings;
 use Modules\Analytics\Support\ChangeLog;
 use Modules\Analytics\Support\ClassRecord;
 use Modules\Analytics\Support\Classroom;
+use Modules\Analytics\Support\GradeCalculator;
 use Modules\Analytics\Support\Notifier;
 
 /**
@@ -31,8 +32,10 @@ class AdminController
         try {
             $classes = Database::fetchAll("
                 SELECT c.*, 
+                       sub.code as subject_code, sub.title as subject_title, sub.units as units, sec.name as section_name,
                        sub.title as subject_title_meta, 
                        sec.name as section_name_meta, 
+                       rm.room_number as room, 
                        CONCAT(u.first_name, ' ', u.last_name) as faculty_name,
                        u.email as faculty_email,
                        sem.name as semester_name,
@@ -44,7 +47,8 @@ class AdminController
                 LEFT JOIN `sections` sec ON c.section_id = sec.id
                 LEFT JOIN `users` u ON c.faculty_user_id = u.id
                 LEFT JOIN `semesters` sem ON c.semester_id = sem.id
-                LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
+                LEFT JOIN `academic_years` ay ON sem.academic_year_id = ay.id
+                LEFT JOIN `rooms` rm ON rm.id = c.room_id
                 WHERE c.deleted_at IS NULL
                 ORDER BY c.id DESC
             ");
@@ -86,7 +90,12 @@ class AdminController
         $subjects = Database::fetchAll("SELECT id, code, title, units FROM `subjects` WHERE `deleted_at` IS NULL ORDER BY code ASC");
         $sections = Database::fetchAll("SELECT id, name, year_level FROM `sections` WHERE `deleted_at` IS NULL ORDER BY year_level ASC, name ASC");
         $academicYears = Database::fetchAll("SELECT id, label, is_active FROM `academic_years` ORDER BY is_active DESC, id DESC");
-        $semesters = Database::fetchAll("SELECT id, name, academic_year_id, is_active FROM `semesters` ORDER BY is_active DESC, id DESC");
+        // One option per term even when the semesters table holds repeated rows
+        $semesters = Database::fetchAll(
+            "SELECT s.id, s.name, s.academic_year_id, s.is_active FROM `semesters` s
+             WHERE s.id IN (SELECT MIN(id) FROM `semesters` GROUP BY academic_year_id, code)
+             ORDER BY s.is_active DESC, s.id DESC"
+        );
         $templates = Database::fetchAll("SELECT id, name, passing_cutoff, is_default FROM `ana_grading_templates` WHERE `is_active` = 1 AND `deleted_at` IS NULL ORDER BY is_default DESC, id DESC");
         $facultyList = $this->loadFacultyUsers();
 
@@ -122,7 +131,7 @@ class AdminController
 
         $subject = Database::fetchOne("SELECT * FROM `subjects` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1", ['id' => $subjectId]);
         $section = Database::fetchOne("SELECT * FROM `sections` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1", ['id' => $sectionId]);
-        $template = Database::fetchOne("SELECT * FROM `ana_grading_templates` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1", ['id' => $templateId]);
+        $template = Database::fetchOne("SELECT * FROM `ana_grading_templates` WHERE `id` = :id AND `is_active` = 1 AND `deleted_at` IS NULL LIMIT 1", ['id' => $templateId]);
         $faculty = Database::fetchOne("SELECT id, first_name, last_name FROM `users` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1", ['id' => $facultyUserId]);
 
         $isFaculty = in_array($facultyUserId, array_map('intval', array_column($this->loadFacultyUsers(), 'id')), true);
@@ -140,19 +149,24 @@ class AdminController
         $ayId = (int) $term['academic_year_id'];
         $semId = (int) $term['semester_id'];
 
+        $duplicate = Database::fetchOne(
+            "SELECT id FROM `ana_classes` WHERE faculty_user_id = :f AND subject_id = :s AND section_id = :sec AND semester_id = :sem AND deleted_at IS NULL",
+            ['f' => $facultyUserId, 's' => $subjectId, 'sec' => $sectionId, 'sem' => $semId]
+        );
+        if ($duplicate) {
+            Session::flash('error', "That faculty already has {$subject['code']} - {$section['name']} for {$term['label']}.");
+            redirect(url('analytics/admin/classes/create'));
+            return;
+        }
+
         // Admin fallback: the class is owned by the chosen faculty; the admin never encodes grades.
         $classId = Database::insert('ana_classes', [
             'class_code'       => Classroom::generateCode(),
             'scores_visible'   => 0,
             'faculty_user_id'  => $facultyUserId,
             'subject_id'       => $subjectId,
-            'subject_code'     => $subject['code'],
-            'subject_title'    => $subject['title'],
-            'units'            => (float) ($subject['units'] ?? 3.0),
             'section_id'       => $sectionId,
-            'section_name'     => $section['name'],
-            'academic_year_id' => $ayId ?: null,
-            'semester_id'      => $semId ?: null,
+            'semester_id'      => $semId,
             'template_id'      => $templateId,
             'grading_scheme'   => $template['scheme'],
             'passing_cutoff'   => (float) $template['passing_cutoff'],
@@ -190,7 +204,7 @@ class AdminController
             return;
         }
 
-        $class = Database::fetchOne("SELECT * FROM `ana_classes` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1", ['id' => $classId]);
+        $class = Database::fetchOne("SELECT " . ClassRecord::CLASS_COLUMNS . " FROM `ana_classes` c" . ClassRecord::CLASS_JOINS . " WHERE c.id = :id AND c.deleted_at IS NULL LIMIT 1", ['id' => $classId]);
         if (!$class) {
             Session::flash('error', 'Class offering not found.');
             redirect(url('analytics/admin/classes'));
@@ -198,13 +212,19 @@ class AdminController
         }
 
         $newFaculty = Database::fetchOne("SELECT id, first_name, last_name FROM `users` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1", ['id' => $newFacultyId]);
-        if (!$newFaculty) {
-            Session::flash('error', 'Selected instructor not found.');
+        $isFaculty = in_array($newFacultyId, array_map('intval', array_column($this->loadFacultyUsers(), 'id')), true);
+        if (!$newFaculty || !$isFaculty) {
+            Session::flash('error', 'Selected instructor not found or does not hold a faculty role.');
             redirect(url('analytics/admin/classes'));
             return;
         }
 
         $oldFacultyId = (int) ($class['faculty_user_id'] ?? 0);
+        if ($oldFacultyId === $newFacultyId) {
+            Session::flash('info', 'That instructor already teaches this class.');
+            redirect(url('analytics/admin/classes'));
+            return;
+        }
 
         Database::update(
             'ana_classes',
@@ -238,7 +258,7 @@ class AdminController
         $classId = (int) $id;
         $reason = trim($_POST['reason'] ?? '');
 
-        $class = Database::fetchOne("SELECT * FROM `ana_classes` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1", ['id' => $classId]);
+        $class = Database::fetchOne("SELECT " . ClassRecord::CLASS_COLUMNS . " FROM `ana_classes` c" . ClassRecord::CLASS_JOINS . " WHERE c.id = :id AND c.deleted_at IS NULL LIMIT 1", ['id' => $classId]);
         if (!$class) {
             Session::flash('error', 'Class offering not found.');
             redirect(url('analytics/admin/classes'));
@@ -341,18 +361,28 @@ class AdminController
             return;
         }
 
-        $allSettings = Database::fetchAll("SELECT * FROM `ana_settings`");
-        $settingsByKey = [];
-        foreach ($allSettings as $s) {
-            $settingsByKey[$s['key']] = $s;
-        }
+        $settingsByKey = array_column(AnalyticsSettings::all(), null, 'key');
 
-        // Server-Side Range Validation across all submitted keys
+        // Server-Side Type and Range Validation across all submitted keys
+        $submitted = is_array($submitted) ? $submitted : [];
         foreach ($submitted as $key => $val) {
             if (!isset($settingsByKey[$key])) {
                 continue;
             }
             $meta = $settingsByKey[$key];
+            $val = is_string($val) ? trim($val) : $val;
+            $typeOk = match ($meta['type']) {
+                'int'     => is_string($val) && preg_match('/^-?\d+$/', $val) === 1,
+                'decimal' => is_string($val) && is_numeric($val),
+                'bool'    => in_array($val, ['0', '1'], true),
+                default   => is_string($val) && mb_strlen($val) <= 1000,
+            };
+            if (!$typeOk) {
+                $expected = ['int' => 'a whole number', 'decimal' => 'a number', 'bool' => 'Enabled or Disabled'][$meta['type']] ?? 'text of up to 1,000 characters';
+                Session::flash('error', "Value for '{$meta['label']}' must be {$expected}.");
+                redirect(url('analytics/admin/settings'));
+                return;
+            }
             if (is_numeric($val)) {
                 $numVal = (float) $val;
                 if ($meta['min_value'] !== null && $numVal < (float) $meta['min_value']) {
@@ -368,6 +398,15 @@ class AdminController
             }
         }
 
+        // Cross-field rule: the critical attendance band must sit below the monitored band
+        $rate = fn(string $k) => (float) (isset($submitted[$k]) ? $submitted[$k] : ($settingsByKey[$k]['value'] ?? 0));
+        if (isset($settingsByKey['attendance.critical_rate'], $settingsByKey['attendance.monitored_rate'])
+            && $rate('attendance.critical_rate') >= $rate('attendance.monitored_rate')) {
+            Session::flash('error', 'The critical attendance rate must be lower than the monitored attendance rate.');
+            redirect(url('analytics/admin/settings'));
+            return;
+        }
+
         // Apply validated changes
         $updatedCount = 0;
         foreach ($submitted as $key => $val) {
@@ -375,14 +414,21 @@ class AdminController
                 continue;
             }
             $meta = $settingsByKey[$key];
+            $val = trim((string) $val);
             $oldVal = (string) $meta['value'];
-            $newVal = (string) $val;
+            $newVal = $val;
+            // Compare as numbers for numeric settings so 0.20 and 0.2 are the same value
+            $unchanged = in_array($meta['type'], ['int', 'decimal'], true) && is_numeric($oldVal)
+                ? (float) $oldVal === (float) $newVal
+                : $oldVal === $newVal;
 
-            if ($oldVal !== $newVal) {
-                AnalyticsSettings::set($key, $val, (int) Auth::id());
+            if (!$unchanged) {
+                if (!AnalyticsSettings::set($key, $val)) {
+                    continue;
+                }
                 ChangeLog::record(
                     'setting',
-                    (int) $meta['id'],
+                    (int) Database::fetchColumn("SELECT id FROM `settings` WHERE `key` = :k", ['k' => AnalyticsSettings::storageKey($key)]),
                     'update',
                     $key,
                     $oldVal,
@@ -393,7 +439,7 @@ class AdminController
             }
         }
 
-        Session::flash('success', "Institutional retention settings updated successfully ({$updatedCount} parameter(s) modified).");
+        Session::flash('success', "Analytics policy settings updated successfully ({$updatedCount} parameter(s) modified).");
         redirect(url('analytics/admin/settings'));
     }
 
@@ -423,43 +469,28 @@ class AdminController
     public function storeTemplate(): void
     {
         $name = trim($_POST['name'] ?? '');
-        $cutoff = (float) ($_POST['passing_cutoff'] ?? 3.04);
+        $cutoff = $_POST['passing_cutoff'] ?? '';
         $schemeJson = trim($_POST['scheme_json'] ?? '');
 
-        if (!$name || !$schemeJson) {
-            Session::flash('error', 'Template name and assessment structure are required.');
+        if ($name === '' || mb_strlen($name) > 191 || !$schemeJson) {
+            Session::flash('error', 'A template name (up to 191 characters) and an assessment structure are required.');
             redirect(url('analytics/admin/templates/create'));
             return;
         }
-
-        $scheme = json_decode($schemeJson, true);
-        if (!$scheme || empty($scheme['groups'])) {
-            Session::flash('error', 'Invalid grading scheme JSON definition.');
+        if (!is_numeric($cutoff) || (float) $cutoff < 1.0 || (float) $cutoff > 5.0) {
+            Session::flash('error', 'The passing cutoff must be a number between 1.00 and 5.00.');
             redirect(url('analytics/admin/templates/create'));
             return;
         }
+        $cutoff = (float) $cutoff;
 
-        // Validate that category weights total exactly 100%
-        $totalWeight = 0;
-        $itemCodes = [];
-        foreach ($scheme['groups'] as $g) {
-            $totalWeight += (float) ($g['weight'] ?? 0);
-            foreach ($g['items'] ?? [] as $it) {
-                $code = strtoupper(trim($it['code'] ?? ''));
-                if (in_array($code, $itemCodes, true)) {
-                    Session::flash('error', "Duplicate assessment item code detected: '{$code}'. Item codes must be unique.");
-                    redirect(url('analytics/admin/templates/create'));
-                    return;
-                }
-                $itemCodes[] = $code;
-            }
-        }
-
-        if (round($totalWeight, 1) != 100.0) {
-            Session::flash('error', "Assessment category weights total {$totalWeight}%. Must equal exactly 100%.");
+        $checked = GradeCalculator::validateScheme(json_decode($schemeJson, true), $cutoff);
+        if (isset($checked['error'])) {
+            Session::flash('error', $checked['error']);
             redirect(url('analytics/admin/templates/create'));
             return;
         }
+        $scheme = $checked['scheme'];
 
         $scheme['name'] = $name;
         $scheme['passingCutoff'] = $cutoff;
@@ -509,33 +540,41 @@ class AdminController
     {
         $tplId = (int) $id;
         $name = trim($_POST['name'] ?? '');
-        $cutoff = (float) ($_POST['passing_cutoff'] ?? 3.04);
+        $cutoff = $_POST['passing_cutoff'] ?? '';
         $schemeJson = trim($_POST['scheme_json'] ?? '');
         $reason = trim($_POST['reason'] ?? '');
+
+        $tpl = Database::fetchOne("SELECT id FROM `ana_grading_templates` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1", ['id' => $tplId]);
+        if (!$tpl) {
+            Session::flash('error', 'Grading template not found.');
+            redirect(url('analytics/admin/templates'));
+            return;
+        }
 
         if (!$reason) {
             Session::flash('error', 'A mandatory justification / reason is required to update a grading template.');
             redirect(url("analytics/admin/templates/{$tplId}/edit"));
             return;
         }
-
-        $scheme = json_decode($schemeJson, true);
-        if (!$scheme || empty($scheme['groups'])) {
-            Session::flash('error', 'Invalid grading scheme definition.');
+        if ($name === '' || mb_strlen($name) > 191) {
+            Session::flash('error', 'A template name of up to 191 characters is required.');
             redirect(url("analytics/admin/templates/{$tplId}/edit"));
             return;
         }
-
-        // Validate weight sum
-        $totalWeight = 0;
-        foreach ($scheme['groups'] as $g) {
-            $totalWeight += (float) ($g['weight'] ?? 0);
-        }
-        if (round($totalWeight, 1) != 100.0) {
-            Session::flash('error', "Category weights total {$totalWeight}%. Must equal exactly 100%.");
+        if (!is_numeric($cutoff) || (float) $cutoff < 1.0 || (float) $cutoff > 5.0) {
+            Session::flash('error', 'The passing cutoff must be a number between 1.00 and 5.00.');
             redirect(url("analytics/admin/templates/{$tplId}/edit"));
             return;
         }
+        $cutoff = (float) $cutoff;
+
+        $checked = GradeCalculator::validateScheme(json_decode($schemeJson, true), $cutoff);
+        if (isset($checked['error'])) {
+            Session::flash('error', $checked['error']);
+            redirect(url("analytics/admin/templates/{$tplId}/edit"));
+            return;
+        }
+        $scheme = $checked['scheme'];
 
         $scheme['name'] = $name;
         $scheme['passingCutoff'] = $cutoff;
@@ -646,15 +685,13 @@ class AdminController
         if (AnalyticsAccess::isFacultyScope()) {
             // Faculty: only their own actions and entries about their own classes
             $uid = (int) Auth::id();
-            $logs = Database::fetchAll(
-                "SELECT cl.*, CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email
-                 FROM `ana_change_log` cl
-                 LEFT JOIN `users` u ON cl.changed_by = u.id
-                 WHERE cl.changed_by = :uid
-                    OR (cl.entity IN ('class', 'class_roster') AND cl.entity_id IN (SELECT id FROM `ana_classes` WHERE faculty_user_id = :fid))
-                 ORDER BY cl.id DESC LIMIT 100",
+            $logs = ChangeLog::clean(Database::fetchAll(
+                "SELECT " . ChangeLog::COLUMNS . ChangeLog::FROM . "
+                   AND (al.user_id = :uid
+                    OR (al.entity IN ('class', 'class_roster', 'class_score') AND al.entity_id IN (SELECT id FROM `ana_classes` WHERE faculty_user_id = :fid)))
+                 ORDER BY al.id DESC LIMIT 100",
                 ['uid' => $uid, 'fid' => $uid]
-            );
+            ));
         } else {
             $logs = ChangeLog::recent(100);
         }
@@ -671,30 +708,28 @@ class AdminController
 
     public function storeNote(): void
     {
-        $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ?? '');
+        $note = trim((string) ($_POST['note'] ?? ''));
 
-        if (!$title) {
-            Session::flash('error', 'Note title is required.');
+        if ($note === '' || mb_strlen($note) > 5000) {
+            Session::flash('error', 'Write a note of up to 5,000 characters.');
             redirect(url('analytics'));
             return;
         }
 
-        $noteId = Database::insert('ana_records', [
-            'title'       => mb_substr($title, 0, 191),
-            'description' => $description,
-            'status'      => 'active',
-            'created_by'  => (int) Auth::id(),
-            'created_at'  => date('Y-m-d H:i:s'),
+        $noteId = Database::insert('ana_dashboard_notes', [
+            'note'       => $note,
+            'status'     => 'active',
+            'created_by' => (int) Auth::id(),
+            'created_at' => date('Y-m-d H:i:s'),
         ]);
 
         ChangeLog::record(
             'note',
             (int) $noteId,
             'create',
-            'title',
+            'note',
             null,
-            $title,
+            mb_substr($note, 0, 191),
             'Manual dashboard note created'
         );
 
@@ -709,7 +744,7 @@ class AdminController
 
         // Admins can only archive manual notes created by themselves (E10)
         $note = Database::fetchOne(
-            "SELECT * FROM `ana_records` WHERE `id` = :id AND `created_by` = :uid AND `deleted_at` IS NULL LIMIT 1",
+            "SELECT * FROM `ana_dashboard_notes` WHERE `id` = :id AND `created_by` = :uid AND `status` = 'active' LIMIT 1",
             ['id' => $noteId, 'uid' => $userId]
         );
 
@@ -720,8 +755,8 @@ class AdminController
         }
 
         Database::update(
-            'ana_records',
-            ['status' => 'archived', 'deleted_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')],
+            'ana_dashboard_notes',
+            ['status' => 'archived', 'updated_at' => date('Y-m-d H:i:s')],
             'id = :id',
             ['id' => $noteId]
         );
@@ -752,10 +787,12 @@ class AdminController
         }
         $class = Database::fetchOne("
             SELECT c.*,
-                   COALESCE(c.subject_code, s.code) AS subject_code,
-                   COALESCE(c.subject_title, s.title) AS subject_title,
-                   COALESCE(c.units, s.units) AS subject_units,
-                   COALESCE(c.section_name, sec.name) AS section_name,
+                   s.code AS subject_code,
+                   s.title AS subject_title,
+                   s.units AS units,
+                   s.units AS subject_units, s.units AS units,
+                   sec.name AS section_name,
+                   rm.room_number AS room,
                    sec.year_level,
                    CONCAT(u.first_name, ' ', u.last_name) AS faculty_name,
                    u.email AS faculty_email,
@@ -766,7 +803,8 @@ class AdminController
             LEFT JOIN `sections` sec ON c.section_id = sec.id
             LEFT JOIN `users` u ON c.faculty_user_id = u.id
             LEFT JOIN `semesters` sem ON c.semester_id = sem.id
-            LEFT JOIN `academic_years` ay ON c.academic_year_id = ay.id
+            LEFT JOIN `academic_years` ay ON sem.academic_year_id = ay.id
+            LEFT JOIN `rooms` rm ON rm.id = c.room_id
             WHERE c.id = :id AND c.deleted_at IS NULL LIMIT 1
         ", ['id' => $classId]);
 
@@ -819,9 +857,9 @@ class AdminController
     {
         $pendingRequests = Database::fetchAll("
             SELECT cr.*, 
-                   COALESCE(c.subject_code, s.code) AS subject_code,
-                   COALESCE(c.subject_title, s.title) AS subject_title,
-                   COALESCE(c.section_name, sec.name) AS section_name,
+                   s.code AS subject_code,
+                   s.title AS subject_title,
+                   sec.name AS section_name,
                    c.grade_status AS class_grade_status,
                    CONCAT(req.first_name, ' ', req.last_name) AS requester_name,
                    req.email AS requester_email
@@ -836,9 +874,9 @@ class AdminController
 
         $historyRequests = Database::fetchAll("
             SELECT cr.*, 
-                   COALESCE(c.subject_code, s.code) AS subject_code,
-                   COALESCE(c.subject_title, s.title) AS subject_title,
-                   COALESCE(c.section_name, sec.name) AS section_name,
+                   s.code AS subject_code,
+                   s.title AS subject_title,
+                   sec.name AS section_name,
                    CONCAT(req.first_name, ' ', req.last_name) AS requester_name,
                    CONCAT(rev.first_name, ' ', rev.last_name) AS reviewer_name
             FROM `ana_grade_change_requests` cr
@@ -979,10 +1017,11 @@ class AdminController
         $gradeId = (int) $id;
         $grade = Database::fetchOne("
             SELECT g.*, st.student_number, CONCAT(st.first_name, ' ', st.last_name) AS student_name,
-                   COALESCE(c.subject_code, 'Subject') AS subject_code
+                   COALESCE(sub.code, 'Subject') AS subject_code
             FROM `ana_class_grades` g
             JOIN `students` st ON g.student_id = st.id
             JOIN `ana_classes` c ON g.class_id = c.id
+            LEFT JOIN `subjects` sub ON sub.id = c.subject_id
             WHERE g.id = :id LIMIT 1
         ", ['id' => $gradeId]);
 
@@ -1183,100 +1222,6 @@ class AdminController
 
         Session::flash('success', "Conduct incident #{$conductId} reclassified from {$rec['severity']} to {$severity}.");
         redirect(url('analytics/behaviorrecords'));
-    }
-
-    // ========================================================================
-    // 11. Supplementary Student Retention Profiles (Part E8)
-    // ========================================================================
-
-    public function editStudentProfile(string $studentId): void
-    {
-        $sid = (int) $studentId;
-        $student = Database::fetchOne("
-            SELECT s.*, p.name AS program_name, p.code AS program_code, sec.name AS section_name
-            FROM `students` s
-            LEFT JOIN `programs` p ON s.program_id = p.id
-            LEFT JOIN `sections` sec ON s.section_id = sec.id
-            WHERE s.id = :id AND s.deleted_at IS NULL LIMIT 1
-        ", ['id' => $sid]);
-
-        if (!$student) {
-            Session::flash('error', 'Student record not found.');
-            redirect(url('analytics/profile'));
-            return;
-        }
-
-        $profile = Database::fetchOne("SELECT * FROM `ana_student_profiles` WHERE `student_id` = :sid LIMIT 1", ['sid' => $sid]);
-
-        View::render('analytics/Views/admin/student_profile_form', [
-            'student' => $student,
-            'profile' => $profile,
-            'title'   => "Supplementary Profile: {$student['first_name']} {$student['last_name']}",
-            'crumbs'  => ['Academic Analytics' => url('analytics/profile'), 'Supplementary Profile' => ''],
-        ]);
-    }
-
-    public function updateStudentProfile(string $studentId): void
-    {
-        $sid = (int) $studentId;
-        $student = Database::fetchOne("SELECT id FROM `students` WHERE `id` = :id AND `deleted_at` IS NULL LIMIT 1", ['id' => $sid]);
-        if (!$student) {
-            Session::flash('error', 'Student not found.');
-            redirect(url('analytics/profile'));
-            return;
-        }
-
-        $livingArrangement = $_POST['living_arrangement'] ?? 'with_family';
-        $commuteCategory = $_POST['commute_category'] ?? 'local';
-        $isWorkingStudent = !empty($_POST['is_working_student']) ? 1 : 0;
-        $isScholar = !empty($_POST['is_scholar']) ? 1 : 0;
-        $scholarshipName = trim($_POST['scholarship_name'] ?? '');
-        $isFirstGen = !empty($_POST['is_first_generation']) ? 1 : 0;
-        $notes = trim($_POST['notes'] ?? '');
-        $adminId = (int) Auth::id();
-
-        $pdo = Database::pdo();
-        $stmt = $pdo->prepare("
-            INSERT INTO `ana_student_profiles` 
-                (`student_id`, `living_arrangement`, `commute_category`, `is_working_student`, `is_scholar`, `scholarship_name`, `is_first_generation`, `notes`, `updated_by`, `created_at`, `updated_at`)
-            VALUES 
-                (:sid, :la, :cc, :ws, :sc, :sn, :fg, :notes, :uid, NOW(), NOW())
-            ON DUPLICATE KEY UPDATE 
-                `living_arrangement`  = VALUES(`living_arrangement`),
-                `commute_category`    = VALUES(`commute_category`),
-                `is_working_student`  = VALUES(`is_working_student`),
-                `is_scholar`          = VALUES(`is_scholar`),
-                `scholarship_name`    = VALUES(`scholarship_name`),
-                `is_first_generation` = VALUES(`is_first_generation`),
-                `notes`               = VALUES(`notes`),
-                `updated_by`          = VALUES(`updated_by`),
-                `updated_at`          = NOW()
-        ");
-
-        $stmt->execute([
-            'sid'   => $sid,
-            'la'    => $livingArrangement,
-            'cc'    => $commuteCategory,
-            'ws'    => $isWorkingStudent,
-            'sc'    => $isScholar,
-            'sn'    => $scholarshipName,
-            'fg'    => $isFirstGen,
-            'notes' => $notes,
-            'uid'   => $adminId,
-        ]);
-
-        ChangeLog::record(
-            'student_profile',
-            $sid,
-            'update_profile',
-            'supplementary_data',
-            null,
-            $livingArrangement,
-            'Admin updated supplementary retention demographic profile'
-        );
-
-        Session::flash('success', 'Supplementary retention profile updated successfully.');
-        redirect(url('analytics/profile?student_id=' . $sid));
     }
 
     // ========================================================================

@@ -35,7 +35,7 @@ Every number, list and chart in this module comes from a database query. When th
 | `analytics.student.portal` | student |
 | `analytics.registrar.enrollment`, `analytics.registrar.view` | registrar |
 | `analytics.faculty.classes` (also covers the class stream), `.attendance`, `.behavior` | faculty |
-| `analytics.admin.settings`, `.classes`, `.grades`, `.attendance`, `.conduct`, `.profiles` | lead_analytics |
+| `analytics.admin.settings`, `.classes`, `.grades`, `.attendance`, `.conduct` | lead_analytics |
 
 The registrar also gets the existing core keys `core.students.view/create/edit/import/export`, `core.programs.view`, `core.subjects.view`, `core.academics.view` and `core.dashboard.view`. Admins have **no** route that writes scores or grades. Correction approval only returns a class to draft so its faculty owner can edit and re-post.
 
@@ -45,24 +45,52 @@ The original menu groups are unchanged: Faculty Workspace, Student Information M
 
 ## 5. Data model
 
-| Table | Purpose |
+The module only stores what the core tables do not hold. Students, subjects, sections, programs,
+semesters, rooms, users, settings and the audit trail are read from the core tables.
+
+| Core table | Used for |
 |---|---|
-| `ana_enrollments`, `ana_enrollment_subjects` | Official term enrollment and subject load (unique per student per semester) |
+| `students` | The student record and profile (program, year level, section, contact, guardian) |
+| `subjects`, `sections`, `programs`, `semesters`, `academic_years`, `rooms` | Names of a class's subject, section, term and room, read through joins |
+| `users` | Faculty, registrar, program heads and who recorded what |
+| `settings` | Analytics policy values (group `analytics`, keys `analytics.*`; labels and ranges in `Support/AnalyticsSettings.php`) |
+| `audit_logs` | Analytics change history (actions `analytics.*`, details JSON with field / old / new / reason) |
+
+| Module table | What it adds |
+|---|---|
+| `ana_enrollments`, `ana_enrollment_subjects` | Term enrollment and subject load (one per student per semester; program comes from `students`) |
 | `ana_program_heads` | Program-head → program mapping |
-| `ana_classes` | Classes (with `class_code`, `scores_visible`, schedule, room, grading scheme snapshot) |
+| `ana_classes` | Class offering: faculty, `subject_id`, `section_id`, `semester_id`, `room_id`, class code, schedule, grading scheme snapshot |
 | `ana_class_students` | Roster (`grade_mark` INC/DRP, `drop_reason`) |
 | `ana_class_join_requests` | Class-code join requests |
 | `ana_class_posts` | Stream announcements and materials (attachments in `storage/uploads`, served only through the controller) |
 | `ana_class_scores` | Task scores and submission status |
 | `ana_class_grades` | Posted grades, INC deadline / resolution |
-| `ana_attendance_records` | Roll-call (`student_id` INT FK; voided via `voided_at`) |
-| `ana_behavior_records` | Conduct reports (`student_id` INT FK) |
-| `ana_notifications` | In-app notifications |
-| `ana_settings`, `ana_grading_templates` | Policy and grading configuration |
-| `ana_change_log` | The only audit table |
-| `ana_student_profiles`, `ana_dashboard_notes` | Supplementary profile, admin notes |
+| `ana_attendance_records` | Roll-call per class session (voided via `voided_at`; one live mark per student per session) |
+| `ana_behavior_records` | Conduct reports |
+| `ana_grade_change_requests` | Faculty grade-correction requests |
+| `ana_grading_templates` | Grading templates |
+| `ana_notifications` | In-app notifications (absence warnings, posted grades, join requests) |
+| `ana_dashboard_notes` | Admin notes on the monitoring dashboard |
 
-`ana_records` (the legacy logbook) is no longer used; the table was left in place to avoid data loss.
+Creating a class therefore writes one `ana_classes` row with ids; the subject code, title, units,
+section name, academic year and room name are always the current values from the core tables.
+
+Migration `2026_11_05_000002_use_core_tables_instead_of_copies` moved the data of the former copies
+(`ana_settings` → `settings`, `ana_change_log` → `audit_logs`, `ana_records` notes → `ana_dashboard_notes`)
+and dropped them together with `ana_student_profiles` and the copied columns. `tools/verify.php`
+section 7 fails if any of them comes back.
+
+### Integrity rules
+
+Migration `2026_11_05_000001_harden_analytics_integrity` adds the database-side guarantees, so bad input is refused even if a controller misses a check (the XAMPP server runs without strict SQL mode, which would otherwise silently turn bad values into `0` or `''`):
+
+- Foreign keys from `ana_classes` to `semesters`, `rooms` and `ana_grading_templates`.
+- A unique key on attendance `(class_id, student_id, session_date)` for non-voided marks (generated column `live_mark`).
+- CHECK constraints: scores ≥ 0, computed grades 1.00–5.00, passing cutoffs 1.00–5.00, year level 1–6.
+- Rows of one term always use the first `semesters` row of that academic year and semester code (`AnalyticsAccess::findTerm` / `terms()`), because re-running the core seeder repeats semester rows.
+
+Grading schemes from the template form, the class scheme form and the Grades Tracking matrix all go through `GradeCalculator::validateScheme`.
 
 ## 6. Grades
 

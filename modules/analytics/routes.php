@@ -27,7 +27,6 @@ $regW   = ['auth', 'permission:analytics.registrar.enrollment', 'csrf'];
 $router->get('/analytics', [HomeController::class, 'index'], ['auth']);
 $router->get('/analytics/index', [HomeController::class, 'index'], ['auth']);
 $router->get('/analytics/overview', [HomeController::class, 'index'], ['auth']);
-$router->get('/analytics/show', [HomeController::class, 'show'], $view);
 $router->post('/analytics/create', [HomeController::class, 'store'], ['auth', 'permission:analytics.view', 'csrf']);
 $router->post('/analytics/persona', [HomeController::class, 'switchPersona'], ['auth', 'csrf']);
 
@@ -160,8 +159,6 @@ $router->post('/analytics/admin/attendance/{id}/void', [AdminController::class, 
 $router->post('/analytics/admin/conduct/{id}/status', [AdminController::class, 'updateConductStatus'], ['auth', 'permission:analytics.admin.conduct', 'csrf']);
 $router->post('/analytics/admin/conduct/{id}/severity', [AdminController::class, 'updateConductSeverity'], ['auth', 'permission:analytics.admin.conduct', 'csrf']);
 
-$router->get('/analytics/admin/profiles/{studentId}', [AdminController::class, 'editStudentProfile'], ['auth', 'permission:analytics.admin.profiles']);
-$router->post('/analytics/admin/profiles/{studentId}', [AdminController::class, 'updateStudentProfile'], ['auth', 'permission:analytics.admin.profiles', 'csrf']);
 
 $router->get('/analytics/admin/change-log', [AdminController::class, 'changeLog'], $view);
 $router->post('/analytics/admin/notes', [AdminController::class, 'storeNote'], ['auth', 'permission:analytics.admin.settings', 'csrf']);

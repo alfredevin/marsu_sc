@@ -74,8 +74,7 @@
             <i class="bi bi-speedometer2 me-2 text-gold"></i><?= e($moduleName) ?>
         </h1>
         <p class="text-muted small mb-0">
-            Institutional predictive analytics, cohort retention monitoring, academic risk early warning alerts, and
-            intervention workflows.
+            Academic performance, attendance and conduct monitoring from posted grades and class records.
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
@@ -85,30 +84,18 @@
         <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
             <i class="bi bi-printer me-1"></i>Print Telemetry
         </button>
+        <?php if (can('analytics.admin.settings')): ?>
         <button class="btn btn-marsu btn-sm" data-bs-toggle="modal" data-bs-target="#newRecordModal">
-            <i class="bi bi-plus-lg me-1"></i>New Entry
+            <i class="bi bi-plus-lg me-1"></i>New Note
         </button>
+        <?php endif; ?>
     </div>
 </div>
 
 <!-- 2. HIGH-LEVEL INSTITUTIONAL KPI COMMAND METRICS -->
 <div class="row g-3 mb-4">
-    <!-- Institutional Retention Rate -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
-        <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-            <span class="text-muted small fw-semibold text-uppercase">Retention Rate</span>
-            <div class="d-flex align-items-baseline justify-content-between mt-2">
-                <h3 class="fw-bold mb-0 text-success">
-                    <?= $overallRetentionRate === null ? '—' : htmlspecialchars((string) $overallRetentionRate) . '%' ?></h3>
-                <span class="badge bg-success-subtle text-success border border-success"
-                    style="font-size: 10px;">Target: &ge;85%</span>
-            </div>
-            <small class="text-muted mt-2 d-block">Overall cohort persistence</small>
-        </div>
-    </div>
-
     <!-- Cohort Passing Rate -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="col-xl-3 col-md-4 col-sm-6">
         <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
             <span class="text-muted small fw-semibold text-uppercase">Cohort Passing Rate</span>
             <div class="d-flex align-items-baseline justify-content-between mt-2">
@@ -147,7 +134,7 @@
     </div>
 
     <!-- High-Risk Students -->
-    <div class="col-xl-2 col-md-6 col-sm-6">
+    <div class="col-xl-3 col-md-6 col-sm-6">
         <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
             <span class="text-muted small fw-semibold text-uppercase">High-Risk Flagged</span>
             <div class="d-flex align-items-baseline justify-content-between mt-2">
@@ -230,39 +217,8 @@
 </div>
 
 <div class="row g-3 mb-4">
-    <!-- Chart 3: Longitudinal Retention vs Attrition Trajectory -->
-    <div class="col-lg-6">
-        <div class="card border rounded-3 shadow-sm bg-white h-100">
-            <div
-                class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <div>
-                    <h6 class="m-0 fw-bold text-dark">
-                        <i class="bi bi-graph-up-arrow me-1 text-success"></i> Longitudinal Retention vs. Attrition
-                        Trajectory
-                    </h6>
-                    <small class="text-muted">3-Year institutional persistence comparison across academic
-                        cohorts</small>
-                </div>
-                <a href="<?= url('analytics/trendsovertime') ?>" class="btn btn-sm btn-outline-dark py-1 px-2"
-                    style="font-size: 11px;">
-                    <i class="bi bi-clock-history me-1"></i>Multi-Year Ledger &rarr;
-                </a>
-            </div>
-            <div class="card-body p-3">
-                <div style="height: 260px; position: relative;">
-                    <canvas id="dashboardRetentionTrendChart"></canvas>
-                    <?php if (empty($longitudinalTrends['years'])): ?>
-                        <div class="position-absolute top-50 start-50 translate-middle text-center text-muted small">
-                            <i class="bi bi-graph-up fs-3 d-block mb-1"></i>Needs official enrollment in at least two academic years.
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Chart 4: Degree Program Academic Risk Distribution -->
-    <div class="col-lg-6">
+    <div class="col-12">
         <div class="card border rounded-3 shadow-sm bg-white h-100">
             <div
                 class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -440,12 +396,12 @@
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-header card-header-accent d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="m-0 font-weight-bold text-marsu-burgundy">
-            <i class="bi bi-table me-2"></i><?= e($moduleName) ?> Records Directory
+            <i class="bi bi-journal-text me-2"></i>Dashboard Notes
         </h6>
         <div class="input-group input-group-sm w-auto">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
             <input type="text" class="form-control border-start-0" id="tableFilterInput"
-                placeholder="Quick search records...">
+                placeholder="Quick search notes...">
         </div>
     </div>
     <div class="card-body p-0">
@@ -454,9 +410,8 @@
                 <thead class="table-marsu">
                     <tr>
                         <th style="width: 60px;">#</th>
-                        <th>Title / Subject</th>
-                        <th>Description / Remarks</th>
-                        <th>Status</th>
+                        <th>Note</th>
+                        <th>Written by</th>
                         <th>Created Date</th>
                         <th class="text-end" style="width: 120px;">Actions</th>
                     </tr>
@@ -464,31 +419,25 @@
                 <tbody>
                     <?php if (empty($records)): ?>
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
+                            <td colspan="5" class="text-center py-4 text-muted">
                                 <i class="bi bi-inbox fs-2 d-block mb-1 text-gold"></i>
-                                No records found in <code>ana_records</code>. Click "New Entry" to add one.
+                                No dashboard notes yet.
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($records as $i => $r): ?>
                             <tr>
                                 <td><?= $i + 1 ?></td>
-                                <td class="fw-bold text-marsu-burgundy"><?= e($r['title']) ?></td>
-                                <td class="small text-muted"><?= e($r['description'] ?? 'No description') ?></td>
-                                <td>
-                                    <?php if (($r['status'] ?? '') === 'active'): ?>
-                                        <span class="badge bg-success">Active</span>
-                                    <?php else: ?>
-                                        <span class="badge bg-secondary"><?= e(ucfirst($r['status'] ?? 'pending')) ?></span>
-                                    <?php endif; ?>
-                                </td>
+                                <td class="small" style="white-space: pre-line;"><?= e($r['note']) ?></td>
+                                <td class="small text-muted"><?= e($r['author'] ?? '—') ?></td>
                                 <td class="small text-muted"><?= e(date('M d, Y h:i A', strtotime($r['created_at']))) ?></td>
                                 <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-secondary"
-                                        data-entry-title="<?= e($r['title']) ?>" data-entry-body="<?= e($r['description'] ?? '') ?>"
-                                        onclick="Swal.fire({ title: 'Entry #<?= (int) $r['id'] ?>', html: '<strong>' + this.dataset.entryTitle.replace(/</g, '&lt;') + '</strong><br>' + this.dataset.entryBody.replace(/</g, '&lt;'), icon: 'info' })">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
+                                    <?php if ((int) $r['created_by'] === (int) \Core\Auth::id() && can('analytics.admin.settings')): ?>
+                                        <form method="POST" action="<?= url('analytics/admin/notes/' . (int) $r['id'] . '/archive') ?>" class="d-inline">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Archive note"><i class="bi bi-archive"></i></button>
+                                        </form>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -499,40 +448,32 @@
     </div>
 </div>
 
-<!-- Modal: New Entry -->
+<?php if (can('analytics.admin.settings')): ?>
+<!-- Modal: New Note -->
 <div class="modal fade" id="newRecordModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-marsu-burgundy text-white">
-                <h5 class="modal-title fs-6"><i class="bi bi-plus-circle me-2"></i>Create New <?= e($moduleName) ?>
-                    Entry</h5>
+                <h5 class="modal-title fs-6"><i class="bi bi-plus-circle me-2"></i>New Dashboard Note</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <form method="POST" action="<?= url('analytics/create') ?>">
+            <form method="POST" action="<?= url('analytics/admin/notes') ?>">
                 <?= csrf_field() ?>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Title / Designation <span
-                                class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control form-control-sm" required
-                            placeholder="e.g. Assessment Report / Transaction / Case Reference">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Description / Observations</label>
-                        <textarea name="description" class="form-control form-control-sm" rows="3"
-                            placeholder="Enter specific details, remarks, or notes..."></textarea>
-                    </div>
+                    <label class="form-label small fw-bold">Note <span class="text-danger">*</span></label>
+                    <textarea name="note" class="form-control form-control-sm" rows="4" maxlength="5000" required
+                        placeholder="e.g. Midterm monitoring meeting — reviewed CC111 results."></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-marsu btn-sm"><i class="bi bi-check-lg me-1"></i>Save
-                        Entry</button>
+                    <button type="submit" class="btn btn-marsu btn-sm"><i class="bi bi-check-lg me-1"></i>Save Note</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <!-- 6. DASHBOARD CHART INITIALIZATION SCRIPT -->
 <script>
@@ -644,62 +585,6 @@
                         legend: { display: false }
                     },
                     cutout: '65%'
-                }
-            });
-        }
-
-        // CHART 3: Longitudinal Retention vs Attrition Trajectory
-        const trendData = <?= json_encode($longitudinalTrends ?? ['years' => [], 'retention' => [], 'attrition' => []]) ?>;
-        const ctxTrend = document.getElementById('dashboardRetentionTrendChart');
-        if (ctxTrend && trendData.years) {
-            new Chart(ctxTrend.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: trendData.years,
-                    datasets: [
-                        {
-                            label: 'Retention Rate (%)',
-                            data: trendData.retention,
-                            borderColor: '#198754',
-                            backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                            borderWidth: 2.5,
-                            fill: true,
-                            tension: 0.3,
-                            pointBackgroundColor: '#198754',
-                            pointRadius: 4
-                        },
-                        {
-                            label: 'Attrition Rate (%)',
-                            data: trendData.attrition,
-                            borderColor: '#dc3545',
-                            backgroundColor: 'rgba(220, 53, 69, 0.05)',
-                            borderWidth: 2,
-                            borderDash: [4, 4],
-                            fill: false,
-                            tension: 0.3,
-                            pointBackgroundColor: '#dc3545',
-                            pointRadius: 3
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function (val) { return val + '%'; }
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: { boxWidth: 12, font: { size: 11 } }
-                        }
-                    }
                 }
             });
         }

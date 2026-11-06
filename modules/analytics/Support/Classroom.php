@@ -73,15 +73,10 @@ class Classroom
             'class_code'       => $code,
             'faculty_user_id'  => $facultyUserId,
             'subject_id'       => $subjectId,
-            'subject_code'     => $subject['code'],
-            'subject_title'    => $subject['title'],
-            'units'            => (float) $subject['units'],
             'section_id'       => $sectionId,
-            'section_name'     => $section['name'],
             'description'      => self::nullable($input['description'] ?? null, 2000),
             'schedule'         => self::nullable($input['schedule'] ?? null, 128),
-            'room'             => self::nullable($input['room'] ?? null, 64),
-            'academic_year_id' => (int) $term['academic_year_id'],
+            'room_id'          => self::roomId($input['room_id'] ?? null),
             'semester_id'      => (int) $term['semester_id'],
             'template_id'      => $templateId,
             'grading_scheme'   => $template['scheme'],
@@ -94,6 +89,27 @@ class Classroom
 
         ChangeLog::record('class', $id, 'create', 'class_code', null, $code, "Class {$subject['code']} - {$section['name']} created");
         return ['id' => $id, 'code' => $code];
+    }
+
+    /**
+     * Rooms come from the core `rooms` table; an unknown id is stored as no room.
+     */
+    public static function roomId(mixed $value): ?int
+    {
+        $id = (int) $value;
+        if ($id <= 0) {
+            return null;
+        }
+        return Database::fetchColumn("SELECT id FROM `rooms` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]) ? $id : null;
+    }
+
+    public static function rooms(): array
+    {
+        return Database::fetchAll(
+            "SELECT r.id, r.room_number, r.name, b.code AS building_code
+             FROM `rooms` r LEFT JOIN `buildings` b ON b.id = r.building_id
+             WHERE r.deleted_at IS NULL ORDER BY b.code, r.room_number"
+        );
     }
 
     public static function nullable(?string $value, int $max): ?string
@@ -159,6 +175,22 @@ class Classroom
              ON DUPLICATE KEY UPDATE `status` = 'enrolled', `drop_reason` = NULL, `updated_at` = NOW()",
             ['cid' => $classId, 'sid' => $studentId, 'uid' => (int) Auth::id()]
         );
+    }
+
+    /**
+     * True when the student already has scores, attendance, conduct or a grade in the class;
+     * such roster rows are marked dropped instead of deleted so those records keep their roster link.
+     */
+    public static function hasClassRecords(int $classId, int $studentId): bool
+    {
+        return (int) Database::fetchColumn(
+            "SELECT (SELECT COUNT(*) FROM `ana_class_scores` WHERE class_id = :c1 AND student_id = :s1)
+                  + (SELECT COUNT(*) FROM `ana_attendance_records` WHERE class_id = :c2 AND student_id = :s2)
+                  + (SELECT COUNT(*) FROM `ana_behavior_records` WHERE class_id = :c3 AND student_id = :s3)
+                  + (SELECT COUNT(*) FROM `ana_class_grades` WHERE class_id = :c4 AND student_id = :s4)",
+            ['c1' => $classId, 's1' => $studentId, 'c2' => $classId, 's2' => $studentId,
+             'c3' => $classId, 's3' => $studentId, 'c4' => $classId, 's4' => $studentId]
+        ) > 0;
     }
 
     public static function isRostered(int $classId, int $studentId): bool

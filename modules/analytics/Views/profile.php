@@ -221,11 +221,6 @@
                     <span class="badge badge-burgundy px-3 py-2 rounded-pill shadow-sm">
                         <i class="bi bi-mortarboard-fill text-gold me-1"></i><?= htmlspecialchars($selectedStudent['program_code'] ?? 'N/A') ?>
                     </span>
-                    <?php if (can('analytics.admin.profiles')): ?>
-                        <a href="<?= url('analytics/admin/profiles/' . (int) $selectedStudent['id']) ?>" class="btn btn-sm btn-outline-marsu rounded-pill shadow-sm">
-                            <i class="bi bi-pencil-square me-1"></i> Supplementary Profile
-                        </a>
-                    <?php endif; ?>
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
                         <i class="bi bi-printer me-1"></i> Print Record
                     </button>
@@ -355,33 +350,6 @@
                                     </ul>
                                 </div>
                             </div>
-
-                            <!-- Retention Quick Intervention Shortcuts -->
-                            <div class="mt-3 pt-3 border-top text-start">
-                                <div class="small fw-bold text-secondary text-uppercase mb-2">
-                                    <i class="bi bi-lightning-charge-fill text-warning me-1"></i>Retention Interventions:
-                                </div>
-                                <div class="d-flex flex-column gap-2">
-                                    <a href="guidancereferrals?student_id=<?= urlencode($selectedStudent['student_number']) ?>"
-                                        class="btn btn-outline-warning text-dark btn-sm rounded-pill w-100 fw-semibold text-start px-3">
-                                        <i class="bi bi-person-heart me-2 text-danger"></i>Refer to Guidance & Counseling
-                                    </a>
-                                    <a href="atriskstudents?flag_student=<?= urlencode($selectedStudent['student_number']) ?>"
-                                        class="btn btn-outline-danger btn-sm rounded-pill w-100 fw-semibold text-start px-3">
-                                        <i class="bi bi-shield-exclamation me-2"></i>Flag as At-Risk Student
-                                    </a>
-                                    <a href="advisingrecords?student_id=<?= urlencode($selectedStudent['student_number']) ?>"
-                                        class="btn btn-outline-secondary btn-sm rounded-pill w-100 fw-semibold text-start px-3">
-                                        <i class="bi bi-journal-check me-2 text-primary"></i>Log Faculty Advising Session
-                                    </a>
-                                    <?php if (can('analytics.admin.profiles')): ?>
-                                        <a href="<?= url('analytics/admin/profiles/' . (int) $selectedStudent['id']) ?>"
-                                            class="btn btn-outline-dark btn-sm rounded-pill w-100 fw-semibold text-start px-3">
-                                            <i class="bi bi-person-lines-fill me-2 text-gold"></i>Edit Supplementary Profile
-                                        </a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -443,8 +411,7 @@
                                         <i class="bi bi-info-circle-fill fs-4 text-marsu-burgundy flex-shrink-0"></i>
                                         <div class="small">
                                             Institutional student demographic and socio-economic profile under <strong>RA
-                                                10173 (Data Privacy Act of 2012)</strong>. Verified for academic early
-                                            warning and retention monitoring.
+                                                10173 (Data Privacy Act of 2012)</strong>. Used only for academic monitoring.
                                         </div>
                                     </div>
 
@@ -604,47 +571,6 @@
                                                         Contact Number on File
                                                     </span>
                                                 <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- SECTION 3: Housing & Commuting Vulnerability Assessment -->
-                                    <h6 class="fw-bold text-marsu-burgundy mb-3 pb-2 border-bottom">
-                                        <i class="bi bi-houses-fill me-2 text-gold"></i>Housing & Commuting Vulnerability
-                                        Assessment
-                                    </h6>
-                                    <div class="row g-3 mb-4">
-                                        <div class="col-md-6">
-                                            <label class="form-label small fw-bold text-muted">Living Arrangement</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-light border-end-0"><i
-                                                        class="bi <?= ($demographics['living_arrangement'] === 'Boarding House') ? 'bi-building text-warning' : 'bi-house-heart text-success' ?>"></i></span>
-                                                <input type="text" class="form-control bg-light border-start-0"
-                                                    value="<?= htmlspecialchars($demographics['living_arrangement'] ?? 'With Family') ?>"
-                                                    readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small fw-bold text-muted">Commute Risk Level</label>
-                                            <?php
-                                            $cRisk = $demographics['commute_risk_level'] ?? 'Low (Local Resident)';
-                                            $cIcon = (strpos($cRisk, 'High') !== false) ? 'text-danger' : ((strpos($cRisk, 'Moderate') !== false) ? 'text-warning' : 'text-success');
-                                            ?>
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-light border-end-0"><i
-                                                        class="bi bi-shield-fill-exclamation <?= $cIcon ?>"></i></span>
-                                                <input type="text" class="form-control bg-light border-start-0"
-                                                    value="<?= htmlspecialchars($cRisk) ?>" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="p-3 bg-light rounded-3 border small text-secondary">
-                                                <strong>Retention Risk Assessment:</strong>
-                                                <?= (strpos($cRisk, 'High') !== false)
-                                                    ? 'Student commutes from a distant municipality. Elevated risk of absenteeism due to transit time and commuting expenses.'
-                                                    : (($demographics['living_arrangement'] === 'Boarding House')
-                                                        ? 'Staying in a boarding house or dormitory. Moderate vulnerability due to living costs and distance from family support.'
-                                                        : 'Living with family near campus. Low demographic vulnerability risk.') ?>
                                             </div>
                                         </div>
                                     </div>

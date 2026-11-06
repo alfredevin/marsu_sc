@@ -167,6 +167,18 @@
                         "permission": "welfare.view"
                     }
                 ]
+            },
+            {
+                "label": "Maintenance",
+                "icon": "bi-tools",
+                "permission": "welfare.view",
+                "children": [
+                    {
+                        "label": "Concern Types",
+                        "route": "welfare/concern-types",
+                        "permission": "welfare.view"
+                    }
+                ]
             }
         ]
     },

@@ -6,7 +6,9 @@ use Core\View;
 use Core\Database;
 use Core\Session;
 
+class announcementcontroller
 
+{
  public function index(): void
     {
         // Kunin ang lahat ng active records (hindi deleted)
@@ -21,3 +23,4 @@ use Core\Session;
             'crumbs' => ['Administration' => '', 'CRUD Demo (2 Fields)' => '']
         ]);
     }
+}

@@ -386,12 +386,12 @@
 <div class="modal fade" id="editFeeModal" tabindex="-1" aria-labelledby="editFeeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-white py-3">
+            <div class="modal-header py-3 text-white" style="background-color:#800020;">
                 <div>
                     <h5 class="modal-title font-weight-bold mb-0" id="editFeeModalLabel">
                         <i class="bi bi-pencil-square text-gold me-2"></i>Edit Rate Structure & Utility Caps
                     </h5>
-                    <small class="text-white-50" id="editModalSubtitle">Configure accredited pricing, utility limits, and room ceilings</small>
+                    <small class="text-white d-block mt-1" style="opacity:.9;" id="editModalSubtitle">Configure accredited pricing, utility limits, and room ceilings</small>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -516,12 +516,12 @@
 <div class="modal fade" id="viewFeeModal" tabindex="-1" aria-labelledby="viewFeeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-primary py-3">
+            <div class="modal-header py-3 text-white" style="background-color:#800020;">
                 <div>
                     <h5 class="modal-title font-weight-bold mb-0" id="viewFeeModalLabel">
                         <i class="bi bi-file-earmark-text text-gold me-2"></i>Accredited Rate & Utility Dossier
                     </h5>
-                    <small class="text-white-50" id="viewModalRecordRef">Official MarSU Housing Price Ceiling Schedule</small>
+                    <small class="text-white d-block mt-1" style="opacity:.9;" id="viewModalRecordRef">Official MarSU Housing Price Ceiling Schedule</small>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -619,7 +619,7 @@
         <div class="modal-content border-0 shadow">
             <form id="newFeeForm" method="POST">
                 <?= csrf_field() ?>
-                <div class="modal-header bg-marsu text-primary py-3">
+                <div class="modal-header py-3 text-white" style="background-color:#800020;">
                     <h5 class="modal-title font-weight-bold mb-0" id="newFeeModalLabel">
                         <i class="bi bi-plus-circle text-gold me-2"></i>Configure New Fee Rate Structure
                     </h5>

@@ -120,7 +120,7 @@
 .room-preview-stage {
     position: relative;
     height: 165px;
-    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+    background: #1f2937;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -128,14 +128,19 @@
     cursor: pointer;
 }
 
-.room-preview-stage svg {
+.room-cover-img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.room-gallery-card:hover .room-preview-stage svg {
+.room-gallery-card:hover .room-cover-img {
     transform: scale(1.04);
+}
+
+.room-cover-empty {
+    color: #cbd5e1;
 }
 
 .room-preview-stage .preview-overlay {
@@ -166,10 +171,13 @@
     overflow: hidden;
 }
 
-.gallery-stage-box svg {
-    max-height: 420px;
-    width: 100%;
-    height: 100%;
+.gallery-stage-img {
+    max-width: 100%;
+    max-height: 440px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
 }
 
 .gallery-thumb-btn {
@@ -196,9 +204,12 @@
     box-shadow: 0 2px 8px rgba(212, 175, 55, 0.35);
 }
 
-.gallery-thumb-btn svg {
+.gallery-thumb-btn img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
 }
 </style>
 
@@ -210,12 +221,15 @@
         </h1>
         <p class="text-muted small mb-0">Track fixtures, beds, room capacity, floor plan blueprints, and photo galleries across accredited boarding houses.</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap">
         <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
             <i class="bi bi-printer me-1"></i>Print Inventory
         </button>
         <button class="btn btn-outline-marsu btn-sm" data-bs-toggle="modal" data-bs-target="#uploadPhotoModal">
             <i class="bi bi-camera me-1"></i>Upload Photo
+        </button>
+        <button class="btn btn-outline-marsu btn-sm" data-bs-toggle="modal" data-bs-target="#newBoardingHouseModal">
+            <i class="bi bi-buildings me-1"></i>Add Boarding Facility
         </button>
         <button class="btn btn-marsu btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#newRoomModal">
             <i class="bi bi-plus-lg me-1"></i>Add Room Unit
@@ -388,6 +402,7 @@ $defaultSampleRooms = [
 ];
 
 $activeRooms = !empty($rooms) ? $rooms : $defaultSampleRooms;
+$photosByRoom = $photosByRoom ?? [];
 
 // Calculate stats for floors
 $floorStats = [];
@@ -701,7 +716,7 @@ foreach ($activeRooms as $rm) {
                         $vacant = max(0, (int)$r['capacity'] - (int)$r['occupied_beds']);
                         $isFull = ($vacant === 0);
                         $floor = trim($r['floor'] ?? '1st Floor');
-                        $photoCount = $r['photo_count'] ?? 5;
+                        $photoCount = count($photosByRoom[(int)$r['id']] ?? []);
                         $roomType = $r['room_type'] ?? 'Double';
                     ?>
                     <div class="col-md-6 col-lg-4 room-card-wrapper" 
@@ -724,71 +739,15 @@ foreach ($activeRooms as $rm) {
                                  data-occupied="<?= (int)$r['occupied_beds'] ?>"
                                  data-amenities="<?= e($r['amenities'] ?? 'Wi-Fi, Study Desk, Locker') ?>"
                             >
-                                <!-- Interactive SVG Vector Blueprint / Room Illustration -->
-                                <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
-                                    <defs>
-                                        <linearGradient id="bgGrad_<?= (int)$r['id'] ?>" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" stop-color="#1e1b4b"/>
-                                            <stop offset="100%" stop-color="#0f172a"/>
-                                        </linearGradient>
-                                        <linearGradient id="bedGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stop-color="#D4AF37"/>
-                                            <stop offset="100%" stop-color="#f59e0b"/>
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Room Boundary Outline -->
-                                    <rect width="320" height="180" fill="url(#bgGrad_<?= (int)$r['id'] ?>)"/>
-                                    <!-- Architectural Grid Lines -->
-                                    <path d="M 0 45 L 320 45 M 0 90 L 320 90 M 0 135 L 320 135 M 80 0 L 80 180 M 160 0 L 160 180 M 240 0 L 240 180" stroke="#334155" stroke-width="0.5" stroke-dasharray="3,3" opacity="0.4"/>
-                                    <!-- Outer Room Walls -->
-                                    <rect x="20" y="15" width="280" height="150" fill="#0f172a" stroke="#800020" stroke-width="2.5" rx="6"/>
-                                    <!-- Window / Light Glow -->
-                                    <rect x="110" y="15" width="100" height="4" fill="#38bdf8"/>
-                                    <path d="M 110 19 L 90 90 L 230 90 L 210 19 Z" fill="#38bdf8" opacity="0.08"/>
-                                    <!-- Door Swing Arc -->
-                                    <path d="M 20 135 A 30 30 0 0 1 50 165" fill="none" stroke="#D4AF37" stroke-width="1.5" stroke-dasharray="2,2"/>
-                                    <line x1="20" y1="135" x2="20" y2="165" stroke="#D4AF37" stroke-width="2"/>
-                                    
-                                    <!-- Furniture Layout depending on Room Type -->
-                                    <?php if ($roomType === 'Single'): ?>
-                                        <!-- Single Bed -->
-                                        <rect x="35" y="30" width="85" height="55" rx="4" fill="#1e293b" stroke="#D4AF37" stroke-width="1.5"/>
-                                        <rect x="38" y="33" width="22" height="49" rx="3" fill="#cbd5e1" opacity="0.8"/>
-                                        <rect x="65" y="33" width="52" height="49" rx="2" fill="url(#bedGrad)" opacity="0.85"/>
-                                        <!-- Study Desk & Chair -->
-                                        <rect x="190" y="30" width="90" height="40" rx="3" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
-                                        <circle cx="235" cy="85" r="12" fill="#475569" stroke="#cbd5e1" stroke-width="1"/>
-                                        <text x="235" y="55" fill="#f8fafc" font-size="10" font-family="sans-serif" text-anchor="middle">Study Hub</text>
-                                    <?php elseif ($roomType === 'Double'): ?>
-                                        <!-- Twin Bed 1 -->
-                                        <rect x="35" y="30" width="75" height="48" rx="4" fill="#1e293b" stroke="#D4AF37" stroke-width="1.5"/>
-                                        <rect x="38" y="33" width="18" height="42" rx="2" fill="#cbd5e1" opacity="0.8"/>
-                                        <rect x="60" y="33" width="47" height="42" rx="2" fill="url(#bedGrad)" opacity="0.85"/>
-                                        <!-- Twin Bed 2 -->
-                                        <rect x="35" y="95" width="75" height="48" rx="4" fill="#1e293b" stroke="#D4AF37" stroke-width="1.5"/>
-                                        <rect x="38" y="98" width="18" height="42" rx="2" fill="#cbd5e1" opacity="0.8"/>
-                                        <rect x="60" y="98" width="47" height="42" rx="2" fill="url(#bedGrad)" opacity="0.85"/>
-                                        <!-- Study Desks Row -->
-                                        <rect x="200" y="35" width="80" height="35" rx="3" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
-                                        <rect x="200" y="90" width="80" height="35" rx="3" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
-                                        <text x="240" y="56" fill="#f8fafc" font-size="9" font-family="sans-serif" text-anchor="middle">Desk A</text>
-                                        <text x="240" y="112" fill="#f8fafc" font-size="9" font-family="sans-serif" text-anchor="middle">Desk B</text>
-                                    <?php else: ?>
-                                        <!-- Quad Bunk 1 -->
-                                        <rect x="35" y="28" width="85" height="46" rx="4" fill="#1e293b" stroke="#D4AF37" stroke-width="1.5"/>
-                                        <text x="77" y="55" fill="#f8fafc" font-size="9" font-family="sans-serif" text-anchor="middle">Bunk A (1 & 2)</text>
-                                        <!-- Quad Bunk 2 -->
-                                        <rect x="35" y="100" width="85" height="46" rx="4" fill="#1e293b" stroke="#D4AF37" stroke-width="1.5"/>
-                                        <text x="77" y="127" fill="#f8fafc" font-size="9" font-family="sans-serif" text-anchor="middle">Bunk B (3 & 4)</text>
-                                        <!-- Individual Lockers Row -->
-                                        <rect x="195" y="35" width="85" height="95" rx="3" fill="#334155" stroke="#94a3b8" stroke-width="1"/>
-                                        <text x="237" y="85" fill="#f8fafc" font-size="9" font-family="sans-serif" text-anchor="middle">4 Lockers</text>
-                                    <?php endif; ?>
-
-                                    <!-- Room Badge Tag -->
-                                    <rect x="115" y="145" width="90" height="16" rx="3" fill="#800020" opacity="0.9"/>
-                                    <text x="160" y="157" fill="#ffffff" font-size="9" font-weight="bold" font-family="sans-serif" text-anchor="middle"><?= e($r['room_number']) ?> Plan</text>
-                                </svg>
+                                <?php $roomPhotos = $photosByRoom[(int)$r['id']] ?? []; $cover = $roomPhotos[0]['url'] ?? null; ?>
+                                <?php if ($cover): ?>
+                                    <img src="<?= e($cover) ?>" alt="<?= e($r['room_number']) ?> photo" class="room-cover-img" loading="lazy">
+                                <?php else: ?>
+                                    <div class="room-cover-empty text-center">
+                                        <i class="bi bi-image fs-1 d-block"></i>
+                                        <div class="small fw-semibold">No photo uploaded yet</div>
+                                    </div>
+                                <?php endif; ?>
 
                                 <!-- Badge Top Left: Floor -->
                                 <span class="position-absolute top-0 start-0 m-2 badge bg-dark bg-opacity-75 text-white border border-secondary">
@@ -800,14 +759,9 @@ foreach ($activeRooms as $rm) {
                                     <?= $isFull ? 'Full Occupancy' : ($vacant . ' Bed Vacant') ?>
                                 </span>
 
-                                <!-- Badge Bottom Left: Photo Gallery Count -->
+                                <!-- Badge Bottom Left: Real Photo Count -->
                                 <span class="position-absolute bottom-0 start-0 m-2 badge bg-black bg-opacity-70 text-white">
-                                    <i class="bi bi-camera me-1 text-gold"></i><?= $photoCount ?> Photos
-                                </span>
-
-                                <!-- Badge Bottom Right: Blueprint Ready -->
-                                <span class="position-absolute bottom-0 end-0 m-2 badge bg-black bg-opacity-70 text-info">
-                                    <i class="bi bi-compass me-1"></i>2D Blueprint
+                                    <i class="bi bi-camera me-1 text-gold"></i><?= $photoCount ?> Photo<?= $photoCount === 1 ? '' : 's' ?>
                                 </span>
 
                                 <!-- Hover Overlay Prompt -->
@@ -905,12 +859,12 @@ foreach ($activeRooms as $rm) {
 <div class="modal fade" id="roomGalleryModal" tabindex="-1" aria-labelledby="roomGalleryModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-white py-3">
+            <div class="modal-header py-3 text-white" style="background-color:#800020;">
                 <div>
                     <h5 class="modal-title font-weight-bold mb-0" id="galleryModalTitle">
                         <i class="bi bi-images text-gold me-2"></i>Room 101 Photo Gallery & Floor Plan
                     </h5>
-                    <small class="text-white-50" id="galleryModalSubtitle">Villa Marinduque Dorm • 1st Floor • Double Occupancy</small>
+                    <small class="text-white d-block mt-1" style="opacity:.9;" id="galleryModalSubtitle">Villa Marinduque Dorm • 1st Floor • Double Occupancy</small>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -919,49 +873,30 @@ foreach ($activeRooms as $rm) {
                     <!-- Left Column: Gallery Stage & Photo Switcher -->
                     <div class="col-lg-8">
                         <!-- Category Switcher Tabs -->
-                        <div class="d-flex flex-wrap gap-2 mb-2" id="galleryCategoryTabs">
-                            <button type="button" class="btn btn-sm btn-dark active gallery-cat-btn" data-cat="all">
-                                <i class="bi bi-grid-fill me-1 text-gold"></i>All Angles
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-dark gallery-cat-btn" data-cat="bed">
-                                <i class="bi bi-door-open me-1"></i>Bed & Room
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-dark gallery-cat-btn" data-cat="study">
-                                <i class="bi bi-book me-1"></i>Study Hub
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-dark gallery-cat-btn" data-cat="bath">
-                                <i class="bi bi-droplet me-1"></i>Restroom
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-dark gallery-cat-btn" data-cat="plan">
-                                <i class="bi bi-compass me-1 text-info"></i>2D Blueprint
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-dark gallery-cat-btn" data-cat="safety">
-                                <i class="bi bi-shield-check me-1 text-success"></i>Submeter & Safety
-                            </button>
-                        </div>
-
-                        <!-- Main Interactive Photo Display Stage -->
-                        <div class="gallery-stage-box shadow-sm mb-2" id="galleryMainStage">
-                            <!-- Injected SVG / Canvas -->
-                        </div>
+                        <!-- Main Photo Display Stage (real uploaded photo) -->
+                        <div class="gallery-stage-box shadow-sm mb-2" id="galleryMainStage"></div>
 
                         <!-- Photo Caption Bar -->
                         <div class="p-2 px-3 rounded bg-white border d-flex justify-content-between align-items-center flex-wrap gap-2 small mb-3">
                             <div>
-                                <span class="fw-bold text-dark" id="stagePhotoTitle">Bed Space & Layout Perspective</span>
-                                <span class="text-muted ms-2" id="stagePhotoDesc">• 4-inch Uratex foam mattress, individual reading light, locker</span>
+                                <span class="fw-bold text-dark" id="stagePhotoTitle">No photo selected</span>
+                                <span class="text-muted ms-2" id="stagePhotoDesc"></span>
                             </div>
-                            <span class="badge bg-success-subtle text-success border">
-                                <i class="bi bi-patch-check-fill me-1"></i>OSAS Verified Photo
-                            </span>
+                            <?php if (!empty($canManagePhotos)): ?>
+                                <form id="stageDeleteWrap" class="d-none" action="<?= url('housing/rooms/photos/delete') ?>" method="POST" onsubmit="return confirm('Remove this photo from the room gallery?');">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" id="deletePhotoId" value="">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm py-0">
+                                        <i class="bi bi-trash me-1"></i>Remove Photo
+                                    </button>
+                                </form>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Thumbnails Selector Strip -->
                         <div>
-                            <div class="small fw-semibold text-muted text-uppercase mb-1" style="font-size: 11px;">GALLERY THUMBNAILS & ANGLES (CLICK TO PREVIEW):</div>
-                            <div class="d-flex gap-2 overflow-auto py-1" id="galleryThumbnailsRow">
-                                <!-- Thumbnails injected via JS -->
-                            </div>
+                            <div class="small fw-semibold text-muted text-uppercase mb-1" style="font-size: 11px;">PHOTOS (CLICK A THUMBNAIL TO PREVIEW):</div>
+                            <div class="d-flex gap-2 overflow-auto py-1" id="galleryThumbnailsRow"></div>
                         </div>
                     </div>
 
@@ -989,14 +924,6 @@ foreach ($activeRooms as $rm) {
                                         <span class="text-muted">Room Classification:</span>
                                         <span class="badge bg-secondary-subtle text-dark text-end" id="modalRoomType">Double</span>
                                     </li>
-                                    <li class="mb-2 pb-2 border-bottom d-flex justify-content-between">
-                                        <span class="text-muted">Dedicated Submeter:</span>
-                                        <span class="fw-bold text-dark text-end" id="modalRoomSubmeter">Verified (ID: MSU-SUB-01)</span>
-                                    </li>
-                                    <li class="mb-2 pb-2 border-bottom d-flex justify-content-between">
-                                        <span class="text-muted">Safety Inspection:</span>
-                                        <span class="badge bg-success-subtle text-success text-end">Grade A+ (Certified)</span>
-                                    </li>
                                     <li class="mb-2 pb-2 border-bottom">
                                         <span class="text-muted d-block mb-1">Included Amenities:</span>
                                         <div class="d-flex flex-wrap gap-1" id="modalRoomAmenities">
@@ -1005,24 +932,16 @@ foreach ($activeRooms as $rm) {
                                         </div>
                                     </li>
                                 </ul>
-
-                                <!-- Safety Compliance Box -->
-                                <div class="p-2 px-3 rounded bg-light border small text-muted">
-                                    <div class="fw-semibold text-dark mb-1">
-                                        <i class="bi bi-shield-check text-success me-1"></i>CHED & OSAS Housing Compliance
-                                    </div>
-                                    <div style="font-size: 11px;">
-                                        Equipped with working smoke detector, emergency egress window, and 10-lb dry chemical fire extinguisher within 5 meters.
-                                    </div>
-                                </div>
                             </div>
                             <div class="card-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()">
                                     <i class="bi bi-printer me-1"></i>Print Dossier
                                 </button>
-                                <button type="button" class="btn btn-marsu btn-sm" data-bs-toggle="modal" data-bs-target="#uploadPhotoModal">
+                                <?php if (!empty($canManagePhotos)): ?>
+                                <button type="button" class="btn btn-marsu btn-sm" id="galleryUploadBtn">
                                     <i class="bi bi-camera me-1"></i>Upload Photo
                                 </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -1041,41 +960,50 @@ foreach ($activeRooms as $rm) {
 <div class="modal fade" id="uploadPhotoModal" tabindex="-1" aria-labelledby="uploadPhotoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-white py-3">
+            <div class="modal-header py-3 text-white" style="background-color:#800020;">
                 <h5 class="modal-title font-weight-bold mb-0" id="uploadPhotoModalLabel">
                     <i class="bi bi-camera-fill text-gold me-2"></i>Upload Room & Floor Photo
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="uploadPhotoForm">
+            <form id="uploadPhotoForm" action="<?= url('housing/rooms/photos/upload') ?>" method="POST" enctype="multipart/form-data">
                 <?= csrf_field() ?>
                 <div class="modal-body p-4">
+                    <?php if (empty($canManagePhotos)): ?>
+                        <div class="alert alert-warning small mb-0">
+                            <i class="bi bi-lock-fill me-1"></i>You do not have permission to upload room photos (requires <strong>housing.register</strong>).
+                        </div>
+                    <?php elseif (empty($rooms)): ?>
+                        <div class="alert alert-info small mb-0">
+                            <i class="bi bi-info-circle me-1"></i>Add a room unit first, then you can upload its photos.
+                        </div>
+                    <?php else: ?>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Target Room Unit <span class="text-danger">*</span></label>
-                        <select class="form-select form-select-sm" id="uploadTargetRoom" required>
-                            <?php foreach ($activeRooms as $rm): ?>
-                                <option value="<?= e($rm['room_number']) ?>">
-                                    <?= e($rm['room_number']) ?> (<?= e($rm['floor'] ?? '1st Floor') ?> • <?= e($rm['house_name'] ?? 'Villa Marinduque') ?>)
+                        <label class="form-label small fw-bold" for="uploadTargetRoom">Target Room Unit <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" id="uploadTargetRoom" name="room_id" required>
+                            <?php foreach ($rooms as $rm): ?>
+                                <option value="<?= (int)$rm['id'] ?>">
+                                    <?= e($rm['room_number']) ?> (<?= e($rm['floor'] ?? '1st Floor') ?> • <?= e($rm['house_name'] ?? 'No boarding house') ?>)
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Photo Angle / Category <span class="text-danger">*</span></label>
-                        <select class="form-select form-select-sm" id="uploadPhotoCategory" required>
-                            <option value="Bed Space & Living Layout">🛏️ Bed Space & Room Interior</option>
-                            <option value="Study Desk & Workstation">📚 Study Desk & Storage Lockers</option>
-                            <option value="Ensuite Bathroom / Restroom">🚿 Ensuite Restroom & Fixtures</option>
-                            <option value="2D Floor Plan Blueprint">🗺️ 2D Floor Plan & Evacuation Route</option>
-                            <option value="Electric Submeter & Safety Equipment">🔌 Electric Submeter & Safety Gear</option>
+                        <label class="form-label small fw-bold" for="uploadPhotoCategory">Photo Angle / Category <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" id="uploadPhotoCategory" name="category" required>
+                            <option value="bed">Bed Space & Room Interior</option>
+                            <option value="study">Study Desk & Storage Lockers</option>
+                            <option value="bath">Restroom & Fixtures</option>
+                            <option value="plan">2D Floor Plan & Evacuation Route</option>
+                            <option value="safety">Electric Submeter & Safety Equipment</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Select Photo File (JPG, PNG) <span class="text-danger">*</span></label>
-                        <input type="file" class="form-control form-control-sm" id="uploadFileInput" accept="image/*" required>
-                        <div class="form-text">Choose a photo from your local files to attach to this room's gallery folder.</div>
+                        <label class="form-label small fw-bold" for="uploadFileInput">Select Photo File(s) <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control form-control-sm" id="uploadFileInput" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple required>
+                        <div class="form-text">JPG, PNG or WEBP only, up to 5 MB each (maximum 10 photos at a time).</div>
                     </div>
 
                     <!-- Local Image Preview Area -->
@@ -1084,16 +1012,19 @@ foreach ($activeRooms as $rm) {
                         <div class="small text-muted mt-1" id="uploadFileInfo"></div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Caption / Verification Notes</label>
-                        <input type="text" class="form-control form-control-sm" id="uploadPhotoCaption" placeholder="e.g. Clean double deck with sanitized mattress, verified 2026">
+                    <div class="mb-1">
+                        <label class="form-label small fw-bold" for="uploadPhotoCaption">Caption (optional)</label>
+                        <input type="text" class="form-control form-control-sm" id="uploadPhotoCaption" name="caption" maxlength="255" placeholder="e.g. Double deck bed with new mattress">
                     </div>
+                    <?php endif; ?>
                 </div>
                 <div class="modal-footer bg-light py-2 px-3">
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-marsu btn-sm px-3 shadow-sm">
+                    <?php if (!empty($canManagePhotos) && !empty($rooms)): ?>
+                    <button type="submit" id="uploadSubmitBtn" class="btn btn-marsu btn-sm px-3 shadow-sm">
                         <i class="bi bi-cloud-arrow-up me-1"></i>Save to Room Gallery
                     </button>
+                    <?php endif; ?>
                 </div>
             </form>
         </div>
@@ -1101,12 +1032,280 @@ foreach ($activeRooms as $rm) {
 </div>
 
 <!-- ========================================================================= -->
+<!-- MODAL: ADD BOARDING FACILITY / HOUSE                                       -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="newBoardingHouseModal" tabindex="-1" aria-labelledby="newBoardingHouseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg,#800020 0%,#4e0013 100%); border-bottom: 3.5px solid #D4AF37;">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="rounded-circle d-flex align-items-center justify-content-center" style="width:38px;height:38px;background:rgba(255,255,255,0.15);">
+                        <i class="bi bi-buildings-fill fs-5 text-gold"></i>
+                    </span>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="newBoardingHouseModalLabel">Register New Boarding Facility</h5>
+                        <small class="opacity-75" style="font-size:.78rem;">Add a new accredited boarding house or dormitory to the housing directory</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="<?= url('housing/boardinghouses/create') ?>" method="POST" id="newBoardingHouseForm" novalidate
+                  class="d-flex flex-column" style="min-height:0;overflow:hidden;max-height:calc(100vh - 3.5rem - 90px);">
+                <?= csrf_field() ?>
+                <div class="modal-body px-4 py-3" style="overflow-y:auto;min-height:0;">
+
+                    <!-- Section: Basic Information -->
+                    <div class="mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge text-white fw-semibold px-3 py-2" style="background:#800020;font-size:.8rem;border-radius:20px;">
+                            <i class="bi bi-info-circle me-1"></i>Facility Information
+                        </span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhName">
+                                <i class="bi bi-building me-1"></i>Boarding House / Facility Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="bhName" name="name"
+                                placeholder="e.g. Villa Marinduque Student Dormitory"
+                                required maxlength="200" autocomplete="off">
+                            <div class="invalid-feedback">Facility name is required.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhOwner">
+                                <i class="bi bi-person-fill me-1"></i>Owner / Landlord Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="bhOwner" name="owner_name"
+                                placeholder="e.g. Juan dela Cruz" required maxlength="150">
+                            <div class="invalid-feedback">Owner name is required.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhContact">
+                                <i class="bi bi-telephone-fill me-1"></i>Contact Number <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="bhContact" name="contact_number"
+                                placeholder="e.g. 0917-123-4567" required maxlength="30">
+                            <div class="invalid-feedback">Contact number is required.</div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Address -->
+                    <div class="mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge text-white fw-semibold px-3 py-2" style="background:#800020;font-size:.8rem;border-radius:20px;">
+                            <i class="bi bi-geo-alt me-1"></i>Location & Address
+                        </span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhAddress">
+                                <i class="bi bi-map me-1"></i>Full Street Address
+                            </label>
+                            <input type="text" class="form-control" id="bhAddress" name="address"
+                                placeholder="e.g. Purok 3, Panfilo M. Manguera Sr. Rd." maxlength="300">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhBarangay">
+                                <i class="bi bi-signpost me-1"></i>Barangay
+                            </label>
+                            <input type="text" class="form-control" id="bhBarangay" name="barangay"
+                                value="Brgy. Santol, Boac" maxlength="100">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhSafetyRating">
+                                <i class="bi bi-shield-check me-1"></i>Safety Rating
+                            </label>
+                            <select class="form-select" id="bhSafetyRating" name="safety_rating">
+                                <option value="A">A — Excellent</option>
+                                <option value="B">B — Good</option>
+                                <option value="C">C — Fair</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Section: Accreditation & Capacity -->
+                    <div class="mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge text-white fw-semibold px-3 py-2" style="background:#800020;font-size:.8rem;border-radius:20px;">
+                            <i class="bi bi-patch-check me-1"></i>Accreditation & Capacity
+                        </span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhAccreditation">
+                                <i class="bi bi-award me-1"></i>Accreditation Status
+                            </label>
+                            <select class="form-select" id="bhAccreditation" name="accreditation_status">
+                                <option value="Accredited" selected>✅ Accredited</option>
+                                <option value="Pending">⏳ Pending</option>
+                                <option value="Under Inspection">🔍 Under Inspection</option>
+                                <option value="Expired">❌ Expired</option>
+                                <option value="Revoked">🚫 Revoked</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhTotalRooms">
+                                <i class="bi bi-door-closed me-1"></i>Total Rooms
+                            </label>
+                            <input type="number" class="form-control" id="bhTotalRooms" name="total_rooms"
+                                value="10" min="1" max="999">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhTotalCapacity">
+                                <i class="bi bi-people me-1"></i>Total Capacity
+                            </label>
+                            <input type="number" class="form-control" id="bhTotalCapacity" name="total_capacity"
+                                value="30" min="1" max="9999">
+                        </div>
+                    </div>
+
+                    <!-- Section: Monthly Rate -->
+                    <div class="mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge text-white fw-semibold px-3 py-2" style="background:#800020;font-size:.8rem;border-radius:20px;">
+                            <i class="bi bi-cash-coin me-1"></i>Monthly Rate Range
+                        </span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhRateMin">
+                                <i class="bi bi-currency-exchange me-1"></i>Minimum Rate (₱/month)
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text fw-bold" style="background:#f8f0f3;color:#800020;border-color:#dee2e6;">₱</span>
+                                <input type="number" class="form-control" id="bhRateMin" name="monthly_rate_min"
+                                    value="1200" min="0" step="50">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-marsu-burgundy" for="bhRateMax">
+                                <i class="bi bi-currency-exchange me-1"></i>Maximum Rate (₱/month)
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text fw-bold" style="background:#f8f0f3;color:#800020;border-color:#dee2e6;">₱</span>
+                                <input type="number" class="form-control" id="bhRateMax" name="monthly_rate_max"
+                                    value="2500" min="0" step="50">
+                            </div>
+                        </div>
+
+                        <!-- Live Rate Preview -->
+                        <div class="col-12">
+                            <div class="rounded-3 p-3 d-flex align-items-center gap-3" style="background:linear-gradient(90deg,#fff8f0 0%,#fff3f5 100%);border:1.5px dashed #D4AF37;">
+                                <i class="bi bi-tags-fill fs-4 text-gold"></i>
+                                <div>
+                                    <div class="small text-muted mb-1">Live Rate Preview</div>
+                                    <span class="fw-bold" style="color:#800020;font-size:1.1rem;" id="bhRatePreview">₱1,200.00 — ₱2,500.00 / month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Amenities -->
+                    <div class="mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge text-white fw-semibold px-3 py-2" style="background:#800020;font-size:.8rem;border-radius:20px;">
+                            <i class="bi bi-stars me-1"></i>Amenities & Facilities
+                        </span>
+                    </div>
+
+                    <!-- Amenity Quick Toggles -->
+                    <div class="mb-2">
+                        <small class="text-muted">Quick add amenities:</small>
+                        <div class="d-flex flex-wrap gap-2 mt-2" id="amenityChips">
+                            <?php
+                            $amenityOptions = ['Aircon','WiFi','Hot Shower','CCTV','Study Room','Laundry Area',
+                                'Parking','Canteen','Common Sala','Fire Extinguisher','Water Heater','Generator'];
+                            foreach ($amenityOptions as $am):
+                            ?>
+                            <button type="button" class="btn btn-outline-secondary btn-sm amenity-chip rounded-pill"
+                                data-amenity="<?= e($am) ?>"
+                                onclick="toggleAmenityChip(this)">
+                                <?= e($am) ?>
+                            </button>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-marsu-burgundy" for="bhAmenities">
+                            <i class="bi bi-list-check me-1"></i>Amenities (comma-separated or free text)
+                        </label>
+                        <textarea class="form-control" id="bhAmenities" name="amenities" rows="2"
+                            placeholder="e.g. Aircon, WiFi, Hot Shower, CCTV..."></textarea>
+                    </div>
+
+                </div><!-- /modal-body -->
+
+                <div class="modal-footer border-0 px-4 pb-4 pt-2" style="background:#fdf7f8;">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-4" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-sm px-4 fw-semibold shadow-sm text-white" style="background:linear-gradient(135deg,#800020,#4e0013);">
+                        <i class="bi bi-buildings-fill me-1"></i>Register Facility
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<style>
+.amenity-chip.active {
+    background: #800020 !important;
+    color: #fff !important;
+    border-color: #800020 !important;
+}
+</style>
+<script>
+(function () {
+    // Live rate preview
+    function updateBhRatePreview() {
+        var min = parseFloat(document.getElementById('bhRateMin').value) || 0;
+        var max = parseFloat(document.getElementById('bhRateMax').value) || 0;
+        document.getElementById('bhRatePreview').textContent =
+            '₱' + min.toLocaleString('en-PH', {minimumFractionDigits:2}) +
+            ' — ₱' + max.toLocaleString('en-PH', {minimumFractionDigits:2}) + ' / month';
+    }
+    var rMin = document.getElementById('bhRateMin');
+    var rMax = document.getElementById('bhRateMax');
+    if (rMin) rMin.addEventListener('input', updateBhRatePreview);
+    if (rMax) rMax.addEventListener('input', updateBhRatePreview);
+
+    // Bootstrap 5 form validation
+    var form = document.getElementById('newBoardingHouseForm');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+    }
+})();
+
+function toggleAmenityChip(btn) {
+    btn.classList.toggle('active');
+    var ta = document.getElementById('bhAmenities');
+    var amenity = btn.getAttribute('data-amenity');
+    var items = ta.value ? ta.value.split(',').map(function(s){return s.trim();}).filter(Boolean) : [];
+    var idx = items.indexOf(amenity);
+    if (btn.classList.contains('active')) {
+        if (idx === -1) items.push(amenity);
+    } else {
+        if (idx !== -1) items.splice(idx, 1);
+    }
+    ta.value = items.join(', ');
+}
+</script>
+
+<!-- ========================================================================= -->
 <!-- MODAL: ADD ROOM UNIT TO INVENTORY                                          -->
 <!-- ========================================================================= -->
 <div class="modal fade" id="newRoomModal" tabindex="-1" aria-labelledby="newRoomModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-white">
+            <div class="modal-header text-white" style="background-color:#800020;">
                 <h5 class="modal-title font-weight-bold" id="newRoomModalLabel">
                     <i class="bi bi-door-open-fill me-2 text-gold"></i>Add Room Unit to Inventory
                 </h5>
@@ -1264,329 +1463,231 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 4. Room Photo & Blueprint Gallery Modal Data Generator
+    // 4. Room Photo Gallery (real photos uploaded by the housing admin)
     const galleryModalEl = document.getElementById('roomGalleryModal');
     const galleryModal = galleryModalEl ? new bootstrap.Modal(galleryModalEl) : null;
+    const uploadModalEl = document.getElementById('uploadPhotoModal');
+    const ROOM_PHOTOS = <?= json_encode($photosByRoom ?: new \stdClass(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES) ?>;
+    const CAT_LABELS = {
+        bed: 'Bed Space & Room Interior',
+        study: 'Study Desk & Lockers',
+        bath: 'Restroom & Fixtures',
+        plan: '2D Floor Plan & Evacuation Route',
+        safety: 'Electric Submeter & Safety Equipment'
+    };
+    const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 
-    // SVG Generators for Room Angles & Blueprints
-    function getGallerySVG(category, roomNumber, roomType) {
-        if (category === 'plan') {
-            // 2D Architectural Blueprint
-            return `
-                <svg viewBox="0 0 540 320" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="540" height="320" fill="#0f172a"/>
-                    <!-- Blueprint Grid -->
-                    <defs>
-                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e293b" stroke-width="0.8"/>
-                        </pattern>
-                    </defs>
-                    <rect width="540" height="320" fill="url(#grid)" />
-                    <!-- Room Boundaries -->
-                    <rect x="40" y="30" width="460" height="260" fill="none" stroke="#38bdf8" stroke-width="3" rx="4"/>
-                    <!-- Hallway -->
-                    <rect x="40" y="250" width="460" height="40" fill="#1e293b" opacity="0.6"/>
-                    <text x="270" y="275" fill="#94a3b8" font-size="12" font-family="monospace" text-anchor="middle">MAIN CORRIDOR / EGRESS ROUTE</text>
-                    <!-- Door & Swing Arc -->
-                    <path d="M 240 250 A 40 40 0 0 1 280 290" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,3"/>
-                    <line x1="240" y1="250" x2="240" y2="290" stroke="#f59e0b" stroke-width="3"/>
-                    <!-- Window Wall -->
-                    <rect x="180" y="27" width="180" height="6" fill="#38bdf8"/>
-                    <!-- Beds -->
-                    <rect x="60" y="50" width="130" height="75" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
-                    <rect x="65" y="55" width="28" height="65" rx="3" fill="#cbd5e1" opacity="0.8"/>
-                    <text x="135" y="93" fill="#38bdf8" font-size="12" font-family="monospace" text-anchor="middle">BED A (LOWER/UPPER)</text>
-                    
-                    <rect x="60" y="150" width="130" height="75" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
-                    <rect x="65" y="155" width="28" height="65" rx="3" fill="#cbd5e1" opacity="0.8"/>
-                    <text x="135" y="193" fill="#38bdf8" font-size="12" font-family="monospace" text-anchor="middle">BED B (LOWER/UPPER)</text>
+    const stage = document.getElementById('galleryMainStage');
+    const thumbsRow = document.getElementById('galleryThumbnailsRow');
+    const titleEl = document.getElementById('stagePhotoTitle');
+    const descEl = document.getElementById('stagePhotoDesc');
+    const deleteForm = document.getElementById('stageDeleteWrap');
+    const deleteIdInput = document.getElementById('deletePhotoId');
+    const state = { roomId: null, cat: 'all', photos: [], index: 0 };
 
-                    <!-- Workstations -->
-                    <rect x="360" y="50" width="120" height="60" rx="3" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
-                    <text x="420" y="85" fill="#94a3b8" font-size="11" font-family="monospace" text-anchor="middle">STUDY WORKSPACE</text>
-                    <!-- Wardrobes -->
-                    <rect x="360" y="135" width="120" height="85" rx="3" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
-                    <text x="420" y="180" fill="#94a3b8" font-size="11" font-family="monospace" text-anchor="middle">LOCKERS & STORAGE</text>
-
-                    <!-- Fire Exit Route -->
-                    <path d="M 260 210 L 260 260" stroke="#22c55e" stroke-width="3" stroke-dasharray="4,4"/>
-                    <text x="260" y="200" fill="#22c55e" font-size="11" font-family="monospace" font-weight="bold" text-anchor="middle">EXIT ➔</text>
-                    
-                    <!-- Title Block -->
-                    <rect x="340" y="235" width="155" height="45" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
-                    <text x="350" y="252" fill="#38bdf8" font-size="10" font-family="monospace" font-weight="bold">${roomNumber} BLUEPRINT</text>
-                    <text x="350" y="268" fill="#94a3b8" font-size="9" font-family="monospace">SCALE: 1:50 • OSAS APPROVED</text>
-                </svg>
-            `;
-        } else if (category === 'study') {
-            // Study Hub Perspective
-            return `
-                <svg viewBox="0 0 540 320" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="540" height="320" fill="#18181b"/>
-                    <!-- Wooden Floor & Wall -->
-                    <rect x="0" y="230" width="540" height="90" fill="#78350f" opacity="0.35"/>
-                    <line x1="0" y1="230" x2="540" y2="230" stroke="#a16207" stroke-width="2"/>
-                    <!-- Desk Table Surface -->
-                    <rect x="100" y="150" width="340" height="18" rx="3" fill="#d97706"/>
-                    <rect x="120" y="168" width="14" height="110" fill="#b45309"/>
-                    <rect x="406" y="168" width="14" height="110" fill="#b45309"/>
-                    <!-- Laptop on Desk -->
-                    <rect x="230" y="105" width="80" height="45" rx="3" fill="#334155" stroke="#94a3b8" stroke-width="1.5"/>
-                    <rect x="240" y="112" width="60" height="32" rx="1" fill="#38bdf8" opacity="0.85"/>
-                    <rect x="220" y="148" width="100" height="4" rx="1" fill="#475569"/>
-                    <!-- LED Study Lamp -->
-                    <path d="M 140 150 L 140 85 L 180 75" fill="none" stroke="#f59e0b" stroke-width="4"/>
-                    <path d="M 175 70 L 195 80 L 175 90 Z" fill="#d97706"/>
-                    <path d="M 185 80 L 260 160 L 140 160 Z" fill="#fef08a" opacity="0.25"/>
-                    <!-- Bookshelf on Wall -->
-                    <rect x="130" y="40" width="280" height="10" fill="#b45309"/>
-                    <rect x="145" y="18" width="16" height="22" fill="#ef4444"/>
-                    <rect x="165" y="12" width="18" height="28" fill="#3b82f6"/>
-                    <rect x="187" y="15" width="20" height="25" fill="#22c55e"/>
-                    <text x="270" y="270" fill="#ffffff" font-size="14" font-weight="bold" font-family="sans-serif" text-anchor="middle">Dedicated Individual Study Station • High-Speed Fiber Wi-Fi</text>
-                </svg>
-            `;
-        } else if (category === 'bath') {
-            // Ensuite Bathroom
-            return `
-                <svg viewBox="0 0 540 320" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="540" height="320" fill="#0c4a6e"/>
-                    <!-- Tiled Wall Pattern -->
-                    <defs>
-                        <pattern id="tile" width="25" height="25" patternUnits="userSpaceOnUse">
-                            <rect width="25" height="25" fill="#0284c7" stroke="#38bdf8" stroke-width="0.7" opacity="0.3"/>
-                        </pattern>
-                    </defs>
-                    <rect width="540" height="260" fill="url(#tile)"/>
-                    <rect x="0" y="260" width="540" height="60" fill="#0369a1"/>
-                    <!-- Shower Head with Water Spray -->
-                    <path d="M 120 40 L 180 40 L 180 80" fill="none" stroke="#cbd5e1" stroke-width="6"/>
-                    <ellipse cx="180" cy="80" rx="24" ry="10" fill="#94a3b8"/>
-                    <!-- Water droplets -->
-                    <path d="M 170 95 L 160 210 M 180 95 L 180 230 M 190 95 L 200 210" stroke="#bae6fd" stroke-width="2" stroke-dasharray="5,5"/>
-                    <!-- Mirror & Sink Counter -->
-                    <rect x="300" y="50" width="100" height="110" rx="8" fill="#e0f2fe" stroke="#38bdf8" stroke-width="3"/>
-                    <rect x="270" y="180" width="160" height="25" rx="5" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
-                    <path d="M 335 180 A 15 15 0 0 0 365 180 Z" fill="#cbd5e1"/>
-                    <text x="270" y="300" fill="#ffffff" font-size="14" font-weight="bold" font-family="sans-serif" text-anchor="middle">Private / Semi-Private Ensuite Bathroom Fixtures</text>
-                </svg>
-            `;
-        } else if (category === 'safety') {
-            // Electric Submeter & Fire Safety Gear
-            return `
-                <svg viewBox="0 0 540 320" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="540" height="320" fill="#18181b"/>
-                    <!-- Panel Board Box -->
-                    <rect x="80" y="50" width="180" height="220" rx="8" fill="#27272a" stroke="#71717a" stroke-width="3"/>
-                    <!-- Digital Submeter Display -->
-                    <rect x="105" y="80" width="130" height="50" rx="4" fill="#042f2e" stroke="#14b8a6" stroke-width="2"/>
-                    <text x="170" y="112" fill="#2dd4bf" font-size="20" font-family="monospace" font-weight="bold" text-anchor="middle">0248.6 kWh</text>
-                    <!-- Circuit Breakers -->
-                    <rect x="110" y="150" width="30" height="50" rx="3" fill="#dc2626"/>
-                    <rect x="155" y="150" width="30" height="50" rx="3" fill="#16a34a"/>
-                    <rect x="200" y="150" width="30" height="50" rx="3" fill="#16a34a"/>
-                    <text x="170" y="240" fill="#e4e4e7" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">SUBMETER: ${roomNumber}</text>
-
-                    <!-- Fire Extinguisher (Right) -->
-                    <rect x="360" y="90" width="45" height="150" rx="20" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
-                    <rect x="376" y="65" width="14" height="25" fill="#475569"/>
-                    <path d="M 370 65 L 410 50 M 370 65 L 410 70" stroke="#1e293b" stroke-width="4"/>
-                    <rect x="366" y="125" width="33" height="50" fill="#ffffff"/>
-                    <text x="382" y="155" fill="#dc2626" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">ABC</text>
-                    <!-- Smoke Alarm -->
-                    <circle cx="382" cy="270" r="22" fill="#f4f4f5" stroke="#a1a1aa" stroke-width="2"/>
-                    <circle cx="382" cy="270" r="6" fill="#16a34a"/>
-                    <text x="270" y="305" fill="#ffffff" font-size="13" font-weight="bold" font-family="sans-serif" text-anchor="middle">Calibrated Submeter & Certified Fire Safety Protection</text>
-                </svg>
-            `;
-        } else {
-            // Default: Bed Space & Room Interior
-            return `
-                <svg viewBox="0 0 540 320" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="540" height="320" fill="#0f172a"/>
-                    <!-- Room Flooring -->
-                    <rect x="0" y="210" width="540" height="110" fill="#334155" opacity="0.6"/>
-                    <line x1="0" y1="210" x2="540" y2="210" stroke="#64748b" stroke-width="2"/>
-                    <!-- Mahogany Bunk Bed Frame -->
-                    <rect x="60" y="50" width="220" height="190" rx="6" fill="#78350f" stroke="#451a03" stroke-width="4"/>
-                    <!-- Upper Deck Bed -->
-                    <rect x="75" y="70" width="190" height="40" rx="3" fill="#cbd5e1"/>
-                    <rect x="75" y="70" width="40" height="40" rx="3" fill="#94a3b8"/>
-                    <rect x="120" y="75" width="140" height="30" rx="2" fill="#D4AF37"/>
-                    <!-- Lower Deck Bed -->
-                    <rect x="75" y="150" width="190" height="40" rx="3" fill="#cbd5e1"/>
-                    <rect x="75" y="150" width="40" height="40" rx="3" fill="#94a3b8"/>
-                    <rect x="120" y="155" width="140" height="30" rx="2" fill="#800020"/>
-                    <!-- Bunk Ladder -->
-                    <line x1="260" y1="50" x2="260" y2="240" stroke="#f59e0b" stroke-width="5"/>
-                    <line x1="240" y1="90" x2="265" y2="90" stroke="#f59e0b" stroke-width="3"/>
-                    <line x1="240" y1="130" x2="265" y2="130" stroke="#f59e0b" stroke-width="3"/>
-                    <line x1="240" y1="170" x2="265" y2="170" stroke="#f59e0b" stroke-width="3"/>
-
-                    <!-- Wardrobe Lockers on right -->
-                    <rect x="340" y="60" width="140" height="180" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
-                    <line x1="410" y1="60" x2="410" y2="240" stroke="#64748b" stroke-width="2"/>
-                    <circle cx="400" cy="140" r="4" fill="#D4AF37"/>
-                    <circle cx="420" cy="140" r="4" fill="#D4AF37"/>
-
-                    <text x="270" y="280" fill="#ffffff" font-size="14" font-weight="bold" font-family="sans-serif" text-anchor="middle">${roomNumber} Interior • Sanitized Uratex Foam Mattress & Steel Lockers</text>
-                </svg>
-            `;
-        }
+    function visiblePhotos() {
+        return state.photos.filter(function (p) { return state.cat === 'all' || p.category === state.cat; });
     }
 
-    // Bind Gallery Buttons
+    function renderTabCounts() {
+        document.querySelectorAll('.gallery-cat-btn').forEach(function (b) {
+            const c = b.dataset.cat;
+            const n = c === 'all' ? state.photos.length : state.photos.filter(function (p) { return p.category === c; }).length;
+            let badge = b.querySelector('.cat-count');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'cat-count badge rounded-pill bg-secondary ms-1';
+                b.appendChild(badge);
+            }
+            badge.textContent = n;
+        });
+    }
+
+    function renderGallery() {
+        const list = visiblePhotos();
+        if (state.index >= list.length) state.index = 0;
+        stage.innerHTML = '';
+        thumbsRow.innerHTML = '';
+
+        if (!list.length) {
+            stage.innerHTML = '<div class="text-center text-white-50 p-4"><i class="bi bi-image fs-1 d-block mb-2"></i>' +
+                '<div class="fw-bold text-white">No photos yet</div>' +
+                '<div class="small">' + (state.photos.length ? 'There are no photos in this category.' : 'No photo has been uploaded for this room yet.') + '</div></div>';
+            titleEl.textContent = 'No photo selected';
+            descEl.textContent = '';
+            if (deleteForm) deleteForm.classList.add('d-none');
+            thumbsRow.innerHTML = '<span class="small text-muted">Uploaded photos will appear here.</span>';
+            return;
+        }
+
+        const cur = list[state.index];
+        const img = document.createElement('img');
+        img.src = cur.url;
+        img.alt = cur.caption || CAT_LABELS[cur.category] || 'Room photo';
+        img.className = 'gallery-stage-img';
+        stage.appendChild(img);
+
+        titleEl.textContent = CAT_LABELS[cur.category] || 'Room photo';
+        descEl.textContent = (cur.caption ? '• ' + cur.caption + '  ' : '') + '• Uploaded ' + cur.date;
+        if (deleteForm && deleteIdInput) {
+            deleteIdInput.value = cur.id;
+            deleteForm.classList.remove('d-none');
+        }
+
+        list.forEach(function (p, idx) {
+            const t = document.createElement('button');
+            t.type = 'button';
+            t.className = 'gallery-thumb-btn' + (idx === state.index ? ' active' : '');
+            t.title = CAT_LABELS[p.category] || '';
+            const ti = document.createElement('img');
+            ti.src = p.url;
+            ti.alt = '';
+            t.appendChild(ti);
+            t.addEventListener('click', function () { state.index = idx; renderGallery(); });
+            thumbsRow.appendChild(t);
+        });
+    }
+
+    function setActiveTab(cat) {
+        document.querySelectorAll('.gallery-cat-btn').forEach(function (b) {
+            const on = b.dataset.cat === cat;
+            b.classList.toggle('btn-dark', on);
+            b.classList.toggle('active', on);
+            b.classList.toggle('btn-outline-dark', !on);
+        });
+    }
+
+    function openGallery(btn) {
+        const d = btn.dataset;
+        const roomNumber = d.roomNumber || 'Room Unit';
+        const house = d.house || '';
+        const floor = d.floor || '';
+        const type = d.type || '';
+
+        const titleHolder = document.getElementById('galleryModalTitle');
+        titleHolder.textContent = '';
+        const icon = document.createElement('i');
+        icon.className = 'bi bi-images text-gold me-2';
+        titleHolder.appendChild(icon);
+        titleHolder.appendChild(document.createTextNode(roomNumber + ' Photo Gallery'));
+        document.getElementById('galleryModalSubtitle').textContent = house + ' • ' + floor + ' • ' + type + ' Occupancy';
+        document.getElementById('modalRoomRent').textContent = '₱' + (d.rent || '0.00');
+        document.getElementById('modalRoomCapacity').textContent = type + ' Occupancy (' + (d.capacity || 0) + ' Beds Total • ' + (d.occupied || 0) + ' Residing)';
+        document.getElementById('modalRoomFloor').textContent = floor;
+        document.getElementById('modalRoomType').textContent = type;
+
+        const amContainer = document.getElementById('modalRoomAmenities');
+        amContainer.innerHTML = '';
+        (d.amenities || '').split(',').forEach(function (am) {
+            if (am.trim()) {
+                const sp = document.createElement('span');
+                sp.className = 'badge bg-light text-dark border';
+                sp.textContent = am.trim();
+                amContainer.appendChild(sp);
+            }
+        });
+
+        state.roomId = parseInt(d.roomId, 10);
+        state.photos = ROOM_PHOTOS[state.roomId] || [];
+        state.cat = 'all';
+        state.index = 0;
+        setActiveTab('all');
+        renderTabCounts();
+        renderGallery();
+
+        const targetSelect = document.getElementById('uploadTargetRoom');
+        if (targetSelect) targetSelect.value = String(state.roomId);
+
+        if (galleryModal) galleryModal.show();
+    }
+
     document.querySelectorAll('.btn-open-gallery').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
             e.stopPropagation();
-            const d = this.dataset;
-
-            const roomNumber = d.roomNumber || 'Room Unit';
-            const house = d.house || 'Villa Marinduque Dorm';
-            const floor = d.floor || '1st Floor';
-            const type = d.type || 'Double';
-            const rent = d.rent || '1,500.00';
-            const capacity = d.capacity || '2';
-            const occupied = d.occupied || '0';
-            const amenities = d.amenities || 'Wi-Fi, Study Desk';
-
-            // Populate Modal Header & Specs
-            document.getElementById('galleryModalTitle').innerHTML = `<i class="bi bi-images text-gold me-2"></i>${roomNumber} Photo Gallery & Floor Plan`;
-            document.getElementById('galleryModalSubtitle').textContent = `${house} • ${floor} • ${type} Occupancy`;
-            document.getElementById('modalRoomRent').textContent = `₱${rent}`;
-            document.getElementById('modalRoomCapacity').textContent = `${type} Occupancy (${capacity} Beds Total • ${occupied} Residing)`;
-            document.getElementById('modalRoomFloor').textContent = floor;
-            document.getElementById('modalRoomType').textContent = type;
-            document.getElementById('modalRoomSubmeter').textContent = `MSU-SUB-${roomNumber.replace(/[^0-9]/g, '') || '01'} (Active)`;
-
-            // Amenities Tags
-            const amContainer = document.getElementById('modalRoomAmenities');
-            amContainer.innerHTML = '';
-            amenities.split(',').forEach(function (am) {
-                if (am.trim()) {
-                    const sp = document.createElement('span');
-                    sp.className = 'badge bg-light text-dark border';
-                    sp.textContent = am.trim();
-                    amContainer.appendChild(sp);
-                }
-            });
-
-            // Set Initial Stage Display
-            const stage = document.getElementById('galleryMainStage');
-            stage.innerHTML = getGallerySVG('bed', roomNumber, type);
-
-            // Populate Thumbnails
-            const thumbsContainer = document.getElementById('galleryThumbnailsRow');
-            thumbsContainer.innerHTML = '';
-
-            const angles = [
-                { cat: 'bed', title: 'Bed Space & Room Interior' },
-                { cat: 'study', title: 'Study Hub & Desk' },
-                { cat: 'bath', title: 'Bathroom & Restroom' },
-                { cat: 'plan', title: '2D Architectural Blueprint' },
-                { cat: 'safety', title: 'Submeter & Safety Gear' }
-            ];
-
-            angles.forEach(function (ang, idx) {
-                const thumbBtn = document.createElement('div');
-                thumbBtn.className = 'gallery-thumb-btn ' + (idx === 0 ? 'active' : '');
-                thumbBtn.dataset.cat = ang.cat;
-                thumbBtn.dataset.title = ang.title;
-                thumbBtn.title = ang.title;
-                thumbBtn.innerHTML = getGallerySVG(ang.cat, roomNumber, type);
-
-                thumbBtn.addEventListener('click', function () {
-                    document.querySelectorAll('.gallery-thumb-btn').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    stage.innerHTML = getGallerySVG(ang.cat, roomNumber, type);
-                    document.getElementById('stagePhotoTitle').textContent = ang.title;
-                });
-
-                thumbsContainer.appendChild(thumbBtn);
-            });
-
-            // Pre-select target room in Upload Modal as convenience
-            const targetSelect = document.getElementById('uploadTargetRoom');
-            if (targetSelect) {
-                for (let i = 0; i < targetSelect.options.length; i++) {
-                    if (targetSelect.options[i].value === roomNumber) {
-                        targetSelect.selectedIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            if (galleryModal) galleryModal.show();
+            openGallery(this);
         });
     });
 
-    // 5. Category Tab Filtering inside Gallery Modal
+    // 5. Category tabs inside the gallery modal
     document.querySelectorAll('.gallery-cat-btn').forEach(function (catBtn) {
         catBtn.addEventListener('click', function () {
-            document.querySelectorAll('.gallery-cat-btn').forEach(b => {
-                b.classList.remove('btn-dark', 'active');
-                b.classList.add('btn-outline-dark');
-            });
-            this.classList.remove('btn-outline-dark');
-            this.classList.add('btn-dark', 'active');
-
-            const cat = this.dataset.cat;
-            const targetThumb = document.querySelector(`.gallery-thumb-btn[data-cat="${cat === 'all' ? 'bed' : cat}"]`);
-            if (targetThumb) targetThumb.click();
+            state.cat = this.dataset.cat;
+            state.index = 0;
+            setActiveTab(state.cat);
+            renderGallery();
         });
     });
 
-    // 6. Photo Upload Preview & Simulated Upload
+    // 6. Upload: pre-select the room, preview the chosen photo, validate size, then post for real
+    document.querySelectorAll('.btn-quick-upload').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const targetSelect = document.getElementById('uploadTargetRoom');
+            if (targetSelect && this.dataset.roomId) targetSelect.value = this.dataset.roomId;
+        });
+    });
+
+    const galleryUploadBtn = document.getElementById('galleryUploadBtn');
+    if (galleryUploadBtn && galleryModalEl && uploadModalEl) {
+        galleryUploadBtn.addEventListener('click', function () {
+            const targetSelect = document.getElementById('uploadTargetRoom');
+            if (targetSelect && state.roomId) targetSelect.value = String(state.roomId);
+            galleryModalEl.addEventListener('hidden.bs.modal', function () {
+                bootstrap.Modal.getOrCreateInstance(uploadModalEl).show();
+            }, { once: true });
+            galleryModal.hide();
+        });
+    }
+
     const uploadInput = document.getElementById('uploadFileInput');
     const previewContainer = document.getElementById('uploadPreviewContainer');
     const imagePreview = document.getElementById('uploadImagePreview');
     const fileInfo = document.getElementById('uploadFileInfo');
+    const uploadForm = document.getElementById('uploadPhotoForm');
+    const uploadSubmit = document.getElementById('uploadSubmitBtn');
 
     if (uploadInput) {
         uploadInput.addEventListener('change', function () {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    imagePreview.src = e.target.result;
-                    previewContainer.style.display = 'block';
-                    fileInfo.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-                };
-                reader.readAsDataURL(file);
-            } else {
+            const files = Array.from(this.files || []);
+            if (!files.length) {
                 previewContainer.style.display = 'none';
+                return;
+            }
+            const first = files[0];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                previewContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(first);
+            const tooBig = files.filter(function (f) { return f.size > MAX_PHOTO_BYTES; });
+            fileInfo.className = 'small mt-1 ' + (tooBig.length ? 'text-danger' : 'text-muted');
+            fileInfo.textContent = files.length + ' photo(s) selected • ' + first.name + ' (' + (first.size / 1024).toFixed(0) + ' KB)' +
+                (tooBig.length ? ' — ' + tooBig.length + ' file(s) exceed the 5 MB limit' : '');
+        });
+    }
+
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', function (e) {
+            const files = Array.from(uploadInput && uploadInput.files ? uploadInput.files : []);
+            if (!files.length || files.some(function (f) { return f.size > MAX_PHOTO_BYTES; })) {
+                e.preventDefault();
+                fileInfo.className = 'small mt-1 text-danger';
+                fileInfo.textContent = files.length ? 'Each photo must be 5 MB or smaller.' : 'Please choose at least one photo.';
+                previewContainer.style.display = 'block';
+                return;
+            }
+            if (uploadSubmit) {
+                uploadSubmit.disabled = true;
+                uploadSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Uploading...';
             }
         });
     }
 
-    const uploadForm = document.getElementById('uploadPhotoForm');
-    if (uploadForm) {
-        uploadForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const roomNum = document.getElementById('uploadTargetRoom').value;
-            const category = document.getElementById('uploadPhotoCategory').value;
-
-            // Find matching card and bump photo count
-            const card = document.querySelector(`.room-card-wrapper[data-room="${roomNum}"]`);
-            if (card) {
-                const photoBadge = card.querySelector('.bi-camera');
-                if (photoBadge && photoBadge.parentElement) {
-                    const currentText = photoBadge.parentElement.textContent;
-                    const num = parseInt(currentText.replace(/[^0-9]/g, '')) || 4;
-                    photoBadge.parentElement.innerHTML = `<i class="bi bi-camera me-1 text-gold"></i>${num + 1} Photos`;
-                }
-            }
-
-            // Close upload modal
-            const uploadModalEl = document.getElementById('uploadPhotoModal');
-            const uploadModal = bootstrap.Modal.getInstance(uploadModalEl);
-            if (uploadModal) uploadModal.hide();
-
-            // Success alert
-            alert(`Photo for ${roomNum} (${category}) has been successfully attached to the Room Gallery folder!`);
-            uploadForm.reset();
-            if (previewContainer) previewContainer.style.display = 'none';
-        });
+    // 7. After an upload/removal the server redirects with ?open_room=ID: re-open that room's gallery
+    const openRoomParam = new URLSearchParams(window.location.search).get('open_room');
+    if (openRoomParam) {
+        const target = document.querySelector('.btn-open-gallery[data-room-id="' + openRoomParam.replace(/[^0-9]/g, '') + '"]');
+        if (target) openGallery(target);
     }
 });
 </script>

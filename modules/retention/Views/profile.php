@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 1 - Student Information Management
+ * View: Comprehensive Student Profile (profile.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -208,9 +219,18 @@
                             class="bi bi-geo-alt-fill text-danger me-1"></i><?= htmlspecialchars($demographics['address'] ?? 'Marinduque') ?>
                     </span>
                     <span class="badge badge-burgundy px-3 py-2 rounded-pill shadow-sm">
-                        <i
-                            class="bi bi-mortarboard-fill text-gold me-1"></i><?= htmlspecialchars($selectedStudent['program_code'] ?? 'N/A') ?>
+                        <i class="bi bi-mortarboard-fill text-gold me-1"></i><?= htmlspecialchars($selectedStudent['program_code'] ?? 'N/A') ?>
                     </span>
+                    <?php if (can('retention.admin.profiles')): ?>
+                        <a href="<?= url('retention/admin/profiles/' . (int) $selectedStudent['id']) ?>" class="btn btn-sm btn-outline-marsu rounded-pill shadow-sm">
+                            <i class="bi bi-pencil-square me-1"></i> Supplementary Profile
+                        </a>
+                    <?php endif; ?>
+                    <?php if (can('retention.view')): ?>
+                        <a href="<?= url('retention/admin/preview-student/' . (int) $selectedStudent['id']) ?>" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill shadow-sm">
+                            <i class="bi bi-eye me-1"></i> Preview as Student
+                        </a>
+                    <?php endif; ?>
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
                         <i class="bi bi-printer me-1"></i> Print Record
                     </button>
@@ -359,6 +379,12 @@
                                         class="btn btn-outline-secondary btn-sm rounded-pill w-100 fw-semibold text-start px-3">
                                         <i class="bi bi-journal-check me-2 text-primary"></i>Log Faculty Advising Session
                                     </a>
+                                    <?php if (can('retention.admin.profiles')): ?>
+                                        <a href="<?= url('retention/admin/profiles/' . (int) $selectedStudent['id']) ?>"
+                                            class="btn btn-outline-dark btn-sm rounded-pill w-100 fw-semibold text-start px-3">
+                                            <i class="bi bi-person-lines-fill me-2 text-gold"></i>Edit Supplementary Profile
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -1024,7 +1050,7 @@
                 <!-- Search Input na may Instant Filter & Clear Support -->
                 <div class="input-group input-group-sm" style="width: 220px;">
                     <input type="search" id="searchInput" name="q" class="form-control" placeholder="Search ID / Name..."
-                        value="<?= htmlspecialchars($search ?? '') ?>" oninput="handleSearchInput(this)" autocomplete="off">
+                        value="<?= htmlspecialchars($search ?? '') ?>" autocomplete="off">
                     <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                 </div>
 
@@ -1138,37 +1164,8 @@
                 </tbody>
             </table>
         </div>
-
-        <script>
-            const hadServerQuery = <?= !empty($search) ? 'true' : 'false' ?>;
-
-            function handleSearchInput(input) {
-                const query = input.value.trim().toLowerCase();
-                const rows = document.querySelectorAll('.student-row');
-
-                rows.forEach(row => {
-                    const text = row.innerText.toLowerCase();
-                    row.style.display = (query === '' || text.includes(query)) ? '' : 'none';
-                });
-
-                if (query === '' && hadServerQuery) {
-                    const url = new URL(window.location.href);
-                    url.searchParams.delete('q');
-                    window.location.href = url.toString();
-                }
-            }
-
-            const searchBox = document.getElementById('searchInput');
-            if (searchBox) {
-                searchBox.addEventListener('search', function () {
-                    if (this.value === '' && hadServerQuery) {
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete('q');
-                        window.location.href = url.toString();
-                    }
-                });
-            }
-        </script>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
 
     <?php endif; ?>
 

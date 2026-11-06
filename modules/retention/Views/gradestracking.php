@@ -1,3 +1,14 @@
+<?php
+/**
+ * ============================================================================
+ * [SPAMS] Student Performance & Attendance Monitoring System
+ * Scope: Module 2 - Academic Monitoring
+ * View: Grades Tracking & Class Records (gradestracking.php)
+ * Managed by: SPAMS Research Group (Modules 1 to 3)
+ * Note: Please do not modify if you are developing Modules 4 to 6.
+ * ============================================================================
+ */
+?>
 <div class="p-3" style="font-family: system-ui, -apple-system, sans-serif;">
 
     <style>
@@ -238,7 +249,6 @@
                 <tbody id="matrixTableBody"></tbody>
             </table>
         </div>
-
     </div>
 
 </div>
@@ -780,6 +790,10 @@
             row.innerHTML = html;
             tbody.appendChild(row);
         });
+
+        if (window.matrixPaginator) {
+            window.matrixPaginator.refresh();
+        }
     }
 
     function computeTransmutation(score, maxScore) {
@@ -861,13 +875,19 @@
         alert("Success: All computed grades and criteria for " + activeClass.course_code + " (" + activeClass.section + ") have been securely saved!");
     }
 
+    let matrixStatusFilter = 'all';
+
     document.querySelectorAll('.filter-status-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             document.querySelectorAll('.filter-status-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            const f = this.dataset.filter;
-            document.querySelectorAll('.student-row').forEach(row => {
-                row.style.display = (f === 'all' || row.dataset.status === f) ? '' : 'none';
+            matrixStatusFilter = this.dataset.filter;
+            document.querySelectorAll('#matrixTableBody tr').forEach(row => {
+                if (matrixStatusFilter === 'all' || row.dataset.status === matrixStatusFilter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         });
     });
@@ -875,6 +895,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         initStores();
         renderClassesGrid();
+
         <?php if (!empty($selectedClassId)): ?>
             openClassMatrix("<?= htmlspecialchars($selectedClassId) ?>");
         <?php endif; ?>

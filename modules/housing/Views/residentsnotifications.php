@@ -200,7 +200,7 @@
 <div class="modal fade" id="newBroadcastModal" tabindex="-1" aria-labelledby="newBroadcastModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-white">
+            <div class="modal-header text-white" style="background-color:#800020;">
                 <h5 class="modal-title font-weight-bold" id="newBroadcastModalLabel">
                     <i class="bi bi-broadcast me-2 text-gold"></i>Broadcast Resident Notification
                 </h5>

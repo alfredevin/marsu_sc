@@ -79,7 +79,7 @@ class HomeController
             ORDER BY t.id DESC");
 
         $boardingHouses = Database::fetchAll("SELECT id, name FROM `hsg_boarding_houses` WHERE deleted_at IS NULL ORDER BY name ASC");
-        $rooms = Database::fetchAll("SELECT id, room_number, boarding_house_id, monthly_rate FROM `hsg_rooms` WHERE deleted_at IS NULL ORDER BY room_number ASC");
+        $rooms = Database::fetchAll("SELECT id, room_number, boarding_house_id, monthly_rate, room_type, capacity, occupied_beds FROM `hsg_rooms` WHERE deleted_at IS NULL ORDER BY room_number ASC");
 
         View::render('housing/Views/tenants', [
             'title'          => 'Tenant Profiles & Directory',
@@ -131,6 +131,91 @@ class HomeController
         }
 
         redirect(url('housing/tenants'), 'success', "Tenant {$firstName} {$lastName} ({$studentNo}) registered successfully!");
+    }
+
+    public function updateTenant(): void
+    {
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            redirect(url('housing/tenants'), 'error', 'Invalid tenant record.');
+            return;
+        }
+
+        $existing = Database::fetchOne("SELECT * FROM `hsg_tenants` WHERE id = :id", ['id' => $id]);
+        if (!$existing) {
+            redirect(url('housing/tenants'), 'error', 'Tenant record not found.');
+            return;
+        }
+
+        $studentNo = trim($_POST['student_no'] ?? '');
+        $firstName = trim($_POST['first_name'] ?? '');
+        $lastName  = trim($_POST['last_name'] ?? '');
+
+        if (empty($studentNo) || empty($firstName) || empty($lastName)) {
+            redirect(url('housing/tenants'), 'error', 'Student number, first name, and last name are required.');
+            return;
+        }
+
+        $houseId    = !empty($_POST['boarding_house_id']) ? (int)$_POST['boarding_house_id'] : null;
+        $roomId     = !empty($_POST['room_id']) ? (int)$_POST['room_id'] : null;
+        $status     = trim($_POST['status'] ?? 'Active');
+        $oldRoomId  = !empty($existing['room_id']) ? (int)$existing['room_id'] : null;
+        $oldStatus  = $existing['status'] ?? 'Active';
+
+        $moveInDate  = !empty($_POST['move_in_date']) ? $_POST['move_in_date'] : $existing['move_in_date'];
+        $moveOutDate = !empty($_POST['move_out_date']) ? $_POST['move_out_date'] : null;
+
+        if ($status === 'Checked Out' && empty($moveOutDate)) {
+            $moveOutDate = date('Y-m-d');
+        } elseif ($status === 'Active') {
+            $moveOutDate = null;
+        }
+
+        Database::update('hsg_tenants', [
+            'student_no'              => $studentNo,
+            'first_name'              => $firstName,
+            'last_name'               => $lastName,
+            'gender'                  => $_POST['gender'] ?? ($existing['gender'] ?? 'Female'),
+            'email'                   => trim($_POST['email'] ?? ''),
+            'contact_number'          => trim($_POST['contact_number'] ?? ''),
+            'college'                 => trim($_POST['college'] ?? ($existing['college'] ?? 'CICS')),
+            'program'                 => trim($_POST['program'] ?? ($existing['program'] ?? 'BSIT')),
+            'year_level'              => trim($_POST['year_level'] ?? ($existing['year_level'] ?? '1st Year')),
+            'boarding_house_id'       => $houseId,
+            'room_id'                 => $roomId,
+            'bed_number'              => trim($_POST['bed_number'] ?? 'Bed A'),
+            'move_in_date'            => $moveInDate,
+            'move_out_date'           => $moveOutDate,
+            'monthly_rent'            => (float)($_POST['monthly_rent'] ?? ($existing['monthly_rent'] ?? 1500.00)),
+            'emergency_contact_name'  => trim($_POST['emergency_contact_name'] ?? ''),
+            'emergency_contact_phone' => trim($_POST['emergency_contact_phone'] ?? ''),
+            'status'                  => $status,
+            'updated_at'              => date('Y-m-d H:i:s')
+        ], 'id = :id', ['id' => $id]);
+
+        // Bed occupancy adjustments if room changed or status changed
+        if ($oldStatus === 'Active' && $status === 'Active') {
+            if ($oldRoomId !== $roomId) {
+                if ($oldRoomId) {
+                    Database::query("UPDATE `hsg_rooms` SET occupied_beds = GREATEST(0, occupied_beds - 1) WHERE id = :id", ['id' => $oldRoomId]);
+                }
+                if ($roomId) {
+                    Database::query("UPDATE `hsg_rooms` SET occupied_beds = occupied_beds + 1 WHERE id = :id", ['id' => $roomId]);
+                }
+            }
+        } elseif ($oldStatus === 'Active' && $status !== 'Active') {
+            // Became inactive/checked out
+            if ($oldRoomId) {
+                Database::query("UPDATE `hsg_rooms` SET occupied_beds = GREATEST(0, occupied_beds - 1) WHERE id = :id", ['id' => $oldRoomId]);
+            }
+        } elseif ($oldStatus !== 'Active' && $status === 'Active') {
+            // Reactivated
+            if ($roomId) {
+                Database::query("UPDATE `hsg_rooms` SET occupied_beds = occupied_beds + 1 WHERE id = :id", ['id' => $roomId]);
+            }
+        }
+
+        redirect(url('housing/tenants'), 'success', "Tenant {$firstName} {$lastName} updated successfully!");
     }
 
     public function deleteTenant(): void
@@ -237,14 +322,157 @@ class HomeController
             'total_capacity'   => (int)Database::fetchColumn("SELECT COALESCE(SUM(capacity), 0) FROM `hsg_rooms` WHERE deleted_at IS NULL")
         ];
 
+        // Real photos uploaded by the housing admin, grouped by room id
+        $this->ensureRoomPhotosTable();
+        $photosByRoom = [];
+        $photoRows = Database::fetchAll("SELECT id, room_id, category, caption, file_path, original_name, created_at
+            FROM `hsg_room_photos` WHERE deleted_at IS NULL ORDER BY id DESC");
+        foreach ($photoRows as $row) {
+            $photosByRoom[(int)$row['room_id']][] = [
+                'id'       => (int)$row['id'],
+                'category' => $row['category'],
+                'caption'  => $row['caption'] ?? '',
+                'url'      => asset($row['file_path']),
+                'name'     => $row['original_name'] ?? '',
+                'date'     => date('M d, Y', strtotime($row['created_at'])),
+            ];
+        }
+
         View::render('housing/Views/roomandinventory', [
             'title'          => 'Room & Property Inventory',
             'slug'           => 'housing',
             'user'           => $user,
             'rooms'          => $rooms,
             'boardingHouses' => $boardingHouses,
-            'stats'          => $stats
+            'stats'          => $stats,
+            'photosByRoom'   => $photosByRoom,
+            'canManagePhotos' => can('housing.register')
         ]);
+    }
+
+    /* -------------------------------------------------------------
+     * Room photo gallery (real uploads, stored in public/uploads/housing/rooms)
+     * ------------------------------------------------------------- */
+
+    private const PHOTO_CATEGORIES = ['bed', 'study', 'bath', 'plan', 'safety'];
+    private const PHOTO_MAX_BYTES  = 5 * 1024 * 1024; // 5 MB per photo
+    private const PHOTO_MIME_EXT   = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+
+    private function ensureRoomPhotosTable(): void
+    {
+        Database::pdo()->exec("CREATE TABLE IF NOT EXISTS `hsg_room_photos` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `room_id` INT NOT NULL,
+            `category` VARCHAR(20) NOT NULL DEFAULT 'bed',
+            `caption` VARCHAR(255) NULL,
+            `file_path` VARCHAR(255) NOT NULL,
+            `original_name` VARCHAR(191) NULL,
+            `file_size` INT NULL,
+            `uploaded_by` INT NULL,
+            `created_at` DATETIME NOT NULL,
+            `deleted_at` DATETIME NULL,
+            INDEX (`room_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+    }
+
+    public function storeRoomPhoto(): void
+    {
+        $back   = url('housing/roomandinventory');
+        $roomId = (int)($_POST['room_id'] ?? 0);
+        $cat    = $_POST['category'] ?? 'bed';
+        $caption = mb_substr(trim($_POST['caption'] ?? ''), 0, 255);
+
+        $room = $roomId > 0
+            ? Database::fetchOne("SELECT id FROM `hsg_rooms` WHERE id = :id AND deleted_at IS NULL", ['id' => $roomId])
+            : null;
+        if (!$room) {
+            redirect($back, 'error', 'Please choose a valid room unit for the photo.');
+        }
+        if (!in_array($cat, self::PHOTO_CATEGORIES, true)) {
+            $cat = 'bed';
+        }
+
+        // Normalize $_FILES['photos'] (multiple) into a flat list
+        $files = [];
+        if (!empty($_FILES['photos']['name'])) {
+            $names = (array)$_FILES['photos']['name'];
+            foreach ($names as $i => $n) {
+                if (($_FILES['photos']['error'][$i] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) { continue; }
+                $files[] = [
+                    'name'  => $n,
+                    'tmp'   => $_FILES['photos']['tmp_name'][$i],
+                    'error' => $_FILES['photos']['error'][$i],
+                    'size'  => (int)$_FILES['photos']['size'][$i],
+                ];
+            }
+        }
+        if (empty($files)) {
+            redirect($back, 'error', 'Please select at least one photo to upload (the file may exceed the server upload limit).');
+        }
+        $files = array_slice($files, 0, 10);
+
+        $this->ensureRoomPhotosTable();
+        $dir = dirname(__DIR__, 3) . '/public/uploads/housing/rooms/';
+        if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
+            redirect($back, 'error', 'Could not create the upload folder on the server.');
+        }
+
+        $saved = 0; $problems = [];
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        foreach ($files as $f) {
+            if ($f['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($f['tmp'])) {
+                $problems[] = "{$f['name']}: upload failed";
+                continue;
+            }
+            if ($f['size'] > self::PHOTO_MAX_BYTES) {
+                $problems[] = "{$f['name']}: larger than 5 MB";
+                continue;
+            }
+            $mime = $finfo->file($f['tmp']);
+            if (!isset(self::PHOTO_MIME_EXT[$mime]) || @getimagesize($f['tmp']) === false) {
+                $problems[] = "{$f['name']}: only JPG, PNG or WEBP images are allowed";
+                continue;
+            }
+            $filename = 'room' . $roomId . '_' . bin2hex(random_bytes(8)) . '.' . self::PHOTO_MIME_EXT[$mime];
+            if (!move_uploaded_file($f['tmp'], $dir . $filename)) {
+                $problems[] = "{$f['name']}: could not be saved";
+                continue;
+            }
+            Database::insert('hsg_room_photos', [
+                'room_id'       => $roomId,
+                'category'      => $cat,
+                'caption'       => $caption !== '' ? $caption : null,
+                'file_path'     => 'uploads/housing/rooms/' . $filename,
+                'original_name' => mb_substr(basename($f['name']), 0, 191),
+                'file_size'     => $f['size'],
+                'uploaded_by'   => Auth::id(),
+                'created_at'    => date('Y-m-d H:i:s'),
+            ]);
+            $saved++;
+        }
+
+        $target = url('housing/roomandinventory', ['open_room' => $roomId]);
+        if ($saved > 0) {
+            $msg = "{$saved} photo(s) added to the room gallery.";
+            if ($problems) { $msg .= ' Skipped: ' . implode('; ', $problems); }
+            redirect($target, 'success', $msg);
+        }
+        redirect($back, 'error', 'No photo was saved. ' . implode('; ', $problems));
+    }
+
+    public function deleteRoomPhoto(): void
+    {
+        $id    = (int)($_POST['id'] ?? 0);
+        $photo = $id > 0 ? Database::fetchOne("SELECT * FROM `hsg_room_photos` WHERE id = :id AND deleted_at IS NULL", ['id' => $id]) : null;
+        if (!$photo) {
+            redirect(url('housing/roomandinventory'), 'error', 'Photo not found.');
+        }
+        Database::update('hsg_room_photos', ['deleted_at' => date('Y-m-d H:i:s')], 'id = :id', ['id' => $id]);
+        $file = dirname(__DIR__, 3) . '/public/' . $photo['file_path'];
+        if (str_starts_with($photo['file_path'], 'uploads/housing/rooms/') && is_file($file)) {
+            @unlink($file);
+        }
+        redirect(url('housing/roomandinventory', ['open_room' => (int)$photo['room_id']]), 'success', 'Photo removed from the room gallery.');
     }
 
     public function storeRoom(): void
@@ -281,6 +509,65 @@ class HomeController
             redirect(url('housing/roomandinventory'), 'success', 'Room deleted from inventory.');
         }
         redirect(url('housing/roomandinventory'), 'error', 'Invalid room record.');
+    }
+
+    public function storeBoardingHouse(): void
+    {
+        $name          = trim($_POST['name'] ?? '');
+        $ownerName     = trim($_POST['owner_name'] ?? '');
+        $contactNumber = trim($_POST['contact_number'] ?? '');
+
+        if (empty($name) || empty($ownerName) || empty($contactNumber)) {
+            redirect(url('housing/roomandinventory'), 'error', 'Facility name, owner name, and contact number are required.');
+            return;
+        }
+
+        $validStatus = ['Accredited', 'Pending', 'Under Inspection', 'Expired', 'Revoked'];
+        $status = in_array($_POST['accreditation_status'] ?? '', $validStatus)
+            ? $_POST['accreditation_status']
+            : 'Pending';
+
+        $validRating = ['A', 'B', 'C'];
+        $rating = in_array($_POST['safety_rating'] ?? '', $validRating)
+            ? $_POST['safety_rating']
+            : 'A';
+
+        $rateMin = max(0, (float)($_POST['monthly_rate_min'] ?? 1200));
+        $rateMax = max(0, (float)($_POST['monthly_rate_max'] ?? 2500));
+        if ($rateMax < $rateMin) {
+            $rateMax = $rateMin;
+        }
+
+        Database::insert('hsg_boarding_houses', [
+            'name'                 => $name,
+            'owner_name'           => $ownerName,
+            'contact_number'       => $contactNumber,
+            'address'              => trim($_POST['address'] ?? ''),
+            'barangay'             => trim($_POST['barangay'] ?? 'Brgy. Santol, Boac'),
+            'accreditation_status' => $status,
+            'safety_rating'        => $rating,
+            'total_rooms'          => max(1, (int)($_POST['total_rooms'] ?? 10)),
+            'total_capacity'       => max(1, (int)($_POST['total_capacity'] ?? 30)),
+            'current_occupancy'    => 0,
+            'monthly_rate_min'     => $rateMin,
+            'monthly_rate_max'     => $rateMax,
+            'amenities'            => trim($_POST['amenities'] ?? ''),
+            'created_at'           => date('Y-m-d H:i:s'),
+            'updated_at'           => date('Y-m-d H:i:s'),
+        ]);
+
+        redirect(url('housing/roomandinventory'), 'success', "Boarding facility \"{$name}\" has been registered successfully!");
+    }
+
+    public function deleteBoardingHouse(): void
+    {
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id > 0) {
+            Database::update('hsg_boarding_houses', ['deleted_at' => date('Y-m-d H:i:s')], 'id = :id', ['id' => $id]);
+            redirect(url('housing/roomandinventory'), 'success', 'Boarding facility removed from directory.');
+            return;
+        }
+        redirect(url('housing/roomandinventory'), 'error', 'Invalid facility record.');
     }
 
     public function availabilitytracking(): void
@@ -718,14 +1005,212 @@ class HomeController
     {
         $user = Auth::user();
 
-        $houses = Database::fetchAll("SELECT * FROM `hsg_boarding_houses` WHERE deleted_at IS NULL ORDER BY name ASC");
+        // Ensure table exists
+        Database::pdo()->exec("CREATE TABLE IF NOT EXISTS `hsg_condition_reports` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `audit_ref` VARCHAR(50) NOT NULL UNIQUE,
+            `boarding_house_id` INT NULL,
+            `facility_name` VARCHAR(191) NOT NULL,
+            `room_unit` VARCHAR(50) NOT NULL,
+            `inspection_stage` VARCHAR(100) NOT NULL DEFAULT 'Pre-Move-in Intake',
+            `inspector_name` VARCHAR(100) NOT NULL,
+            `score_rating` VARCHAR(100) NOT NULL DEFAULT '95% Satisfactory',
+            `inspection_date` DATE NOT NULL,
+            `submeter_electric` VARCHAR(50) DEFAULT '00124.5 kWh',
+            `submeter_water` VARCHAR(50) DEFAULT '0045.2 m³',
+            `key_surrender_status` VARCHAR(100) DEFAULT 'Keys Accounted',
+            `checklist_data` LONGTEXT NULL,
+            `remarks` TEXT NULL,
+            `status` VARCHAR(50) DEFAULT 'Completed',
+            `created_at` DATETIME NOT NULL,
+            `updated_at` DATETIME NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        // Seed default records if empty
+        $count = (int)Database::fetchColumn("SELECT COUNT(*) FROM `hsg_condition_reports`");
+        if ($count === 0) {
+            $baseItems = [
+                'electrical' => [
+                    ['item' => 'Light switches and ceiling fixtures', 'status' => 'Passed', 'notes' => 'Tested and functional, clean LED diffusers'],
+                    ['item' => 'Power convenience outlets', 'status' => 'Passed', 'notes' => 'Ground pin intact, safe 220V voltage'],
+                    ['item' => 'Ceiling fan & speed controller', 'status' => 'Passed', 'notes' => 'All 3 speed levels operating quietly'],
+                    ['item' => 'Main sub-breaker switch', 'status' => 'Passed', 'notes' => 'Proper 20A breaker label, dry panel']
+                ],
+                'doors_windows' => [
+                    ['item' => 'Main entrance door & heavy deadbolt', 'status' => 'Passed', 'notes' => 'Deadbolt aligns smoothly, 2 keys tested'],
+                    ['item' => 'Window glass, frames & security grilles', 'status' => 'Passed', 'notes' => 'Glass clean, steel grilles firmly anchored'],
+                    ['item' => 'Insect screen mesh', 'status' => 'Passed', 'notes' => 'Tear-free, tight weather-seal']
+                ],
+                'walls_floors' => [
+                    ['item' => 'Interior wall paint & surface finish', 'status' => 'Passed', 'notes' => 'Freshly painted beige, no scuff marks'],
+                    ['item' => 'Floor tiles & grout', 'status' => 'Passed', 'notes' => 'No broken tiles, grout intact, non-slip'],
+                    ['item' => 'Ceiling panels & water leak check', 'status' => 'Passed', 'notes' => 'Dry surface, zero water marks or stains']
+                ],
+                'furniture' => [
+                    ['item' => 'Bed frame & structural foundation', 'status' => 'Passed', 'notes' => 'Solid hardwood/steel frame, sturdy legs'],
+                    ['item' => 'Upholstered foam mattress', 'status' => 'Passed', 'notes' => 'Sanitized with protective zippered cover'],
+                    ['item' => 'Study desk and chair', 'status' => 'Passed', 'notes' => 'Level surface, varnish in good order'],
+                    ['item' => 'Clothing wardrobe cabinet & lock', 'status' => 'Passed', 'notes' => 'Smooth hinges, lock with key functional']
+                ],
+                'plumbing' => [
+                    ['item' => 'Bathroom sink & stainless faucet', 'status' => 'Passed', 'notes' => 'Steady water pressure, no leak at P-trap'],
+                    ['item' => 'Water closet & flush tank', 'status' => 'Passed', 'notes' => 'Dual-flush system rapid refill, no running water'],
+                    ['item' => 'Shower fixture & drainage flow', 'status' => 'Passed', 'notes' => 'Immediate drain flow, hair strainer clean']
+                ],
+                'safety' => [
+                    ['item' => 'Room photoelectric smoke detector', 'status' => 'Passed', 'notes' => 'Test button chirps, green standby LED'],
+                    ['item' => 'Corridor fire extinguisher proximity', 'status' => 'Passed', 'notes' => '10 lbs ABC dry chemical unit within 5 meters'],
+                    ['item' => 'Emergency evacuation route signage', 'status' => 'Passed', 'notes' => 'Laminated floor plan posted on door rear']
+                ]
+            ];
+
+            // AUD-2026-081
+            Database::insert('hsg_condition_reports', [
+                'audit_ref'            => 'AUD-2026-081',
+                'boarding_house_id'    => 1,
+                'facility_name'        => 'Villa Marinduque Dorm',
+                'room_unit'            => 'Room 102',
+                'inspection_stage'     => 'Pre-Move-in Intake',
+                'inspector_name'       => 'Engr. R. Santos (Landlord)',
+                'score_rating'         => '98% Pristine',
+                'inspection_date'      => '2026-08-15',
+                'submeter_electric'    => '00214.8 kWh',
+                'submeter_water'       => '0068.3 m³',
+                'key_surrender_status' => '2 Room Keys Issued & Acknowledged',
+                'checklist_data'       => json_encode($baseItems),
+                'remarks'              => 'Pre-move-in comprehensive condition audit for incoming semester resident. All furniture, electrical outlets, plumbing fixtures, and smoke alarms verified in pristine condition. Resident acknowledged initial meter readings.',
+                'status'               => 'Completed',
+                'created_at'           => '2026-08-15 09:30:00'
+            ]);
+
+            // AUD-2026-082
+            $items2 = $baseItems;
+            $items2['furniture'][2]['status'] = 'Minor Wear';
+            $items2['furniture'][2]['notes'] = 'Light surface scratch on desk edge from laptop usage; structurally 100% stable.';
+            Database::insert('hsg_condition_reports', [
+                'audit_ref'            => 'AUD-2026-082',
+                'boarding_house_id'    => 2,
+                'facility_name'        => 'Greenview Boarding House',
+                'room_unit'            => 'Room 204',
+                'inspection_stage'     => 'Midterm Safety Audit',
+                'inspector_name'       => 'MarSU OSAS Safety Inspector',
+                'score_rating'         => '92% Satisfactory',
+                'inspection_date'      => '2026-09-20',
+                'submeter_electric'    => '00482.1 kWh',
+                'submeter_water'       => '0142.9 m³',
+                'key_surrender_status' => 'Keys Verified in Resident Custody',
+                'checklist_data'       => json_encode($items2),
+                'remarks'              => 'Midterm campus safety and sanitary audit conducted by OSAS. Extension cords properly routed with surge protectors. BFP fire exit signs clearly illuminated. Room condition satisfactory.',
+                'status'               => 'Completed',
+                'created_at'           => '2026-09-20 14:15:00'
+            ]);
+
+            // AUD-2026-083 (Minor Window Screen Tear)
+            $items3 = $baseItems;
+            $items3['doors_windows'][2]['status'] = 'Needs Attention';
+            $items3['doors_windows'][2]['notes'] = 'Minor 2-inch tear observed near bottom-left window latch. Frame intact; scheduled for mesh screen patch.';
+            Database::insert('hsg_condition_reports', [
+                'audit_ref'            => 'AUD-2026-083',
+                'boarding_house_id'    => 3,
+                'facility_name'        => 'Sunrise Ladies Dorm',
+                'room_unit'            => 'Room 104',
+                'inspection_stage'     => 'Checkout Clearance',
+                'inspector_name'       => 'Mrs. A. Ramos',
+                'score_rating'         => 'Minor Window Screen Tear',
+                'inspection_date'      => '2026-09-30',
+                'submeter_electric'    => '00790.4 kWh',
+                'submeter_water'       => '0210.0 m³',
+                'key_surrender_status' => '2 Keys Surrendered & Returned',
+                'checklist_data'       => json_encode($items3),
+                'remarks'              => 'End-of-stay checkout clearance. Room keys surrendered to matron. Final utility sub-meters read and settled. Minor window screen tear logged under regular maintenance wear-and-tear. Full deposit cleared.',
+                'status'               => 'Completed',
+                'created_at'           => '2026-09-30 16:45:00'
+            ]);
+        }
+
+        $reports = Database::fetchAll("SELECT * FROM `hsg_condition_reports` ORDER BY id DESC");
+        $houses  = Database::fetchAll("SELECT * FROM `hsg_boarding_houses` WHERE deleted_at IS NULL ORDER BY name ASC");
+        $rooms   = Database::fetchAll("SELECT r.*, b.name as house_name FROM `hsg_rooms` r LEFT JOIN `hsg_boarding_houses` b ON r.boarding_house_id = b.id WHERE r.deleted_at IS NULL ORDER BY r.room_number ASC");
 
         View::render('housing/Views/conditionreports', [
-            'title'  => 'Safety & Sanitary Inspection Condition Reports',
-            'slug'   => 'housing',
-            'user'   => $user,
-            'houses' => $houses
+            'title'   => 'Safety & Sanitary Inspection Condition Reports',
+            'slug'    => 'housing',
+            'user'    => $user,
+            'reports' => $reports,
+            'houses'  => $houses,
+            'rooms'   => $rooms
         ]);
+    }
+
+    public function storeConditionReport(): void
+    {
+        $facilityName    = trim($_POST['facility_name'] ?? '');
+        $roomUnit        = trim($_POST['room_unit'] ?? '');
+        $inspectionStage = trim($_POST['inspection_stage'] ?? 'Pre-Move-in Intake');
+        $inspectorName   = trim($_POST['inspector_name'] ?? 'Housing Inspector');
+        $rating          = trim($_POST['score_rating'] ?? '95% Satisfactory');
+        $inspectionDate  = !empty($_POST['inspection_date']) ? $_POST['inspection_date'] : date('Y-m-d');
+        $remarks         = trim($_POST['remarks'] ?? '');
+
+        // Generate Audit Reference Number
+        $lastId = (int)Database::fetchColumn("SELECT MAX(id) FROM `hsg_condition_reports`");
+        $nextNum = str_pad((string)($lastId + 84), 3, '0', STR_PAD_LEFT);
+        $auditRef = 'AUD-' . date('Y') . '-' . $nextNum;
+
+        $checklist = [
+            'electrical' => [
+                ['item' => 'Light switches and ceiling fixtures', 'status' => 'Passed', 'notes' => 'Tested and functional, clean LED diffusers'],
+                ['item' => 'Power convenience outlets', 'status' => 'Passed', 'notes' => 'Ground pin intact, safe 220V voltage'],
+                ['item' => 'Ceiling fan & speed controller', 'status' => 'Passed', 'notes' => 'All 3 speed levels operating quietly'],
+                ['item' => 'Main sub-breaker switch', 'status' => 'Passed', 'notes' => 'Proper 20A breaker label, dry panel']
+            ],
+            'doors_windows' => [
+                ['item' => 'Main entrance door & heavy deadbolt', 'status' => 'Passed', 'notes' => 'Deadbolt aligns smoothly, 2 keys tested'],
+                ['item' => 'Window glass, frames & security grilles', 'status' => 'Passed', 'notes' => 'Glass clean, steel grilles firmly anchored'],
+                ['item' => 'Insect screen mesh', 'status' => 'Passed', 'notes' => 'Tear-free, tight weather-seal']
+            ],
+            'walls_floors' => [
+                ['item' => 'Interior wall paint & surface finish', 'status' => 'Passed', 'notes' => 'Freshly painted beige, no scuff marks'],
+                ['item' => 'Floor tiles & grout', 'status' => 'Passed', 'notes' => 'No broken tiles, grout intact, non-slip'],
+                ['item' => 'Ceiling panels & water leak check', 'status' => 'Passed', 'notes' => 'Dry surface, zero water marks or stains']
+            ],
+            'furniture' => [
+                ['item' => 'Bed frame & structural foundation', 'status' => 'Passed', 'notes' => 'Solid hardwood/steel frame, sturdy legs'],
+                ['item' => 'Upholstered foam mattress', 'status' => 'Passed', 'notes' => 'Sanitized with protective zippered cover'],
+                ['item' => 'Study desk and chair', 'status' => 'Passed', 'notes' => 'Level surface, varnish in good order'],
+                ['item' => 'Clothing wardrobe cabinet & lock', 'status' => 'Passed', 'notes' => 'Smooth hinges, lock with key functional']
+            ],
+            'plumbing' => [
+                ['item' => 'Bathroom sink & stainless faucet', 'status' => 'Passed', 'notes' => 'Steady water pressure, no leak at P-trap'],
+                ['item' => 'Water closet & flush tank', 'status' => 'Passed', 'notes' => 'Dual-flush system rapid refill, no running water'],
+                ['item' => 'Shower fixture & drainage flow', 'status' => 'Passed', 'notes' => 'Immediate drain flow, hair strainer clean']
+            ],
+            'safety' => [
+                ['item' => 'Room photoelectric smoke detector', 'status' => 'Passed', 'notes' => 'Test button chirps, green standby LED'],
+                ['item' => 'Corridor fire extinguisher proximity', 'status' => 'Passed', 'notes' => '10 lbs ABC dry chemical unit within 5 meters'],
+                ['item' => 'Emergency evacuation route signage', 'status' => 'Passed', 'notes' => 'Laminated floor plan posted on door rear']
+            ]
+        ];
+
+        Database::insert('hsg_condition_reports', [
+            'audit_ref'            => $auditRef,
+            'boarding_house_id'    => !empty($_POST['boarding_house_id']) ? (int)$_POST['boarding_house_id'] : null,
+            'facility_name'        => $facilityName ?: 'Villa Marinduque Dorm',
+            'room_unit'            => $roomUnit ?: 'Rm 101',
+            'inspection_stage'     => $inspectionStage,
+            'inspector_name'       => $inspectorName,
+            'score_rating'         => $rating,
+            'inspection_date'      => $inspectionDate,
+            'submeter_electric'    => trim($_POST['submeter_electric'] ?? '00120.0 kWh'),
+            'submeter_water'       => trim($_POST['submeter_water'] ?? '0040.0 m³'),
+            'key_surrender_status' => trim($_POST['key_surrender_status'] ?? 'Keys Issued & Tested'),
+            'checklist_data'       => json_encode($checklist),
+            'remarks'              => $remarks ?: 'Standard room handover inspection completed.',
+            'status'               => 'Completed',
+            'created_at'           => date('Y-m-d H:i:s')
+        ]);
+
+        redirect(url('housing/conditionreports'), 'success', "Inspection checklist {$auditRef} logged successfully!");
     }
 
     public function servicehistory(): void

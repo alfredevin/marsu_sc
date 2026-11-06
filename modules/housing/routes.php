@@ -20,6 +20,7 @@ $router->post('/housing/create', [HomeController::class, 'store'], ['auth', 'per
 // 1. Tenant Management
 $router->get('/housing/tenants', [HomeController::class, 'tenants'], ['auth', 'permission:housing.view']);
 $router->post('/housing/tenants/create', [HomeController::class, 'storeTenant'], ['auth', 'permission:housing.view', 'csrf']);
+$router->post('/housing/tenants/update', [HomeController::class, 'updateTenant'], ['auth', 'permission:housing.view', 'csrf']);
 $router->post('/housing/tenants/delete', [HomeController::class, 'deleteTenant'], ['auth', 'permission:housing.view', 'csrf']);
 $router->get('/housing/residencyhistory', [HomeController::class, 'residencyhistory'], ['auth', 'permission:housing.view']);
 $router->get('/housing/history', [HomeController::class, 'history'], ['auth', 'permission:housing.view']);
@@ -34,6 +35,8 @@ $router->get('/housing/occupancymonitoring', [HomeController::class, 'occupancym
 $router->get('/housing/bedallocation', [HomeController::class, 'bedallocation'], ['auth', 'permission:housing.view']);
 $router->post('/housing/rooms/create', [HomeController::class, 'storeRoom'], ['auth', 'permission:housing.view', 'csrf']);
 $router->post('/housing/rooms/delete', [HomeController::class, 'deleteRoom'], ['auth', 'permission:housing.view', 'csrf']);
+$router->post('/housing/rooms/photos/upload', [HomeController::class, 'storeRoomPhoto'], ['auth', 'permission:housing.register', 'csrf']);
+$router->post('/housing/rooms/photos/delete', [HomeController::class, 'deleteRoomPhoto'], ['auth', 'permission:housing.register', 'csrf']);
 
 // 3. Reservation & Application
 $router->get('/housing/housingapplication', [HomeController::class, 'housingapplication'], ['auth', 'permission:housing.view']);
@@ -59,6 +62,7 @@ $router->get('/housing/conditionreports', [HomeController::class, 'conditionrepo
 $router->get('/housing/servicehistory', [HomeController::class, 'servicehistory'], ['auth', 'permission:housing.view']);
 $router->post('/housing/maintenance/create', [HomeController::class, 'storeMaintenance'], ['auth', 'permission:housing.view', 'csrf']);
 $router->post('/housing/maintenance/status', [HomeController::class, 'updateMaintenanceStatus'], ['auth', 'permission:housing.view', 'csrf']);
+$router->post('/housing/conditionreports/create', [HomeController::class, 'storeConditionReport'], ['auth', 'permission:housing.view', 'csrf']);
 
 // 6. Communications & Incidents
 $router->get('/housing/announcements', [HomeController::class, 'announcements'], ['auth', 'permission:housing.view']);

@@ -45,7 +45,9 @@ For this initial milestone, **you do NOT need to touch backend PHP, SQL, or data
 3. Click **New** (on the left sidebar), name the database **`marsu_erp`**, and click **Create**.
 4. In Git Bash, enter your project folder and run the migration and seed scripts:
    ```bash
-   
+   cd /c/xampp/htdocs/marsu_sc
+   /c/xampp/php/php.exe scripts/migrate.php
+   /c/xampp/php/php.exe scripts/seed.php
    ```
 5. Open your browser and go to: `http://localhost/marsu_sc/`  
    🎉 **The ERP login page should now appear!**

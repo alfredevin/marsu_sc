@@ -154,7 +154,7 @@
 <div class="modal fade" id="newMaintenanceModal" tabindex="-1" aria-labelledby="newMaintenanceModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-white">
+            <div class="modal-header text-white" style="background-color:#800020;">
                 <h5 class="modal-title font-weight-bold" id="newMaintenanceModalLabel">
                     <i class="bi bi-tools me-2 text-gold"></i>File Maintenance / Repair Ticket
                 </h5>

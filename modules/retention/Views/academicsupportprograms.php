@@ -37,62 +37,19 @@
         </div>
     </div>
 
-    <!-- KPI Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-                <span class="text-muted small fw-semibold text-uppercase">Active Enrollees</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-success"><?= $activeTutees ?? count($supportList ?? []) ?></h3>
-                    <span class="badge bg-success-subtle text-success border border-success">Enrolled</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Students receiving peer tutoring</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-primary">
-                <span class="text-muted small fw-semibold text-uppercase">Remediation Subjects</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-primary"><?= $subjectCount ?? 0 ?></h3>
-                    <span class="badge bg-primary-subtle text-primary border border-primary">Active Clinics</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Courses with active tutoring groups</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-info">
-                <span class="text-muted small fw-semibold text-uppercase">Assigned Peer Mentors</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-info"><?= $mentorCount ?? 0 ?></h3>
-                    <span class="badge bg-info-subtle text-info border border-info">Honor Students</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Student tutors conducting sessions</small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-warning">
-                <span class="text-muted small fw-semibold text-uppercase">Completed Batches</span>
-                <div class="d-flex align-items-baseline justify-content-between mt-2">
-                    <h3 class="fw-bold mb-0 text-dark"><?= $completedBatches ?? 0 ?></h3>
-                    <span class="badge bg-warning-subtle text-dark border border-warning">Graduated</span>
-                </div>
-                <small class="text-muted mt-2 d-block">Successfully completed remediation</small>
-            </div>
-        </div>
-    </div>
 
     <!-- Table -->
     <div class="card border rounded-3 shadow-sm bg-white mb-4">
-        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="m-0 fw-bold marsu-maroon-text">
                 <i class="bi bi-people-fill me-1"></i> Peer Mentoring & Academic Remediation Roster
             </h6>
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" id="supportSearchInput" class="form-control form-control-sm" placeholder="Search ID, Name, or Subject..." style="width: 250px;">
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+            <table class="table table-hover align-middle mb-0" id="supportTable" style="font-size: 13px;">
                 <thead class="table-light text-uppercase small text-muted">
                     <tr>
                         <th class="ps-3 py-3">Student Details</th>
@@ -107,7 +64,7 @@
                 <tbody>
                     <?php if (!empty($supportList)): ?>
                         <?php foreach ($supportList as $row): ?>
-                            <tr>
+                            <tr class="support-row">
                                 <td class="ps-3 fw-semibold text-dark">
                                     <div><?= htmlspecialchars($row['full_name'] ?? 'N/A') ?></div>
                                     <small class="text-muted"><?= htmlspecialchars($row['student_id'] ?? '') ?></small>
@@ -152,6 +109,8 @@
                 </tbody>
             </table>
         </div>
+        <!-- Server-Side Table Pagination -->
+        <?= $pagination['html'] ?? '' ?>
     </div>
 </div>
 
@@ -206,3 +165,4 @@
         </div>
     </div>
 </div>
+

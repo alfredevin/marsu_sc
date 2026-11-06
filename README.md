@@ -81,7 +81,8 @@ Each group has exclusive write permissions over their assigned directory in `mod
 | **Group 5** | `orgfinance` | Student Organizations Collection & Finance | `orf_` | `group5_lead` |
 | **Group 6** | `orgleadership` | Student Leadership Accreditation & Evaluation | `sld_` | `group6_lead` |
 | **Group 7** | `housing` | Accredited Boarding House Management & Directory | `hsg_` | `group7_lead` |
-| **Group 8** | `retention` | Student Retention & Academic Risk Predictor | `ret_` | `group8_lead` |
+| **Group 8A** | `analytics` | Academic Analytics & Student Monitoring System | `ana_` | `group8a_lead` |
+| **Group 8B** | `retention` | Student Retention & Academic Risk Predictor | `ret_` | `group8b_lead` |
 | **Group 9** | `assets` | University Equipment & IT Asset Management | `ast_` | `group9_lead` |
 | **Group 10** | `welfare` | Student Welfare Services & Grants (*Confidential*) | `wlf_` | `group10_lead` |
 | **Group 11** | `guidance` | Guidance & Counseling Records System (*Strict Privacy*) | `gdc_` | `group11_lead` |

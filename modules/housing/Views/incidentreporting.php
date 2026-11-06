@@ -162,7 +162,7 @@
 <div class="modal fade" id="newIncidentModal" tabindex="-1" aria-labelledby="newIncidentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-primary">
+            <div class="modal-header text-white" style="background-color:#800020;">
                 <h5 class="modal-title font-weight-bold" id="newIncidentModalLabel">
                     <i class="bi bi-shield-lock-fill me-2 text-gold"></i>File Confidential Incident Report
                 </h5>

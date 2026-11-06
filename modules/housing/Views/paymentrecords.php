@@ -218,7 +218,7 @@
 <div class="modal fade" id="newPaymentModal" tabindex="-1" aria-labelledby="newPaymentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-marsu text-primary">
+            <div class="modal-header text-white" style="background-color:#800020;">
                 <h5 class="modal-title font-weight-bold" id="newPaymentModalLabel">
                     <i class="bi bi-cash-stack me-2 text-gold"></i>Log Student Rent Payment
                 </h5>

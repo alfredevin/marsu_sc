@@ -74,8 +74,7 @@
             <i class="bi bi-speedometer2 me-2 text-gold"></i><?= e($moduleName) ?>
         </h1>
         <p class="text-muted small mb-0">
-            Institutional predictive analytics, cohort retention monitoring, academic risk early warning alerts, and
-            intervention workflows.
+            Academic performance, attendance and conduct monitoring from posted grades and class records.
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
@@ -95,22 +94,8 @@
 
 <!-- 2. HIGH-LEVEL INSTITUTIONAL KPI COMMAND METRICS -->
 <div class="row g-3 mb-4">
-    <!-- Institutional Retention Rate -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
-        <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
-            <span class="text-muted small fw-semibold text-uppercase">Retention Rate</span>
-            <div class="d-flex align-items-baseline justify-content-between mt-2">
-                <h3 class="fw-bold mb-0 text-success">
-                    <?= $overallRetentionRate === null ? '—' : htmlspecialchars((string) $overallRetentionRate) . '%' ?></h3>
-                <span class="badge bg-success-subtle text-success border border-success"
-                    style="font-size: 10px;">Target: &ge;85%</span>
-            </div>
-            <small class="text-muted mt-2 d-block">Overall cohort persistence</small>
-        </div>
-    </div>
-
     <!-- Cohort Passing Rate -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="col-xl-3 col-md-4 col-sm-6">
         <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-success">
             <span class="text-muted small fw-semibold text-uppercase">Cohort Passing Rate</span>
             <div class="d-flex align-items-baseline justify-content-between mt-2">
@@ -149,7 +134,7 @@
     </div>
 
     <!-- High-Risk Students -->
-    <div class="col-xl-2 col-md-6 col-sm-6">
+    <div class="col-xl-3 col-md-6 col-sm-6">
         <div class="card border rounded-3 p-3 bg-white shadow-sm h-100 kpi-border-danger">
             <span class="text-muted small fw-semibold text-uppercase">High-Risk Flagged</span>
             <div class="d-flex align-items-baseline justify-content-between mt-2">
@@ -232,39 +217,8 @@
 </div>
 
 <div class="row g-3 mb-4">
-    <!-- Chart 3: Longitudinal Retention vs Attrition Trajectory -->
-    <div class="col-lg-6">
-        <div class="card border rounded-3 shadow-sm bg-white h-100">
-            <div
-                class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <div>
-                    <h6 class="m-0 fw-bold text-dark">
-                        <i class="bi bi-graph-up-arrow me-1 text-success"></i> Longitudinal Retention vs. Attrition
-                        Trajectory
-                    </h6>
-                    <small class="text-muted">3-Year institutional persistence comparison across academic
-                        cohorts</small>
-                </div>
-                <a href="<?= url('analytics/trendsovertime') ?>" class="btn btn-sm btn-outline-dark py-1 px-2"
-                    style="font-size: 11px;">
-                    <i class="bi bi-clock-history me-1"></i>Multi-Year Ledger &rarr;
-                </a>
-            </div>
-            <div class="card-body p-3">
-                <div style="height: 260px; position: relative;">
-                    <canvas id="dashboardRetentionTrendChart"></canvas>
-                    <?php if (empty($longitudinalTrends['years'])): ?>
-                        <div class="position-absolute top-50 start-50 translate-middle text-center text-muted small">
-                            <i class="bi bi-graph-up fs-3 d-block mb-1"></i>Needs official enrollment in at least two academic years.
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Chart 4: Degree Program Academic Risk Distribution -->
-    <div class="col-lg-6">
+    <div class="col-12">
         <div class="card border rounded-3 shadow-sm bg-white h-100">
             <div
                 class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -631,62 +585,6 @@
                         legend: { display: false }
                     },
                     cutout: '65%'
-                }
-            });
-        }
-
-        // CHART 3: Longitudinal Retention vs Attrition Trajectory
-        const trendData = <?= json_encode($longitudinalTrends ?? ['years' => [], 'retention' => [], 'attrition' => []]) ?>;
-        const ctxTrend = document.getElementById('dashboardRetentionTrendChart');
-        if (ctxTrend && trendData.years) {
-            new Chart(ctxTrend.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: trendData.years,
-                    datasets: [
-                        {
-                            label: 'Retention Rate (%)',
-                            data: trendData.retention,
-                            borderColor: '#198754',
-                            backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                            borderWidth: 2.5,
-                            fill: true,
-                            tension: 0.3,
-                            pointBackgroundColor: '#198754',
-                            pointRadius: 4
-                        },
-                        {
-                            label: 'Attrition Rate (%)',
-                            data: trendData.attrition,
-                            borderColor: '#dc3545',
-                            backgroundColor: 'rgba(220, 53, 69, 0.05)',
-                            borderWidth: 2,
-                            borderDash: [4, 4],
-                            fill: false,
-                            tension: 0.3,
-                            pointBackgroundColor: '#dc3545',
-                            pointRadius: 3
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function (val) { return val + '%'; }
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: { boxWidth: 12, font: { size: 11 } }
-                        }
-                    }
                 }
             });
         }

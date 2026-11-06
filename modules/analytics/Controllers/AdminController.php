@@ -439,7 +439,7 @@ class AdminController
             }
         }
 
-        Session::flash('success', "Institutional retention settings updated successfully ({$updatedCount} parameter(s) modified).");
+        Session::flash('success', "Analytics policy settings updated successfully ({$updatedCount} parameter(s) modified).");
         redirect(url('analytics/admin/settings'));
     }
 

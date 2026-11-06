@@ -350,27 +350,6 @@
                                     </ul>
                                 </div>
                             </div>
-
-                            <!-- Retention Quick Intervention Shortcuts -->
-                            <div class="mt-3 pt-3 border-top text-start">
-                                <div class="small fw-bold text-secondary text-uppercase mb-2">
-                                    <i class="bi bi-lightning-charge-fill text-warning me-1"></i>Retention Interventions:
-                                </div>
-                                <div class="d-flex flex-column gap-2">
-                                    <a href="guidancereferrals?student_id=<?= urlencode($selectedStudent['student_number']) ?>"
-                                        class="btn btn-outline-warning text-dark btn-sm rounded-pill w-100 fw-semibold text-start px-3">
-                                        <i class="bi bi-person-heart me-2 text-danger"></i>Refer to Guidance & Counseling
-                                    </a>
-                                    <a href="atriskstudents?flag_student=<?= urlencode($selectedStudent['student_number']) ?>"
-                                        class="btn btn-outline-danger btn-sm rounded-pill w-100 fw-semibold text-start px-3">
-                                        <i class="bi bi-shield-exclamation me-2"></i>Flag as At-Risk Student
-                                    </a>
-                                    <a href="advisingrecords?student_id=<?= urlencode($selectedStudent['student_number']) ?>"
-                                        class="btn btn-outline-secondary btn-sm rounded-pill w-100 fw-semibold text-start px-3">
-                                        <i class="bi bi-journal-check me-2 text-primary"></i>Log Faculty Advising Session
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -432,8 +411,7 @@
                                         <i class="bi bi-info-circle-fill fs-4 text-marsu-burgundy flex-shrink-0"></i>
                                         <div class="small">
                                             Institutional student demographic and socio-economic profile under <strong>RA
-                                                10173 (Data Privacy Act of 2012)</strong>. Verified for academic early
-                                            warning and retention monitoring.
+                                                10173 (Data Privacy Act of 2012)</strong>. Used only for academic monitoring.
                                         </div>
                                     </div>
 

@@ -13,7 +13,7 @@ use Modules\Analytics\Support\GradeCalculator;
 use Modules\Analytics\Support\RiskSignals;
 
 /**
- * Controller for Student Retention & Academic Risk Early Warning System
+ * Controller for the Academic Analytics monitoring pages
  */
 class HomeController
 {
@@ -92,10 +92,6 @@ class HomeController
             $dashboardChartSubjects = array_merge(array_slice($bottlenecks, 0, 6), array_slice($normalCourses, 0, 6));
         }
 
-        // 6. Longitudinal retention from official term enrollment
-        $longitudinalTrends = RiskSignals::retentionTrend();
-        $overallRetentionRate = $longitudinalTrends['retention'] ? end($longitudinalTrends['retention']) : null;
-
         // 7. Program-level risk distribution data
         $programRiskDistribution = [
             'labels' => array_keys($risk['byProgram']),
@@ -105,17 +101,16 @@ class HomeController
         ];
 
         View::render('analytics/Views/index', [
-            'title' => 'Student Retention & Academic Risk Early Warning System — Dashboard',
-            'moduleName' => 'Student Retention & Academic Risk Early Warning System',
-            'slug' => 'retention',
+            'title' => 'Academic Analytics & Student Monitoring — Dashboard',
+            'moduleName' => 'Academic Analytics & Student Monitoring',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
                 'Academic Analytics' => '',
-                'Student Retention & Academic Risk Early Warning System' => ''
+                'Monitoring Dashboard' => ''
             ],
             'termLabel' => $term ? $term['academic_year_label'] . ' • ' . $term['semester_name'] : 'No active term',
             // KPI Metrics
-            'overallRetentionRate' => $overallRetentionRate,
             'overallPassingRate' => $overallPassingRate,
             'overallMeanGpa' => $overallMeanGpa,
             'highRiskCount' => $highRiskCount,
@@ -132,7 +127,6 @@ class HomeController
                 'pass' => $totalPass,
                 'deficient' => ($totalRisk + $totalFail)
             ],
-            'longitudinalTrends' => $longitudinalTrends,
             'programRiskDistribution' => $programRiskDistribution,
             // Records and alerts
             'records' => $records,
@@ -585,11 +579,11 @@ class HomeController
 
         View::render('analytics/Views/profile', [
             'title' => !empty($selectedStudent) ? 'Student Profile: ' . htmlspecialchars($selectedStudent['full_name']) : 'Student Profiles',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
+            'moduleName' => 'Academic Analytics',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Student Information Management' => '',
                 'Student Profiles' => ''
             ],
@@ -691,11 +685,11 @@ class HomeController
 
         View::render('analytics/Views/gradestracking', [
             'title' => 'Grades Tracking & Class Record',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
+            'moduleName' => 'Academic Analytics',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Grades Tracking' => ''
             ],
@@ -762,11 +756,11 @@ class HomeController
 
         View::render('analytics/Views/subjectperformance', [
             'title' => 'Course & Subject Performance Analytics',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
+            'moduleName' => 'Academic Analytics',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Subject Performance' => ''
             ],
@@ -948,11 +942,11 @@ class HomeController
 
         View::render('analytics/Views/progressreports', [
             'title' => 'Academic Progress Reports',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
+            'moduleName' => 'Academic Analytics',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Progress Reports' => ''
             ],
@@ -1086,11 +1080,11 @@ class HomeController
 
         View::render('analytics/Views/failedincompletemonitoring', [
             'title' => 'Failed & Incomplete Subject Watchlist',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
+            'moduleName' => 'Academic Analytics',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Failed Incomplete Monitoring' => ''
             ],
@@ -1290,11 +1284,11 @@ class HomeController
         }
         View::render('analytics/Views/attendancerecords', [
             'title' => 'Student Attendance Records & Roll-Call Monitoring',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
+            'moduleName' => 'Academic Analytics',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Attendance & Engagement' => '',
                 'Attendance Records' => ''
             ],
@@ -1363,11 +1357,11 @@ class HomeController
 
         View::render('analytics/Views/participationtracking', [
             'title' => 'Class Record Participation & Task Submission Tracking',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
+            'moduleName' => 'Academic Analytics',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Participation Tracking' => ''
             ],
@@ -1436,11 +1430,11 @@ class HomeController
 
         View::render('analytics/Views/studentengagement', [
             'title' => 'Coursework Submission Compliance & Engagement Audit',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
+            'moduleName' => 'Academic Analytics',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Student Engagement' => ''
             ],
@@ -1542,11 +1536,11 @@ class HomeController
 
         View::render('analytics/Views/behaviorrecords', [
             'title' => 'Student Behavior & Discipline Records',
-            'moduleName' => 'Retention (ISREMS)',
-            'slug' => 'retention',
+            'moduleName' => 'Academic Analytics',
+            'slug' => 'analytics',
             'user' => $user,
             'crumbs' => [
-                'Retention (ISREMS)' => url('analytics'),
+                'Academic Analytics' => url('analytics'),
                 'Academic Monitoring' => '',
                 'Behavioral Records' => ''
             ],

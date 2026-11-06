@@ -14,7 +14,7 @@
         <i class="bi bi-shield-lock-fill text-success fs-5 flex-shrink-0"></i>
         <div class="small text-secondary" style="font-size: 11.5px; line-height: 1.4;">
             <strong class="text-dark">Republic Act No. 10173 (Data Privacy Act of 2012) Advisory:</strong>
-            The academic evaluation, roll-call attendance, and standing information presented in this portal are confidential. This data is processed strictly for educational advisement, academic retention monitoring, and institutional guidance interventions. Never share your campus login credentials.
+            The academic evaluation, roll-call attendance, and standing information presented in this portal are confidential. This data is processed strictly for educational advisement and academic monitoring. Never share your campus login credentials.
         </div>
     </div>
 </div>

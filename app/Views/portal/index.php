@@ -985,29 +985,6 @@
                         </div>
                     </div>
 
-                    <!-- 11. Retention (ret_) -->
-                    <div class="col-md-6 col-lg-4 service-col" data-category="academic" data-keywords="retention ret academic tutoring advising grades early warning mentor intervention advisor">
-                        <div class="service-card">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div class="service-icon-box" style="background: rgba(14, 165, 233, 0.15); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.3);">
-                                        <i class="bi bi-graph-up-arrow"></i>
-                                    </div>
-                                    <span class="service-tag bg-info bg-opacity-25 text-info border border-info border-opacity-50">ret_</span>
-                                </div>
-                                <h3 class="service-title">Academic Retention &amp; Peer Tutoring</h3>
-                                <p class="service-desc">
-                                    Academic performance monitoring, early subject warnings, and connect with volunteer peer tutors for exam preparation.
-                                </p>
-                            </div>
-                            <div>
-                                <button type="button" class="btn-service-action" onclick="openServiceDrawer('retention')">
-                                    <span>Request Peer Tutorial Help</span> <i class="bi bi-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </section>
 
@@ -1377,17 +1354,6 @@
                         </div>
                         <i class="bi bi-chevron-right text-white-50"></i>
                     </div>
-
-                    <div class="p-2 rounded-3 d-flex align-items-center justify-content-between" style="background: #182030; border: 1px solid var(--portal-border);" onclick="openServiceDrawer('retention')">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="p-2 rounded-2 text-info bg-info bg-opacity-10"><i class="bi bi-graph-up-arrow"></i></div>
-                            <div>
-                                <div class="text-white fw-semibold small lh-1">Retention &amp; Tutorials</div>
-                                <div class="text-white-50" style="font-size: 0.65rem;">Peer academic assistance</div>
-                            </div>
-                        </div>
-                        <i class="bi bi-chevron-right text-white-50"></i>
-                    </div>
                 </div>
             </div>
 
@@ -1716,18 +1682,6 @@
                     'Faculty Journal Publication Reprint Request',
                     'MarSU Innovation & Patent Registry Search',
                     'Plagiarism Scanning & Similarity Certificate'
-                ]
-            },
-            'retention': {
-                code: 'ret_ RETENTION & TUTORIAL',
-                title: 'Academic Retention & Peer Tutoring Request',
-                icon: 'bi-graph-up-arrow',
-                color: '#0ea5e9',
-                options: [
-                    'Volunteer Peer Tutor Match (Discrete Math / Programming)',
-                    'Midterm Academic Early Warning Consultation',
-                    'Faculty Advising Session Request',
-                    'Study Skills & Time Management Mentorship'
                 ]
             }
         };

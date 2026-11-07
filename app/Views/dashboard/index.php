@@ -101,7 +101,7 @@
      ========================================================================== -->
 <div class="row g-3 mb-4">
     <!-- 1. Active Enrolled Students -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="col-xl col-md-4 col-sm-6">
         <div class="pbi-card pbi-card-accent-burgundy" role="button" onclick="switchPbiTabByName('tabAcademic')" title="Click to view Academic BI">
             <div class="pbi-metric-label">Active Enrollment</div>
             <div class="pbi-metric-value text-marsu-burgundy" id="kpiActiveStudents"><?= number_format($totalStudents) ?></div>
@@ -118,7 +118,7 @@
     </div>
 
     <!-- 2. Faculty & Staff -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="col-xl col-md-4 col-sm-6">
         <div class="pbi-card pbi-card-accent-gold" role="button" onclick="switchPbiTabByName('tabGovernance')" title="Click to view Faculty Workload">
             <div class="pbi-metric-label">Faculty &amp; Staff</div>
             <div class="pbi-metric-value text-gold"><?= number_format($totalEmployees) ?></div>
@@ -134,25 +134,8 @@
         </div>
     </div>
 
-    <!-- 3. Student Retention Index -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
-        <div class="pbi-card pbi-card-accent-emerald" role="button" onclick="switchPbiTabByName('tabOverview')" title="Click to view Retention Analytics">
-            <div class="pbi-metric-label">Retention Index</div>
-            <div class="pbi-metric-value text-success"><?= $retentionScore ?>%</div>
-            <div class="mt-2 d-flex align-items-center justify-content-between">
-                <span class="pbi-delta-pill pbi-delta-positive">
-                    <i class="bi bi-shield-check"></i> 822 Safe
-                </span>
-                <span class="text-muted small" style="font-size: 0.72rem;">9 Flagged</span>
-            </div>
-            <div class="pbi-progress-track">
-                <div class="pbi-progress-fill bg-success" style="width: <?= $retentionScore ?>%;"></div>
-            </div>
-        </div>
-    </div>
-
     <!-- 4. Online Student Clearance -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="col-xl col-md-4 col-sm-6">
         <div class="pbi-card pbi-card-accent-sapphire" role="button" onclick="switchPbiTabByName('tabOverview')" title="Click to view Clearance Funnel">
             <div class="pbi-metric-label">Clearance Rate</div>
             <div class="pbi-metric-value text-primary"><?= $clearanceRate ?>%</div>
@@ -169,7 +152,7 @@
     </div>
 
     <!-- 5. Campus Housing (ISHAMIS) -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="col-xl col-md-4 col-sm-6">
         <div class="pbi-card pbi-card-accent-purple" role="button" onclick="switchPbiTabByName('tabWelfare')" title="Click to view Housing Analytics">
             <div class="pbi-metric-label">Housing Occupancy</div>
             <div class="pbi-metric-value" style="color: #8B5CF6;"><?= $housingCapacity ?>%</div>
@@ -186,7 +169,7 @@
     </div>
 
     <!-- 6. Student Welfare Grantees -->
-    <div class="col-xl-2 col-md-4 col-sm-6">
+    <div class="col-xl col-md-4 col-sm-6">
         <div class="pbi-card pbi-card-accent-amber" role="button" onclick="switchPbiTabByName('tabWelfare')" title="Click to view Scholarships">
             <div class="pbi-metric-label">Welfare Grantees</div>
             <div class="pbi-metric-value" style="color: #D97706;"><?= array_sum($welfareStats['grantees']) ?></div>
@@ -269,30 +252,10 @@
         </div>
     </div>
 
-    <!-- Row 2: Student Retention Risk Forecaster & Faculty Distribution -->
+    <!-- Row 2: Faculty Distribution -->
     <div class="row g-4 mb-4">
-        <!-- Student Retention Predictor Model -->
-        <div class="col-lg-6">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-header bg-transparent border-0 pt-3 pb-0 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="font-weight-bold text-marsu-burgundy mb-1">
-                            <i class="bi bi-shield-fill-check me-2 text-success"></i>Student Retention Forecaster &amp; Risk Tiers
-                        </h6>
-                        <p class="text-muted small mb-0" style="font-size: 0.78rem;">Predictive machine learning risk categorization for Santa Cruz students.</p>
-                    </div>
-                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">94.8% Safe</span>
-                </div>
-                <div class="card-body">
-                    <div style="position: relative; height: 240px;">
-                        <canvas id="pbiRetentionChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Faculty & Staff Distribution by Academic College -->
-        <div class="col-lg-6">
+        <div class="col-12">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-header bg-transparent border-0 pt-3 pb-0 d-flex justify-content-between align-items-center">
                     <div>
@@ -431,7 +394,7 @@
                 <h6 class="font-weight-bold text-marsu-burgundy mb-1">
                     <i class="bi bi-table text-gold me-2"></i>Academic Program Performance &amp; Capacity Scorecard
                 </h6>
-                <p class="text-muted small mb-0" style="font-size: 0.78rem;">Comprehensive curricular utilization, clearance sign-off %, and retention index.</p>
+                <p class="text-muted small mb-0" style="font-size: 0.78rem;">Comprehensive curricular utilization and clearance sign-off %.</p>
             </div>
             <div class="d-flex align-items-center gap-2">
                 <input type="text" class="form-control form-control-sm" placeholder="Filter program..." data-table-search="programScorecardTable" style="max-width: 180px;">
@@ -447,7 +410,6 @@
                             <th>Enrolled Headcount</th>
                             <th>Capacity Target</th>
                             <th>Clearance Status</th>
-                            <th>Retention Score</th>
                             <th class="text-end">Curricular State</th>
                         </tr>
                     </thead>
@@ -468,11 +430,6 @@
                                 <td>
                                     <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">
                                         <i class="bi bi-check2-circle me-1"></i><?= $prog['clearance'] ?>%
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
-                                        <i class="bi bi-shield-check me-1"></i><?= $prog['retention'] ?>%
                                     </span>
                                 </td>
                                 <td class="text-end">
@@ -862,32 +819,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 scales: {
                     x: { min: 70, max: 100, ticks: { stepSize: 10, callback: (v) => v + '%' } },
                     y: { grid: { display: false } }
-                }
-            }
-        });
-    }
-
-    // --- CHART 3: Student Retention Predictor Tiers ---
-    const retCanvas = document.getElementById('pbiRetentionChart');
-    if (retCanvas) {
-        new Chart(retCanvas, {
-            type: 'bar',
-            data: {
-                labels: <?= json_encode($retentionStats['tiers']) ?>,
-                datasets: [{
-                    label: 'Students Count',
-                    data: <?= json_encode($retentionStats['counts']) ?>,
-                    backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
-                    x: { grid: { display: false } }
                 }
             }
         });

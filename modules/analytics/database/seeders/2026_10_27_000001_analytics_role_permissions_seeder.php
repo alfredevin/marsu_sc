@@ -9,11 +9,15 @@
 
 use Core\Database;
 use Core\ModuleLoader;
+use Modules\Analytics\Support\DemoAccountsBootstrapper;
 
 return new class {
     private const ALL_ANALYTICS = '*';
 
     public function run(): void {
+        require_once dirname(__DIR__, 2) . '/Support/DemoAccountsBootstrapper.php';
+        DemoAccountsBootstrapper::bootstrap();
+
         $now = date('Y-m-d H:i:s');
 
         if (class_exists(ModuleLoader::class) && method_exists(ModuleLoader::class, 'syncPermissions')) {

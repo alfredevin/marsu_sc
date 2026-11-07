@@ -12,6 +12,10 @@ use Modules\Analytics\Controllers\FacultyController;
 use Modules\Analytics\Controllers\RegistrarController;
 use Modules\Analytics\Controllers\StudentPortalController;
 use Modules\Analytics\Controllers\NotificationController;
+use Modules\Analytics\Support\DemoAccountsBootstrapper;
+
+// Auto-heal / ensure demo users from modules/analytics/env are ready across all team laptops
+DemoAccountsBootstrapper::ensure();
 
 $view   = ['auth', 'permission:analytics.view'];
 $fac    = ['auth', 'permission:analytics.faculty.classes'];

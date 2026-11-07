@@ -48,7 +48,7 @@
                     {
                         "label": "Workload Approval",
                         "icon": "bi-exclamation-triangle",
-                        "route": "retention/failedincompletemonitoring",
+                        "route": "workload/course_monitoring",
                         "permission": "workload.view"
                     }
                 ]

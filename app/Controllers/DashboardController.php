@@ -37,7 +37,6 @@ class DashboardController {
                 'orgfinance'    => 'orf_',
                 'orgleadership' => 'sld_',
                 'housing'       => 'hsg_',
-                'retention'     => 'ret_',
                 'assets'        => 'ast_',
                 'welfare'       => 'wlf_',
                 'guidance'      => 'gdc_',
@@ -120,7 +119,6 @@ class DashboardController {
             'guidance'   => (int)(\Core\Database::fetchOne("SELECT COUNT(*) as c FROM gdc_records WHERE deleted_at IS NULL")['c'] ?? 0),
             'assets'     => (int)(\Core\Database::fetchOne("SELECT COUNT(*) as c FROM ast_records WHERE deleted_at IS NULL")['c'] ?? 0),
             'orgfinance' => (int)(\Core\Database::fetchOne("SELECT COUNT(*) as c FROM orf_records WHERE deleted_at IS NULL")['c'] ?? 0),
-            'retention'  => (int)(\Core\Database::fetchOne("SELECT COUNT(*) as c FROM ret_records WHERE deleted_at IS NULL")['c'] ?? 0),
             'workload'   => (int)(\Core\Database::fetchOne("SELECT COUNT(*) as c FROM wkl_records WHERE deleted_at IS NULL")['c'] ?? 0),
             'irimkms'    => (int)(\Core\Database::fetchOne("SELECT COUNT(*) as c FROM kmp_records WHERE deleted_at IS NULL")['c'] ?? 0),
             'leadership' => (int)(\Core\Database::fetchOne("SELECT COUNT(*) as c FROM sld_records WHERE deleted_at IS NULL")['c'] ?? 0),
@@ -140,7 +138,6 @@ class DashboardController {
                 'enrolled' => $enrollmentChart['values'][array_search('BSTM', $enrollmentChart['labels']) ?? 0] ?? 398,
                 'capacity' => 420,
                 'clearance' => 91.2,
-                'retention' => 95.8,
                 'status' => 'Optimal',
                 'badge' => 'success'
             ],
@@ -150,7 +147,6 @@ class DashboardController {
                 'enrolled' => $enrollmentChart['values'][array_search('BSIS', $enrollmentChart['labels']) ?? 1] ?? 192,
                 'capacity' => 200,
                 'clearance' => 88.5,
-                'retention' => 93.6,
                 'status' => 'Stable',
                 'badge' => 'primary'
             ],
@@ -160,7 +156,6 @@ class DashboardController {
                 'enrolled' => $enrollmentChart['values'][array_search('BAPoS', $enrollmentChart['labels']) ?? 2] ?? 154,
                 'capacity' => 160,
                 'clearance' => 86.4,
-                'retention' => 92.1,
                 'status' => 'Stable',
                 'badge' => 'info'
             ],
@@ -170,7 +165,6 @@ class DashboardController {
                 'enrolled' => $enrollmentChart['values'][array_search('BEED', $enrollmentChart['labels']) ?? 3] ?? 123,
                 'capacity' => 140,
                 'clearance' => 87.0,
-                'retention' => 94.4,
                 'status' => 'Optimal',
                 'badge' => 'success'
             ]
@@ -196,12 +190,6 @@ class DashboardController {
             'categories' => ['Academic Guidance', 'Career Planning', 'Personal & Emotional', 'Adjustment to Campus', 'Family Support'],
             'counts' => [38, 26, 22, 19, 14],
             'resolved_rate' => 96.2
-        ];
-
-        $retentionStats = [
-            'tiers' => ['Low Risk (Safe)', 'Moderate Risk (Watchlist)', 'High Risk (Intervention)'],
-            'counts' => [822, 36, 9],
-            'factors' => ['Attendance (<80%)', 'Midterm Grade Deficiencies', 'Commute/Financial Burden', 'First-Gen Adjustment']
         ];
 
         $workloadStats = [
@@ -235,7 +223,6 @@ class DashboardController {
 
         // 7. Executive Ratio & KPIs
         $studentFacultyRatio = round($totalStudents / max(1, $totalEmployees), 1);
-        $retentionScore = 94.8;
         $clearanceRate = 88.6;
         $housingCapacity = 83.5;
 
@@ -282,14 +269,12 @@ class DashboardController {
             'housingStats'        => $housingStats,
             'clinicStats'         => $clinicStats,
             'guidanceStats'       => $guidanceStats,
-            'retentionStats'      => $retentionStats,
             'workloadStats'       => $workloadStats,
             'assetStats'          => $assetStats,
             'orgFinanceStats'     => $orgFinanceStats,
             'welfareStats'        => $welfareStats,
             'clearanceFunnel'     => $clearanceFunnel,
             'studentFacultyRatio' => $studentFacultyRatio,
-            'retentionScore'      => $retentionScore,
             'clearanceRate'       => $clearanceRate,
             'housingCapacity'     => $housingCapacity,
             'recentAudits'        => $recentAudits,
